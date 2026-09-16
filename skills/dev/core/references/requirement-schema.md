@@ -4,6 +4,8 @@ Each feature is stored at `.agent-workflow/features/<feature-id>/`.
 
 ```text
 sources/                 Immutable original PRD, API, Figma exports and links
+spec/prd-intake.json      Reading inventory, source excerpts and coverage review
+spec/prd-analysis.md      Generated reading/coverage view
 spec/requirements.json   Canonical requirement records
 spec/spec.md             Generated, human-readable requirement view
 tasks.json               Atomic implementation slices and status
@@ -18,13 +20,14 @@ delivery-report.md       Quality-gate result and remaining risk
 
 - `id`: stable identifier such as `R-012`.
 - `status`: `inferred`, `confirmed`, `blocked`, or `deprecated`.
+- `source_item_ids`: stable references to mapped items in `spec/prd-intake.json`; required for active requirements before development.
 - `sources`: a precise PRD heading, API operation/field, Figma node, or decision ID.
 - `statement`: one testable behavior.
 - `acceptance_criteria`: observable outcomes, including loading, empty, error, and permission states where relevant.
 - `assumptions`: unresolved facts. Each must state what evidence would confirm it.
 - `tasks` and `tests`: stable IDs, never prose-only promises.
 
-`requirements.json`, `tasks.json`, `decisions.json`, and `traceability.json` are the only editable workflow records. Run `render-workspace.py` after editing them; generated Markdown must not become a second source of truth.
+`requirements.json`, `tasks.json`, `decisions.json`, and `traceability.json` are the editable product workflow records; `spec/prd-intake.json` separately records reading evidence and coverage. Run `render-workspace.py` after editing them; generated Markdown must not become a second source of truth.
 
 ## Decision format
 

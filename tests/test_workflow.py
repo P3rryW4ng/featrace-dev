@@ -5,6 +5,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from intake_helpers import attach_intake
 
 REPO = Path(__file__).resolve().parents[1]
 CORE = REPO / 'skills/dev/core/scripts'
@@ -37,6 +38,8 @@ class WorkflowTests(unittest.TestCase):
         self.record('spec/requirements.json', self.req)
         self.record('tasks.json', {'feature_id': 'FEAT-001', 'tasks': [{'id': 'T-1', 'title': 'Implement', 'status': 'done', 'requirement_ids': ['R-1'], 'test_evidence': ['UT-1: abc -> ABC passed (synthetic)']}]})
         self.record('traceability.json', {'feature_id': 'FEAT-001', 'links': [{'requirement_id': 'R-1', 'task_id': 'T-1', 'tests': ['UT-1'], 'code': ['convert.py']}]})
+
+        attach_intake(self.folder, self.req)
 
     def validate(self, stage='develop', expected=0):
         return self.run_script(CORE / 'validate-feature.py', '--stage', stage, self.root, 'FEAT-001', expected=expected)

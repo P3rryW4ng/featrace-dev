@@ -3,6 +3,7 @@
 import json
 import pathlib
 import sys
+from prd_intake import render_intake
 
 
 def load(path):
@@ -25,6 +26,7 @@ def main():
     (feature_dir / "tasks.md").write_text("# Tasks\n\n" + "\n".join(f"- {t.get('id', '?')} [{t.get('status', '')}] {t.get('title', '')}" for t in tasks) + "\n")
     (feature_dir / "decisions.md").write_text("# Decisions\n\n" + "\n".join(f"## {d.get('id', '?')}\n\n- Status: {d.get('status', '')}\n- Chosen: {d.get('chosen', 'pending')}\n" for d in decisions))
     (feature_dir / "traceability.md").write_text("# Traceability\n\n" + "\n".join(f"- {x.get('requirement_id', '?')} → {x.get('task_id', '?')} → {', '.join(x.get('tests', []))}" for x in links) + "\n")
+    render_intake(feature_dir)
     print("WORKSPACE_RENDERED")
 
 

@@ -5,6 +5,7 @@ import json
 import pathlib
 import sys
 import re
+from prd_intake import validate_intake
 
 REQUIREMENT_STATES = {"inferred", "confirmed", "blocked", "deprecated"}
 TASK_STATES = {"planned", "in_progress", "blocked", "done"}
@@ -161,6 +162,10 @@ def main():
         traced = {link.get("requirement_id") for link in links if isinstance(link, dict)}
         missing = [r.get("id") for r in live if r.get("id") not in traced]
         if missing: errors.append("missing traceability for: " + ", ".join(missing))
+    if not errors:
+        intake_errors, intake_warnings = validate_intake(feature_dir, req_doc, args.stage)
+        errors.extend(intake_errors)
+        warnings.extend(intake_warnings)
     return report(errors, warnings)
 
 

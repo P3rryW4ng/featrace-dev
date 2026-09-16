@@ -1,0 +1,43 @@
+{
+  "equivalent_group": [
+    "formal.md",
+    "colloquial.md",
+    "reordered-table.md"
+  ],
+  "group_invariants": [
+    "普通用户每日最多三次，不能变成每次三条",
+    "会员免次数限制",
+    "冻结禁止导出优先于会员例外",
+    "时区未知，不能猜测当地时区或 UTC"
+  ],
+  "different_pairs": [
+    {
+      "files": [
+        "formal.md",
+        "per-request.md"
+      ],
+      "distinction": "按日操作次数与单次数据条数不可合并"
+    },
+    {
+      "files": [
+        "only-admin.md",
+        "also-admin.md"
+      ],
+      "distinction": "only-admin 排除非管理员；also-admin 不排除其他角色，角色范围未知"
+    }
+  ],
+  "gap_case": {
+    "file": "unreadable-diagram.md",
+    "expected": "附件不可读，记录冻结行为的读取缺口，不生成猜测规则"
+  },
+  "example_case": {
+    "file": "example-not-rule.md",
+    "expected": "苹果为示例而非唯一允许关键词；超时重试保持未知"
+  },
+  "forbidden": [
+    "默认重试三次",
+    "默认超时30秒",
+    "冻结会员可以导出",
+    "把管理员也可修改解释为仅管理员可修改"
+  ]
+}

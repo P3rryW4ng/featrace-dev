@@ -2,7 +2,7 @@
 
 把 PRD 转换为可追溯的需求、开发任务和验证记录，支持后补 API / Figma、冲突决策和持续迭代。
 
-当前版本 **0.3.0**：通用工作流 + Android 适配 + Generic 适配。iOS/Web/后端可用通用流程，但没有专属自动化适配器。此工具由 Agent 执行需求理解和编码，脚本负责部分确定性检查；不能保证零遗漏或零 bug。
+当前版本 **0.4.0**：通用工作流 + Android 适配 + Generic 适配。iOS/Web/后端可用通用流程，但没有专属自动化适配器。此工具由 Agent 执行需求理解和编码，脚本负责部分确定性检查；不能保证零遗漏或零 bug。
 
 ## 最快开始
 
@@ -40,18 +40,35 @@ Claude Code 的 `/dev` 来自标准个人 Skill 目录；Codex 用 `$dev` 显式
 
 ## 更新和卸载
 
+先在终端进入你克隆的 `feature-delivery-skill` 仓库目录，再执行：
+
 ```bash
 git pull --ff-only
-python3 scripts/install.py --update
+python3 scripts/install.py --agent claude --update
+```
+
+Codex 用户将 `claude` 换成 `codex`；两个工具都使用则换成 `both`。`git pull` 只更新仓库，必须再运行安装脚本才会更新个人 Skill 副本。完成后打开新的 Agent 会话，避免旧会话继续沿用已加载的规则。
+
+从 0.3 升级到 0.4 不会自动改写业务项目。已有需求继续开发前，请让 Agent 按新版 PRD 分析规范补齐读取清单、原文关联和实际复核；不要重新初始化已有需求。可直接说：“按新版 PRD 分析规范补齐 FEAT-001 的读取与覆盖记录，保留现有需求和决策，复核后再继续开发。”
+
+如果提示本地修改或安装归属冲突，先备份并核对改动，不要强制覆盖。通过其他安装器或手动复制安装的用户，应使用原安装方式升级，或备份旧安装并移出发现目录后再运行本安装器；本脚本不会接管没有安装标记的目录。
+
+卸载示例：
+
+```bash
 # 只卸载 Claude：
 python3 scripts/install.py --agent claude --uninstall
 ```
 
 更新/卸载会把本工具安装的旧副本移到 `~/.feature-delivery/backups/`，不永久删除。若目标是别人的同名 Skill、符号链接或已被本地修改，安装器拒绝覆盖。每个目标单独备份；安装多个目标不是跨目录事务，遇到系统错误可修复后重试。
 
+## PRD 分析一致性
+
+导入时先登记读取范围与缺口，再保留带上下文的原文条目，并核对条件、例外到需求的对应关系。`spec/prd-analysis.md` 是生成的分析视图；JSON 规格仍是业务权威。缺少读取记录或复核已过期会阻止开发。脚本不自动证明语义正确，详见 [使用指南](docs/usage.md)。
+
 ## 从旧版迁移
 
-旧 `android-feature-delivery` 本体与新 `dev` 分开。安装脚本不会移除旧 Skill，也不会修改个人 `CLAUDE.md`。如果此前添加了 `@~/.agents/skills/android-feature-delivery/SKILL.md`，启用新版前应从个人规则中移除那条旧导入，并把旧 Skill 备份到技能发现目录之外，避免两个版本同时引导工作。旧项目 JSON 可继续读取；旧 YAML 必须按 [使用指南](docs/usage.md) 重建和校验，不能当成已自动迁移。
+旧 `android-feature-delivery` 本体与新 `dev` 分开。安装脚本不会移除旧 Skill，也不会修改个人 `CLAUDE.md`。如果此前添加了 `@~/.agents/skills/android-feature-delivery/SKILL.md`，启用新版前应从个人规则中移除那条旧导入，并把旧 Skill 备份到技能发现目录之外，避免两个版本同时引导工作。0.3 项目 JSON 可继续读取，但继续开发前需要补齐 `prd-intake.json` 和复核；旧 YAML 必须按 [使用指南](docs/usage.md) 重建和校验，不能当成已自动迁移。
 
 ## 仓库结构
 

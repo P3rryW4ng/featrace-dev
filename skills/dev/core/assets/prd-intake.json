@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "feature_id": "FEATURE_ID",
+  "inventory_complete": false,
+  "units": [],
+  "items": [],
+  "review": {
+    "reviewer": "",
+    "notes": "",
+    "digest": ""
+  }
+}

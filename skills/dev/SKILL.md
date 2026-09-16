@@ -27,6 +27,8 @@ Use an unambiguous active feature if ID is omitted; ask only when multiple choic
 
 ## Entry and profile selection
 
+Read `core/references/prd-analysis.md` before analyzing a PRD or changing requirement meaning. Inventory reading gaps, preserve contextual source items, map conditions/exceptions, and record semantic review before development.
+
 Read `core/references/workflow.md` for all feature work and `core/references/requirement-schema.md` when editing records.
 
 1. Read project `.agent-workflow/config.yaml` if present. Otherwise copy `core/assets/config.yaml`; this file is agent guidance, not an executable policy engine.
@@ -34,7 +36,8 @@ Read `core/references/workflow.md` for all feature work and `core/references/req
 3. Android: read `profiles/android/PROFILE.md`. All other stacks: read `profiles/generic/PROFILE.md`. In mixed repositories select the feature's actual target module and record it; don't run a root build merely because a manifest exists.
 4. Read representative code; fill architecture, conventions and reuse examples with file evidence before business-code changes. Review `.agent-workflow/project-baseline/quality-gates.json` against build files and CI. An empty gate list means unconfigured, not passed.
 5. Create a feature using `bash core/scripts/init-feature.sh <ID> <PRD-FILE> <PROJECT>`. Script preserves source bytes and extension. Interpret Word/PDF through available readers before decomposing; do not pretend binary input is Markdown.
-6. Run `python3 core/scripts/validate-feature.py --stage draft|develop|check <PROJECT> <ID>` at the corresponding boundary. This is a structural guard, not a substitute for semantic review or quality evidence.
+6. Populate `spec/prd-intake.json` and requirement `source_item_ids` under the PRD analysis contract. Review the original against the spec, then record that review with `core/scripts/review-prd.py`. Empty/missing/stale intake blocks develop/check, including legacy workspaces; draft only warns about incomplete work.
+7. Run `python3 core/scripts/validate-feature.py --stage draft|develop|check <PROJECT> <ID>` at the corresponding boundary. This is a structural guard, not a substitute for semantic review or quality evidence.
 
 ## Delivery
 

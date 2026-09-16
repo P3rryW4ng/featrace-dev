@@ -6,6 +6,7 @@ import re
 import shutil
 import subprocess
 import sys
+from prd_intake import new_intake
 
 if len(sys.argv) not in (3, 4):
     raise SystemExit("Usage: init-feature.py <ID> <PRD-FILE> [PROJECT]")
@@ -25,5 +26,6 @@ doc = {"feature": {"id": feature, "title": "", "status": "drafted", "source_stat
 (folder / "spec/requirements.json").write_text(json.dumps(doc, indent=2) + "\n")
 for name, key in (("tasks", "tasks"), ("decisions", "decisions"), ("traceability", "links")):
     (folder / (name + ".json")).write_text(json.dumps({"feature_id": feature, key: []}, indent=2) + "\n")
+(folder / "spec/prd-intake.json").write_text(json.dumps(new_intake(feature), indent=2) + "\n")
 subprocess.run([sys.executable, str(pathlib.Path(__file__).with_name("render-workspace.py")), str(root), feature], check=True)
 print("FEATURE_CREATED: " + str(folder))
