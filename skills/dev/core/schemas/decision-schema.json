@@ -1,0 +1,7 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Feature decisions",
+  "type": "object",
+  "required": ["feature_id", "decisions"],
+  "properties": {"feature_id": {"type": "string"}, "decisions": {"type": "array"}}
+}

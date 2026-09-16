@@ -1,0 +1,12 @@
+# Runtime business evidence never belongs in this Skill repository
+.agent-workflow/
+__pycache__/
+*.py[cod]
+.DS_Store
+.env
+.env.*
+!.env.example
+local.properties
+*.jks
+*.keystore
+.feature-delivery-install.json

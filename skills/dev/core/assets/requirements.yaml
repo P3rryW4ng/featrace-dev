@@ -1,0 +1,23 @@
+# Legacy reference only; new workspaces use requirements.json.
+feature:
+  id: FEATURE_ID
+  title: ""
+  status: drafted
+  source_status:
+    prd: present
+    api: missing
+    figma: missing
+
+requirements:
+  - id: R-001
+    title: ""
+    status: inferred # inferred | confirmed | blocked | deprecated
+    sources:
+      - type: prd
+        ref: "prd-original.md#section"
+    statement: ""
+    acceptance_criteria: []
+    assumptions: []
+    tasks: []
+    tests: []
+    supersedes: []

@@ -1,0 +1,51 @@
+---
+name: dev
+description: Deliver PRD-driven software features with persistent specifications, source reconciliation, tasks, and validation. Use for dev scan/prd/api/figma/develop/check/status requests or staged feature delivery; not isolated coding questions. Android has a bundled adapter; other stacks use evidence-based generic configuration.
+---
+
+# Feature Delivery
+
+Use the project root supplied by the user or established by the current workspace. All paths below are relative to this Skill directory, not the target project. Run scripts with explicit project paths. Never create project records inside the installed Skill.
+
+## Commands
+
+Claude Code: `/dev scan`, `/dev prd <file> --feature FEAT-001`, `/dev develop FEAT-001`.
+Codex: `$dev scan`, `$dev prd <file> --feature FEAT-001`, `$dev develop FEAT-001`.
+Accept plain `dev ...` when this skill is selected. These are agent instructions, not shell commands or a deterministic CLI. Do not promise that plain `dev` always activates the skill.
+
+| Action | Behavior |
+|---|---|
+| scan | Detect profile, scan project, inspect representative code and complete baseline |
+| prd <file> --feature <ID> | Preserve original, extract atomic requirements, tasks, test plan, render and validate draft |
+| api <file-or-link> --feature <ID> | Preserve new evidence, reconcile data semantics, record affected tasks/code/tests |
+| figma <file-or-link> --feature <ID> | Preserve node references and available exports, reconcile visuals and behavior |
+| develop <ID> | Validate development eligibility, implement slices, update records and evidence |
+| check <ID> | Validate records, execute applicable project checks, report actual results and unmet conditions |
+| status <ID> | Read state and summarize next action; no source or code mutation |
+
+Use an unambiguous active feature if ID is omitted; ask only when multiple choices exist. Ask for an inaccessible source; never infer its contents. Online API/Figma retrieval requires an available authorized connector or supplied export; this package does not install connectors.
+
+## Entry and profile selection
+
+Read `core/references/workflow.md` for all feature work and `core/references/requirement-schema.md` when editing records.
+
+1. Read project `.agent-workflow/config.yaml` if present. Otherwise copy `core/assets/config.yaml`; this file is agent guidance, not an executable policy engine.
+2. Run `python3 core/scripts/project.py scan <PROJECT>` for a first baseline or `verify <PROJECT>` for an existing one. Read resulting profile and baseline. Scanner output is inventory, not proof of architecture understanding.
+3. Android: read `profiles/android/PROFILE.md`. All other stacks: read `profiles/generic/PROFILE.md`. In mixed repositories select the feature's actual target module and record it; don't run a root build merely because a manifest exists.
+4. Read representative code; fill architecture, conventions and reuse examples with file evidence before business-code changes. Review `.agent-workflow/project-baseline/quality-gates.json` against build files and CI. An empty gate list means unconfigured, not passed.
+5. Create a feature using `bash core/scripts/init-feature.sh <ID> <PRD-FILE> <PROJECT>`. Script preserves source bytes and extension. Interpret Word/PDF through available readers before decomposing; do not pretend binary input is Markdown.
+6. Run `python3 core/scripts/validate-feature.py --stage draft|develop|check <PROJECT> <ID>` at the corresponding boundary. This is a structural guard, not a substitute for semantic review or quality evidence.
+
+## Delivery
+
+Implement independently testable slices using project conventions. After each slice update canonical JSON and run `python3 core/scripts/render-workspace.py <PROJECT> <ID>`. Use `feature-status.py` for summaries.
+
+For checks run `python3 core/scripts/project.py check <PROJECT>` after reviewing configured commands. Record results in the feature's delivery report, tied to the tested code revision. A pass on JSON validation alone never means complete.
+
+Legacy YAML: `migrate-workspace.py` creates an empty migration scaffold and preserves old records. The agent must faithfully reconstruct requirements/tasks/decisions/traceability and validate before development; it is not an automatic semantic converter.
+
+## Completion
+
+For API and Figma separately record `present`, `missing`, `unknown`, or `not_applicable` in feature.source_status. Record why a source is not applicable in feature.source_notes. Missing/unknown required evidence permits provisional work only. A feature that needs neither source can be complete if all other conditions pass. No fake API is needed for purely local computation.
+
+Complete requires: active requirements confirmed against evidence; all tasks done; no pending conflicts; all required sources reconciled or justified as not applicable; traceability and test evidence; applicable quality gates actually passed. A manual checklist remains necessary where the validator has documented gaps. If checks cannot run, report unavailable and provisional, never success.

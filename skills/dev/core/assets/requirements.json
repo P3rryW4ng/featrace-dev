@@ -1,0 +1,14 @@
+{
+  "feature": {
+    "id": "FEATURE_ID",
+    "title": "",
+    "status": "drafted",
+    "source_status": {
+      "prd": "present",
+      "api": "unknown",
+      "figma": "unknown"
+    },
+    "source_notes": {}
+  },
+  "requirements": []
+}

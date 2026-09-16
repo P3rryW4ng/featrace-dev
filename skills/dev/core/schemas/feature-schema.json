@@ -1,0 +1,10 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Feature requirements",
+  "type": "object",
+  "required": ["feature", "requirements"],
+  "properties": {
+    "feature": {"type": "object", "required": ["id", "status", "source_status"]},
+    "requirements": {"type": "array"}
+  }
+}

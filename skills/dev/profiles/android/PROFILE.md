@@ -1,0 +1,7 @@
+# Android adapter
+
+Require Android plugin evidence (`com.android.application`, `com.android.library` or an explicit version-catalog plugin mapping); Gradle alone is not Android. Read module setup, Compose/XML, navigation, DI, networking, persistence and tests from actual code.
+
+`scan-project.sh <PROJECT>` is the legacy keyword scanner retained for compatibility/reference, not the normal entry. It overwrites baseline files, so do not run it over a reviewed baseline. Prefer the shared `core/scripts/project.py scan` inventory and agent inspection.
+
+`run-quality-gates.sh <PROJECT>` is the legacy `./gradlew check` helper. It does not necessarily compile every target or run device tests. The normal quality entry is `project.py check` with explicit commands in baseline/quality-gates.json. Select real module/variant tasks from project CI/Gradle; record whether emulator/device and SDK are available. Do not equate gradle check with full Android verification.

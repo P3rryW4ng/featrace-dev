@@ -1,0 +1,14 @@
+# Changelog
+
+## 0.3.0 — 2026-09-16
+
+- 从 Android 版本拆出通用 core 与 Android / Generic profiles。
+- 单份 skills/dev 支持 Claude Code /dev 与 Codex $dev；安装器提供安装、更新、可恢复卸载和冲突检测。
+- 增加可审查质量命令、清单新增/删除失效检测、不适用来源及理由。
+- 修正空工作区开发放行、迁移覆盖已有 JSON 和初始化源文件扩展名问题。
+- 补齐 README、使用指南、维护交接、架构决策、路线图与隔离测试。
+- 兼容：JSON 路径不变；旧指纹需重扫；YAML 仍须人工/Agent 重建。旧安装保持原状，迁移步骤见 README。
+
+## Legacy — 未标版本
+
+原 android-feature-delivery 最小实现，包含基本 JSON 校验、渲染、状态摘要和 Android 关键词扫描。此前无版本文件，不推断或补造旧版本号。

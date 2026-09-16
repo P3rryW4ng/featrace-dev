@@ -1,0 +1,35 @@
+authority:
+  approved_decision: "Overrides only the explicitly decided field."
+  business_rules: "PRD or approved decision."
+  api_contract: "Backend contract or approved decision."
+  visual_and_interaction: "Figma or approved decision."
+  implementation_conventions: "Project baseline."
+  inferred_details: "Working assumption; replace or refine when evidence arrives."
+
+development:
+  allow_missing_api: true
+  allow_missing_figma: true
+  require_assumption_record: true
+  require_project_baseline: true
+
+conflicts:
+  always_require_confirmation:
+    - business_rule
+    - api_field_semantics
+    - permission
+    - payment
+    - privacy
+    - irreversible_write
+
+quality_gates:
+  required:
+    - project_configured_checks
+  conditional:
+    - platform_ui_tests
+    - api_contract_tests
+    - screenshot_review
+
+completion:
+  require_traceability: true
+  require_no_open_blockers: true
+  allow_provisional_delivery: true
