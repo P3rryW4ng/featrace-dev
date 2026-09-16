@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- 在使用与迭代指南中补充当前日常工作流程图，标明可选资料、后补变更、冲突决策、质量检查与完成条件；增加流程变更时同步维护图示的约定。
+
 ## 0.3.0 — 2026-09-16
 
 - 从 Android 版本拆出通用 core 与 Android / Generic profiles。
