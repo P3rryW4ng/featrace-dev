@@ -1,0 +1,12 @@
+# BEGIN feature-delivery-skill local state
+/project-baseline/fingerprint.json
+/project-baseline/quality-gates.json
+/project-baseline/quality-report.json
+/baseline-draft/
+/baseline-backups/
+/.baseline.lock
+/.baseline-previous/
+/.baseline-stage-*/
+# Original source artifacts require an explicit sharing decision.
+/features/*/sources/**
+# END feature-delivery-skill local state

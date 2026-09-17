@@ -12,13 +12,14 @@
 
 ## 日常工作流
 
-适用版本：0.4.0；最后核对：2026-09-16。下图描述当前 Agent 工作流程；结构校验由脚本辅助，资料理解、冲突判断和最终完成条件仍需 Agent 结合证据核对。
+适用版本：0.4.3；最后核对：2026-09-17。下图描述当前 Agent 工作流程；结构校验由脚本辅助，资料理解、冲突判断和最终完成条件仍需 Agent 结合证据核对。
 
 ```mermaid
 flowchart TD
-    A["在目标业务项目启动 Agent"] --> B["scan：校验项目基线与当前代码变化"]
+    A["在目标业务项目启动 Agent"] --> A1["首次使用：配置选择性 Git 忽略规则<br/>克隆接续：读取已有记录并恢复必要来源"]
+    A1 --> B["scan：校验项目基线与当前代码变化"]
     B --> C{"基线缺失或过期？"}
-    C -->|是| D["盘点项目，选择 Android 或 Generic<br/>阅读代码，更新规范、示例和质量命令"]
+    C -->|是| D["创建扫描草稿，盘点项目与核对规则<br/>记录覆盖范围、登记证据<br/>校验草稿后发布，变更才备份，保留 3 份"]
     C -->|否| E["prd：保留原始需求资料"]
     D --> E
     E --> E1["登记正文、表格、图片和附件<br/>记录读取缺口，保留原文上下文"]
@@ -33,7 +34,7 @@ flowchart TD
     I -->|否| L{"develop 校验通过？"}
     L -->|否| F
     L -->|是| M["develop：按小模块实现与自测<br/>更新任务、追溯和证据，生成 Markdown"]
-    M --> N["check：校验记录<br/>执行项目适用的构建与测试"]
+    M --> N["check：按改动与授权选择具体检查<br/>校验记录和配置，再执行所选检查"]
     N --> O{"检查结果？"}
     O -->|失败| P["修复问题或补齐记录"]
     P --> M
@@ -80,19 +81,26 @@ flowchart TD
 
 ## 项目质量配置
 
-scan 会生成 `.agent-workflow/project-baseline/quality-gates.json`，初始 gates 为空。Agent 根据项目 CI/构建文件填入命令，不凭语言猜测命令。示例：
+scan 先在草稿中生成或保留 `quality-gates.json`，发布后位于 `.agent-workflow/project-baseline/quality-gates.json`；首次生成时 gates 为空。Agent 根据项目 CI/构建文件填入命令，不凭语言猜测命令。示例：
 
 ```json
 {"gates":[{"name":"unit","command":["python3","-m","unittest","discover"],"cwd":".","timeout_seconds":600}]}
 ```
 
+候选检查保存在 `quality-candidates.json`，其中的条件与模板供 Agent 选择参考，不会被执行器运行。每次 check 前按本次改动、项目规则和已有授权选择具体命令，填入 `quality-gates.json`；不要重复选择整套 preflight 与其子检查。
+
 每个列出的 gate 都必须通过。命令参数数组避免 shell 拼接；这些命令仍会执行项目代码，需在执行前核对。脚本生成 quality-report.json，Agent 将本次结果及限制写入功能 delivery-report.md。未配置、缺运行环境或测试失败不算通过。
+
+scan 结束使用 `project.py validate-gates <PROJECT>` 只校验配置。字符串命令、未填模板参数和不支持的 `when` 等字段会报错；空清单会明确提示待选择，不能作为质量通过。此校验不验证 Gradle 任务实际可运行。
+
+基线新增 `coverage.md`（模块分析范围/证据/待补项）、`evidence-files.json`（实际引用的规范、配置和示例路径）。根目录 AGENTS.md/CLAUDE.md 与登记的证据进入 v2 指纹，未提交的这些文件变化也会使其过期。它仍不是完整增量扫描，未登记源码变化及跨模块影响需另外核对。
 
 ## 兼容和迁移
 
 - JSON 项目继续使用原路径；0.4 新增读取与覆盖复核门禁，旧工作区在继续开发前需要补全上述证据，不自动宣称已迁移。
 - 旧 missing/unknown 必须逐项判断适用性，不能机械替换为 not_applicable。
-- 新 scan 使用新版清单指纹；旧指纹验证会过期，重新扫描并审查基线说明。
+- 0.4.1 要求每个实际检查有唯一 name；旧配置中的字符串命令和条件字段需迁移，条件/模板移到候选文件，再选择具体命令。
+- 新 scan 使用 v2 清单与登记证据指纹；旧指纹验证会过期，重新扫描并审查基线说明。
 - migrate-workspace.py 仅创建 migration_required 脚手架；保留旧 YAML，不自动理解转换。遇到任何已有 JSON 目标都拒绝写入。迁移时由 Agent 逐条重建并核对来源与决策，再清除 migration_required、验证及渲染。
 - render-workspace.py 会覆盖生成 Markdown。旧手写 Markdown 先保存在迁移备份中，不能丢弃其中未结构化的决策。
 
@@ -109,3 +117,23 @@ scan 会生成 `.agent-workflow/project-baseline/quality-gates.json`，初始 ga
 > 继续维护 feature-delivery-skill。先读 MAINTAINER.md、ROADMAP.md、CHANGELOG.md、docs/decisions/architecture.md 和 skills/dev/SKILL.md。运行已有测试，核对实现与文档；只实施当前明确授权的下一项，不改变既定原则。完成后更新变更记录、版本和交接状态，报告实际验证及限制。
 
 Git 管理本体；项目 .agent-workflow/ 另行管理。聊天分享链接只是背景，不能替代可运行代码和交接文档。
+
+## 扫描文件保留（0.4.2）
+
+`/dev scan` 由 Agent 执行“创建草稿 → 阅读与更新 → 校验并发布”。正式基线固定一份，内容变化时保存旧版本，默认保留最近 3 份程序管理的历史快照；无变化不创建备份。扫描失败保留旧基线，草稿可继续修改。扫描期间已登记的项目内容或正式基线变化，会拒绝发布过期草稿。
+
+备份中的 `PINNED` 空文件可保护重要快照，受保护版本不计入 3 份上限。旧手工备份、安装备份，以及 PRD、任务、决策和开发记录均不在清理范围。该策略从新版生成的托管备份开始生效，旧备份不会自动减少。
+
+程序接口与恢复步骤见 Skill 内 `core/references/project-baseline.md`。校验通过只证明结构和配置符合要求；分析内容仍需回读证据，不等于已实现完整增量扫描或语义准确性保证。
+
+
+## Git 提交与换机接续（0.4.3）
+
+在业务项目中，Agent 首次使用或采用此规则时运行 Skill 内的 `core/scripts/setup-workflow-git.py <PROJECT>`。它只配置 `.agent-workflow/.gitignore`，不自动提交或上传；已有规则保留，已跟踪的本地文件或上层整目录忽略会提示核对。
+
+- 提交经过审阅的当前基线、共享配置/候选检查，以及需求、任务、决策、追溯与交付结论。
+- 忽略指纹、当次检查选择/原始运行报告、草稿、锁和备份。忽略规则不能取消已有跟踪，也不能清除历史。
+- 原始 PRD/API/设计来源默认忽略，按仓库权限逐项决定共享。规格、intake 引文也可能包含保密内容，需要一起审阅。未随 Git 共享的必要来源须通过授权渠道恢复，不能凭分析摘要冒充原文复核。
+- 换电脑克隆后，先读取已有记录。缺少本机指纹时创建扫描草稿、复核当前证据并发布；有效说明保留，检查命令按新环境选择。脚本不保证免除读取或完整增量扫描。
+
+完整目录规则、精确放行例子和恢复流程见 [Git 协作规则](../skills/dev/core/references/git-sharing.md)。Skill 仓库本身继续忽略整个业务 `.agent-workflow/`，不要将业务项目模板替换到 Skill 仓库根目录。
