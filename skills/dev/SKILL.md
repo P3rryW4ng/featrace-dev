@@ -9,14 +9,14 @@ Use the project root supplied by the user or established by the current workspac
 
 ## Commands
 
-Claude Code: `/dev scan`, `/dev prd <file> --feature FEAT-001`, `/dev develop FEAT-001`.
-Codex: `$dev scan`, `$dev prd <file> --feature FEAT-001`, `$dev develop FEAT-001`.
+Claude Code: `/dev scan`, `/dev prd <file> --feature FEAT-001 [--source <file>]`, `/dev develop FEAT-001`.
+Codex: `$dev scan`, `$dev prd <file> --feature FEAT-001 [--source <file>]`, `$dev develop FEAT-001`.
 Accept plain `dev ...` when this skill is selected. These are agent instructions, not shell commands or a deterministic CLI. Do not promise that plain `dev` always activates the skill.
 
 | Action | Behavior |
 |---|---|
 | scan | Detect profile, scan project, inspect representative code and complete baseline |
-| prd <file> --feature <ID> | Preserve original, extract atomic requirements, tasks, test plan, render and validate draft |
+| prd <file> --feature <ID> [--source <file> ...] | Preserve original, extract atomic requirements, tasks, test plan, render and validate draft |
 | api <file-or-link> --feature <ID> | Preserve new evidence, reconcile data semantics, record affected tasks/code/tests |
 | figma <file-or-link> --feature <ID> | Preserve node references and available exports, reconcile visuals and behavior |
 | develop <ID> | Validate development eligibility, implement slices, update records and evidence |
@@ -37,8 +37,8 @@ Before first use in a business project or adopting Git sharing, read `core/refer
 2. Run `python3 core/scripts/project.py scan-prepare <PROJECT>` for a first baseline or a requested refresh; use `verify <PROJECT>` to check an existing baseline. Read the resulting profile and draft. On a fresh clone, reuse shared notes and review current evidence before publishing a local fingerprint; missing local state does not justify reinitializing feature records. Scanner output is inventory, not proof of architecture understanding.
 3. Android: read `profiles/android/PROFILE.md`. All other stacks: read `profiles/generic/PROFILE.md`. In mixed repositories select the feature's actual target module and record it; don't run a root build merely because a manifest exists.
 4. Read `core/references/project-baseline.md` for scan and verification. Cross-check descriptive docs against actual modules, retain rule scope/exceptions, record coverage status, and register evidence dependencies. Read representative code; fill architecture, conventions and reuse examples with file evidence before business-code changes. Review `.agent-workflow/project-baseline/quality-gates.json` against build files and CI. Keep conditional/template checks in `quality-candidates.json`; `quality-gates.json` holds only selected concrete commands. During scan, edit only `baseline-draft/baseline`; preserve unrelated reviewed scopes. Publish with `project.py scan-publish <PROJECT>` only after review; failed publication keeps the current baseline. Unchanged content creates no backup, changed content retains the latest 3 managed backups. See the baseline reference for draft recovery, pinning and retention. End scan with `project.py validate-gates` (no build execution). An empty selection is not passed.
-5. Create a feature using `bash core/scripts/init-feature.sh <ID> <PRD-FILE> <PROJECT>`. Script preserves source bytes and extension. Interpret Word/PDF through available readers before decomposing; do not pretend binary input is Markdown.
-6. Populate `spec/prd-intake.json` and requirement `source_item_ids` under the PRD analysis contract. Review the original against the spec, then record that review with `core/scripts/review-prd.py`. Empty/missing/stale intake blocks develop/check, including legacy workspaces; draft only warns about incomplete work.
+5. Create a feature using `bash core/scripts/init-feature.sh <ID> <PRIMARY-DOCUMENT-OR-HTML> <PROJECT> [--source <ADDITIONAL-FILE> ...]`. Only one part is required; HTML can be primary. Script preserves source bytes and extension. Interpret Word/PDF through available readers before decomposing; do not pretend binary input is Markdown.
+6. Register and review every supplied part, including observable HTML states and actions. Missing dynamic dependencies or inaccessible interactions remain reading gaps; conflicts between document and interaction are decisions, not silent precedence choices. Populate `spec/prd-intake.json` and requirement `source_item_ids` under the PRD analysis contract. Review the original against the spec, then record that review with `core/scripts/review-prd.py`. Empty/missing/stale intake blocks develop/check, including legacy workspaces; draft only warns about incomplete work.
 7. Run `python3 core/scripts/validate-feature.py --stage draft|develop|check <PROJECT> <ID>` at the corresponding boundary. This is a structural guard, not a substitute for semantic review or quality evidence.
 
 ## Delivery

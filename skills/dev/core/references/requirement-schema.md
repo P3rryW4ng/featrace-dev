@@ -3,7 +3,7 @@
 Each feature is stored at `.agent-workflow/features/<feature-id>/`.
 
 ```text
-sources/                 Immutable original PRD, API, Figma exports and links
+sources/                 Immutable original document/HTML PRD parts, API, Figma exports and links
 spec/prd-intake.json      Reading inventory, source excerpts and coverage review
 spec/prd-analysis.md      Generated reading/coverage view
 spec/requirements.json   Canonical requirement records

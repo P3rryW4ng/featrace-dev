@@ -1,10 +1,14 @@
-# PRD analysis contract (intake v1)
+# PRD analysis contract (intake v1; multi-source extension)
 
 Read for `dev prd`, PRD revisions, and when API/Figma reconciliation changes requirement meaning. This standardizes the analysis process, not the author's document format. Never demand that the product author rewrite a PRD to our template.
 
 ## 1. Reading inventory
 
+A feature may contain only a document, only HTML, or both. Initialize with one primary file and repeat `--source` for additional files. `sources` registers every supplied part; no document or HTML type is mandatory. Preserve all originals in sources/. A linked URL is only a reference until its content is accessible. If HTML depends on CSS, scripts, images or a server, verify those dependencies or record the resulting reading gap; a bare HTML file may not reproduce the interaction.
+
 Preserve the original in sources/. Inventory meaningful sections, tables, figures, notes and referenced attachments as units. Group at a useful granularity; don't create an item for every sentence or formatting character. Record each unit's source path, exact locator, kind and reading status. For external links, retain a reference artifact in sources/ and mark pending/unreadable until actual content has been read; a saved URL is not its contents.
+
+For HTML, inspect the rendered interaction when an authorized browser/runtime is available. Inventory page/state and each relevant action as units. Each HTML source needs interaction units, or an `interaction_scope` explanation when the supplied HTML is genuinely static. A read `kind: interaction` unit records `trigger`, `before`, `after`, `observation` and a locator to the control/state. `observation` states how and where it was reproduced; the script checks presence, not truth. Unavailable dynamic behavior remains pending/unreadable with reason and impact. Static markup, placeholders and example data alone do not prove runtime or business rules. When the same behavior appears in multiple sources, link source items and reconcile scope. A contradiction becomes a pending decision with both references; do not silently choose one.
 
 Use available readers for Word/PDF and inspect relevant images and merged tables. If these are unavailable, record the reason and affected behavior; never treat an absent parser/OCR result as an empty specification. Extraction/OCR text is derived evidence and must link to original page/cell/image locations. Do not silently discard unreadable portions. `inventory_complete` means the Agent checked inventory coverage against the original, not that a parser succeeded.
 
@@ -42,13 +46,14 @@ Run validate-feature.py --stage develop afterwards. Draft allows pending extract
 
 ## Record format
 
-New init creates spec/prd-intake.json with empty units/items. Example (replace all content with actual evidence):
+New init registers supplied sources in spec/prd-intake.json and leaves units/items empty. Legacy intake without a sources array remains readable. Example (replace all content with actual evidence):
 
 ```json
 {
   "version": 1,
   "feature_id": "FEAT-001",
   "inventory_complete": true,
+  "sources": [{"id":"SRC-01","path":"sources/prd-original.md","kind":"document"}],
   "units": [{"id":"U-1","source":"sources/prd-original.md","locator":"§2 paragraph 1","kind":"text","status":"read"}],
   "items": [{
     "id":"S-1","unit_id":"U-1",
@@ -71,4 +76,4 @@ render-workspace.py also generates spec/prd-analysis.md, including unresolved ga
 
 Existing 0.3 workspaces can still be rendered/viewed; draft warns if intake is absent, but develop/check stop until evidence is reconstructed and reviewed. Create the empty template using the Python `new_intake` helper or copy core/assets/prd-intake.json and set feature_id; never rerun init-feature on an existing feature. No business source or existing decision is overwritten automatically.
 
-The validator cannot prove inventory completeness, excerpt fidelity, OCR correctness, kind classification or semantic equivalence. Digests detect local review invalidation, not full source version history. General source version/impact automation remains a later milestone. Full requirement/decision state-schema enforcement remains unfinished.
+The validator requires a reading unit for every registered part, an interaction inventory or static-scope explanation for HTML, and checks observed interaction fields, but cannot discover omitted controls, validate browser observation, or detect semantic conflicts on its own. The validator cannot prove inventory completeness, excerpt fidelity, OCR correctness, kind classification or semantic equivalence. Digests detect local review invalidation, not full source version history. General source version/impact automation remains a later milestone. Full requirement/decision state-schema enforcement remains unfinished.

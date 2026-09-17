@@ -6,7 +6,7 @@ from pathlib import Path
 
 def new_intake(feature_id):
     return {'version': 1, 'feature_id': feature_id, 'inventory_complete': False,
-            'units': [], 'items': [], 'review': {'reviewer': '', 'notes': '', 'digest': ''}}
+            'sources': [], 'units': [], 'items': [], 'review': {'reviewer': '', 'notes': '', 'digest': ''}}
 
 
 def text(value):
@@ -31,6 +31,9 @@ def review_digest(folder, intake, requirements):
     payload = {k: v for k, v in intake.items() if k != 'review'}
     files = {u['source']: hashlib.sha256(source_path(folder, u['source']).read_bytes()).hexdigest()
              for u in intake['units']}
+    if isinstance(intake.get('sources'), list):
+        for row in intake['sources']:
+            files[row['path']] = hashlib.sha256(source_path(folder, row['path']).read_bytes()).hexdigest()
     # Only requirements/evidence semantics matter, not feature progress or task assignment.
     semantic = [{k: v for k, v in r.items() if k not in {'tasks', 'tests'}}
                 for r in requirements['requirements']]
@@ -63,6 +66,38 @@ def validate_intake(folder, req_doc, stage, require_review=True):
         pending('PRD inventory has not been reviewed as complete')
     if not doc['units']:
         pending('PRD inventory is empty')
+    # Legacy intake v1 may omit sources; new workspaces register every supplied part.
+    registered = doc.get('sources')
+    if registered is not None:
+        if not isinstance(registered, list):
+            return errors + ['sources must be an array'], warnings
+        paths, ids = set(), set()
+        for row in registered:
+            if not isinstance(row, dict) or not text(row.get('id')) or not text(row.get('path')) or row.get('kind') not in {'document', 'html'}:
+                errors.append('each source needs id, path and document/html kind'); continue
+            if row['id'] in ids or row['path'] in paths:
+                errors.append('duplicate source id or path')
+            ids.add(row['id']); paths.add(row['path'])
+            try:
+                source_path(folder, row['path'])
+            except (ValueError, OSError) as exc:
+                errors.append(row['id'] + ': ' + str(exc))
+        if not paths:
+            pending('no PRD document or HTML source registered')
+        declared = req_doc.get('feature', {}).get('prd_paths')
+        if declared is not None and (not strings(declared) or len(declared) != len(paths) or set(declared) != paths):
+            errors.append('feature.prd_paths must match registered source paths')
+        if errors:
+            return errors, warnings
+        for source in paths:
+            if not any(isinstance(u, dict) and u.get('source') == source for u in doc['units']):
+                pending('source has no reading unit: ' + source)
+        for row in registered:
+            if row['kind'] == 'html' and not (text(row.get('interaction_scope')) or any(isinstance(u, dict) and u.get('source') == row['path'] and u.get('kind') == 'interaction' for u in doc['units'])):
+                pending('HTML has no interaction inventory or documented static scope: ' + row['path'])
+        for unit in doc['units']:
+            if isinstance(unit, dict) and text(unit.get('source')) and unit['source'] not in paths:
+                errors.append('unit source is not registered: ' + unit['source'])
     units, items = {}, {}
     for kind, entries, target in [('unit', doc['units'], units), ('item', doc['items'], items)]:
         for row in entries:
@@ -90,6 +125,11 @@ def validate_intake(folder, req_doc, stage, require_review=True):
             source_path(folder, unit.get('source'))
         except (ValueError, OSError) as exc:
             errors.append(uid + ': ' + str(exc))
+        if unit.get('kind') == 'interaction' and unit.get('status') == 'read':
+            if not all(text(unit.get(field)) for field in ('trigger', 'before', 'after', 'observation')):
+                errors.append(uid + ': observed interaction needs trigger, before, after and observation')
+            if registered is not None and not any(row.get('path') == unit.get('source') and row.get('kind') == 'html' for row in registered if isinstance(row, dict)):
+                errors.append(uid + ': interaction must refer to registered HTML')
         if unit.get('status') == 'read' and not any(i.get('unit_id') == uid for i in items.values()):
             pending(uid + ': read unit has no extracted item or background disposition')
     for sid, item in items.items():
@@ -169,9 +209,14 @@ def render_intake(folder):
     if not path.exists():
         return
     doc = json.loads(path.read_text())
-    lines = ['# PRD reading and coverage record', '', 'Evidence index, not a second product specification.', '', '## Reading inventory', '']
+    lines = ['# PRD reading and coverage record', '', 'Evidence index, not a second product specification.', '', '## Registered sources', '']
+    for source in doc.get('sources', []):
+        lines.append(f"- {source['id']} [{source['kind']}] {source['path']}")
+    lines += ['', '## Reading inventory', '']
     for u in doc['units']:
         lines += [f"- {u['id']} [{u['status']}] {u['source']} — {u['locator']}", f"  - Reason/impact: {u.get('reason', '')} {u.get('impact', '')}"]
+        if u.get('kind') == 'interaction':
+            lines += [f"  - {u.get('before', '?')} --{u.get('trigger', '?')}--> {u.get('after', '?')}", '  - Observation: ' + u.get('observation', '')]
     lines += ['', '## Source items and coverage', '']
     for i in doc['items']:
         lines += [f"### {i['id']} [{i['kind']}; {i['disposition']}]", '', f"Source unit: {i['unit_id']}", '', i['quote'], '', 'Context: ' + i['context'], 'Related: ' + ', '.join(i.get('related_ids', [])), 'Disposition reason: ' + i.get('reason', ''), '']
