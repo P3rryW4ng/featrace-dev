@@ -13,6 +13,8 @@ decisions.json           Conflicts, user choices, and supersession history
 decisions.md             Generated decision view
 traceability.json        Source → requirement → task → code → test links
 traceability.md          Generated traceability view
+fixes.json               Canonical mismatch/repair records
+fixes.md                 Generated fix history
 delivery-report.md       Quality-gate result and remaining risk
 ```
 
@@ -27,7 +29,7 @@ delivery-report.md       Quality-gate result and remaining risk
 - `assumptions`: unresolved facts. Each must state what evidence would confirm it.
 - `tasks` and `tests`: stable IDs, never prose-only promises.
 
-`requirements.json`, `tasks.json`, `decisions.json`, and `traceability.json` are the editable product workflow records; `spec/prd-intake.json` separately records reading evidence and coverage. Run `render-workspace.py` after editing them; generated Markdown must not become a second source of truth.
+`requirements.json`, `tasks.json`, `decisions.json`, and `traceability.json` are the editable product workflow records; `spec/prd-intake.json` separately records reading evidence and coverage; `fixes.json` records observed mismatches, primary/contributing causes, task description before/after, and regression evidence without duplicating PRD authority. Run `render-workspace.py` after editing them; generated Markdown must not become a second source of truth.
 
 ## Decision format
 

@@ -1,6 +1,6 @@
 ---
 name: dev
-description: Deliver PRD-driven software features with persistent specifications, source reconciliation, tasks, and validation. Use for dev scan/prd/api/figma/develop/check/status requests or staged feature delivery; not isolated coding questions. Android has a bundled adapter; other stacks use evidence-based generic configuration.
+description: Deliver PRD-driven software features with persistent specifications, source reconciliation, tasks, and validation. Use for dev scan/prd/api/figma/develop/fix/check/status requests or staged feature delivery; not isolated coding questions. Android has a bundled adapter; other stacks use evidence-based generic configuration.
 ---
 
 # Feature Delivery
@@ -9,8 +9,8 @@ Use the project root supplied by the user or established by the current workspac
 
 ## Commands
 
-Claude Code: `/dev scan`, `/dev prd <file> --feature FEAT-001 [--source <file>]`, `/dev develop FEAT-001`.
-Codex: `$dev scan`, `$dev prd <file> --feature FEAT-001 [--source <file>]`, `$dev develop FEAT-001`.
+Claude Code: `/dev scan`, `/dev prd <file> --feature FEAT-001 [--source <file>]`, `/dev develop FEAT-001`, `/dev fix FEAT-001 <problem>`.
+Codex: `$dev scan`, `$dev prd <file> --feature FEAT-001 [--source <file>]`, `$dev develop FEAT-001`, `$dev fix FEAT-001 <problem>`.
 Accept plain `dev ...` when this skill is selected. These are agent instructions, not shell commands or a deterministic CLI. Do not promise that plain `dev` always activates the skill.
 
 | Action | Behavior |
@@ -20,6 +20,7 @@ Accept plain `dev ...` when this skill is selected. These are agent instructions
 | api <file-or-link> --feature <ID> | Preserve new evidence, reconcile data semantics, record affected tasks/code/tests |
 | figma <file-or-link> --feature <ID> | Preserve node references and available exports, reconcile visuals and behavior |
 | develop <ID> | Validate development eligibility, implement slices, update records and evidence |
+| fix <ID> <problem> | Register an observed mismatch, investigate cause, repair or reconcile evidence, verify and render fix history |
 | check <ID> | Validate records, execute applicable project checks, report actual results and unmet conditions |
 | status <ID> | Read state and summarize next action; no source or code mutation |
 
@@ -41,6 +42,10 @@ Before first use in a business project or adopting Git sharing, read `core/refer
 6. Register and review every supplied part, including observable HTML states and actions. Missing dynamic dependencies or inaccessible interactions remain reading gaps; conflicts between document and interaction are decisions, not silent precedence choices. Populate `spec/prd-intake.json` and requirement `source_item_ids` under the PRD analysis contract. Review the original against the spec, then record that review with `core/scripts/review-prd.py`. Empty/missing/stale intake blocks develop/check, including legacy workspaces; draft only warns about incomplete work.
 7. Run `python3 core/scripts/validate-feature.py --stage draft|develop|check <PROJECT> <ID>` at the corresponding boundary. This is a structural guard, not a substitute for semantic review or quality evidence.
 
+## Fixes
+
+Read `core/references/fix-workflow.md` for `/dev fix` or any reported effect/requirement mismatch. First run `core/scripts/record-fix.py <PROJECT> <ID> "<problem>"` to create a traceable record in the existing feature. Do not infer missing expected behavior or silently rewrite a PRD. Keep cause unclassified until evidence distinguishes requirement mapping, generated task wording and code behavior; multiple contributing causes can be recorded. Update affected canonical records, then verify the behavior with a regression test or record an explicit waiver. `fixes.json` is editable; `fixes.md` is generated. An open fix warns during develop and blocks feature check. A completed feature with a new report becomes provisional.
+
 ## Delivery
 
 Implement independently testable slices using project conventions. After each slice update canonical JSON and run `python3 core/scripts/render-workspace.py <PROJECT> <ID>`. Use `feature-status.py` for summaries.
@@ -53,4 +58,4 @@ Legacy YAML: `migrate-workspace.py` creates an empty migration scaffold and pres
 
 For API and Figma separately record `present`, `missing`, `unknown`, or `not_applicable` in feature.source_status. Record why a source is not applicable in feature.source_notes. Missing/unknown required evidence permits provisional work only. A feature that needs neither source can be complete if all other conditions pass. No fake API is needed for purely local computation.
 
-Complete requires: active requirements confirmed against evidence; all tasks done; no pending conflicts; all required sources reconciled or justified as not applicable; traceability and test evidence; applicable quality gates actually passed. A manual checklist remains necessary where the validator has documented gaps. If checks cannot run, report unavailable and provisional, never success.
+Complete requires: active requirements confirmed against evidence; all tasks done; no unresolved fixes or pending conflicts; all required sources reconciled or justified as not applicable; traceability and test evidence; applicable quality gates actually passed. A manual checklist remains necessary where the validator has documented gaps. If checks cannot run, report unavailable and provisional, never success.

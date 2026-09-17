@@ -6,6 +6,7 @@ import pathlib
 import sys
 import re
 from prd_intake import validate_intake
+from fixes import validate_fixes
 
 REQUIREMENT_STATES = {"inferred", "confirmed", "blocked", "deprecated"}
 TASK_STATES = {"planned", "in_progress", "blocked", "done"}
@@ -166,6 +167,9 @@ def main():
         intake_errors, intake_warnings = validate_intake(feature_dir, req_doc, args.stage)
         errors.extend(intake_errors)
         warnings.extend(intake_warnings)
+    fix_errors, fix_warnings = validate_fixes(feature_dir, args.feature_id, requirements, tasks, decisions, args.stage)
+    errors.extend(fix_errors)
+    warnings.extend(fix_warnings)
     return report(errors, warnings)
 
 

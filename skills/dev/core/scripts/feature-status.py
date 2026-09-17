@@ -3,6 +3,7 @@
 import json
 import pathlib
 import sys
+from fixes import read_fixes
 
 
 def load(path):
@@ -23,4 +24,7 @@ print("SOURCES: " + ", ".join(f"{key}={value}" for key, value in req["feature"].
 print("REQUIREMENTS: " + ", ".join(f"{key}={value}" for key, value in counts.items()))
 print(f"TASKS: done={done}/{len(tasks)}")
 print("REQUIREMENT_BLOCKERS: present" if counts["blocked"] else "REQUIREMENT_BLOCKERS: none")
+fixes = read_fixes(folder, feature_id).get('fixes', [])
+open_fixes = sum(fix.get('status') != 'verified' for fix in fixes if isinstance(fix, dict))
+print(f"FIXES: unresolved={open_fixes}/{len(fixes)}")
 print("COMPLETION: not evaluated; review decisions, source applicability, tasks and current quality evidence")
