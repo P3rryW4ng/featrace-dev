@@ -96,7 +96,9 @@ feature-delivery-skill/
 
 ## 维护
 
-先读 [MAINTAINER.md](MAINTAINER.md)，运行 `python3 -m unittest discover -s tests -v`。详情见 [使用指南](docs/usage.md)、[路线图](ROADMAP.md)、[架构决策](docs/decisions/architecture.md)。仓库尚未选择开源许可证；私库可先向协作者授权，公开分发前由仓库所有者明确许可条款。
+目标、当前进度、阶段计划、决策和验证资料统称“项目维护文档”，文件分工及阅读入口见 [项目维护总览与交接](MAINTAINER.md)。未来计划与问题处理状态统一见 [开发路线图](ROADMAP.md)。这些仓库文档不随 Skill 安装分发。
+
+维护时先读总览，运行 `python3 -m unittest discover -s tests -v`。详情见 [使用指南](docs/usage.md)、[路线图](ROADMAP.md)、[架构决策](docs/decisions/architecture.md)。仓库尚未选择开源许可证；私库可先向协作者授权，公开分发前由仓库所有者明确许可条款。
 
 扫描文件策略（0.4.2）：固定当前基线、草稿校验后发布、变化才备份、默认保留最近 3 份托管历史。详见使用与迭代指南。
 
