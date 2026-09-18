@@ -26,7 +26,9 @@ quality-gates.json contains only the current explicitly selected, applicable com
 {"selection_reason":"Unit tests for current change; authorized by user request","gates":[{"name":"unit","command":["python3","-m","unittest","discover"],"cwd":".","timeout_seconds":600}]}
 ```
 
-Allowed gate fields: name (unique), command (argument array), cwd (existing project-relative directory), timeout_seconds, purpose, source, selection_reason. Unsupported fields, including when/enabled/required, are errors, not silently ignored. No shell evaluation or environment-variable expansion; unresolved angle-bracket, double-brace or ${...} templates are rejected. Supply resolved literal arguments.
+Allowed gate fields: name (unique), command (argument array), cwd (existing project-relative directory), timeout_seconds, purpose, source, selection_reason, test_ids (optional array of distinct declared test IDs actually executed by that command). Unsupported fields, including when/enabled/required, are errors, not silently ignored. No shell evaluation or environment-variable expansion; unresolved angle-bracket, double-brace or ${...} templates are rejected. Supply resolved literal arguments.
+
+`test_ids` is metadata supplied by the Agent after checking the command selector; the runner cannot prove the assertion matches the tests the tool actually executed. The quality report records the selected IDs with each result. `audit-delivery.py <PROJECT> <FEATURE-ID>` is read-only and compares passed selections and current project snapshot against verified fixes. If a check changes a tracked manifest, Git HEAD or registered evidence while running, the runner reports PROJECT_CHANGED_DURING_CHECK and does not pass. Unregistered source edits remain outside this snapshot.
 
 Empty gates is valid configuration awaiting selection; validate-gates exits 0 with SELECTION_REQUIRED, but check exits 2 and never reports passed. Validate-gates cannot prove that a build task exists or that execution will succeed. Project policy and applicability are Agent responsibilities, not a machine authorization mechanism.
 

@@ -59,12 +59,17 @@ def validate_gates(root, config):
     for gate in config['gates']:
         if not isinstance(gate, dict):
             raise ValueError('gate must be an object')
-        if set(gate) - {'name', 'command', 'cwd', 'timeout_seconds', 'purpose', 'source', 'selection_reason'}:
+        if set(gate) - {'name', 'command', 'cwd', 'timeout_seconds', 'purpose', 'source', 'selection_reason', 'test_ids'}:
             raise ValueError('unsupported gate field: conditions/templates belong in quality-candidates.json')
         name, cmd = gate.get('name'), gate.get('command')
         if not isinstance(name, str) or not name.strip() or name in names:
             raise ValueError('each selected gate needs a unique non-empty name')
         names.add(name)
+        test_ids = gate.get('test_ids', [])
+        if (not isinstance(test_ids, list) or
+                any(not isinstance(value, str) or not value.strip() for value in test_ids) or
+                len(set(test_ids)) != len(test_ids)):
+            raise ValueError('gate test_ids must be unique non-empty text IDs')
         if not isinstance(cmd, list) or not cmd or not all(isinstance(x, str) and x.strip() for x in cmd):
             raise ValueError('gate command must be a non-empty argument array')
         if any(re.search(r'<[^<>]+>|\{\{.*?\}\}|\$\{[^}]+\}', arg) for arg in cmd):
@@ -271,18 +276,22 @@ def main():
         return 0
     if not prepared:
         print('QUALITY_UNAVAILABLE: no selected gates'); return 2
+    before_check = snapshot(root)
     results = []
     for gate, cmd, cwd, timeout in prepared:
         try:
             run = subprocess.run(cmd, cwd=cwd, text=True, capture_output=True, timeout=timeout)
-            result = {'name': gate.get('name', cmd[0]), 'command': cmd, 'returncode': run.returncode, 'status': 'passed' if run.returncode == 0 else 'failed', 'stdout': run.stdout[-12000:], 'stderr': run.stderr[-12000:]}
+            result = {'name': gate.get('name', cmd[0]), 'command': cmd, 'test_ids': gate.get('test_ids', []), 'returncode': run.returncode, 'status': 'passed' if run.returncode == 0 else 'failed', 'stdout': run.stdout[-12000:], 'stderr': run.stderr[-12000:]}
         except (OSError, subprocess.TimeoutExpired) as exc:
-            result = {'name': gate.get('name', cmd[0]), 'command': cmd, 'status': 'unavailable', 'error': str(exc)}
+            result = {'name': gate.get('name', cmd[0]), 'command': cmd, 'test_ids': gate.get('test_ids', []), 'status': 'unavailable', 'error': str(exc)}
         results.append(result)
         print(result['name'] + ': ' + result['status'])
-    report = {'tested_at': datetime.now(timezone.utc).isoformat(), 'project_snapshot': snapshot(root), 'results': results}
+    after_check = snapshot(root)
+    if after_check != before_check:
+        print('PROJECT_CHANGED_DURING_CHECK: results do not certify the final project snapshot')
+    report = {'tested_at': datetime.now(timezone.utc).isoformat(), 'project_snapshot': before_check, 'results': results}
     (base / 'quality-report.json').write_text(json.dumps(report, indent=2) + '\n')
-    return 0 if all(x['status'] == 'passed' for x in results) else 1
+    return 0 if after_check == before_check and all(x['status'] == 'passed' for x in results) else 1
 
 if __name__ == '__main__':
     try:

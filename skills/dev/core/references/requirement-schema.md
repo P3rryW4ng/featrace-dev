@@ -23,13 +23,36 @@ delivery-report.md       Quality-gate result and remaining risk
 - `id`: stable identifier such as `R-012`.
 - `status`: `inferred`, `confirmed`, `blocked`, or `deprecated`.
 - `source_item_ids`: stable references to mapped items in `spec/prd-intake.json`; required for active requirements before development.
-- `sources`: a precise PRD heading, API operation/field, Figma node, or decision ID.
+- `sources`: array of `{type, ref}` objects naming a precise PRD heading, API operation/field, Figma node, or decision ID.
 - `statement`: one testable behavior.
 - `acceptance_criteria`: observable outcomes, including loading, empty, error, and permission states where relevant.
 - `assumptions`: unresolved facts. Each must state what evidence would confirm it.
 - `tasks` and `tests`: stable IDs, never prose-only promises.
 
 `requirements.json`, `tasks.json`, `decisions.json`, and `traceability.json` are the editable product workflow records; `spec/prd-intake.json` separately records reading evidence and coverage; `fixes.json` records observed mismatches, primary/contributing causes, task description before/after, and regression evidence without duplicating PRD authority. Run `render-workspace.py` after editing them; generated Markdown must not become a second source of truth.
+
+## Actual record shapes and state limits (0.4.7)
+
+The files under `core/schemas/` describe only shallow containers. The Python validators are the executable contract. The following fields are the ones most often needed when editing a feature; this list does not claim full JSON Schema enforcement.
+
+- `requirements.json`: `feature.id` must match the folder. Active requirement `status` is one of `inferred`, `confirmed`, `blocked`, `deprecated`. Each requirement needs text `id`, `title`, `statement`; `sources` is a non-empty array of objects with non-empty `type` and `ref` (e.g. `{"type":"prd","ref":"sources/prd-original.html#section-2"}`). `acceptance_criteria`, `tasks`, `tests`, `assumptions` are arrays. Develop/check require non-empty acceptance, task and test arrays for active requirements. Source-item links and review follow `prd-analysis.md`.
+- `tasks.json`: top level `feature_id` and `tasks` array. Each task has an `id`, a `status` of `planned`, `in_progress`, `blocked`, or `done`, and a non-empty `requirement_ids` array naming existing requirements. Check requires a done task to have `test_evidence` or `test_waiver`; the current validator tests presence, not whether the evidence is true or a particular type. Prefer a readable string with the actual run result and code revision.
+- `decisions.json`: top level `feature_id` and `decisions` array. Each decision needs an `id`; `pending` and `blocked` prevent develop/check, and `approved` needs a `chosen` value. Other states and confirmation provenance are not yet fully validated; keep the original user confirmation reference, scope and supersession details and review them manually.
+- `traceability.json`: top level `feature_id` and `links` array. Every link requires an existing `requirement_id`; check requires at least one link for every active requirement. The validator does not fully prove task/code/test reverse links.
+- `fixes.json`: see `fix-workflow.md`. `verification` and `evidence` must be arrays of non-empty strings. `regression_test_ids` is an array of declared test ID strings for verified repairs; `regression_scope_notes` maps selected cross-scope test IDs to non-empty reasons. `closed` uses a `closure` object with `outcome`, `reason` and `evidence`, with further fields per outcome.
+- `spec/prd-intake.json`: each registered source has `id`, a relative `path` under `sources/`, and `kind` (`document` or `html`). Each coverage aspect points to a requirement `statement` or an acceptance criterion using `field: "acceptance_criteria/0"` (zero-based index), with exact `target_text`; the validator intentionally treats changed targets as requiring review. Do not silently refresh `target_text` and leave the review marked verified.
+
+Minimal shape of a task and a PRD source registration; replace IDs and text with actual evidence:
+
+```json
+{"feature_id":"FEAT-001","tasks":[{"id":"T-1","title":"Implement one slice","status":"planned","requirement_ids":["R-1"]}]}
+```
+
+```json
+{"id":"SRC-01","path":"sources/prd-original.html","kind":"html"}
+```
+
+The synthetic fixtures in `tests/intake_helpers.py` and `tests/test_fix_flow.py` exercise these shapes against the actual validators. Their text is test data, not a source of product intent. Unknown or unreadable content remains a gap; changing these fields to satisfy a validator is not a semantic review.
 
 ## Decision format
 
