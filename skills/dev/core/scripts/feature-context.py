@@ -4,6 +4,7 @@ import argparse
 import json
 import pathlib
 import re
+from feature_lifecycle import metadata
 
 
 def describe(root, feature_id):
@@ -19,11 +20,12 @@ def describe(root, feature_id):
         raise ValueError("Feature record ID mismatch")
     if not all(isinstance(feature.get(k), str) for k in ("title", "status")):
         raise ValueError("Feature title/status must be strings")
-    return {"project": str(root), "id": feature_id,
+    modules, archive = metadata(feature)
+    return {"project": str(root), "id": feature_id, "modules": modules, "archived": archive["archived"],
             "title": feature["title"], "status": feature["status"]}
 
 
-def inventory(root):
+def inventory(root, scope="active", module=None):
     base = root / ".agent-workflow" / "features"
     if not base.resolve().is_relative_to(root):
         raise ValueError("Feature directory escapes project")
@@ -32,7 +34,9 @@ def inventory(root):
         for folder in sorted(base.iterdir()):
             if folder.is_dir():
                 try:
-                    rows.append(describe(root, folder.name))
+                    row = describe(root, folder.name)
+                    if (scope == "all" or row["archived"] == (scope == "archived")) and (module is None or module in row["modules"]):
+                        rows.append(row)
                 except (OSError, ValueError) as exc:
                     rows.append({"id": folder.name, "error": str(exc)})
     return rows
@@ -53,13 +57,15 @@ def main():
     parser.add_argument("--feature")
     parser.add_argument("--current")
     parser.add_argument("--current-project")
+    parser.add_argument("--scope", choices=("active", "archived", "all"), default="active")
+    parser.add_argument("--module")
     args = parser.parse_args()
     root = args.project.resolve()
     try:
         if not root.is_dir():
             raise ValueError("Project directory does not exist")
         if args.action == "list":
-            result = {"project": str(root), "features": inventory(root)}
+            result = {"project": str(root), "features": inventory(root, args.scope, args.module)}
         elif args.action == "use":
             if not args.feature:
                 raise ValueError("use requires --feature")

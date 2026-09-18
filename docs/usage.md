@@ -12,7 +12,7 @@
 
 ## 日常工作流
 
-适用版本：0.4.10；最后核对：2026-09-18。下图描述当前 Agent 工作流程；结构校验由脚本辅助，资料理解、冲突判断和最终完成条件仍需 Agent 结合证据核对。
+适用版本：0.4.11；最后核对：2026-09-18。下图描述当前 Agent 工作流程；结构校验由脚本辅助，资料理解、冲突判断和最终完成条件仍需 Agent 结合证据核对。
 
 ```mermaid
 flowchart TD
@@ -47,6 +47,10 @@ flowchart TD
     O -->|通过| R{"完成条件全部满足？"}
     R -->|否| Q
     R -->|是| S["complete：生成交付报告<br/>记录本次验证证据"]
+    S --> AR["archive：复核已验收版本与交付依据<br/>原地标记归档，保留历史，活动列表隐藏"]
+    AR --> HIST["list --archived / --all --module：查看相关历史"]
+    HIST --> RES["继续原需求：restore 后工作<br/>新需求：新建 ID 并引用相关历史"]
+    RES --> SEL
     Q -->|补齐环境或检查配置| N
     T["任意阶段：新 PRD / API / Figma<br/>或需求修订到来"] --> U["保留新版本来源，逐项对齐<br/>分析受影响需求、代码和测试"]
     U --> V{"一手来源互相矛盾？"}
@@ -97,6 +101,21 @@ flowchart TD
 新建仍用 `/dev prd /path/to/prd.md --feature FEAT-002`：完成分析、渲染和 draft 校验后自动选中；失败或 ID 已存在时保留旧选择，已有内容不覆盖。`use` 只选择已有需求，不创建需求。切换时摘要上一需求未完成事项，并显示新需求的名称、状态和下一步。
 
 当前选择仅保存在当前会话、当前项目的上下文中，不写共享指针；新会话或选择丢失时重新选择。每次操作显示项目、ID、名称并校验记录。显式 ID 只对该次命令生效，不改变默认选择。底层脚本仍传明确 ID；多会话隔离依赖 Agent 遵守会话范围，并非主机插件提供的持久会话状态。`scan`/`list` 不需选需求，`status` 不会暗中切换，`use` 不切 Git 分支。详见[选择规则](../skills/dev/core/references/feature-selection.md)。
+
+### 需求归档与按模块查找
+
+```text
+/dev classify FEAT-001 --module wallet --module identity
+/dev archive FEAT-001
+/dev list
+/dev list --archived
+/dev list --all --module wallet
+/dev restore FEAT-001
+```
+
+归档仅适用于已完成并有真实交付依据的需求。Agent 核对验收报告及代码版本后登记；原目录、原文、修复、决策和证据保留。默认 list 显示未归档需求，历史按需读取；不会为了归档扫描全项目。分类为多选标签，重复 classify 会替换该需求的标签集合，`--clear-modules` 可清空；未分类需求仍在普通列表中。
+
+归档状态与 complete 独立，恢复不改历史验收；继续开发、修复或澄清前恢复。只读历史查看无需恢复，当前会话选择也不会被归档自动替换。模块标签只是查找入口，相关实现细节仍须核对当前代码与测试。暂不提供压缩删除、模块当前行为索引、规则自动取代或增量扫描保证。详见[归档规范](../skills/dev/core/references/feature-archive.md)。
 
 ### 需求疑问、补充与影响分析
 

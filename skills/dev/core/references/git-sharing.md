@@ -11,7 +11,7 @@ A business repository may share reviewed current baselines and feature records w
 | `.agent-workflow/.gitignore`, shareable `config.yaml` | Track after review |
 | Current inventory, architecture, conventions, examples, coverage and evidence registry | Track after review; use project-relative evidence paths |
 | `quality-candidates.json` | Track shareable templates and rationale |
-| Feature requirements/intake, tasks, decisions, traceability, fixes.json/fixes.md, generated review views and curated delivery conclusions | Track together after content review |
+| Feature requirements/intake (including module labels and archive history), tasks, decisions, traceability, fixes.json/fixes.md, generated review views and curated delivery conclusions | Track together after content review |
 | `fingerprint.json`, selected `quality-gates.json`, raw `quality-report.json` | Ignore: machine/revision-specific state and raw execution output |
 | Draft, managed/manual scan backups, lock, recovery and scratch directories | Ignore; local recovery only |
 | `features/*/sources/**` original PRD/API/design artifacts | Ignore by default until repository access and sharing permission are established |

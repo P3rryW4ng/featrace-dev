@@ -4,6 +4,7 @@ import json
 import pathlib
 import sys
 from prd_intake import render_intake
+from feature_lifecycle import metadata
 from fixes import render_fixes
 from clarifications import render_decisions
 
@@ -22,6 +23,8 @@ def main():
     links = load(feature_dir / "traceability.json").get("links", [])
     feature = req_doc["feature"]
     spec = [f"# {feature['id']} — {feature.get('title') or 'Untitled feature'}", "", f"Status: {feature.get('status', 'drafted')}", ""]
+    modules, archive = metadata(feature)
+    spec += ["Archived: " + str(archive["archived"]), "Modules: " + (", ".join(modules) or "unclassified"), ""]
     for item in req_doc.get("requirements", []):
         spec += [f"## {item.get('id', '?')} — {item.get('title', '')}", "", f"- Status: {item.get('status', '')}", f"- Statement: {item.get('statement', '')}", f"- Sources: {', '.join(s.get('ref', '') for s in item.get('sources', []))}", f"- Acceptance: {'; '.join(item.get('acceptance_criteria', []))}", f"- Tasks: {', '.join(item.get('tasks', []))}", f"- Tests: {', '.join(item.get('tests', []))}", ""]
     (feature_dir / "spec" / "spec.md").write_text("\n".join(spec))

@@ -6,6 +6,7 @@ import pathlib
 import sys
 import re
 from prd_intake import validate_intake
+from feature_lifecycle import metadata, require_active
 from fixes import validate_fixes
 from clarifications import validate_clarifications
 
@@ -50,6 +51,12 @@ def main():
     feature = req_doc.get("feature", {})
     if not isinstance(feature, dict):
         return report(["feature must be an object"], [])
+    try:
+        metadata(feature)
+        if args.stage in {"develop", "check"}:
+            require_active(feature)
+    except ValueError as exc:
+        return report([str(exc)], warnings)
     if feature.get("id") != args.feature_id:
         errors.append("feature.id must match the feature directory")
     if not isinstance(feature.get("source_status"), dict):

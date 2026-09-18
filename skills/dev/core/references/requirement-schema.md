@@ -72,3 +72,10 @@ For clarification decisions introduced in 0.4.8, the opt-in `clarification` fiel
 ```
 
 Never delete a decision. Mark it superseded and link the replacement when a later decision changes it.
+
+
+## Optional module and archive metadata (0.4.11)
+
+`feature.modules` is a unique array of nonempty, trimmed module labels; absent means unclassified. `feature.archive` is optional (absent means active) with `{archived: boolean, history: [...]}`. History alternates archive and restore events. Every event has action, at (UTC timestamp), reason; archive additionally records revision, feature-relative evidence report path and evidence_sha256. It preserves the supplied historical delivery revision, not necessarily current HEAD. `feature_lifecycle.py` validates metadata shape and state/history agreement; timestamps and revision truth remain evidence checks by the Agent.
+
+Only `feature-archive.py` changes archive metadata in normal use. Completion status stays independent; archive does not set complete, restoration does not erase old acceptance. Optional metadata does not affect the PRD semantic review digest. Generated spec.md and feature-status show archive state/module labels. See [archive rules](feature-archive.md) for record checks, manual acceptance review and shared Git behavior.

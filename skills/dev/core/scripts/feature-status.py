@@ -3,6 +3,7 @@
 import json
 import pathlib
 import sys
+from feature_lifecycle import metadata
 from fixes import read_fixes, TERMINAL_STATUSES
 
 
@@ -19,7 +20,10 @@ tasks = load(folder / "tasks.json").get("tasks", [])
 requirements = req.get("requirements", [])
 counts = {state: sum(item.get("status") == state for item in requirements) for state in ("inferred", "confirmed", "blocked", "deprecated")}
 done = sum(task.get("status") == "done" for task in tasks)
+modules, archive = metadata(req["feature"])
 print(f"FEATURE: {feature_id}")
+print("ARCHIVED: " + str(archive["archived"]))
+print("MODULES: " + (", ".join(modules) or "unclassified"))
 print("SOURCES: " + ", ".join(f"{key}={value}" for key, value in req["feature"].get("source_status", {}).items()))
 print("REQUIREMENTS: " + ", ".join(f"{key}={value}" for key, value in counts.items()))
 print(f"TASKS: done={done}/{len(tasks)}")

@@ -7,6 +7,7 @@ import tempfile
 import unittest
 
 SCRIPTS = pathlib.Path(__file__).resolve().parents[1] / "skills/dev/core/scripts"
+sys.path.insert(0, str(SCRIPTS))
 spec = importlib.util.spec_from_file_location("feature_context", SCRIPTS / "feature-context.py")
 ctx = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(ctx)

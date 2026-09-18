@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Register an unanswered clarification without changing product meaning or code."""
+from feature_lifecycle import require_active
 import argparse
 from datetime import datetime, timezone
 import json
@@ -24,6 +25,7 @@ def main():
         raise ValueError('feature record does not match requested ID')
     if not isinstance(doc, dict) or doc.get('feature_id') != args.feature_id or not isinstance(doc.get('decisions'), list):
         raise ValueError('invalid decisions.json; preserve it for manual repair')
+    require_active(req['feature'])
     decisions = doc['decisions']
     ids = [d.get('id') for d in decisions if isinstance(d, dict)]
     if len(ids) != len(decisions) or any(not isinstance(i, str) or not i.strip() for i in ids) or len(set(ids)) != len(ids):

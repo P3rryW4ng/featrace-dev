@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Register a reported mismatch in an existing feature; classification follows investigation."""
+from feature_lifecycle import require_active
 import argparse
 from datetime import datetime, timezone
 import json
@@ -24,6 +25,7 @@ def main():
     requirements = json.loads((folder / 'spec/requirements.json').read_text())
     if requirements.get('feature', {}).get('id') != args.feature_id:
         raise ValueError('feature record does not match requested ID')
+    require_active(requirements['feature'])
     doc = read_fixes(folder, args.feature_id)
     if not isinstance(doc, dict) or doc.get('feature_id') != args.feature_id or not isinstance(doc.get('fixes'), list):
         raise ValueError('invalid fixes.json; preserve it for manual repair')

@@ -1,6 +1,6 @@
 ---
 name: dev
-description: Deliver PRD-driven software features with persistent specifications, source reconciliation, tasks, and validation. Use for dev list/use/scan/prd/api/figma/develop/clarify/fix/check/status requests or staged feature delivery; not isolated coding questions. Android has a bundled adapter; other stacks use evidence-based generic configuration.
+description: Deliver PRD-driven software features with persistent specifications, source reconciliation, tasks, and validation. Use for dev archive/restore/classify/list/use/scan/prd/api/figma/develop/clarify/fix/check/status requests or staged feature delivery; not isolated coding questions. Android has a bundled adapter; other stacks use evidence-based generic configuration.
 ---
 
 # Feature Delivery
@@ -15,7 +15,10 @@ Accept plain `dev ...` when this skill is selected. These are agent instructions
 
 | Action | Behavior |
 |---|---|
-| list | List existing features without selecting or creating one |
+| list [--archived / --all] [--module <label>] | List active features by default; optionally include history or filter modules |
+| archive [ID] | Archive accepted complete features in place after checking delivery evidence |
+| restore [ID] | Restore an archived feature to the active list, preserving delivery history |
+| classify [ID] --module <label> ... | Set module labels for lookup; --clear-modules removes labels |
 | use <ID> | Validate and select an existing feature for this conversation and project |
 | scan | Detect profile, scan project, inspect representative code and complete baseline |
 | prd <file> --feature <ID> [--source <file> ...] | Preserve original, extract atomic requirements, tasks, test plan, render and validate draft |
@@ -28,6 +31,10 @@ Accept plain `dev ...` when this skill is selected. These are agent instructions
 | status [ID] | Read state and summarize next action; no source or code mutation |
 
 For list/use, creation, and feature-scoped commands read `core/references/feature-selection.md`. IDs may be omitted after a successful selection in this conversation and project. Validate the target with `feature-context.py` and display project/ID/title before work; explicit IDs override only that invocation. Never infer a default in a new or uncertain context. Successful new PRD creation selects the new feature after draft validation; failed creation or an existing ID preserves the previous selection. Ask for an inaccessible source; never infer its contents. Online API/Figma retrieval requires an available authorized connector or supplied export; this package does not install connectors.
+
+## Archive and history
+
+Read `core/references/feature-archive.md` for archive/restore/classify and historical lookup. Re-read archive metadata before feature work. Archived records remain readable; restore before further development, checks, fixes, clarifications or source/spec edits. Default list excludes archived features; archive is independent of completion and preserves all evidence. Use module tags to locate relevant history, then verify current code; tags are not a current-behavior index.
 
 ## Entry and profile selection
 

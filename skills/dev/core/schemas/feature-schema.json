@@ -2,9 +2,49 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Feature requirements",
   "type": "object",
-  "required": ["feature", "requirements"],
+  "required": [
+    "feature",
+    "requirements"
+  ],
   "properties": {
-    "feature": {"type": "object", "required": ["id", "status", "source_status"]},
-    "requirements": {"type": "array"}
+    "feature": {
+      "type": "object",
+      "required": [
+        "id",
+        "status",
+        "source_status"
+      ],
+      "properties": {
+        "modules": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "archive": {
+          "type": "object",
+          "required": [
+            "archived",
+            "history"
+          ],
+          "properties": {
+            "archived": {
+              "type": "boolean"
+            },
+            "history": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      }
+    },
+    "requirements": {
+      "type": "array"
+    }
   }
 }

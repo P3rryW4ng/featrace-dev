@@ -2,7 +2,7 @@
 
 把 PRD 转换为可追溯的需求、开发任务和验证记录，支持后补 API / Figma、冲突决策和持续迭代。
 
-当前源码版本 **0.4.10**：通用工作流 + Android 适配 + Generic 适配。iOS/Web/后端可用通用流程，但没有专属自动化适配器。此工具由 Agent 执行需求理解和编码，脚本负责部分确定性检查；不能保证零遗漏或零 bug。
+当前源码版本 **0.4.11**：通用工作流 + Android 适配 + Generic 适配。iOS/Web/后端可用通用流程，但没有专属自动化适配器。此工具由 Agent 执行需求理解和编码，脚本负责部分确定性检查；不能保证零遗漏或零 bug。
 
 ## 最快开始
 
@@ -29,6 +29,9 @@ python3 scripts/install.py --agent codex
 | 场景 | Claude Code | Codex |
 |---|---|---|
 | 需求列表 | `/dev list` | `$dev list` |
+| 查看归档 | `/dev list --archived` | `$dev list --archived` |
+| 归档／恢复 | `/dev archive FEAT-001` / `/dev restore FEAT-001` | `$dev archive FEAT-001` / `$dev restore FEAT-001` |
+| 模块分类 | `/dev classify FEAT-001 --module wallet` | `$dev classify FEAT-001 --module wallet` |
 | 切换需求 | `/dev use FEAT-001` | `$dev use FEAT-001` |
 | 扫描项目 | `/dev scan` | `$dev scan` |
 | 拆解 PRD | `/dev prd /路径/需求.md --feature FEAT-001` | `$dev prd /路径/需求.md --feature FEAT-001` |
@@ -39,6 +42,8 @@ python3 scripts/install.py --agent codex
 | 自测检查 | `/dev check FEAT-001` | `$dev check FEAT-001` |
 
 成功创建 PRD 后自动选中该需求；或用 `use` 选择已有需求。同一会话、同一项目内，后续可省略 ID，例如 `/dev develop`、`/dev fix 问题描述`。新会话重新选择；显式 ID 仅覆盖本次调用。选择保存在 Agent 会话上下文，不写入共享文件。
+
+归档保留原目录与历史证据，仅从默认活动列表隐藏；`/dev list --all --module wallet` 可按模块找历史。归档需完成状态与交付依据，继续修改前恢复。归档不压缩文件，也不代表模块现状已自动整理。
 
 `clarify` 将影响需求或验收的疑问记入现有决策文件，先调查、再确认并同步；普通解释不强制登记。已观察到效果不符用 `fix`，两个入口可共享决策。普通对话留痕依赖 Skill 已加载和 Agent 识别，显式命令更可靠。
 
