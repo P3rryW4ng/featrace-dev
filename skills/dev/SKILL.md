@@ -1,6 +1,6 @@
 ---
 name: dev
-description: Deliver PRD-driven software features with persistent specifications, source reconciliation, tasks, and validation. Use for dev scan/prd/api/figma/develop/fix/check/status requests or staged feature delivery; not isolated coding questions. Android has a bundled adapter; other stacks use evidence-based generic configuration.
+description: Deliver PRD-driven software features with persistent specifications, source reconciliation, tasks, and validation. Use for dev scan/prd/api/figma/develop/clarify/fix/check/status requests or staged feature delivery; not isolated coding questions. Android has a bundled adapter; other stacks use evidence-based generic configuration.
 ---
 
 # Feature Delivery
@@ -20,6 +20,7 @@ Accept plain `dev ...` when this skill is selected. These are agent instructions
 | api <file-or-link> --feature <ID> | Preserve new evidence, reconcile data semantics, record affected tasks/code/tests |
 | figma <file-or-link> --feature <ID> | Preserve node references and available exports, reconcile visuals and behavior |
 | develop <ID> | Validate development eligibility, implement slices, update records and evidence |
+| clarify <ID> <question-or-proposal> | Record a pending decision, investigate existing behavior and impact, resolve and track application |
 | fix <ID> <problem> | Register an observed mismatch, investigate cause, repair or reconcile evidence, verify and render fix history |
 | check <ID> | Validate records, execute applicable project checks, report actual results and unmet conditions |
 | status <ID> | Read state and summarize next action; no source or code mutation |
@@ -41,6 +42,10 @@ Before first use in a business project or adopting Git sharing, read `core/refer
 5. Create a feature using `bash core/scripts/init-feature.sh <ID> <PRIMARY-DOCUMENT-OR-HTML> <PROJECT> [--source <ADDITIONAL-FILE> ...]`. Only one part is required; HTML can be primary. Script preserves source bytes and extension. Interpret Word/PDF through available readers before decomposing; do not pretend binary input is Markdown.
 6. Register and review every supplied part, including observable HTML states and actions. Missing dynamic dependencies or inaccessible interactions remain reading gaps; conflicts between document and interaction are decisions, not silent precedence choices. Populate `spec/prd-intake.json` and requirement `source_item_ids` under the PRD analysis contract. Review the original against the spec, then record that review with `core/scripts/review-prd.py`. Empty/missing/stale intake blocks develop/check, including legacy workspaces; draft only warns about incomplete work.
 7. Run `python3 core/scripts/validate-feature.py --stage draft|develop|check <PROJECT> <ID>` at the corresponding boundary. This is a structural guard, not a substitute for semantic review or quality evidence.
+
+## Clarifications
+
+Read `core/references/clarify-workflow.md` for `/dev clarify <ID> <question-or-proposal>` (Codex: `$dev clarify`) or material requirement doubts discovered in ordinary conversation while this Skill is active. Persist them in existing `decisions.json` with `record-clarification.py`, return the D-number, investigate sources and existing behavior, and distinguish a confirmed answer from its application. Reuse linked decisions from fixes; pure explanations need no new record. Honor no-writing requests; analysis alone does not authorize business-code changes. Pending choices retain existing develop/check blocking; approved but unapplied clarifications block check. Source interpretation, impact discovery and evidence truth remain Agent responsibilities.
 
 ## Fixes
 

@@ -2,7 +2,7 @@
 
 把 PRD 转换为可追溯的需求、开发任务和验证记录，支持后补 API / Figma、冲突决策和持续迭代。
 
-当前源码版本 **0.4.7**：通用工作流 + Android 适配 + Generic 适配。iOS/Web/后端可用通用流程，但没有专属自动化适配器。此工具由 Agent 执行需求理解和编码，脚本负责部分确定性检查；不能保证零遗漏或零 bug。
+当前源码版本 **0.4.8**：通用工作流 + Android 适配 + Generic 适配。iOS/Web/后端可用通用流程，但没有专属自动化适配器。此工具由 Agent 执行需求理解和编码，脚本负责部分确定性检查；不能保证零遗漏或零 bug。
 
 ## 最快开始
 
@@ -31,9 +31,12 @@ python3 scripts/install.py --agent codex
 | 扫描项目 | `/dev scan` | `$dev scan` |
 | 拆解 PRD | `/dev prd /路径/需求.md --feature FEAT-001` | `$dev prd /路径/需求.md --feature FEAT-001` |
 | 开发 | `/dev develop FEAT-001` | `$dev develop FEAT-001` |
+| 澄清与补充 | `/dev clarify FEAT-001 疑问或提议` | `$dev clarify FEAT-001 疑问或提议` |
 | 修复偏差 | `/dev fix FEAT-001 问题描述` | `$dev fix FEAT-001 问题描述` |
 | 查看进度 | `/dev status FEAT-001` | `$dev status FEAT-001` |
 | 自测检查 | `/dev check FEAT-001` | `$dev check FEAT-001` |
+
+`clarify` 将影响需求或验收的疑问记入现有决策文件，先调查、再确认并同步；普通解释不强制登记。已观察到效果不符用 `fix`，两个入口可共享决策。普通对话留痕依赖 Skill 已加载和 Agent 识别，显式命令更可靠。
 
 补接口：`/dev api /路径/api.yaml --feature FEAT-001`；补设计：`/dev figma <链接或导出文件> --feature FEAT-001`。Codex 替换开头为 `$dev`。这些输入发给 Agent，不是在终端运行的命令。在线资料需要已有连接器或可读取的导出文件。
 

@@ -54,6 +54,8 @@ Minimal shape of a task and a PRD source registration; replace IDs and text with
 
 The synthetic fixtures in `tests/intake_helpers.py` and `tests/test_fix_flow.py` exercise these shapes against the actual validators. Their text is test data, not a source of product intent. Unknown or unreadable content remains a gap; changing these fields to satisfy a validator is not a semantic review.
 
+For clarification decisions introduced in 0.4.8, the opt-in `clarification` fields and application checks are documented in [clarify-workflow.md](clarify-workflow.md). Legacy decisions are not automatically migrated.
+
 ## Decision format
 
 ```md

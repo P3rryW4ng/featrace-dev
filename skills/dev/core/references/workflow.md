@@ -14,3 +14,5 @@
 - Generate a test plan and actual evidence appropriate to risks; a test ID is not proof the test exists or passed. Configuration and scripts do not guarantee low bug rates.
 
 - Follow `git-sharing.md` before sharing workspace records. Ignored original sources must be restored through an authorized channel on another machine; missing evidence cannot be treated as reviewed or made not_applicable solely to pass validation.
+
+For material requirement questions/proposals, use `clarify` and read `clarify-workflow.md`; share decisions with fixes. Approved answers and application evidence are distinct; do not silently treat discussion as implementation authorization.

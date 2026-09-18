@@ -5,6 +5,7 @@ import pathlib
 import sys
 from prd_intake import render_intake
 from fixes import render_fixes
+from clarifications import render_decisions
 
 
 def load(path):
@@ -25,7 +26,7 @@ def main():
         spec += [f"## {item.get('id', '?')} — {item.get('title', '')}", "", f"- Status: {item.get('status', '')}", f"- Statement: {item.get('statement', '')}", f"- Sources: {', '.join(s.get('ref', '') for s in item.get('sources', []))}", f"- Acceptance: {'; '.join(item.get('acceptance_criteria', []))}", f"- Tasks: {', '.join(item.get('tasks', []))}", f"- Tests: {', '.join(item.get('tests', []))}", ""]
     (feature_dir / "spec" / "spec.md").write_text("\n".join(spec))
     (feature_dir / "tasks.md").write_text("# Tasks\n\n" + "\n".join(f"- {t.get('id', '?')} [{t.get('status', '')}] {t.get('title', '')}" for t in tasks) + "\n")
-    (feature_dir / "decisions.md").write_text("# Decisions\n\n" + "\n".join(f"## {d.get('id', '?')}\n\n- Status: {d.get('status', '')}\n- Chosen: {d.get('chosen', 'pending')}\n" for d in decisions))
+    render_decisions(feature_dir, decisions)
     (feature_dir / "traceability.md").write_text("# Traceability\n\n" + "\n".join(f"- {x.get('requirement_id', '?')} → {x.get('task_id', '?')} → {', '.join(x.get('tests', []))}" for x in links) + "\n")
     render_intake(feature_dir)
     render_fixes(feature_dir, sys.argv[2])

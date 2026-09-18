@@ -7,6 +7,7 @@ import sys
 import re
 from prd_intake import validate_intake
 from fixes import validate_fixes
+from clarifications import validate_clarifications
 
 REQUIREMENT_STATES = {"inferred", "confirmed", "blocked", "deprecated"}
 TASK_STATES = {"planned", "in_progress", "blocked", "done"}
@@ -151,6 +152,9 @@ def main():
             errors.append("unresolved decision: " + str(decision.get("id")))
         if decision.get("status") == "approved" and not decision.get("chosen"):
             errors.append(f"{decision.get('id')} is approved but has no chosen option")
+    clarification_errors, clarification_warnings = validate_clarifications(decisions, args.stage)
+    errors.extend(clarification_errors)
+    warnings.extend(clarification_warnings)
     for link in links:
         if not isinstance(link, dict) or not link.get("requirement_id"):
             errors.append("each traceability link needs requirement_id")
