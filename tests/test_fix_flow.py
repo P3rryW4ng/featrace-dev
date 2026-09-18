@@ -131,4 +131,113 @@ class FixFlowTests(unittest.TestCase):
     def test_recurrence_creates_new_id(self):
         item=self.resolved();self.assertEqual(item['id'],'FIX-001')
         self.assertIn('FIX_RECORDED: FIX-002',self.record())
+
+    def check_fixes(self, requirements=None, tasks=None):
+        from fixes import validate_fixes
+        return validate_fixes(self.folder, 'FEAT-001',
+                              requirements or self.req['requirements'],
+                              tasks or [{'id': 'T-1', 'requirement_ids': ['R-1']}], [], 'check')[0]
+
+    def closed_report(self, outcome='not_a_defect'):
+        self.record()
+        item=self.fix()['fixes'][0]
+        item.update(status='closed', expected='uppercase', actual='uppercase',
+                    source_refs=['sources/prd-original.txt'],
+                    closure={'outcome':outcome, 'reason':'behavior matches the confirmed source',
+                             'evidence':['observed ABC for input abc']})
+        self.save_fix(item)
+        return item
+
+    def test_unrelated_regression_rejected_unless_coverage_explained(self):
+        item=self.resolved()
+        reqs=self.req['requirements']+[{'id':'R-2','tests':['UT-2']}]
+        item['regression_test_ids']=['UT-2'];item['regression_waiver']='not a bypass'
+        self.save_fix(item)
+        self.assertTrue(any('outside affected' in e for e in self.check_fixes(reqs)))
+        item['regression_scope_notes']={'UT-2':'shared end-to-end flow exercises the R-1 return path'}
+        self.save_fix(item)
+        self.assertEqual(self.check_fixes(reqs),[])
+        self.run_script('render-workspace.py',self.root,'FEAT-001')
+        self.assertIn('shared end-to-end flow', (self.folder/'fixes.md').read_text())
+
+    def test_task_linked_regression_is_in_scope(self):
+        item=self.resolved();item['requirement_ids']=[];item['scope_reason']='task owns shared infrastructure'
+        self.save_fix(item)
+        self.assertEqual(self.check_fixes(),[])
+
+    def test_invalid_cross_scope_notes_and_unknown_tests_rejected(self):
+        item=self.resolved()
+        for notes in ([], {'UT-1':''}, {'UNSELECTED':'stale reason'}):
+            with self.subTest(notes=notes):
+                item['regression_scope_notes']=notes;self.save_fix(item)
+                self.assertTrue(any('regression_scope_notes' in e for e in self.check_fixes()))
+        item['regression_test_ids']=['UNKNOWN'];item['regression_scope_notes']={'UNKNOWN':'claimed shared coverage'}
+        self.save_fix(item)
+        self.assertTrue(any('declared requirement tests' in e for e in self.check_fixes()))
+
+    def test_not_a_defect_closes_without_claiming_repair(self):
+        before=(self.folder/'spec/requirements.json').read_bytes()
+        self.closed_report()
+        self.run_script('validate-feature.py','--stage','check',self.root,'FEAT-001')
+        status=self.run_script('feature-status.py',self.root,'FEAT-001')
+        self.assertIn('unresolved=0/1',status)
+        self.assertIn('recorded_verified=0, recorded_closed=1',status)
+        self.run_script('render-workspace.py',self.root,'FEAT-001')
+        self.assertIn('Closure outcome: not_a_defect',(self.folder/'fixes.md').read_text())
+        self.assertEqual(before,(self.folder/'spec/requirements.json').read_bytes())
+        self.assertIn('FIX_RECORDED: FIX-002',self.record())
+
+    def test_closure_requires_reason_evidence_and_supported_outcome(self):
+        item=self.closed_report()
+        for closure in (None, {}, {'outcome':'not_a_defect','reason':'why','evidence':[]},
+                        {'outcome':'not_a_defect','reason':'','evidence':['observed']},
+                        {'outcome':'unreproducible','reason':'no repro','evidence':['tried once']}):
+            with self.subTest(closure=closure):
+                item['closure']=closure;self.save_fix(item)
+                self.assertTrue(self.check_fixes())
+
+    def test_not_a_defect_needs_expectation_and_authority(self):
+        item=self.closed_report();item['source_refs']=[];self.save_fix(item)
+        self.assertTrue(any('source or approved' in e for e in self.check_fixes()))
+        item['source_refs']=['sources/prd-original.txt'];item['expected']='';self.save_fix(item)
+        self.assertTrue(any('expected and actual' in e for e in self.check_fixes()))
+
+    def test_withdrawal_requires_confirmed_decision(self):
+        item=self.closed_report('withdrawn');self.save_fix(item)
+        self.run_script('validate-feature.py','--stage','check',self.root,'FEAT-001',expected=1)
+        self.write('decisions.json',{'feature_id':'FEAT-001','decisions':[{'id':'D-1','status':'approved','chosen':'withdraw this mistaken report'}]})
+        item['decision_ids']=['D-1'];item['closure']['confirmation_ref']='existing user confirmation of withdrawal'
+        self.save_fix(item)
+        self.run_script('validate-feature.py','--stage','check',self.root,'FEAT-001')
+        item['closure']['confirmation_ref']='';self.save_fix(item)
+        self.run_script('validate-feature.py','--stage','check',self.root,'FEAT-001',expected=1)
+
+    def test_duplicate_does_not_hide_unresolved_original(self):
+        self.record();original=self.fix()['fixes'][0]
+        duplicate=dict(original,id='FIX-002',status='closed',description='same observation in another report',
+                       closure={'outcome':'duplicate','reason':'same cause and reproduction',
+                                'evidence':['same input and observed output'],'duplicate_of':'FIX-001'})
+        self.write('fixes.json',{'feature_id':'FEAT-001','fixes':[original,duplicate]})
+        errors=self.check_fixes()
+        self.assertEqual(errors,['FIX-001: unresolved fix blocks feature check'])
+        self.assertIn('unresolved=1/2',self.run_script('feature-status.py',self.root,'FEAT-001'))
+        original=self.resolved()
+        self.write('fixes.json',{'feature_id':'FEAT-001','fixes':[original,duplicate]})
+        self.run_script('validate-feature.py','--stage','check',self.root,'FEAT-001')
+
+    def test_duplicate_rejects_missing_self_and_chained_targets(self):
+        item=self.closed_report('duplicate')
+        for target in ('FIX-999','FIX-001',None):
+            item['closure']['duplicate_of']=target;self.save_fix(item)
+            self.assertTrue(any('another existing' in e for e in self.check_fixes()))
+        other=dict(item,id='FIX-002',closure=dict(item['closure'],duplicate_of='FIX-001'))
+        item['closure']['duplicate_of']='FIX-002'
+        self.write('fixes.json',{'feature_id':'FEAT-001','fixes':[item,other]})
+        self.assertTrue(any('directly to the original' in e for e in self.check_fixes()))
+
+    def test_closure_does_not_restore_complete_automatically(self):
+        self.req['feature']['status']='complete';self.write('spec/requirements.json',self.req)
+        self.closed_report()
+        self.run_script('validate-feature.py','--stage','check',self.root,'FEAT-001')
+        self.assertEqual(json.loads((self.folder/'spec/requirements.json').read_text())['feature']['status'],'provisional')
 if __name__=='__main__': unittest.main()

@@ -6,7 +6,7 @@ import json
 from pathlib import Path
 import re
 import sys
-from fixes import read_fixes, render_fixes
+from fixes import read_fixes, render_fixes, TERMINAL_STATUSES
 
 
 def main():
@@ -28,7 +28,7 @@ def main():
     if not isinstance(doc, dict) or doc.get('feature_id') != args.feature_id or not isinstance(doc.get('fixes'), list):
         raise ValueError('invalid fixes.json; preserve it for manual repair')
     for fix in doc['fixes']:
-        if isinstance(fix, dict) and fix.get('description') == args.description and fix.get('status') != 'verified':
+        if isinstance(fix, dict) and fix.get('description') == args.description and fix.get('status') not in TERMINAL_STATUSES:
             print('FIX_ALREADY_RECORDED: ' + str(fix.get('id'))); return 0
     numbers = [int(fix['id'][4:]) for fix in doc['fixes'] if isinstance(fix, dict) and
                isinstance(fix.get('id'), str) and re.fullmatch(r'FIX-\d+', fix['id'])]

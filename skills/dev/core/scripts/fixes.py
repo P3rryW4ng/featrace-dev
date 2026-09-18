@@ -3,7 +3,8 @@ import json
 import re
 from pathlib import Path
 
-STATUSES = {'reported', 'investigating', 'blocked', 'resolved', 'verified'}
+TERMINAL_STATUSES = {'verified', 'closed'}
+STATUSES = {'reported', 'investigating', 'blocked', 'resolved'} | TERMINAL_STATUSES
 KINDS = {'unclassified', 'implementation_defect', 'task_description_gap', 'interpretation_gap',
          'requirement_change', 'source_conflict', 'environment'}
 
@@ -23,6 +24,68 @@ def read_fixes(folder, feature_id):
     return json.loads(path.read_text())
 
 
+def validate_closure(item, fixes_by_id, decisions_by_id):
+    """Disposition is distinct from a repair and never certifies a code change."""
+    label, errors = item['id'], []
+    closure = item.get('closure')
+    if not isinstance(closure, dict):
+        return [label + ': closed report requires a closure object']
+    outcome = closure.get('outcome')
+    if outcome not in ('not_a_defect', 'withdrawn', 'duplicate'):
+        errors.append(label + ': invalid closure outcome; unreproduced reports remain open')
+    if not nonempty(closure.get('reason')):
+        errors.append(label + ': closure reason required')
+    if not string_list(closure.get('evidence')) or not closure.get('evidence'):
+        errors.append(label + ': closure evidence required')
+    refs = item.get('decision_ids', [])
+    approved = [ref for ref in refs if isinstance(ref, str) and
+                decisions_by_id.get(ref, {}).get('status') == 'approved' and
+                nonempty(decisions_by_id[ref].get('chosen'))] if string_list(refs) else []
+    if outcome == 'not_a_defect':
+        if not all(nonempty(item.get(k)) for k in ('expected', 'actual')):
+            errors.append(label + ': not_a_defect requires expected and actual behavior')
+        if not (string_list(item.get('source_refs')) and item.get('source_refs')) and not approved:
+            errors.append(label + ': not_a_defect requires source or approved decision reference')
+    if outcome == 'withdrawn' and (not approved or not nonempty(closure.get('confirmation_ref'))):
+        errors.append(label + ': withdrawal requires an approved decision and confirmation_ref')
+    if outcome == 'duplicate':
+        target_id = closure.get('duplicate_of')
+        target = fixes_by_id.get(target_id) if isinstance(target_id, str) else None
+        if not target or target_id == label:
+            errors.append(label + ': duplicate_of must name another existing fix')
+        elif isinstance(target.get('closure'), dict) and target['closure'].get('outcome') == 'duplicate':
+            errors.append(label + ': duplicate_of must point directly to the original report')
+    return errors
+
+
+def validate_regression_scope(item, requirements, tasks):
+    label, errors = item['id'], []
+    regression = item.get('regression_test_ids', [])
+    known = {test for req in requirements if isinstance(req, dict)
+             for test in (req.get('tests') if isinstance(req.get('tests'), list) else [])
+             if isinstance(test, str)}
+    if not string_list(regression) or any(test not in known for test in regression):
+        return [label + ': regression_test_ids must name declared requirement tests']
+    relevant = set(item.get('requirement_ids', [])) if string_list(item.get('requirement_ids', [])) else set()
+    task_refs = item.get('task_ids', []) if string_list(item.get('task_ids', [])) else []
+    for task in tasks:
+        if isinstance(task, dict) and task.get('id') in task_refs and string_list(task.get('requirement_ids')):
+            relevant.update(task['requirement_ids'])
+    scoped = {test for req in requirements if isinstance(req, dict) and req.get('id') in relevant
+              for test in (req.get('tests') if isinstance(req.get('tests'), list) else [])
+              if isinstance(test, str)}
+    notes = item.get('regression_scope_notes', {})
+    if not isinstance(notes, dict) or any(key not in regression or not nonempty(value) for key, value in notes.items()):
+        errors.append(label + ': regression_scope_notes must map selected test IDs to coverage reasons')
+        notes = {}
+    for test in regression:
+        if test not in scoped and not nonempty(notes.get(test)):
+            errors.append(label + ': regression test outside affected requirements/tasks needs coverage reason: ' + test)
+    if not regression and not nonempty(item.get('regression_waiver')):
+        errors.append(label + ': regression test or explicit waiver required')
+    return errors
+
+
 def validate_fixes(folder, feature_id, requirements, tasks, decisions, stage):
     errors, warnings = [], []
     try:
@@ -34,6 +97,7 @@ def validate_fixes(folder, feature_id, requirements, tasks, decisions, stage):
     requirement_ids = {r.get('id') for r in requirements if isinstance(r, dict)}
     task_ids = {t.get('id') for t in tasks if isinstance(t, dict)}
     decisions_by_id = {d.get('id'): d for d in decisions if isinstance(d, dict)}
+    fixes_by_id = {f['id']: f for f in doc['fixes'] if isinstance(f, dict) and isinstance(f.get('id'), str)}
     seen = set()
     for index, item in enumerate(doc['fixes']):
         label = 'fix[%d]' % index
@@ -52,6 +116,8 @@ def validate_fixes(folder, feature_id, requirements, tasks, decisions, stage):
             errors.append(label + ': invalid status'); continue
         if kind not in KINDS:
             errors.append(label + ': invalid kind'); continue
+        if status == 'closed':
+            errors.extend(validate_closure(item, fixes_by_id, decisions_by_id))
         contributing = item.get('contributing_kinds', [])
         if not string_list(contributing) or any(x not in KINDS - {'unclassified'} for x in contributing) or kind in contributing or len(set(contributing)) != len(contributing):
             errors.append(label + ': invalid contributing_kinds')
@@ -108,20 +174,12 @@ def validate_fixes(folder, feature_id, requirements, tasks, decisions, stage):
         if status == 'verified' and not item.get('verification'):
             errors.append(label + ': verification evidence required')
         if status == 'verified':
-            regression = item.get('regression_test_ids', [])
-            known_tests = {test for req in requirements if isinstance(req, dict)
-                           for test in (req.get('tests') if isinstance(req.get('tests'), list) else [])
-                           if isinstance(test, str)}
-            if not string_list(regression) or any(test not in known_tests for test in regression):
-                errors.append(label + ': regression_test_ids must name declared requirement tests')
-                regression = []
-            if not regression and not nonempty(item.get('regression_waiver')):
-                errors.append(label + ': regression test or explicit waiver required')
+            errors.extend(validate_regression_scope(item, requirements, tasks))
         if status == 'verified' and not nonempty(item.get('tested_revision')):
             errors.append(label + ': tested_revision required')
-        if stage == 'check' and status != 'verified':
+        if stage == 'check' and status not in TERMINAL_STATUSES:
             errors.append(label + ': unresolved fix blocks feature check')
-        elif stage == 'develop' and status != 'verified':
+        elif stage == 'develop' and status not in TERMINAL_STATUSES:
             warnings.append(label + ': unresolved fix; continue only eligible repair work')
     return errors, warnings
 
@@ -132,8 +190,16 @@ def render_fixes(folder, feature_id):
         raise ValueError('invalid fixes.json')
     lines = ['# Fixes', '', 'Generated from fixes.json; edit the JSON record.', '']
     for fix in doc['fixes']:
+        closure = fix.get('closure', {})
+        if not isinstance(closure, dict):
+            raise ValueError('closure must be an object')
         lines += ['## %s — %s' % (fix.get('id', '?'), fix.get('description', '')), '',
                   '- Status: ' + fix.get('status', ''), '- Cause: ' + fix.get('kind', ''),
+                  '- Closure outcome: ' + closure.get('outcome', ''),
+                  '- Closure reason: ' + closure.get('reason', ''),
+                  '- Closure evidence: ' + '; '.join(closure.get('evidence', [])),
+                  '- Withdrawal confirmation: ' + closure.get('confirmation_ref', ''),
+                  '- Duplicate of: ' + closure.get('duplicate_of', ''),
                   '- Contributing causes: ' + ', '.join(fix.get('contributing_kinds', [])),
                   '- Expected: ' + fix.get('expected', ''), '- Actual: ' + fix.get('actual', ''),
                   '- Reproduction: ' + fix.get('reproduction', ''),
@@ -150,6 +216,7 @@ def render_fixes(folder, feature_id):
                   '- Evidence: ' + '; '.join(fix.get('evidence', [])),
                   '- Verification: ' + '; '.join(fix.get('verification', [])),
                   '- Regression tests: ' + ', '.join(fix.get('regression_test_ids', [])),
+                  '- Cross-scope coverage: ' + '; '.join(test + ': ' + reason for test, reason in fix.get('regression_scope_notes', {}).items()),
                   '- Regression waiver: ' + fix.get('regression_waiver', ''),
                   '- Tested revision: ' + fix.get('tested_revision', ''), '']
     (folder / 'fixes.md').write_text('\n'.join(lines) + '\n')

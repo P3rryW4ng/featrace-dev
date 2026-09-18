@@ -3,7 +3,7 @@
 import json
 import pathlib
 import sys
-from fixes import read_fixes
+from fixes import read_fixes, TERMINAL_STATUSES
 
 
 def load(path):
@@ -25,6 +25,9 @@ print("REQUIREMENTS: " + ", ".join(f"{key}={value}" for key, value in counts.ite
 print(f"TASKS: done={done}/{len(tasks)}")
 print("REQUIREMENT_BLOCKERS: present" if counts["blocked"] else "REQUIREMENT_BLOCKERS: none")
 fixes = read_fixes(folder, feature_id).get('fixes', [])
-open_fixes = sum(fix.get('status') != 'verified' for fix in fixes if isinstance(fix, dict))
+open_fixes = sum(fix.get('status') not in TERMINAL_STATUSES for fix in fixes if isinstance(fix, dict))
 print(f"FIXES: unresolved={open_fixes}/{len(fixes)}")
+verified = sum(fix.get('status') == 'verified' for fix in fixes if isinstance(fix, dict))
+closed = sum(fix.get('status') == 'closed' for fix in fixes if isinstance(fix, dict))
+print(f"FIX_OUTCOMES: recorded_verified={verified}, recorded_closed={closed}; run validation to check evidence")
 print("COMPLETION: not evaluated; review decisions, source applicability, tasks and current quality evidence")
