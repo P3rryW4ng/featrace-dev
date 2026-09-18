@@ -38,6 +38,8 @@ After the actual review, record attribution:
 
 ```text
 python3 core/scripts/review-prd.py <PROJECT> <FEATURE-ID> --reviewer agent --notes "Checked roles, limits, exceptions and reverse coverage against original; findings and resolution references: ..."
+# If unresolved source items or unreadable units remain, record a partial review instead:
+python3 core/scripts/review-prd.py <PROJECT> <FEATURE-ID> --stage draft --reviewer agent --notes "Reviewed accessible content; unresolved: S-3 pending; U-2 unreadable; next evidence needed: ..."
 ```
 
 This command validates record structure and records a digest. It does not read or approve meaning on your behalf. Never run it merely to suppress a stale-review error. Source bytes, intake mappings or requirement semantics changing requires a new review. Task assignment/progress alone does not.
@@ -77,3 +79,5 @@ render-workspace.py also generates spec/prd-analysis.md, including unresolved ga
 Existing 0.3 workspaces can still be rendered/viewed; draft warns if intake is absent, but develop/check stop until evidence is reconstructed and reviewed. Create the empty template using the Python `new_intake` helper or copy core/assets/prd-intake.json and set feature_id; never rerun init-feature on an existing feature. No business source or existing decision is overwritten automatically.
 
 The validator requires a reading unit for every registered part, an interaction inventory or static-scope explanation for HTML, and checks observed interaction fields, but cannot discover omitted controls, validate browser observation, or detect semantic conflicts on its own. The validator cannot prove inventory completeness, excerpt fidelity, OCR correctness, kind classification or semantic equivalence. Digests detect local review invalidation, not full source version history. General source version/impact automation remains a later milestone. Full requirement/decision state-schema enforcement remains unfinished.
+
+A `--stage draft` entry records what was actually read and preserves pending items/gaps with warnings. It does not turn a pending item into mapped, repair missing source material, or permit develop/check. Once gaps are resolved, reread the affected source and register a full review without `--stage draft`; a draft review digest is never treated as full review even when content happens to be complete. Older review records without a stage keep their previous compatibility.

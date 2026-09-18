@@ -13,6 +13,8 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('root', type=Path)
     parser.add_argument('feature_id')
+    parser.add_argument('--stage', choices=('draft', 'develop'), default='develop',
+                        help='draft records partial reading with warnings; develop requires all reading gaps resolved')
     parser.add_argument('--reviewer', required=True)
     parser.add_argument('--notes', required=True)
     args = parser.parse_args()
@@ -22,17 +24,20 @@ def main():
     req = json.loads((folder / 'spec/requirements.json').read_text())
     if not isinstance(req, dict) or req.get('feature', {}).get('id') != args.feature_id or not isinstance(req.get('requirements'), list):
         raise ValueError('requirements feature/records do not match the requested workspace')
-    errors, warnings = validate_intake(folder, req, 'develop', require_review=False)
+    errors, warnings = validate_intake(folder, req, args.stage, require_review=False)
     if errors:
         print('\n'.join('ERROR: ' + e for e in errors)); return 1
     path = folder / 'spec/prd-intake.json'
     doc = json.loads(path.read_text())
-    doc['review'] = {'reviewer': args.reviewer, 'notes': args.notes,
+    doc['review'] = {'stage': args.stage, 'reviewer': args.reviewer, 'notes': args.notes,
                      'recorded_at': datetime.now(timezone.utc).isoformat(),
                      'digest': review_digest(folder, doc, req)}
     path.write_text(json.dumps(doc, ensure_ascii=False, indent=2) + '\n')
     render_intake(folder)
-    print('REVIEW_RECORDED: attributed review only; no automated semantic verification')
+    for warning in warnings:
+        print('WARNING: ' + warning)
+    label = 'PARTIAL_DRAFT_REVIEW_RECORDED' if args.stage == 'draft' else 'REVIEW_RECORDED'
+    print(label + ': attributed review only; no automated semantic verification')
     return 0
 
 

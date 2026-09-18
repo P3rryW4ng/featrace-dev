@@ -192,13 +192,18 @@ def validate_intake(folder, req_doc, stage, require_review=True):
             if sid not in items:
                 errors.append(rid + ': unknown source item ' + sid)
             elif items[sid].get('disposition') != 'mapped' or not any(isinstance(a, dict) and a.get('requirement_id') == rid for a in items[sid].get('aspects', [])):
-                errors.append(rid + ': missing forward aspect coverage for ' + sid)
+                if items[sid].get('disposition') == 'pending' and not strict:
+                    pending(rid + ': forward aspect coverage awaits resolution of ' + sid)
+                else:
+                    errors.append(rid + ': missing forward aspect coverage for ' + sid)
         if req.get('status') == 'inferred' and not req.get('assumptions'):
             pending(rid + ': inferred requirement needs explicit assumptions')
     if not errors and require_review and strict:
         review = doc.get('review')
         if not isinstance(review, dict) or not text(review.get('reviewer')) or not text(review.get('notes')):
             errors.append('PRD semantic review attribution and notes required')
+        elif review.get('stage') == 'draft':
+            errors.append('draft PRD review cannot satisfy develop/check: complete reading gaps and record a full review')
         elif review.get('digest') != review_digest(folder, doc, req_doc):
             errors.append('PRD review missing or stale: reread sources and reconcile before recording review')
     return errors, warnings

@@ -122,5 +122,47 @@ class IntakeTests(unittest.TestCase):
         self.doc['items'][0]['aspects'][1]['review'] = 'pending'
         self.save(); self.assertTrue(self.errors()); self.review(expected=1)
 
+    def run_partial_review(self, expected=0):
+        proc = subprocess.run([sys.executable, str(CORE / 'review-prd.py'), str(self.root), 'FEAT-001',
+                               '--stage', 'draft', '--reviewer', 'fixture-author',
+                               '--notes', 'Reviewed only accessible text; pending item S-1 needs product clarification'],
+                              capture_output=True, text=True)
+        self.assertEqual(proc.returncode, expected, proc.stdout + proc.stderr)
+        return proc.stdout + proc.stderr
+
+    def test_partial_review_records_pending_item_without_unlocking_development(self):
+        self.doc['items'][0]['disposition'] = 'pending'
+        self.save()
+        self.review(expected=1)  # Existing default remains the strict full review.
+        output = self.run_partial_review()
+        self.assertIn('PARTIAL_DRAFT_REVIEW_RECORDED', output)
+        self.assertIn('source item still unresolved', output)
+        review = json.loads((self.folder / 'spec/prd-intake.json').read_text())['review']
+        self.assertEqual(review['stage'], 'draft')
+        self.assertTrue(self.errors())
+        self.assertEqual(json.loads((self.folder / 'spec/prd-intake.json').read_text())['items'][0]['disposition'], 'pending')
+
+    def test_partial_review_of_accessible_text_with_unreadable_unit(self):
+        self.doc['units'].append({'id': 'U-2', 'source': 'sources/prd-original.txt', 'locator': 'diagram',
+                                  'kind': 'image', 'status': 'unreadable', 'reason': 'image missing',
+                                  'impact': 'flow steps unknown'})
+        self.save()
+        self.assertIn('unresolved reading gap', self.run_partial_review())
+        self.assertTrue(self.errors())
+
+    def test_partial_review_cannot_be_reused_as_final_review(self):
+        self.save()
+        self.run_partial_review()
+        self.assertTrue(any('draft PRD review cannot satisfy' in e for e in self.errors()))
+        self.review()
+        self.assertFalse(self.errors())
+
+    def test_draft_review_still_refuses_broken_source_reference(self):
+        self.doc['units'][0]['source'] = 'sources/../outside.txt'
+        self.save()
+        previous = (self.folder / 'spec/prd-intake.json').read_bytes()
+        self.run_partial_review(expected=1)
+        self.assertEqual(previous, (self.folder / 'spec/prd-intake.json').read_bytes())
+
 if __name__ == '__main__':
     unittest.main()

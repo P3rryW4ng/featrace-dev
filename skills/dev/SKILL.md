@@ -1,6 +1,6 @@
 ---
 name: dev
-description: Deliver PRD-driven software features with persistent specifications, source reconciliation, tasks, and validation. Use for dev scan/prd/api/figma/develop/clarify/fix/check/status requests or staged feature delivery; not isolated coding questions. Android has a bundled adapter; other stacks use evidence-based generic configuration.
+description: Deliver PRD-driven software features with persistent specifications, source reconciliation, tasks, and validation. Use for dev list/use/scan/prd/api/figma/develop/clarify/fix/check/status requests or staged feature delivery; not isolated coding questions. Android has a bundled adapter; other stacks use evidence-based generic configuration.
 ---
 
 # Feature Delivery
@@ -15,17 +15,19 @@ Accept plain `dev ...` when this skill is selected. These are agent instructions
 
 | Action | Behavior |
 |---|---|
+| list | List existing features without selecting or creating one |
+| use <ID> | Validate and select an existing feature for this conversation and project |
 | scan | Detect profile, scan project, inspect representative code and complete baseline |
 | prd <file> --feature <ID> [--source <file> ...] | Preserve original, extract atomic requirements, tasks, test plan, render and validate draft |
-| api <file-or-link> --feature <ID> | Preserve new evidence, reconcile data semantics, record affected tasks/code/tests |
-| figma <file-or-link> --feature <ID> | Preserve node references and available exports, reconcile visuals and behavior |
-| develop <ID> | Validate development eligibility, implement slices, update records and evidence |
-| clarify <ID> <question-or-proposal> | Record a pending decision, investigate existing behavior and impact, resolve and track application |
-| fix <ID> <problem> | Register an observed mismatch, investigate cause, repair or reconcile evidence, verify and render fix history |
-| check <ID> | Validate records, execute applicable project checks, report actual results and unmet conditions |
-| status <ID> | Read state and summarize next action; no source or code mutation |
+| api <file-or-link> [--feature <ID>] | Preserve new evidence, reconcile data semantics, record affected tasks/code/tests |
+| figma <file-or-link> [--feature <ID>] | Preserve node references and available exports, reconcile visuals and behavior |
+| develop [ID] | Validate development eligibility, implement slices, update records and evidence |
+| clarify [ID] <question-or-proposal> | Record a pending decision, investigate existing behavior and impact, resolve and track application |
+| fix [ID] <problem> | Register an observed mismatch, investigate cause, repair or reconcile evidence, verify and render fix history |
+| check [ID] | Validate records, execute applicable project checks, report actual results and unmet conditions |
+| status [ID] | Read state and summarize next action; no source or code mutation |
 
-Use an unambiguous active feature if ID is omitted; ask only when multiple choices exist. Ask for an inaccessible source; never infer its contents. Online API/Figma retrieval requires an available authorized connector or supplied export; this package does not install connectors.
+For list/use, creation, and feature-scoped commands read `core/references/feature-selection.md`. IDs may be omitted after a successful selection in this conversation and project. Validate the target with `feature-context.py` and display project/ID/title before work; explicit IDs override only that invocation. Never infer a default in a new or uncertain context. Successful new PRD creation selects the new feature after draft validation; failed creation or an existing ID preserves the previous selection. Ask for an inaccessible source; never infer its contents. Online API/Figma retrieval requires an available authorized connector or supplied export; this package does not install connectors.
 
 ## Entry and profile selection
 
@@ -40,7 +42,7 @@ Before first use in a business project or adopting Git sharing, read `core/refer
 3. Android: read `profiles/android/PROFILE.md`. All other stacks: read `profiles/generic/PROFILE.md`. In mixed repositories select the feature's actual target module and record it; don't run a root build merely because a manifest exists.
 4. Read `core/references/project-baseline.md` for scan and verification. Cross-check descriptive docs against actual modules, retain rule scope/exceptions, record coverage status, and register evidence dependencies. Read representative code; fill architecture, conventions and reuse examples with file evidence before business-code changes. Review `.agent-workflow/project-baseline/quality-gates.json` against build files and CI. Keep conditional/template checks in `quality-candidates.json`; `quality-gates.json` holds only selected concrete commands. During scan, edit only `baseline-draft/baseline`; preserve unrelated reviewed scopes. Publish with `project.py scan-publish <PROJECT>` only after review; failed publication keeps the current baseline. Unchanged content creates no backup, changed content retains the latest 3 managed backups. See the baseline reference for draft recovery, pinning and retention. End scan with `project.py validate-gates` (no build execution). An empty selection is not passed.
 5. Create a feature using `bash core/scripts/init-feature.sh <ID> <PRIMARY-DOCUMENT-OR-HTML> <PROJECT> [--source <ADDITIONAL-FILE> ...]`. Only one part is required; HTML can be primary. Script preserves source bytes and extension. Interpret Word/PDF through available readers before decomposing; do not pretend binary input is Markdown.
-6. Register and review every supplied part, including observable HTML states and actions. Missing dynamic dependencies or inaccessible interactions remain reading gaps; conflicts between document and interaction are decisions, not silent precedence choices. Populate `spec/prd-intake.json` and requirement `source_item_ids` under the PRD analysis contract. Review the original against the spec, then record that review with `core/scripts/review-prd.py`. Empty/missing/stale intake blocks develop/check, including legacy workspaces; draft only warns about incomplete work.
+6. Register and review every supplied part, including observable HTML states and actions. Missing dynamic dependencies or inaccessible interactions remain reading gaps; conflicts between document and interaction are decisions, not silent precedence choices. Populate `spec/prd-intake.json` and requirement `source_item_ids` under the PRD analysis contract. Review the original against the spec, then record the full review with `core/scripts/review-prd.py`. If reading gaps or pending items remain, record only a partial draft review using `--stage draft` and state the gaps in the notes; this never satisfies develop/check. Empty/missing/stale intake blocks develop/check, including legacy workspaces; draft only warns about incomplete work.
 7. Run `python3 core/scripts/validate-feature.py --stage draft|develop|check <PROJECT> <ID>` at the corresponding boundary. This is a structural guard, not a substitute for semantic review or quality evidence.
 
 ## Clarifications
