@@ -1,6 +1,6 @@
 ---
 name: dev
-description: Deliver PRD-driven software features with persistent specifications, source reconciliation, tasks, and validation. Use for dev revise/archive/restore/classify/list/use/scan/prd/api/figma/develop/clarify/fix/check/status requests or staged feature delivery; not isolated coding questions. Android has a bundled adapter; other stacks use evidence-based generic configuration.
+description: Deliver PRD-driven software features with persistent specifications, source reconciliation, tasks, and validation. Use for dev help/revise/archive/restore/classify/list/use/scan/prd/api/figma/develop/clarify/fix/check/status requests or staged feature delivery; not isolated coding questions. Android has a bundled adapter; other stacks use evidence-based generic configuration.
 ---
 
 # Feature Delivery
@@ -9,12 +9,15 @@ Use the project root supplied by the user or established by the current workspac
 
 ## Commands
 
+Handle `help [command]` first, before project setup, feature selection or any workflow action. Read `core/references/command-help.md` and answer in the user's language. Help needs no project or selected feature; do not scan, run checks, create records, change selection, install anything or execute the command being explained. Return after showing help. Unknown help topics get a short correction and the command list, never an inferred execution.
+
 Claude Code: `/dev scan`, `/dev prd <file> --feature FEAT-001 [--source <file>]`, `/dev develop FEAT-001`, `/dev fix FEAT-001 <problem>`.
 Codex: `$dev scan`, `$dev prd <file> --feature FEAT-001 [--source <file>]`, `$dev develop FEAT-001`, `$dev fix FEAT-001 <problem>`.
 Accept plain `dev ...` when this skill is selected. These are agent instructions, not shell commands or a deterministic CLI. Do not promise that plain `dev` always activates the skill.
 
 | Action | Behavior |
 |---|---|
+| help [command] | Show grouped command summaries or one command's usage, example and distinctions; no project required |
 | list [--archived / --all] [--module <label>] | List active features by default; optionally include history or filter modules |
 | revise [ID] <change> [--source <file> ...] | Propose confirmed requirement changes, check base version and track delivery separately |
 | archive [ID] | Archive accepted complete features in place after checking delivery evidence |
