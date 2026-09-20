@@ -248,6 +248,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('action', choices=['scan', 'scan-prepare', 'scan-publish', 'scan-discard', 'verify', 'validate-gates', 'check'])
     parser.add_argument('root', type=Path)
+    parser.add_argument('--feature', help='bind executed checks to one requirement baseline')
     parser.add_argument('--keep', type=int, default=3, help='recent managed backups to retain (1..100)')
     args = parser.parse_args()
     root = args.root.resolve()
@@ -276,6 +277,9 @@ def main():
         return 0
     if not prepared:
         print('QUALITY_UNAVAILABLE: no selected gates'); return 2
+    if args.feature:
+        from revisions import binding
+    before_baseline = binding(root, args.feature) if args.feature else None
     before_check = snapshot(root)
     results = []
     for gate, cmd, cwd, timeout in prepared:
@@ -287,11 +291,12 @@ def main():
         results.append(result)
         print(result['name'] + ': ' + result['status'])
     after_check = snapshot(root)
-    if after_check != before_check:
+    after_baseline = binding(root, args.feature) if args.feature else None
+    if after_check != before_check or after_baseline != before_baseline:
         print('PROJECT_CHANGED_DURING_CHECK: results do not certify the final project snapshot')
-    report = {'tested_at': datetime.now(timezone.utc).isoformat(), 'project_snapshot': before_check, 'results': results}
+    report = {'tested_at': datetime.now(timezone.utc).isoformat(), 'project_snapshot': before_check, 'results': results, 'feature_baseline': before_baseline}
     (base / 'quality-report.json').write_text(json.dumps(report, indent=2) + '\n')
-    return 0 if after_check == before_check and all(x['status'] == 'passed' for x in results) else 1
+    return 0 if after_check == before_check and after_baseline == before_baseline and all(x['status'] == 'passed' for x in results) else 1
 
 if __name__ == '__main__':
     try:

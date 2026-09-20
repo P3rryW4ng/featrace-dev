@@ -1,6 +1,7 @@
 """PRD intake records: deterministic checks, never a semantic PRD parser."""
 import hashlib
 import json
+import re
 from pathlib import Path
 
 
@@ -18,10 +19,20 @@ def strings(value):
 
 
 def source_path(folder, relative):
+    folder = Path(folder).resolve()
     if not text(relative) or Path(relative).is_absolute():
         raise ValueError('source path must be relative')
     path = (folder / relative).resolve()
-    path.relative_to((folder / 'sources').resolve())
+    if re.fullmatch(r'revisions/CHG-[0-9]{3,}\.json', relative):
+        if (folder / 'revisions').resolve() != folder / 'revisions' or path.parent != (folder / 'revisions').resolve() or (folder / relative).is_symlink():
+            raise ValueError('revision evidence path escapes its directory')
+        from revisions import digest
+        req = json.loads((folder / 'spec/requirements.json').read_text())
+        event = next((x for x in req.get('feature', {}).get('baseline', {}).get('applied', []) if x.get('id') == path.stem), None)
+        if not event or event.get('proposal_digest') != digest(json.loads(path.read_text())):
+            raise ValueError('revision evidence must be an unchanged applied proposal')
+    else:
+        path.relative_to((folder / 'sources').resolve())
     if not path.is_file():
         raise ValueError('source file does not exist: ' + relative)
     return path
@@ -168,6 +179,24 @@ def validate_intake(folder, req_doc, stage, require_review=True):
             req = reqs[rid]
             if not strings(req.get('source_item_ids')) or sid not in req.get('source_item_ids', []):
                 errors.append(sid + ': missing reverse source_item_ids link in ' + rid)
+            if aspect.get('superseded_by'):
+                try:
+                    from revisions import inspect
+                    baseline, revisions, _ = inspect(folder, req_doc)
+                    revision_id = aspect['superseded_by']
+                    if not baseline or not any(e['id'] == revision_id for e in baseline['applied']):
+                        raise ValueError('supersession requires an applied revision')
+                    change_field = 'acceptance_criteria' if isinstance(field, str) and field.startswith('acceptance_criteria/') else field
+                    matches = [c for c in revisions[revision_id]['changes'] if c['requirement_id'] == rid and c['field'] == change_field]
+                    original = matches[0]['before'] if len(matches) == 1 else None
+                    if change_field == 'acceptance_criteria' and isinstance(original, list):
+                        index = field.split('/')[-1]
+                        original = original[int(index)] if index.isdigit() and int(index) < len(original) else None
+                    if not text(original) or aspect.get('target_text') != original or not text(aspect.get('supersession_reason')):
+                        raise ValueError('superseded aspect must preserve its original target and explain the replacement')
+                except (OSError, ValueError, TypeError, KeyError) as exc:
+                    errors.append(sid + ': ' + str(exc))
+                continue
             target = None
             if field == 'statement':
                 target = req.get('statement')
@@ -196,6 +225,10 @@ def validate_intake(folder, req_doc, stage, require_review=True):
                     pending(rid + ': forward aspect coverage awaits resolution of ' + sid)
                 else:
                     errors.append(rid + ': missing forward aspect coverage for ' + sid)
+        if req_doc.get('feature', {}).get('baseline') is not None and not any(
+                isinstance(a, dict) and a.get('requirement_id') == rid and not a.get('superseded_by')
+                for sid in refs if sid in items for a in items[sid].get('aspects', [])):
+            errors.append(rid + ': current baseline needs non-superseded source coverage')
         if req.get('status') == 'inferred' and not req.get('assumptions'):
             pending(rid + ': inferred requirement needs explicit assumptions')
     if not errors and require_review and strict:

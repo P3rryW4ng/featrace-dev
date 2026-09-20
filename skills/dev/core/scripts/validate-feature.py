@@ -6,6 +6,7 @@ import pathlib
 import sys
 import re
 from prd_intake import validate_intake
+from revisions import validate_revisions
 from feature_lifecycle import metadata, require_active
 from fixes import validate_fixes
 from clarifications import validate_clarifications
@@ -174,6 +175,9 @@ def main():
         traced = {link.get("requirement_id") for link in links if isinstance(link, dict)}
         missing = [r.get("id") for r in live if r.get("id") not in traced]
         if missing: errors.append("missing traceability for: " + ", ".join(missing))
+    revision_errors, revision_warnings = validate_revisions(feature_dir, req_doc, args.stage)
+    errors.extend(revision_errors)
+    warnings.extend(revision_warnings)
     if not errors:
         intake_errors, intake_warnings = validate_intake(feature_dir, req_doc, args.stage)
         errors.extend(intake_errors)

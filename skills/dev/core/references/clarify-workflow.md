@@ -1,5 +1,7 @@
 # Clarification workflow (0.4.8)
 
+If the feature has `feature.baseline`, changes to requirement meaning must follow [revision-workflow.md](revision-workflow.md). Reuse this workflow’s decisions and fix evidence; code-only fixes do not revise requirements. Preserve original sources and prior delivery conclusions.
+
 Use `/dev clarify <ID> <question-or-proposal>` for incomplete details, ambiguous rules, proposed changes or uncertainty about effects on existing behavior. It is an investigation and record entry point, not blanket permission to implement a new product rule.
 
 ## Register and investigate

@@ -7,6 +7,7 @@ import re
 import sys
 
 from project import snapshot
+from revisions import binding
 
 
 def audit(root, feature_id):
@@ -32,6 +33,12 @@ def audit(root, feature_id):
         return ['cannot inspect current project snapshot: ' + str(exc)]
     if report.get('project_snapshot') != current:
         errors.append('quality report is stale for the current project snapshot')
+    if req.get('feature', {}).get('baseline') is not None:
+        try:
+            if report.get('feature_baseline') != binding(root, feature_id):
+                errors.append('quality report is not bound to the current requirement baseline; rerun check --feature')
+        except (OSError, ValueError, TypeError, KeyError) as exc:
+            errors.append('invalid requirement baseline: ' + str(exc))
     results = report['results']
     if not results:
         errors.append('quality report has no executed checks')

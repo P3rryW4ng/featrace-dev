@@ -1,6 +1,6 @@
 ---
 name: dev
-description: Deliver PRD-driven software features with persistent specifications, source reconciliation, tasks, and validation. Use for dev archive/restore/classify/list/use/scan/prd/api/figma/develop/clarify/fix/check/status requests or staged feature delivery; not isolated coding questions. Android has a bundled adapter; other stacks use evidence-based generic configuration.
+description: Deliver PRD-driven software features with persistent specifications, source reconciliation, tasks, and validation. Use for dev revise/archive/restore/classify/list/use/scan/prd/api/figma/develop/clarify/fix/check/status requests or staged feature delivery; not isolated coding questions. Android has a bundled adapter; other stacks use evidence-based generic configuration.
 ---
 
 # Feature Delivery
@@ -16,6 +16,7 @@ Accept plain `dev ...` when this skill is selected. These are agent instructions
 | Action | Behavior |
 |---|---|
 | list [--archived / --all] [--module <label>] | List active features by default; optionally include history or filter modules |
+| revise [ID] <change> [--source <file> ...] | Propose confirmed requirement changes, check base version and track delivery separately |
 | archive [ID] | Archive accepted complete features in place after checking delivery evidence |
 | restore [ID] | Restore an archived feature to the active list, preserving delivery history |
 | classify [ID] --module <label> ... | Set module labels for lookup; --clear-modules removes labels |
@@ -31,6 +32,10 @@ Accept plain `dev ...` when this skill is selected. These are agent instructions
 | status [ID] | Read state and summarize next action; no source or code mutation |
 
 For list/use, creation, and feature-scoped commands read `core/references/feature-selection.md`. IDs may be omitted after a successful selection in this conversation and project. Validate the target with `feature-context.py` and display project/ID/title before work; explicit IDs override only that invocation. Never infer a default in a new or uncertain context. Successful new PRD creation selects the new feature after draft validation; failed creation or an existing ID preserves the previous selection. Ask for an inaccessible source; never infer its contents. Online API/Figma retrieval requires an available authorized connector or supplied export; this package does not install connectors.
+
+## Requirement revisions
+
+Read `core/references/revision-workflow.md` for revise or any semantic edits in a feature with `feature.baseline`. Keep original PRDs, current requirements and revision proposals distinct. Later date alone is not authority; approved evidence applies only to affected rules. Controlled baselines must change through a version-checked revision. A pure code bug leaves requirement meaning unchanged. Adoption is opt-in; do not migrate old features automatically.
 
 ## Archive and history
 
@@ -64,7 +69,7 @@ Read `core/references/fix-workflow.md` for `/dev fix` or any reported effect/req
 
 Implement independently testable slices using project conventions. After each slice update canonical JSON and run `python3 core/scripts/render-workspace.py <PROJECT> <ID>`. Use `feature-status.py` for summaries.
 
-Before each check, select applicable commands from the candidate catalog using current change scope and project policy; honor existing authorization and record why they were selected. Do not automatically run every candidate. For checks run `python3 core/scripts/project.py check <PROJECT>` after reviewing configured commands. Mark `test_ids` on a selected gate only after checking that its actual command executes those declared tests. After fixes, run `python3 core/scripts/audit-delivery.py <PROJECT> <ID>` to compare passed gate results, verified-fix test selection and the current project snapshot. Then inspect task/decision meaning, tested code, assertions and update the feature delivery report with the actual final evidence. The audit is read-only and cannot prove semantic or UI correctness. Record results in the feature's delivery report, tied to the tested code revision. A pass on JSON validation alone never means complete.
+Before each check, select applicable commands from the candidate catalog using current change scope and project policy; honor existing authorization and record why they were selected. Do not automatically run every candidate. For checks run `python3 core/scripts/project.py check <PROJECT> --feature <ID>` after reviewing configured commands. Mark `test_ids` on a selected gate only after checking that its actual command executes those declared tests. After fixes, run `python3 core/scripts/audit-delivery.py <PROJECT> <ID>` to compare passed gate results, verified-fix test selection and the current project snapshot. Then inspect task/decision meaning, tested code, assertions and update the feature delivery report with the actual final evidence. The audit is read-only and cannot prove semantic or UI correctness. Record results in the feature's delivery report, tied to the tested code revision. For a version-controlled requirement baseline, follow revision-workflow to register that version's verified delivery after actual acceptance; requirement confirmation alone cannot mark complete. A pass on JSON validation alone never means complete.
 
 Legacy YAML: `migrate-workspace.py` creates an empty migration scaffold and preserves old records. The agent must faithfully reconstruct requirements/tasks/decisions/traceability and validate before development; it is not an automatic semantic converter.
 

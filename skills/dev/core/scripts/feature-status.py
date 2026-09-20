@@ -3,6 +3,7 @@
 import json
 import pathlib
 import sys
+from revisions import inspect
 from feature_lifecycle import metadata
 from fixes import read_fixes, TERMINAL_STATUSES
 
@@ -39,4 +40,7 @@ clarifications = [d for d in decisions if isinstance(d, dict) and isinstance(d.g
 unresolved = sum(d.get('status') in ('pending', 'blocked') for d in clarifications)
 unapplied = sum(d.get('status') == 'approved' and d['clarification'].get('application', {}).get('status') == 'pending' for d in clarifications)
 print(f"CLARIFICATIONS: unresolved={unresolved}, confirmed_unapplied={unapplied}; recorded status, not semantic proof")
+baseline, _, pending = inspect(folder, req)
+if baseline:
+    print("BASELINE: confirmed=%s, verified=%s, pending=%s" % (baseline["version"], max((x["version"] for x in baseline["deliveries"]), default=0), ",".join(x["id"] for x in pending) or "none"))
 print("COMPLETION: not evaluated; review decisions, source applicability, tasks and current quality evidence")

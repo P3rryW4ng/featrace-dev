@@ -40,6 +40,17 @@
               }
             }
           }
+        },
+        "baseline": {
+          "type": "object",
+          "required": [
+            "version",
+            "digest",
+            "initial_requirements",
+            "applied",
+            "cancelled",
+            "deliveries"
+          ]
         }
       }
     },
