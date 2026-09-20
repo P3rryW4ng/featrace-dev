@@ -1,5 +1,7 @@
 # Workflow invariants
 
+- Before business-code edits follow impact-review.md: impact.json is the investigation/boundary record, impact.md its generated view. Reuse requirement/decision/fix references; review scope expansion and verify preserved behavior.
+
 - Keep original PRD/API/Figma artifacts immutable in each feature's sources/. New revisions use new filenames. Preserve precise headings, operations, node IDs and source versions where available.
 - `spec/prd-intake.json` indexes original reading units, context, gaps and aspect-level coverage; it is not a second product specification. Reconcile it using `prd-analysis.md` whenever requirement semantics change.
 - Canonical editable records are spec/requirements.json, tasks.json, decisions.json and traceability.json. Markdown is a generated review view. Do not overwrite hand-authored legacy Markdown during migration before preserving it.

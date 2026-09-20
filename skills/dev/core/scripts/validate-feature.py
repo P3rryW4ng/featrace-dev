@@ -7,6 +7,7 @@ import sys
 import re
 from prd_intake import validate_intake
 from revisions import validate_revisions
+from impact import validate_impact
 from feature_lifecycle import metadata, require_active
 from fixes import validate_fixes
 from clarifications import validate_clarifications
@@ -185,6 +186,9 @@ def main():
     fix_errors, fix_warnings = validate_fixes(feature_dir, args.feature_id, requirements, tasks, decisions, args.stage)
     errors.extend(fix_errors)
     warnings.extend(fix_warnings)
+    impact_errors, impact_warnings = validate_impact(pathlib.Path(args.root).resolve(), feature_dir, req_doc, args.stage)
+    errors.extend(impact_errors)
+    warnings.extend(impact_warnings)
     return report(errors, warnings)
 
 

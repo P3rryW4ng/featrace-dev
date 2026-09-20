@@ -83,6 +83,8 @@ Only `feature-archive.py` changes archive metadata in normal use. Completion sta
 
 ## Opt-in semantic baselines (0.5.0)
 
+Business-code work also adopts `feature.impact_required: true` and feature-local impact.json under [impact-review.md](impact-review.md). This marker is nonsemantic metadata; it does not advance requirement versions. The checklist is separate from the product specification; impact.md is generated. Legacy untouched records remain compatible.
+
 `feature.baseline` is managed by revise.py and validated by revisions.py. It contains `version`, `digest`, `initial_requirements` (historical semantic snapshot), `registered_at`, `reason`, `applied`, `cancelled`, `deliveries`. Current requirements stay in the existing top-level array. The digest covers id/title/statement/status/acceptance_criteria/assumptions, not editable workflow links or feature progress. Applied events reference immutable `revisions/CHG-*.json` and preserve their digest, resulting version/digest and confirmation snapshot digest. Delivery events bind a baseline version/digest to actual code revision and evidence report hash. Proposal source bytes, if supplied, live under sources/revisions and remain source-sharing opt-in.
 
 No baseline field means legacy behavior; it is not an implicit version 1 or a claim of verified delivery. Pending revision, direct semantic drift and premature complete are guarded. Fields, example input, adoption limits and current/verified version distinction: [revision workflow](revision-workflow.md). Render-workspace produces revisions.md; do not edit generated history as authority.

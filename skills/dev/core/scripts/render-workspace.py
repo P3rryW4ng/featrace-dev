@@ -8,6 +8,7 @@ from revisions import inspect
 from feature_lifecycle import metadata
 from fixes import render_fixes
 from clarifications import render_decisions
+from impact import render_impact
 
 
 def load(path):
@@ -45,6 +46,7 @@ def main():
     (feature_dir / "traceability.md").write_text("# Traceability\n\n" + "\n".join(f"- {x.get('requirement_id', '?')} → {x.get('task_id', '?')} → {', '.join(x.get('tests', []))}" for x in links) + "\n")
     render_intake(feature_dir)
     render_fixes(feature_dir, sys.argv[2])
+    render_impact(feature_dir)
     print("WORKSPACE_RENDERED")
 
 
