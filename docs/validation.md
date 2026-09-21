@@ -6,6 +6,10 @@
 
 目标回归 4/4 通过，覆盖跨需求及当前需求候选、模块/路径匹配、缺少处置阻断、不适用理由、check 阶段重测证据、候选变化失效以及 closed 报告排除；完整合成回归 180/180 通过。尚未在真实跨需求修改中测量候选误报、漏报和额外回归成本。功能提交 `27278f4` 已推送到 `origin/main`，本机 Claude Code 已更新到 0.5.11；其他机器和账号仍需分别安装或更新。
 
+随后在隔离临时 Git 项目中用真实 Claude Code 会话走完候选发现、pending develop 阻断、retest 计划、无结果 check 阻断、5 项实际 unittest、当前 digest 绑定、历史 FIX 变化失效、重新同步清除当前结论，以及普通 develop 自动触发。确定性链路均符合预期，且 mutation 检查证明关键断言能发现守卫移除与重复请求覆盖 note。
+
+自动触发场景暴露一项 Agent 控制缺陷：用户明确要求“需要判断时停止、不要替我做选择”，Agent 仍自行写入 `retest`。另发现同步会删除已失效 disposition/result 的文本，虽不误当当前证据，但未在记录内保留历史。两项进入后续补丁；因此 0.5.11 记为机制通过、Agent 控制边界部分通过，不能宣称真实项目准确率或完整体验已验收。完整过程见[隔离演练记录](reviews/2026-09-21-historical-regression-isolation.md)。
+
 ## 0.5.10 — 2026-09-21
 
 新增 archive-preflight：缺失/空 delivery-report 时从现有需求、任务、决策、追溯测试、修复和 quality-report 生成带 `ARCHIVE_REPORT_DRAFT_REVIEW_REQUIRED` 的草稿；已有非空报告保持字节不变。预检同时运行只读结构/audit，报告模块目录候选、代码路径根、impact 是否存在、sources 的 tracked/ignored/untracked/missing 状态和共享记录 Git 状态，不执行构建、真机、分类、暂存或上传。
