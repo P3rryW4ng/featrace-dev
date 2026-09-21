@@ -67,7 +67,7 @@ This is display guidance, not a request to execute examples. `/dev help` shows t
 - list: no ID; optional `--archived` for archive history or `--all` for both active/history, optional `--module label`. Default is active features. Lists without changing selection.
 - use: required ID. Changes only this conversation's selection for this project, not Git branch or business status. New/uncertain context requires selection again.
 - classify: optional positional ID; repeated `--module label` replaces labels, `--clear-modules` removes them. Labels help lookup, not automatic code classification or current-behavior authority.
-- archive: optional positional ID; only completed features with reviewed delivery evidence. Hides from default list, preserves files and history; not deletion or compression.
+- archive: optional positional ID; first runs preflight, preserves an existing report or creates a review-required draft from recorded evidence, and reports module/source/Git gaps. Only completed features with reviewed delivery evidence can be archived. Hides from default list, preserves files and history; not deletion or compression.
 - restore: optional positional ID; returns archived feature to active list without erasing evidence. It does not itself rerun tests or invalidate/renew historical acceptance. Further code work follows normal rules.
 
 Maintain this overview whenever commands or parameter semantics change. The main command table and per-workflow references remain authoritative; this help does not add new execution semantics.

@@ -15,7 +15,7 @@ traceability.json        Source → requirement → task → code → test links
 traceability.md          Generated traceability view
 fixes.json               Canonical mismatch/repair records
 fixes.md                 Generated fix history
-delivery-report.md       Quality-gate result and remaining risk
+delivery-report.md       Reviewed delivery evidence and remaining risk; archive preflight may create a marked draft that cannot be archived until reviewed
 ```
 
 ## Requirement fields

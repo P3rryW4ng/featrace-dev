@@ -48,7 +48,7 @@ Read `core/references/revision-workflow.md` for revise or any semantic edits in 
 
 ## Archive and history
 
-Read `core/references/feature-archive.md` for archive/restore/classify and historical lookup. Re-read archive metadata before feature work. Archived records remain readable; restore before further development, checks, fixes, clarifications or source/spec edits. Default list excludes archived features; archive is independent of completion and preserves all evidence. Use module tags to locate relevant history, then verify current code; tags are not a current-behavior index.
+Read `core/references/feature-archive.md` for archive/restore/classify and historical lookup. For archive, run the archive preflight before the final helper: it preserves an existing report or creates a review-required draft from current structured evidence, reports module/source/Git gaps, and never invents acceptance. Review and edit the draft before removing its marker; final archive rejects an unreviewed generated draft. Re-read archive metadata before feature work. Archived records remain readable; restore before further development, checks, fixes, clarifications or source/spec edits. Default list excludes archived features; archive is independent of completion and preserves all evidence. Use module tags to locate relevant history, then verify current code; tags are not a current-behavior index.
 
 ## Entry and profile selection
 

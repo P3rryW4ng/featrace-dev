@@ -1,5 +1,11 @@
 # 验证与评估记录
 
+## 0.5.10 — 2026-09-21
+
+新增 archive-preflight：缺失/空 delivery-report 时从现有需求、任务、决策、追溯测试、修复和 quality-report 生成带 `ARCHIVE_REPORT_DRAFT_REVIEW_REQUIRED` 的草稿；已有非空报告保持字节不变。预检同时运行只读结构/audit，报告模块目录候选、代码路径根、impact 是否存在、sources 的 tracked/ignored/untracked/missing 状态和共享记录 Git 状态，不执行构建、真机、分类、暂存或上传。
+
+正式 archive 新增草稿标记门：未审阅报告不能归档。目标归档回归 11/11 通过，覆盖生成草稿、阻止未审归档、审阅后归档、已有报告不覆盖、模块候选及 ignored source 状态；完整合成回归 176/176 通过。尚未在新的真实 complete 需求上评估报告准确性和审阅时间。
+
 ## 0.5.9 — 2026-09-21
 
 CASE-03 在 OGFR-2577 complete 需求中验证了 0.5.8 会话模式：裸 `status`、普通“继续当前需求”默认路由和 `dev off` 均符合预期。进度提问“这个需求还有哪些问题”额外运行 validate/audit，确认统一入口的只读边界过宽；本版已改为只读现有状态，除非明确要求新验证。

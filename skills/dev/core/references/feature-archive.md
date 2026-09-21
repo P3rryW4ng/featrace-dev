@@ -1,4 +1,4 @@
-# Archive and module classification (0.4.11)
+# Archive preflight, lifecycle and module classification (0.5.10)
 
 Archive is a visibility/lifecycle marker in `spec/requirements.json`, independent of `feature.status`. It preserves directories, IDs, sources, fixes, decisions and delivery evidence. No compression, deletion or automatic upload. Since 0.5.4, module-context.md separately defines reviewed current module dossiers; archive itself does not merge historical requirements into them.
 
@@ -21,15 +21,21 @@ After rendering views, inspect final Git status again. Tell the user separately:
 
 Latest integration: adopted impact, verification-list and module-context checks also run through the structural check below. Stale current-worktree evidence can block archive even when an older report describes accepted delivery. Do not manufacture new evidence to bypass this. See module-context.md for module dossier updates and this historical/current eligibility limitation.
 
-Before archiving, verify that the feature is complete, required decisions and fixes are resolved, and actual delivery has been accepted on the recorded code revision. Read the delivery report and its referenced results: test/gate and manual evidence, applicability, known limitations. Missing evidence or open cleanup blocks archive; do not set complete merely to make archive succeed. An old accepted revision need not equal today's project HEAD: later unrelated deliveries do not invalidate the historical acceptance. Do not rerun historical builds automatically just to archive.
+Before archiving, verify that the feature is complete, required decisions and fixes are resolved, and actual delivery has been accepted on the recorded code revision. Start every `/dev archive` with the deterministic preflight below. It runs structural validation and read-only delivery audit, reports current Git disposition, module candidates/path roots, impact presence, and each registered source's tracked/ignored/untracked/missing state. It never stages, uploads, builds, runs device tests, changes modules, or marks acceptance.
+
+If the evidence report is missing or empty, preflight creates `delivery-report.md` from existing requirements, tasks, decisions, traceability tests, fixes and quality results. The generated report carries `ARCHIVE_REPORT_DRAFT_REVIEW_REQUIRED`. Read every cited record, correct misleading gate coverage, add only supported limitations/conclusions and the accepted revision, then remove the marker and change the draft status. Final archive rejects the marker. A nonempty existing report is never overwritten; preflight still returns diagnostics for review.
+
+Read the delivery report and its referenced results: test/gate and manual evidence, applicability, known limitations. Missing evidence or open cleanup blocks archive; do not set complete merely to make archive succeed. Resolve useful module labels before archive when catalog/path evidence supports them; suggestions are not automatic classification. Decide source sharing explicitly and never force-add ignored evidence. An old accepted revision need not equal today's project HEAD: later unrelated deliveries do not invalidate the historical acceptance. Do not rerun historical builds automatically just to archive.
 
 ```sh
+python3 core/scripts/archive-preflight.py <PROJECT> <ID> --revision <ACCEPTED-REVISION> --evidence delivery-report.md
+# Agent reviews/edits the report and removes the draft marker only after evidence review.
 python3 core/scripts/feature-archive.py archive <PROJECT> <ID> --revision <ACCEPTED-REVISION> --reason <REASON> --evidence delivery-report.md
 python3 core/scripts/feature-archive.py restore <PROJECT> <ID> --reason <REASON>
 python3 core/scripts/feature-archive.py classify <PROJECT> <ID> --module wallet --module identity
 ```
 
-The helper requires complete, confirmed active requirements, all tasks done, resolved source applicability, passing structural check (including decisions/fixes), and a nonempty local delivery report. It records the supplied accepted revision and report SHA-256. These checks cannot prove that report text is truthful, that a named revision was installed, or that a build actually passed; the Agent must inspect the evidence. Do not invent acceptance or revision information. Original sources required by check must be restored from their authorized location if missing.
+The final archive helper requires complete, confirmed active requirements, all tasks done, resolved source applicability, passing structural check (including decisions/fixes), and a nonempty reviewed local delivery report without the generated-draft marker. It records the supplied accepted revision and report SHA-256. These checks cannot prove that report text is truthful, that a named revision was installed, or that a build actually passed; the Agent must inspect the evidence. Do not invent acceptance or revision information. Original sources required by check must be restored from their authorized location if missing.
 
 After a successful metadata change run `render-workspace.py <PROJECT> <ID>` to refresh generated views; a rendering failure does not undo metadata, so report it and retry rendering without reinitialization. Archive/restore are idempotent and append transition history only when state changes. The helper replaces only requirements.json after a change check; it is not a global transaction/lock across all feature records. Avoid concurrent writers on one feature and resolve conflicting edits before retrying.
 

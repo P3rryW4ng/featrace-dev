@@ -9,7 +9,7 @@ from pathlib import Path
 import subprocess
 import sys
 import tempfile
-from feature_lifecycle import read_record, metadata
+from feature_lifecycle import ARCHIVE_DRAFT_MARKER, read_record, metadata
 from archive_git import show as show_git_status
 
 
@@ -65,6 +65,8 @@ def main():
             contents = report.read_bytes()
             if not contents.strip():
                 raise ValueError("Delivery report is empty")
+            if ARCHIVE_DRAFT_MARKER.encode() in contents:
+                raise ValueError("Delivery report draft requires Agent review before archive")
             result = subprocess.run([sys.executable, str(Path(__file__).with_name("validate-feature.py")),
                                      "--stage", "check", str(root), args.feature_id], capture_output=True, text=True)
             if result.returncode:

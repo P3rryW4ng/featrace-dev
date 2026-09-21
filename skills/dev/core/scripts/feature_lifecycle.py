@@ -4,6 +4,9 @@ import pathlib
 import re
 
 
+ARCHIVE_DRAFT_MARKER = "<!-- ARCHIVE_REPORT_DRAFT_REVIEW_REQUIRED -->"
+
+
 def metadata(feature):
     modules = feature.get("modules", [])
     if (not isinstance(modules, list) or any(not isinstance(x, str) or not x.strip() or x != x.strip() for x in modules)

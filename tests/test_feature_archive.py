@@ -1,4 +1,5 @@
 import json
+import subprocess
 import unittest
 import test_fix_flow
 from prd_intake import review_digest
@@ -90,6 +91,46 @@ class FeatureArchiveTests(unittest.TestCase):
         self.write('spec/requirements.json', req)
         self.archive(expected=1)
         self.assertNotIn('archive', self.feature())
+
+    def test_preflight_creates_review_draft_and_archive_rejects_until_reviewed(self):
+        report = self.folder / 'delivery-report.md'
+        report.unlink()
+        output = self.run_script('archive-preflight.py', self.root, 'FEAT-001', '--revision', 'fixture-v1')
+        payload = json.loads(output.split('ARCHIVE_PREFLIGHT: ', 1)[1])
+        self.assertTrue(payload['created'])
+        self.assertTrue(payload['review_required'])
+        text = report.read_text()
+        self.assertIn('ARCHIVE_REPORT_DRAFT_REVIEW_REQUIRED', text)
+        self.assertIn('Synthetic uppercase', text)
+        self.assertIn('UT-1', text)
+        self.archive(expected=1)
+        report.write_text(text.replace('<!-- ARCHIVE_REPORT_DRAFT_REVIEW_REQUIRED -->', '')
+                          .replace('Status: **DRAFT — REVIEW REQUIRED**', 'Status: **REVIEWED**'))
+        self.archive()
+        self.assertTrue(self.feature()['archive']['archived'])
+
+    def test_preflight_preserves_existing_report_and_suggests_registered_module(self):
+        original = (self.folder / 'delivery-report.md').read_bytes()
+        trace = json.loads((self.folder / 'traceability.json').read_text())
+        trace['links'][0]['code'] = ['wallet/convert.py']
+        self.write('traceability.json', trace)
+        modules = self.root / '.agent-workflow/modules'
+        modules.mkdir()
+        (modules / 'index.json').write_text(json.dumps({'schema_version': 1, 'shared_stack': 'fixture',
+            'global_files': ['build.cfg'], 'modules': [{'id': 'wallet', 'summary': 'wallet',
+            'roots': ['wallet'], 'evidence_files': [], 'depends_on': []}]}))
+        req = json.loads((self.folder / 'spec/requirements.json').read_text())
+        req['feature']['prd_paths'] = ['sources/prd-original.txt']
+        self.write('spec/requirements.json', req)
+        subprocess.run(['git', 'init', str(self.root)], check=True, capture_output=True)
+        (self.root / '.gitignore').write_text('.agent-workflow/features/*/sources/**\n')
+        output = self.run_script('archive-preflight.py', self.root, 'FEAT-001')
+        payload = json.loads(output.split('ARCHIVE_PREFLIGHT: ', 1)[1])
+        self.assertFalse(payload['created'])
+        self.assertFalse(payload['review_required'])
+        self.assertEqual(payload['module_candidates'], ['wallet'])
+        self.assertEqual(payload['sources'], [{'path': 'sources/prd-original.txt', 'state': 'ignored_by_policy'}])
+        self.assertEqual(original, (self.folder / 'delivery-report.md').read_bytes())
 
     def test_missing_empty_or_outside_evidence_rejects(self):
         self.command('archive', '--reason', 'done', expected=1)
