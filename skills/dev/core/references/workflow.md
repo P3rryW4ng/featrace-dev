@@ -1,6 +1,7 @@
 # Workflow invariants
 
 - Before business-code edits follow impact-review.md: impact.json is the investigation/boundary record, impact.md its generated view. Reuse requirement/decision/fix references; review scope expansion and verify preserved behavior.
+- Before business-code edits and before check follow historical-regression.md: sync verified-fix candidates from registered modules/paths, disposition every candidate, and record current retest results where selected. This reminder does not reopen old fixes or replace impact analysis.
 - After source, requirement, decision meaning or semantic task wording changes, refresh the applicable PRD review and rerun develop validation before continuing business-code edits. Do not defer known structural gaps until check.
 
 - Keep original PRD/API/Figma artifacts immutable in each feature's sources/. New revisions use new filenames. Preserve precise headings, operations, node IDs and source versions where available.

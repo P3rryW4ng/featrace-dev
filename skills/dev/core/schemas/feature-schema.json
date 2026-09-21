@@ -22,6 +22,9 @@
         "impact_required": {
           "type": "boolean"
         },
+        "history_regression_required": {
+          "type": "boolean"
+        },
         "module_context_required": {
           "type": "boolean"
         },

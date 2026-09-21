@@ -4,6 +4,8 @@ Read before business-code edits through develop/fix or implementation following 
 
 ## Before editing
 
+Also follow [historical-regression.md](historical-regression.md). Impact review explains the current change boundary; historical regression review uses that boundary plus module/traceability paths to remind the Agent of verified repairs that may need protection.
+
 New workspaces created by 0.5.6 set `feature.workflow_version: 2` and `feature.impact_required: true`; create feature-local `impact.json` before the first business-code edit. Keep the marker once adopted. Existing untouched features remain compatible; absence warns rather than retroactively blocking historical deliveries. Continuing code work in an older workspace must adopt it, including repairs to completed features (set provisional). A caller can still bypass the workflow by editing code outside the Skill, but the normal new-feature path no longer relies on the Agent remembering to set the marker.
 
 Inspect relevant implementation and callers, shared state, navigation, lifecycle and legacy behavior. Expand investigation when a dependency appears. Existing code shows current behavior, not automatic product authority: compare PRD and approved decisions. Record business unknowns through clarify; reuse D/FIX/CHG references in evidence/basis. Unresolved mechanisms or behaviors block develop/check; draft permits investigation.

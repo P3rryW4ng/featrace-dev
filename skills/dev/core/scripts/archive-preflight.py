@@ -29,6 +29,20 @@ def table(headers, rows):
     return lines
 
 
+def regression_rows(record):
+    dispositions = {row.get('candidate_id'): row for row in record.get('dispositions', []) if isinstance(row, dict)}
+    rows = []
+    for candidate in record.get('candidates', []):
+        if not isinstance(candidate, dict):
+            continue
+        disposition = dispositions.get(candidate.get('id'), {})
+        result = disposition.get('result', {}) if isinstance(disposition.get('result'), dict) else {}
+        rows.append((candidate.get('id', ''),
+                     {'modules': candidate.get('matched_modules', []), 'paths': candidate.get('matched_paths', [])},
+                     disposition.get('action', 'pending'), result.get('status', '')))
+    return rows
+
+
 def git(root, *args):
     return subprocess.run(['git', '-C', str(root), *args], capture_output=True, text=True)
 
@@ -98,6 +112,7 @@ def build_report(root, folder, req, revision, diagnostics):
     decisions = read_json(folder / 'decisions.json', {}).get('decisions', [])
     trace = read_json(folder / 'traceability.json', {})
     fixes = read_json(folder / 'fixes.json', {}).get('fixes', [])
+    regression = read_json(folder / 'regression-review.json', {})
     quality = read_json(root / '.agent-workflow/project-baseline/quality-report.json', {})
     lines = [f"# Delivery report — {feature['id']}", '', ARCHIVE_DRAFT_MARKER,
              '', 'Status: **DRAFT — REVIEW REQUIRED**', '',
@@ -126,6 +141,12 @@ def build_report(root, folder, req, revision, diagnostics):
         lines += ['No quality report results recorded.']
     lines += ['', '## Fixes', '']
     lines += table(['ID', 'Status', 'Kind', 'Tested revision'], [(f.get('id',''), f.get('status',''), f.get('kind',''), f.get('tested_revision','')) for f in fixes]) if fixes else ['No fixes recorded.']
+    lines += ['', '## Historical regression review', '']
+    if isinstance(regression, dict) and isinstance(regression.get('candidates'), list):
+        rows = regression_rows(regression)
+        lines += table(['Historical fix', 'Match', 'Action', 'Result'], rows) if rows else ['No related verified fixes were found from registered modules and paths.']
+    else:
+        lines += ['Historical regression review not adopted for this feature.']
     lines += ['', '## Archive preflight', '',
               f"- Structural check: {diagnostics['validation']['status']} (rc={diagnostics['validation']['returncode']})",
               f"- Delivery audit: {diagnostics['audit']['status']} (rc={diagnostics['audit']['returncode']})",

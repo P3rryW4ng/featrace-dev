@@ -54,6 +54,8 @@ python3 scripts/install.py --agent codex
 
 `clarify` 将影响需求或验收的疑问记入现有决策文件，先调查、再确认并同步；普通解释不强制登记。已观察到效果不符用 `fix`，两个入口可共享决策。普通对话留痕依赖 Skill 已加载和 Agent 识别，显式命令更可靠。
 
+开发前和检查前会按已登记模块与代码路径查找当前及其他需求中的 verified FIX，要求逐项选择重测或说明不相关；它不会自动重开旧问题，也不把候选列表宣称为完整依赖分析。
+
 补接口：`/dev api /路径/api.yaml --feature FEAT-001`；补设计：`/dev figma <链接或导出文件> --feature FEAT-001`。Agent 会把可访问的本地证据一次登记到来源清单与需求路径，避免两处手工同步。Codex 替换开头为 `$dev`。这些输入发给 Agent，不是在终端运行的命令。在线资料需要已有连接器或可读取的导出文件。
 
 Claude Code 的 `/dev` 来自标准个人 Skill 目录；Codex 用 `$dev` 显式选择 Skill。参见 [Claude 官方说明](https://code.claude.com/docs/en/skills) 和 [Codex 官方说明](https://learn.chatgpt.com/docs/build-skills)。首次安装后打开新会话；若仍未出现，检查安装输出中的目录和工具配置。

@@ -10,6 +10,7 @@ from fixes import render_fixes
 from clarifications import render_decisions
 from impact import render_impact
 from verification import render as render_verification
+from regression_review import render as render_regression_review
 
 
 def load(path):
@@ -49,6 +50,7 @@ def main():
     render_fixes(feature_dir, sys.argv[2])
     render_impact(feature_dir)
     render_verification(feature_dir)
+    render_regression_review(feature_dir)
     print("WORKSPACE_RENDERED")
 
 

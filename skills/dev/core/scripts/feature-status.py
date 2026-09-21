@@ -35,6 +35,16 @@ print(f"FIXES: unresolved={open_fixes}/{len(fixes)}")
 verified = sum(fix.get('status') == 'verified' for fix in fixes if isinstance(fix, dict))
 closed = sum(fix.get('status') == 'closed' for fix in fixes if isinstance(fix, dict))
 print(f"FIX_OUTCOMES: recorded_verified={verified}, recorded_closed={closed}; run validation to check evidence")
+review_path = folder / 'regression-review.json'
+if review_path.exists():
+    review = load(review_path)
+    candidates = review.get('candidates', []) if isinstance(review, dict) else []
+    dispositions = review.get('dispositions', []) if isinstance(review, dict) else []
+    retest = sum(row.get('action') == 'retest' for row in dispositions if isinstance(row, dict))
+    excluded = sum(row.get('action') == 'not_applicable' for row in dispositions if isinstance(row, dict))
+    print(f"HISTORICAL_REGRESSION: candidates={len(candidates)}, retest={retest}, not_applicable={excluded}, pending={max(0, len(candidates) - len(dispositions))}")
+elif req['feature'].get('history_regression_required'):
+    print('HISTORICAL_REGRESSION: missing')
 decisions = load(folder / "decisions.json").get("decisions", [])
 clarifications = [d for d in decisions if isinstance(d, dict) and isinstance(d.get('clarification'), dict)]
 unresolved = sum(d.get('status') in ('pending', 'blocked') for d in clarifications)

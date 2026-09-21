@@ -14,7 +14,8 @@ def report(root, feature_id, modules):
     prefix = '.agent-workflow/features/' + feature_id + '/'
     names = ['spec/requirements.json', 'spec/prd-intake.json', 'spec/spec.md', 'tasks.json', 'tasks.md',
              'decisions.json', 'decisions.md', 'traceability.json', 'traceability.md', 'fixes.json', 'fixes.md',
-             'impact.json', 'impact.md', 'verification.json', 'verification.md', 'revisions', 'revisions.md', 'delivery-report.md']
+             'impact.json', 'impact.md', 'verification.json', 'verification.md', 'regression-review.json',
+             'regression-review.md', 'revisions', 'revisions.md', 'delivery-report.md']
     paths = [prefix + n for n in names]
     paths += ['.agent-workflow/modules/index.json', '.agent-workflow/modules/index.md']
     for name in modules:

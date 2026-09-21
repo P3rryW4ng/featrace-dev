@@ -34,6 +34,8 @@ Run `validate-feature.py --stage develop` while repairing; unresolved fixes warn
 
 ## Regression scope
 
+This section protects the fix being handled now. For later features that may touch an already verified repair, follow [historical-regression.md](historical-regression.md); do not edit the old fix to claim a new run.
+
 For `verified`, `regression_test_ids` is a string array of tests declared in requirements.json. Each selected test must belong to a requirement in this fix's `requirement_ids`, or to a requirement linked from its affected `task_ids`. A shared/end-to-end test declared elsewhere is allowed with `regression_scope_notes`, an object mapping that selected test ID to a non-empty explanation of how it covers this fix. Unknown test IDs and notes for unselected tests are rejected; a waiver does not bypass invalid links. For example:
 
 ```json

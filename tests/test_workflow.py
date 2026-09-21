@@ -47,6 +47,8 @@ class WorkflowTests(unittest.TestCase):
     def test_init_preserves_bytes_and_extension_and_refuses_overwrite(self):
         self.init()
         self.assertEqual((self.folder / 'sources/prd-original.txt').read_bytes(), self.prd.read_bytes())
+        requirements = json.loads((self.folder / 'spec/requirements.json').read_text())
+        self.assertTrue(requirements['feature']['history_regression_required'])
         before = (self.folder / 'spec/requirements.json').read_bytes()
         self.run_script(CORE / 'init-feature.py', 'FEAT-001', self.prd, self.root, expected=1)
         self.assertEqual((self.folder / 'spec/requirements.json').read_bytes(), before)
