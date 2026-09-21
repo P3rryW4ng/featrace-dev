@@ -1,6 +1,6 @@
 # Natural-language continuation (`next`)
 
-`/dev next [description] [--feature ID]` is the normal continuation entry after a feature exists. It reduces command recall; it does not replace the underlying workflow contracts or create a second state machine.
+`/dev next [description] [--feature ID]` is the normal continuation entry after a feature exists. In active session delivery mode, ordinary delivery messages are treated as this entry without requiring the `/dev next` prefix. It reduces command recall; it does not replace the underlying workflow contracts or create a second state machine.
 
 ## Resolve context first
 

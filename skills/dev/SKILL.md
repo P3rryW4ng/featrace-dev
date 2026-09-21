@@ -1,6 +1,6 @@
 ---
 name: dev
-description: Deliver PRD-driven software features with persistent specifications, source reconciliation, tasks, and validation. Use for dev help/next/revise/archive/restore/classify/list/use/scan/prd/api/figma/develop/clarify/fix/check/status requests or staged feature delivery; not isolated coding questions. Android has a bundled adapter; other stacks use evidence-based generic configuration.
+description: Deliver PRD-driven software features with persistent specifications, source reconciliation, tasks, and validation. Use for dev session mode, help/next/revise/archive/restore/classify/list/use/scan/prd/api/figma/develop/clarify/fix/check/status requests, or continued feature-delivery messages after mode activation; not isolated coding questions. Android has a bundled adapter; other stacks use evidence-based generic configuration.
 ---
 
 # Feature Delivery
@@ -8,6 +8,8 @@ description: Deliver PRD-driven software features with persistent specifications
 Use the project root supplied by the user or established by the current workspace. All paths below are relative to this Skill directory, not the target project. Run scripts with explicit project paths. Never create project records inside the installed Skill.
 
 ## Commands
+
+For `/dev` with no arguments, `dev off`, or continued messages after activation, read `core/references/session-mode.md` first. Empty `/dev` activates delivery mode without starting work. While active, ordinary feature-delivery text defaults to `next`, and bare recognized command words are accepted for this conversation and project.
 
 Handle `help [command]` first, before project setup, feature selection or any workflow action. Read `core/references/command-help.md` and answer in the user's language. Help needs no project or selected feature; do not scan, run checks, create records, change selection, install anything or execute the command being explained. Return after showing help. Unknown help topics get a short correction and the command list, never an inferred execution.
 
@@ -17,6 +19,7 @@ Accept plain `dev ...` when this skill is selected. These are agent instructions
 
 | Action | Behavior |
 |---|---|
+| mode (no arguments) / off | Enter or leave conversational delivery mode for the current project and session |
 | help [command] | Show grouped command summaries or one command's usage, example and distinctions; no project required |
 | next [description] [--feature ID] | Read current state, route natural-language input to the applicable existing workflow, and perform it |
 | list [--archived / --all] [--module <label>] | List active features by default; optionally include history or filter modules |

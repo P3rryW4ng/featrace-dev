@@ -1,5 +1,11 @@
 # 验证与评估记录
 
+## 0.5.8 — 2026-09-21
+
+新增会话开发模式运行说明、退出规则、裸命令映射和 Claude Code `/status` 冲突说明。静态一致性及 Markdown 本地链接检查通过：VERSION 为 0.5.8，SKILL 正确引用 session-mode，帮助、README、使用流程图、架构决策和路线图已同步，`git diff --check` 通过。本版本未修改确定性脚本，因此未重新运行完整脚本回归，也没有把 0.5.6 的 172/172 作为新结果。
+
+通用 `quick_validate.py` 已尝试运行，但本机仍缺少 PyYAML，报 `ModuleNotFoundError: yaml`，不记为通过。该模式是 Claude 对话上下文中的软状态，尚未经过真实 Claude Code 多轮会话、上下文压缩或项目切换验证。它不提供跨会话持久化保证，也不替代 feature ID、归档恢复和质量门禁。当前源码尚未提交、推送或安装，本机 Claude Code 仍为 0.5.7。
+
 ## 0.5.7 — 2026-09-21
 
 新增 `/dev next` 的运行说明、分流规则、命令帮助和使用流程图。静态一致性检查通过：版本为 0.5.7，Skill 命令表与 `next-workflow.md` 互相引用，api/figma/clarify/revise/fix/develop/check 七条目标路线齐全，README、help、使用指南、架构决策和路线图均已同步；相关 Markdown 本地链接存在，`git diff --check` 通过。

@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.5.8 — 2026-09-21
+
+- `/dev` 无参数时进入当前会话、当前项目的开发模式；后续普通需求描述默认按 `next` 处理。
+- 开发模式中可直接输入 `prd`、`status`、`check` 等裸命令词；`dev off` 退出。模式不写入项目，不跨会话或项目持久化。
+- 明确保留 Claude Code 内置 `/status`，需求状态使用普通文字 `status` 或 `/dev status`；底层选择、记录和门禁规则不变。
+
 ## 0.5.7 — 2026-09-21
 
 - 新增 `/dev next [自然语言描述] [--feature ID]` 日常统一入口：先读当前状态，再自动进入已有的 api/figma/clarify/revise/fix/develop/check 流程并实际执行。
