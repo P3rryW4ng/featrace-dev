@@ -9,6 +9,7 @@ from feature_lifecycle import metadata
 from fixes import render_fixes
 from clarifications import render_decisions
 from impact import render_impact
+from verification import render as render_verification
 
 
 def load(path):
@@ -47,6 +48,7 @@ def main():
     render_intake(feature_dir)
     render_fixes(feature_dir, sys.argv[2])
     render_impact(feature_dir)
+    render_verification(feature_dir)
     print("WORKSPACE_RENDERED")
 
 

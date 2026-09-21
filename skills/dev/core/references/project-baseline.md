@@ -1,5 +1,7 @@
 # Project baseline
 
+Since 0.5.4, module-context.md defines scoped dossier review. Plain scan still uses this full-baseline contract; scan --module and known-scope feature investigation can reuse the module catalog instead of repeating full semantic review. The global snapshot/check behavior below is unchanged. Module receipts are per-scope content checks, not a replacement for quality-report identity.
+
 ## Scan contract
 
 `project.py scan-prepare <PROJECT>` prepares an isolated baseline draft, inventories build manifests and chooses android or generic. Edit the printed `baseline-draft/baseline` directory, never the current baseline during scan review. The scanner does not interpret module semantics. Before declaring the scan ready, the Agent must:

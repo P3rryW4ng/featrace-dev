@@ -8,6 +8,7 @@ import sys
 
 from project import snapshot
 from revisions import binding
+from verification import validate_verification
 
 
 def audit(root, feature_id):
@@ -64,6 +65,7 @@ def audit(root, feature_id):
         for test in regression:
             if test not in selected:
                 errors.append('%s regression test not selected by a passed check: %s' % (fix.get('id', '?'), test))
+    errors.extend(validate_verification(root, feature, req, 'check'))
     return errors
 
 

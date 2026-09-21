@@ -44,3 +44,15 @@ baseline, _, pending = inspect(folder, req)
 if baseline:
     print("BASELINE: confirmed=%s, verified=%s, pending=%s" % (baseline["version"], max((x["version"] for x in baseline["deliveries"]), default=0), ",".join(x["id"] for x in pending) or "none"))
 print("COMPLETION: not evaluated; review decisions, source applicability, tasks and current quality evidence")
+if (folder / 'verification.json').exists():
+    from verification import load_plan, context, state
+    try:
+        plan = load_plan(folder)
+        stamp, _ = context(root, folder, plan)
+        counts = {}
+        for row in plan['items']:
+            key = state(row, stamp)
+            counts[key] = counts.get(key, 0) + 1
+        print('VERIFICATION: ' + ', '.join(f'{k}={v}' for k, v in sorted(counts.items())))
+    except (OSError, ValueError, TypeError, KeyError) as exc:
+        print('VERIFICATION: needs synchronization/review: ' + str(exc))

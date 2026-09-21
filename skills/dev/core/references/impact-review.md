@@ -49,6 +49,8 @@ The digest includes changed file contents/modes, inspected files and checklist m
 
 ## Limits and sharing
 
+When verification.json is adopted, current impact behavior evidence comes from its corresponding rows; do not duplicate manual results into impact.json. Follow verification-workflow.md for generated lists, mapped checks and manual observation recording. Old inline verification remains historical; missing/stale list evidence cannot fall back to it.
+
 Requires Git with an existing ancestor commit and regular file paths; symlinks/submodules require manual handling and are not automatically validated. Ignored new files and workflow records are excluded from scope discovery; explicitly inspect ignored business sources. The helper reads Git changes and registered files, not a full-project semantic scan. History-only commits do not stale content evidence; still report actual tested build identity. Scripts cannot prove source completeness, authority or test execution. Historical fix verification is not automatically propagated.
 
 Share impact.json and generated view with feature records after normal sensitivity review. No automatic commit, push or installation.

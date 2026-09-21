@@ -109,11 +109,17 @@ def validate_impact(root, folder, req, stage):
                 errors.append('unresolved impact behavior: ' + b['id'])
         current = snapshot(root, doc)
         if stage == 'check':
+            list_results = None
+            if (folder / 'verification.json').exists():
+                from verification import impact_results
+                list_results = impact_results(root, folder)
             outside = set(current['changed_paths']) - set(doc['allowed_paths']) - set(excluded)
             if outside:
                 errors.append('unreviewed scope expansion: ' + ', '.join(sorted(outside)))
             for b in behaviors:
                 result = b.get('verification', {})
+                if list_results is not None:
+                    result = list_results.get(b['id'], {})
                 if not isinstance(result, dict) or result.get('status') not in ('passed', 'waived') or not text(result.get('evidence')) or not text(result.get('method')):
                     errors.append('behavior needs actual regression evidence or explicit waiver: ' + b['id'])
                 elif result.get('digest') != current['digest']:

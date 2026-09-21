@@ -1,6 +1,6 @@
 # Archive and module classification (0.4.11)
 
-Archive is a visibility/lifecycle marker in `spec/requirements.json`, independent of `feature.status`. It preserves directories, IDs, sources, fixes, decisions and delivery evidence. No compression, deletion, automatic upload or current-module behavior index is implemented.
+Archive is a visibility/lifecycle marker in `spec/requirements.json`, independent of `feature.status`. It preserves directories, IDs, sources, fixes, decisions and delivery evidence. No compression, deletion or automatic upload. Since 0.5.4, module-context.md separately defines reviewed current module dossiers; archive itself does not merge historical requirements into them.
 
 ## Agent commands
 
@@ -14,6 +14,12 @@ Archive is a visibility/lifecycle marker in `spec/requirements.json`, independen
 Resolve optional IDs with the session rules and show project/ID/title. Neither archive, restore nor classify changes the current selection or Git branch. `use` and `status` can read an archived feature; clearly display archived state. When a previously selected feature has been archived in another session, re-reading metadata detects it before further work. For develop/check or source/requirement/task edits, restore first. The user asking to fix or clarify an archived feature authorizes restoring it for that work: state this and record the reason, then register the problem; do not silently leave it hidden. Read-only historical questions do not require restoration.
 
 ## Archive boundary
+
+Since 0.5.5 the helper prints GIT_RECORD_STATUS after metadata changes (also on idempotent archive/restore). It lists candidate shared feature records and registered module files that are untracked, uncommitted or ignored by policy. This is not a commit manifest or sensitivity approval. Originals/raw evidence are excluded from default candidates. Missing Git/upstream is reported as unavailable/unknown, not saved or uploaded. Local ahead/behind counts do not verify remote freshness; no fetch occurs.
+
+After rendering views, inspect final Git status again. Tell the user separately: archive state, uncommitted shared records, and known local tracking state. Recommend committing reviewed records with the corresponding code branch; commit/push only when authorized. Never claim archived means saved to Git, silently stage everything, force-add ignored files, or switch/stash their working tree. Untracked/ignored files can follow branch switches; tracked dirty files also require deliberate handling. This check informs rather than blocks archive, because the archive metadata change itself needs a subsequent commit.
+
+Latest integration: adopted impact, verification-list and module-context checks also run through the structural check below. Stale current-worktree evidence can block archive even when an older report describes accepted delivery. Do not manufacture new evidence to bypass this. See module-context.md for module dossier updates and this historical/current eligibility limitation.
 
 Before archiving, verify that the feature is complete, required decisions and fixes are resolved, and actual delivery has been accepted on the recorded code revision. Read the delivery report and its referenced results: test/gate and manual evidence, applicability, known limitations. Missing evidence or open cleanup blocks archive; do not set complete merely to make archive succeed. An old accepted revision need not equal today's project HEAD: later unrelated deliveries do not invalidate the historical acceptance. Do not rerun historical builds automatically just to archive.
 

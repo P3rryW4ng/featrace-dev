@@ -10,6 +10,7 @@ import subprocess
 import sys
 import tempfile
 from feature_lifecycle import read_record, metadata
+from archive_git import show as show_git_status
 
 
 def main():
@@ -38,6 +39,7 @@ def main():
         target = args.action == "archive"
         if archive["archived"] == target:
             print("ARCHIVE_UNCHANGED")
+            show_git_status(root, args.feature_id, modules)
             return 0
         if not args.reason.strip():
             raise ValueError("Archive/restore reason is required")
@@ -88,6 +90,7 @@ def main():
         if temp and temp.exists():
             temp.unlink()
     print("FEATURE_" + args.action.upper() + ": " + args.feature_id)
+    show_git_status(root, args.feature_id, feature.get('modules', []))
     return 0
 
 

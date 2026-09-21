@@ -8,7 +8,7 @@ This is display guidance, not a request to execute examples. `/dev help` shows t
 
 | 命令 | 功能 | 示例 |
 |---|---|---|
-| scan | 盘点项目并建立或刷新技术背景 | `/dev scan` |
+| scan | 建立全局背景，或按模块核对相关实现 | `/dev scan --module wallet` |
 | prd | 保留需求资料并创建需求、任务和验收记录 | `/dev prd ./prd.md --feature FEAT-001` |
 | api | 补充接口资料并核对影响 | `/dev api ./api.yaml --feature FEAT-001` |
 | figma | 补充设计资料并核对交互与视觉要求 | `/dev figma <设计链接或导出文件> --feature FEAT-001` |
@@ -26,7 +26,7 @@ This is display guidance, not a request to execute examples. `/dev help` shows t
 
 | 命令 | 功能 | 示例 |
 |---|---|---|
-| check | 执行适用检查，核对交付证据与缺口 | `/dev check FEAT-001` |
+| check | 生成验证列表、执行自动检查并列出剩余人工验收项 | `/dev check FEAT-001` |
 | status | 只读查看进度、阻塞与下一步 | `/dev status FEAT-001` |
 
 ### 需求管理
@@ -44,7 +44,7 @@ This is display guidance, not a request to execute examples. `/dev help` shows t
 ## Detail notes (show only the requested command)
 
 - help: optional command name; no arguments shows overview. It does not run the described action.
-- scan: first project use or requested refresh. No feature ID; scope is project background, not per-feature implementation or exhaustive code understanding. Existing valid baseline can be reused.
+- scan: first project use or requested refresh. Plain scan refreshes project background; optional repeated --module labels select scoped dossiers plus declared dependencies/callers. Unknown modules require catalog investigation. No exhaustive understanding guarantee; existing current notes can be reused.
 - prd: required file and `--feature ID`; optional repeated `--source file` for additional documents/HTML. One source suffices. Creates a new feature and refuses an existing ID; use revise for changed confirmed meaning, not another prd overwriting the same feature.
 - api: required file/link; optional `--feature ID` when already selected. Supplementary API evidence, not creation of a new feature. Remote retrieval needs an available connector or supplied export.
 - figma: required link/export; optional `--feature ID` when already selected. Supplementary design evidence; no automatic connector installation or assumption that every URL is readable.
@@ -52,7 +52,7 @@ This is display guidance, not a request to execute examples. `/dev help` shows t
 - clarify: optional positional ID and required question/proposal. Use when expected behavior is unclear; confirmation and implementation are separate. It does not automatically authorize code edits. An observed failure belongs in fix; a confirmed change to requirement meaning uses revise.
 - fix: optional positional ID and required observed problem. Preserve expected/actual behavior and investigate cause. Pure code defects keep requirement meaning unchanged; a requirement change discovered during investigation follows revise with approval evidence.
 - revise: optional positional ID, required change description, optional repeated `--source file`. Use for corrections/additions to confirmed requirement meaning. Later text is not automatically authoritative; resolve approval and version conflicts before applying. Confirmation does not mean implementation or acceptance is complete.
-- check: optional positional ID after selection. Runs selected project checks and reviews evidence; may execute builds/tests. A structural pass alone is not delivery completion. status only reports existing state.
+- check: optional positional ID after selection. Generates acceptance rows, runs selected mapped checks and lists remaining manual work; may execute builds/tests. Builds do not automatically pass UI acceptance. A structural pass alone is not delivery completion. status only reports existing state.
 - status: optional positional ID after selection. Read-only summary, not a fresh build/test or proof of completion.
 - list: no ID; optional `--archived` for archive history or `--all` for both active/history, optional `--module label`. Default is active features. Lists without changing selection.
 - use: required ID. Changes only this conversation's selection for this project, not Git branch or business status. New/uncertain context requires selection again.
