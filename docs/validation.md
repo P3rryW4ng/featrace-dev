@@ -1,5 +1,11 @@
 # 验证与评估记录
 
+## 0.5.7 — 2026-09-21
+
+新增 `/dev next` 的运行说明、分流规则、命令帮助和使用流程图。静态一致性检查通过：版本为 0.5.7，Skill 命令表与 `next-workflow.md` 互相引用，api/figma/clarify/revise/fix/develop/check 七条目标路线齐全，README、help、使用指南、架构决策和路线图均已同步；相关 Markdown 本地链接存在，`git diff --check` 通过。
+
+本次只修改 Agent 指令和文档，没有改确定性脚本，因此未把 0.5.6 的 172/172 回归描述成重新执行。通用 `quick_validate.py` 已尝试运行，但本机缺少 PyYAML，报 `ModuleNotFoundError: yaml`，不记为通过。自然语言路由仍需真实会话验证，尤其是图片用途判断、`fix` 与 `revise` 的边界、无描述时是否减少追问。当前源码尚未提交、推送或安装，本机 Claude Code 仍为 0.5.6。
+
 ## 0.5.6 — 2026-09-21
 
 完整合成回归 172/172 通过（31.444 秒，新增 5 项）。新增覆盖：新建需求默认 `workflow_version=2` 和 `impact_required=true`；设计/API 来源的单次登记、两处索引同步、对应来源状态、原字节保留及幂等重入；相同内容不允许悄然改变来源类型；被篡改的越界来源路径在复制前被拒绝；新工作区在有模块目录时必须选择模块或记录不适用理由，已选模块在 develop/check 都需要当前档案。

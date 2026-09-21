@@ -1,8 +1,14 @@
 # Command help
 
-This is display guidance, not a request to execute examples. `/dev help` shows the four groups below, one short explanation and one example per command, plus help itself. `/dev help <command>` shows only that command's syntax from SKILL.md, when to use it, required/optional parameters, one example and the relevant distinction below. Keep explanations brief, in the user's language; use `$dev` for Codex and `/dev` for Claude. Unknown topics: state not supported and show available names; do not execute a guessed command. Do not require project access or feature selection for help.
+This is display guidance, not a request to execute examples. `/dev help` shows the five groups below, one short explanation and one example per command, plus help itself. `/dev help <command>` shows only that command's syntax from SKILL.md, when to use it, required/optional parameters, one example and the relevant distinction below. Keep explanations brief, in the user's language; use `$dev` for Codex and `/dev` for Claude. Unknown topics: state not supported and show available names; do not execute a guessed command. Do not require project access or feature selection for help.
 
 ## Overview (Chinese examples; localize when needed)
+
+### 日常入口
+
+| 命令 | 功能 | 示例 |
+|---|---|---|
+| next | 读取当前进度，用自然语言自动选择并执行下一条现有流程 | `/dev next 我拿到了新的设计图片，路径是 ./assets/` |
 
 ### 需求准备
 
@@ -39,11 +45,12 @@ This is display guidance, not a request to execute examples. `/dev help` shows t
 | archive | 将已完成且有验收依据的需求原地归档 | `/dev archive FEAT-001` |
 | restore | 恢复已归档需求，保留原有历史 | `/dev restore FEAT-001` |
 
-`/dev help` 查看总览；`/dev help fix` 查看单个命令。选择需求后，同会话同项目的功能命令可省略 ID；新建 prd 仍必须明确 `--feature`，新会话不猜当前需求。
+`/dev help` 查看总览；`/dev help next` 查看统一入口；`/dev help fix` 查看单个精确命令。选择需求后，同会话同项目的功能命令可省略 ID；新建 prd 仍必须明确 `--feature`，新会话不猜当前需求。
 
 ## Detail notes (show only the requested command)
 
 - help: optional command name; no arguments shows overview. It does not run the described action.
+- next: optional natural-language description and optional `--feature ID`; requires a selected or explicit existing feature. It reads status, announces and executes the applicable existing route. Images are classified by role: expected/replacement visuals use figma, failure screenshots use fix. New feature creation stays with prd; ambiguous product authority gets one focused clarification.
 - scan: first project use or requested refresh. Plain scan refreshes project background; optional repeated --module labels select scoped dossiers plus declared dependencies/callers. Unknown modules require catalog investigation. No exhaustive understanding guarantee; existing current notes can be reused.
 - prd: required file and `--feature ID`; optional repeated `--source file` for additional documents/HTML. One source suffices. Creates a new feature and refuses an existing ID; use revise for changed confirmed meaning, not another prd overwriting the same feature.
 - api: required file/link; optional `--feature ID` when already selected. Supplementary API evidence is preserved through the single source-registration helper before reconciliation, not creation of a new feature. Remote retrieval needs an available connector or supplied export.
