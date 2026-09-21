@@ -4,7 +4,7 @@
 
 CASE-03 在 OGFR-2577 complete 需求中验证了 0.5.8 会话模式：裸 `status`、普通“继续当前需求”默认路由和 `dev off` 均符合预期。进度提问“这个需求还有哪些问题”额外运行 validate/audit，确认统一入口的只读边界过宽；本版已改为只读现有状态，除非明确要求新验证。
 
-同次实测复现质量闭环缺陷：检查报告绑定 `69ed8d4ce`，纯 `.agent-workflow/**` 收口提交 `302bf0b3a` 推进 HEAD 后，audit 报 stale。实现改为先比较快照非 HEAD 字段，再检查两个提交的路径差异；只有全部变化均为 `.agent-workflow/**` 时保留质量证据。新增两项回归：纯记录提交通过，记录与 README 混合提交仍 stale。目标测试 `tests.test_delivery_audit` 7/7 通过；完整合成回归 174/174 通过（26.984 秒）。随后使用 0.5.9 源码对真实业务仓 OGFR-2577 只读复查，返回 `DELIVERY_EVIDENCE_CURRENT`，确认纯记录收口提交不再造成 stale；未重跑业务构建或真机验收。
+同次实测复现质量闭环缺陷：检查报告绑定 `69ed8d4ce`，纯 `.agent-workflow/**` 收口提交 `302bf0b3a` 推进 HEAD 后，audit 报 stale。实现改为先比较快照非 HEAD 字段，再检查两个提交的路径差异；只有全部变化均为 `.agent-workflow/**` 时保留质量证据。新增两项回归：纯记录提交通过，记录与 README 混合提交仍 stale。目标测试 `tests.test_delivery_audit` 7/7 通过；完整合成回归 174/174 通过（26.984 秒）。随后使用 0.5.9 源码对真实业务仓 OGFR-2577 只读复查，返回 `DELIVERY_EVIDENCE_CURRENT`，确认纯记录收口提交不再造成 stale；未重跑业务构建或真机验收。功能提交 `833903c938d81e47d0758546274f131d311a0386` 已推送到 `origin/main`。Claude Code 安装器返回 `INSTALLED`，标记版本 0.5.9；安装目录与仓库 `skills/dev` 只相差安装标记文件，旧版备份位于 `/Users/mac/.feature-delivery/backups/20260921T073254-claude-3bd23ff7`。安装版再次审计 OGFR-2577，同样返回 `DELIVERY_EVIDENCE_CURRENT`。
 
 ## 0.5.8 — 2026-09-21
 
