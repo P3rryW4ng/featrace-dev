@@ -15,6 +15,20 @@
         "source_status"
       ],
       "properties": {
+        "workflow_version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "impact_required": {
+          "type": "boolean"
+        },
+        "module_context_required": {
+          "type": "boolean"
+        },
+        "module_context_note": {
+          "type": "string",
+          "minLength": 1
+        },
         "modules": {
           "type": "array",
           "items": {

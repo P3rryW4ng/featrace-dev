@@ -1,4 +1,4 @@
-# Scoped module knowledge (0.5.4)
+# Scoped module knowledge (0.5.6)
 
 Use during scan, feature intake/develop/fix/revise investigation and delivery. Keep original feature archives unchanged. Module dossiers describe reviewed current implementation; historical requirements document what was delivered then. Neither replaces the other or overrides confirmed product intent.
 
@@ -31,7 +31,7 @@ python3 core/scripts/module_context.py plan <PROJECT> --feature FEAT-001
 
 Feature form uses its registered modules. No selection/unknown module is an error, not an invitation to guess. Multiple --module values are supported. Plan expands to declared direct callers of selected modules and recursive dependencies of that set; cycles terminate. It reads only files under those roots and their registered external/global evidence, using Git's tracked/nonignored-untracked inventory. It returns scope, changed files, current digest, dossier path, reviewed commit and current/stale/unreviewed/gaps status. Code additions/deletions/working-tree edits and global evidence changes invalidate relevant receipts; unrelated commits alone do not. It does not read every source module or infer dynamic callers.
 
-Before a new feature, read overview and relevant current dossiers, then inspect the actual insertion point and current caller/state paths. A current receipt means recorded bytes/notes match, not that every implementation detail was understood. New requested behavior can require additional reading even with unchanged files. Populate impact.json using actual investigation and classify the feature modules; do not copy a module summary as proof of complete impact analysis.
+Before a new feature, read overview and relevant current dossiers, then inspect the actual insertion point and current caller/state paths. New workflow workspaces use `workflow_version: 2`: when a module catalog exists, develop/check require an explicit module choice. Set `module_context_required: true` with registered `feature.modules`, or set it to false and record a nonempty `module_context_note` explaining why no catalog module applies. This is a scope decision, not a shortcut for an unknown module. A current receipt means recorded bytes/notes match, not that every implementation detail was understood. New requested behavior can require additional reading even with unchanged files. Populate impact.json using actual investigation and classify the feature modules; do not copy a module summary as proof of complete impact analysis.
 
 When a dependency changes, reconsider callers' described behavior even if their own files are unchanged. Plan surfaces the stale dependency, but does not automatically prove whether other dossiers' semantic claims remain valid; update affected descriptions with evidence.
 
@@ -66,7 +66,7 @@ Review refuses changed evidence; it stamps current Git revision, file hashes and
 
 ## Delivery and archive
 
-When adopting for a feature set feature.module_context_required=true and assign feature.modules. Before develop investigate plan findings; after edits refresh affected module bodies, preserving accurate unchanged facts and historical links. Check requires current dossiers for selected scope. No automatic baseline migration for old untouched features; the Agent must adopt the mechanism during new scoped work. This flag is metadata, not a product requirement change.
+When adopting for a feature set `feature.module_context_required=true` and assign `feature.modules`. Develop and check both require current dossiers for the selected scope; investigate/review before editing, then refresh affected module bodies after edits while preserving accurate unchanged facts and historical links. New workflow workspaces with a catalog cannot silently omit this choice. No automatic baseline migration applies to old untouched features. These fields are metadata, not a product requirement change.
 
 After accepted delivery, add the feature ID to relevant module dossiers and explain final behavior/known limits, then re-register review if notes changed. Archiving retains the same feature folder and module labels; list --archived --module finds history. Archive does not automatically interpret and merge an old PRD into module rules. Restoration preserves history; re-read current module evidence before a new edit.
 

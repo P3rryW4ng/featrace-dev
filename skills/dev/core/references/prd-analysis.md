@@ -2,9 +2,11 @@
 
 Read for `dev prd`, PRD revisions, and when API/Figma reconciliation changes requirement meaning. This standardizes the analysis process, not the author's document format. Never demand that the product author rewrite a PRD to our template.
 
+Registered evidence kinds are `document`, `html`, `design`, and `api`. Initial `/dev prd` files are inferred as document/HTML. Supplementary API or Figma evidence is copied and indexed with `register-source.py`; a design link without a direct export first needs a local manifest containing its exact URL/node/version and observed access limits. Registration does not count as reading or semantic reconciliation.
+
 ## 1. Reading inventory
 
-A feature may contain only a document, only HTML, or both. Initialize with one primary file and repeat `--source` for additional files. `sources` registers every supplied part; no document or HTML type is mandatory. Preserve all originals in sources/. A linked URL is only a reference until its content is accessible. If HTML depends on CSS, scripts, images or a server, verify those dependencies or record the resulting reading gap; a bare HTML file may not reproduce the interaction.
+A feature may start with only a document, only HTML, or both, then receive API/design evidence. Initialize with one primary file and repeat `--source` for additional document/HTML files. `sources` registers every supplied part; no source kind is universally mandatory. Preserve all originals in sources/. A linked URL is only a reference until its content is accessible. If HTML depends on CSS, scripts, images or a server, verify those dependencies or record the resulting reading gap; a bare HTML file may not reproduce the interaction.
 
 Preserve the original in sources/. Inventory meaningful sections, tables, figures, notes and referenced attachments as units. Group at a useful granularity; don't create an item for every sentence or formatting character. Record each unit's source path, exact locator, kind and reading status. For external links, retain a reference artifact in sources/ and mark pending/unreadable until actual content has been read; a saved URL is not its contents.
 

@@ -2,7 +2,7 @@
 
 把 PRD 转换为可追溯的需求、开发任务和验证记录，支持后补 API / Figma、冲突决策和持续迭代。
 
-当前源码版本 **0.5.0**：通用工作流 + Android 适配 + Generic 适配。iOS/Web/后端可用通用流程，但没有专属自动化适配器。此工具由 Agent 执行需求理解和编码，脚本负责部分确定性检查；不能保证零遗漏或零 bug。
+当前源码版本 **0.5.6**：通用工作流 + Android 适配 + Generic 适配。iOS/Web/后端可用通用流程，但没有专属自动化适配器。此工具由 Agent 执行需求理解和编码，脚本负责部分确定性检查；不能保证零遗漏或零 bug。
 
 ## 最快开始
 
@@ -50,7 +50,7 @@ python3 scripts/install.py --agent codex
 
 `clarify` 将影响需求或验收的疑问记入现有决策文件，先调查、再确认并同步；普通解释不强制登记。已观察到效果不符用 `fix`，两个入口可共享决策。普通对话留痕依赖 Skill 已加载和 Agent 识别，显式命令更可靠。
 
-补接口：`/dev api /路径/api.yaml --feature FEAT-001`；补设计：`/dev figma <链接或导出文件> --feature FEAT-001`。Codex 替换开头为 `$dev`。这些输入发给 Agent，不是在终端运行的命令。在线资料需要已有连接器或可读取的导出文件。
+补接口：`/dev api /路径/api.yaml --feature FEAT-001`；补设计：`/dev figma <链接或导出文件> --feature FEAT-001`。Agent 会把可访问的本地证据一次登记到来源清单与需求路径，避免两处手工同步。Codex 替换开头为 `$dev`。这些输入发给 Agent，不是在终端运行的命令。在线资料需要已有连接器或可读取的导出文件。
 
 Claude Code 的 `/dev` 来自标准个人 Skill 目录；Codex 用 `$dev` 显式选择 Skill。参见 [Claude 官方说明](https://code.claude.com/docs/en/skills) 和 [Codex 官方说明](https://learn.chatgpt.com/docs/build-skills)。首次安装后打开新会话；若仍未出现，检查安装输出中的目录和工具配置。
 

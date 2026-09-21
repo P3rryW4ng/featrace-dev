@@ -84,8 +84,8 @@ def validate_intake(folder, req_doc, stage, require_review=True):
             return errors + ['sources must be an array'], warnings
         paths, ids = set(), set()
         for row in registered:
-            if not isinstance(row, dict) or not text(row.get('id')) or not text(row.get('path')) or row.get('kind') not in {'document', 'html'}:
-                errors.append('each source needs id, path and document/html kind'); continue
+            if not isinstance(row, dict) or not text(row.get('id')) or not text(row.get('path')) or row.get('kind') not in {'document', 'html', 'design', 'api'}:
+                errors.append('each source needs id, path and document/html/design/api kind'); continue
             if row['id'] in ids or row['path'] in paths:
                 errors.append('duplicate source id or path')
             ids.add(row['id']); paths.add(row['path'])
@@ -94,7 +94,7 @@ def validate_intake(folder, req_doc, stage, require_review=True):
             except (ValueError, OSError) as exc:
                 errors.append(row['id'] + ': ' + str(exc))
         if not paths:
-            pending('no PRD document or HTML source registered')
+            pending('no document, HTML, design or API source registered')
         declared = req_doc.get('feature', {}).get('prd_paths')
         if declared is not None and (not strings(declared) or len(declared) != len(paths) or set(declared) != paths):
             errors.append('feature.prd_paths must match registered source paths')

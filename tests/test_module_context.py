@@ -103,10 +103,21 @@ class ModuleTests(unittest.TestCase):
         self.req['feature'].update(module_context_required=True, modules=['wallet'])
         self.write('spec/requirements.json', self.req)
         self.assertTrue(validate_modules(self.root, self.folder, self.req, 'check'))
-        self.assertFalse(validate_modules(self.root, self.folder, self.req, 'develop'))
+        self.assertTrue(validate_modules(self.root, self.folder, self.req, 'develop'))
         self.accept_scope()
+        self.assertFalse(validate_modules(self.root, self.folder, self.req, 'develop'))
         self.assertFalse(validate_modules(self.root, self.folder, self.req, 'check'))
         self.run_script('module_context.py', 'plan', self.root, '--feature', 'FEAT-001')
+
+    def test_new_workflow_requires_module_choice_or_reason_when_catalog_exists(self):
+        self.req['feature']['workflow_version'] = 2
+        self.assertTrue(any('module catalog exists' in e for e in validate_modules(self.root, self.folder, self.req, 'develop')))
+        self.req['feature']['module_context_required'] = False
+        self.assertTrue(any('module_context_note' in e for e in validate_modules(self.root, self.folder, self.req, 'develop')))
+        self.req['feature']['module_context_note'] = 'Change only updates repository documentation; no registered runtime module applies'
+        self.assertFalse(validate_modules(self.root, self.folder, self.req, 'develop'))
+        self.req['feature']['workflow_version'] = '2'
+        self.assertTrue(any('workflow_version' in e for e in validate_modules(self.root, self.folder, self.req, 'develop')))
 
     def test_bad_catalog_paths_and_dependency_rejected(self):
         original = copy.deepcopy(self.index)

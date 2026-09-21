@@ -3,6 +3,8 @@
     "id": "FEATURE_ID",
     "title": "",
     "status": "drafted",
+    "workflow_version": 2,
+    "impact_required": true,
     "source_status": {
       "prd": "present",
       "api": "unknown",

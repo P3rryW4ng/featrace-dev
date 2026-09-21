@@ -40,7 +40,7 @@ The files under `core/schemas/` describe only shallow containers. The Python val
 - `decisions.json`: top level `feature_id` and `decisions` array. Each decision needs an `id`; `pending` and `blocked` prevent develop/check, and `approved` needs a `chosen` value. Other states and confirmation provenance are not yet fully validated; keep the original user confirmation reference, scope and supersession details and review them manually.
 - `traceability.json`: top level `feature_id` and `links` array. Every link requires an existing `requirement_id`; check requires at least one link for every active requirement. The validator does not fully prove task/code/test reverse links.
 - `fixes.json`: see `fix-workflow.md`. `verification` and `evidence` must be arrays of non-empty strings. `regression_test_ids` is an array of declared test ID strings for verified repairs; `regression_scope_notes` maps selected cross-scope test IDs to non-empty reasons. `closed` uses a `closure` object with `outcome`, `reason` and `evidence`, with further fields per outcome.
-- `spec/prd-intake.json`: each registered source has `id`, a relative `path` under `sources/`, and `kind` (`document` or `html`). Each coverage aspect points to a requirement `statement` or an acceptance criterion using `field: "acceptance_criteria/0"` (zero-based index), with exact `target_text`; the validator intentionally treats changed targets as requiring review. Do not silently refresh `target_text` and leave the review marked verified.
+- `spec/prd-intake.json`: each registered source has `id`, a relative `path` under `sources/`, and `kind` (`document`, `html`, `design`, or `api`). Use `register-source.py` for supplementary local API/design evidence so this list and `feature.prd_paths` change together. Each coverage aspect points to a requirement `statement` or an acceptance criterion using `field: "acceptance_criteria/0"` (zero-based index), with exact `target_text`; the validator intentionally treats changed targets as requiring review. Do not silently refresh `target_text` and leave the review marked verified.
 
 Minimal shape of a task and a PRD source registration; replace IDs and text with actual evidence:
 
@@ -84,6 +84,8 @@ Only `feature-archive.py` changes archive metadata in normal use. Completion sta
 ## Opt-in semantic baselines (0.5.0)
 
 `feature.module_context_required: true` opts scoped work into the current module dossier check (0.5.4). `feature.modules` must then name registered catalog IDs. See [module-context.md](module-context.md); metadata does not change requirement meaning.
+
+New 0.5.6 workspaces set `feature.workflow_version: 2` and `feature.impact_required: true`. If the project has a module catalog, workflow v2 also requires an explicit `module_context_required` choice; false needs `module_context_note`. Older records without workflow_version retain compatibility and are not bulk migrated.
 
 `feature.verification_required: true` is set when adopting the generated verification list (0.5.3). See [verification-workflow.md](verification-workflow.md) for verification.json fields and delivery gating. This metadata is not a semantic requirement revision.
 

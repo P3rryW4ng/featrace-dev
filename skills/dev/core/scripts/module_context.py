@@ -187,13 +187,25 @@ def render(root, index, module_id, doc):
 
 
 def validate_modules(root, folder, req, stage):
-    required = req.get('feature', {}).get('module_context_required', False)
+    feature = req.get('feature', {})
+    required = feature.get('module_context_required', False)
     if not isinstance(required, bool):
         return ['module_context_required must be boolean']
-    if not required or stage != 'check':
+    workflow_version = feature.get('workflow_version', 1)
+    if not isinstance(workflow_version, int) or isinstance(workflow_version, bool) or workflow_version < 1:
+        return ['workflow_version must be a positive integer']
+    catalog_exists = (root / '.agent-workflow/modules/index.json').exists()
+    if stage != 'draft' and workflow_version >= 2 and catalog_exists:
+        if 'module_context_required' not in feature:
+            return ['module catalog exists: set module_context_required and select modules, or record module_context_note when not applicable']
+        if not required and not isinstance(feature.get('module_context_note'), str):
+            return ['module_context_note is required when the project catalog is not applicable']
+        if not required and not feature.get('module_context_note', '').strip():
+            return ['module_context_note is required when the project catalog is not applicable']
+    if not required or stage == 'draft':
         return []
     try:
-        rows = plan(root, req['feature'].get('modules', []))
+        rows = plan(root, feature.get('modules', []))
         return ['module context needs review: ' + r['module'] + ' (' + r['status'] + ')' for r in rows if r['status'] != 'current']
     except (OSError, ValueError, TypeError, KeyError) as exc:
         return ['invalid module context: ' + str(exc)]

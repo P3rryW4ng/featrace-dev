@@ -13,6 +13,8 @@ class MultiSourceTests(unittest.TestCase):
         self.root=Path(tmp.name)/'project';self.root.mkdir()
         self.doc=Path(tmp.name)/'rules.md';self.doc.write_text('Submit creates an order.')
         self.html=Path(tmp.name)/'prototype.html';self.html.write_text('<button>Submit</button>')
+        self.design=Path(tmp.name)/'figma-nodes.json';self.design.write_text('{"nodes":["1:2"]}')
+        self.api=Path(tmp.name)/'openapi.yaml';self.api.write_text('openapi: 3.0.0')
         self.feature=self.root/'.agent-workflow/features/F-1'
     def init(self,*paths):
         run=subprocess.run([sys.executable,str(CORE/'init-feature.py'),'F-1',str(paths[0]),str(self.root),*[arg for p in paths[1:] for arg in ('--source',str(p))]],capture_output=True,text=True)
@@ -26,6 +28,9 @@ class MultiSourceTests(unittest.TestCase):
         intake=self.init(self.doc)
         self.assertEqual([s['kind'] for s in intake['sources']],['document'])
         self.assertTrue((self.feature/intake['sources'][0]['path']).is_file())
+        req=json.loads((self.feature/'spec/requirements.json').read_text())
+        self.assertEqual(req['feature']['workflow_version'],2)
+        self.assertTrue(req['feature']['impact_required'])
         with tempfile.TemporaryDirectory() as temp:
             other=Path(temp)
             run=subprocess.run([sys.executable,str(CORE/'init-feature.py'),'H-1',str(self.html),str(other)],capture_output=True,text=True)
@@ -59,6 +64,55 @@ class MultiSourceTests(unittest.TestCase):
         intake=self.init(self.doc,self.html)
         intake['sources'].pop()
         self.assertTrue(any('prd_paths' in e for e in self.validate(intake)))
+
+    def test_design_registration_updates_both_indexes_and_is_idempotent(self):
+        intake=self.init(self.doc)
+        script=CORE/'register-source.py'
+        command=[sys.executable,str(script),str(self.root),'F-1',str(self.design),'--kind','design']
+        first=subprocess.run(command,capture_output=True,text=True)
+        self.assertEqual(first.returncode,0,first.stdout+first.stderr)
+        result=json.loads(first.stdout);self.assertEqual(result['status'],'registered')
+        intake=json.loads((self.feature/'spec/prd-intake.json').read_text())
+        req=json.loads((self.feature/'spec/requirements.json').read_text())
+        row=intake['sources'][-1]
+        self.assertEqual(row['kind'],'design')
+        self.assertIn(row['path'],req['feature']['prd_paths'])
+        self.assertEqual(req['feature']['source_status']['figma'],'present')
+        self.assertEqual((self.feature/row['path']).read_bytes(),self.design.read_bytes())
+        second=subprocess.run(command,capture_output=True,text=True)
+        self.assertEqual(second.returncode,0,second.stdout+second.stderr)
+        self.assertEqual(json.loads(second.stdout)['status'],'already_registered')
+        self.assertEqual(len(json.loads((self.feature/'spec/prd-intake.json').read_text())['sources']),2)
+
+    def test_registered_design_needs_reading_unit_and_kind_cannot_change(self):
+        self.init(self.doc)
+        script=CORE/'register-source.py'
+        command=[sys.executable,str(script),str(self.root),'F-1',str(self.design),'--kind','design']
+        self.assertEqual(subprocess.run(command,capture_output=True,text=True).returncode,0)
+        intake=json.loads((self.feature/'spec/prd-intake.json').read_text());intake['inventory_complete']=True
+        intake['units']=[{'id':'U-1','source':intake['sources'][0]['path'],'locator':'line 1','kind':'text','status':'read'}]
+        self.assertTrue(any('source has no reading unit' in e for e in self.validate(intake)))
+        changed=command[:-1]+['api']
+        mismatch=subprocess.run(changed,capture_output=True,text=True)
+        self.assertNotEqual(mismatch.returncode,0)
+        self.assertIn('already registered with kind design',mismatch.stderr)
+
+    def test_api_registration_updates_api_status(self):
+        self.init(self.doc)
+        run=subprocess.run([sys.executable,str(CORE/'register-source.py'),str(self.root),'F-1',str(self.api),'--kind','api'],capture_output=True,text=True)
+        self.assertEqual(run.returncode,0,run.stdout+run.stderr)
+        intake=json.loads((self.feature/'spec/prd-intake.json').read_text())
+        req=json.loads((self.feature/'spec/requirements.json').read_text())
+        self.assertEqual(intake['sources'][-1]['kind'],'api')
+        self.assertEqual(req['feature']['source_status']['api'],'present')
+
+    def test_registration_rejects_tampered_source_path_without_copying(self):
+        intake=self.init(self.doc)
+        intake['sources'][0]['path']='sources/../outside.txt'
+        (self.feature/'spec/prd-intake.json').write_text(json.dumps(intake))
+        run=subprocess.run([sys.executable,str(CORE/'register-source.py'),str(self.root),'F-1',str(self.design),'--kind','design'],capture_output=True,text=True)
+        self.assertNotEqual(run.returncode,0)
+        self.assertFalse(any(p.name.startswith('design-part') for p in (self.feature/'sources').iterdir()))
 
     def test_source_bytes_and_registration_change_review_digest(self):
         from prd_intake import review_digest

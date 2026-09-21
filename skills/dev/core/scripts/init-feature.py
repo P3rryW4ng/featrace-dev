@@ -37,7 +37,10 @@ for number, source in enumerate(sources, 1):
     shutil.copy2(source, folder / 'sources' / source_name)
     registered.append({'id': 'SRC-%02d' % number, 'path': 'sources/' + source_name, 'kind': kind})
 paths = [row['path'] for row in registered]
-doc = {"feature": {"id": feature, "title": "", "status": "drafted", "source_status": {"prd": "present", "api": "unknown", "figma": "unknown"}, "source_notes": {}, "prd_path": paths[0], "prd_paths": paths}, "requirements": []}
+doc = {"feature": {"id": feature, "title": "", "status": "drafted", "workflow_version": 2,
+                   "impact_required": True,
+                   "source_status": {"prd": "present", "api": "unknown", "figma": "unknown"},
+                   "source_notes": {}, "prd_path": paths[0], "prd_paths": paths}, "requirements": []}
 (folder / "spec/requirements.json").write_text(json.dumps(doc, indent=2) + "\n")
 for name, key in (("tasks", "tasks"), ("decisions", "decisions"), ("traceability", "links"), ("fixes", "fixes")):
     (folder / (name + ".json")).write_text(json.dumps({"feature_id": feature, key: []}, indent=2) + "\n")

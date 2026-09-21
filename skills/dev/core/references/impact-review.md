@@ -1,10 +1,10 @@
-# Local change impact (0.5.1)
+# Local change impact (0.5.6)
 
 Read before business-code edits through develop/fix or implementation following revise. No new user command. Clarify analysis may draft a checklist but does not authorize code changes.
 
 ## Before editing
 
-Set `feature.impact_required: true` in requirements.json and create feature-local `impact.json`. Keep the marker once adopted. Existing untouched features remain compatible; absence warns rather than retroactively blocking historical deliveries. New code work must adopt it, including repairs to completed features (set provisional). Scripts cannot detect an Agent that omits adoption.
+New workspaces created by 0.5.6 set `feature.workflow_version: 2` and `feature.impact_required: true`; create feature-local `impact.json` before the first business-code edit. Keep the marker once adopted. Existing untouched features remain compatible; absence warns rather than retroactively blocking historical deliveries. Continuing code work in an older workspace must adopt it, including repairs to completed features (set provisional). A caller can still bypass the workflow by editing code outside the Skill, but the normal new-feature path no longer relies on the Agent remembering to set the marker.
 
 Inspect relevant implementation and callers, shared state, navigation, lifecycle and legacy behavior. Expand investigation when a dependency appears. Existing code shows current behavior, not automatic product authority: compare PRD and approved decisions. Record business unknowns through clarify; reuse D/FIX/CHG references in evidence/basis. Unresolved mechanisms or behaviors block develop/check; draft permits investigation.
 
