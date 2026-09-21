@@ -52,6 +52,30 @@ class DeliveryAuditTests(unittest.TestCase):
                        check=True, capture_output=True)
         self.assertIn('stale', self.script('audit-delivery.py', self.root, 'FEAT-001', expected=1))
 
+    def test_workflow_only_commit_does_not_stale_quality_report(self):
+        self.script('project.py', 'check', self.root)
+        note = self.root / '.agent-workflow/features/FEAT-001/delivery-report.md'
+        note.write_text('accepted')
+        subprocess.run(['git', '-C', str(self.root), 'add', str(note.relative_to(self.root))],
+                       check=True, capture_output=True)
+        subprocess.run(['git', '-C', str(self.root), '-c', 'user.name=Fixture',
+                        '-c', 'user.email=fixture@example.invalid', 'commit', '-m', 'records'],
+                       check=True, capture_output=True)
+        self.assertIn('DELIVERY_EVIDENCE_CURRENT',
+                      self.script('audit-delivery.py', self.root, 'FEAT-001'))
+
+    def test_mixed_workflow_and_project_commit_stales_quality_report(self):
+        self.script('project.py', 'check', self.root)
+        note = self.root / '.agent-workflow/features/FEAT-001/delivery-report.md'
+        note.write_text('accepted')
+        (self.root / 'README.md').write_text('fixture 2')
+        subprocess.run(['git', '-C', str(self.root), 'add', str(note.relative_to(self.root)), 'README.md'],
+                       check=True, capture_output=True)
+        subprocess.run(['git', '-C', str(self.root), '-c', 'user.name=Fixture',
+                        '-c', 'user.email=fixture@example.invalid', 'commit', '-m', 'mixed'],
+                       check=True, capture_output=True)
+        self.assertIn('stale', self.script('audit-delivery.py', self.root, 'FEAT-001', expected=1))
+
     def test_old_selector_cannot_stand_in_for_new_fix_test(self):
         self.gates([{'name': 'old-test', 'command': [sys.executable, '-c', 'print("old passed")'],
                      'test_ids': ['UT-OLD']}])

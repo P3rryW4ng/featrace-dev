@@ -21,7 +21,8 @@ Use the user's meaning and current records, not isolated keywords:
 | Confirmed correction/addition changes requirement meaning | `revise`; a newer message alone is not approval |
 | Requirements are eligible and the user asks to implement or continue | `develop` |
 | User asks to validate/accept the implementation | `check` |
-| User asks what remains, whether it is done, or gives no description | Inspect `status`; execute the single required next workflow step when it is unambiguous and already authorized. If complete, report that no required delivery step remains and offer archive as optional history management |
+| User asks what remains or whether it is done | Read `status` and existing evidence only; do not run check, builds, validation or audit unless fresh verification was explicitly requested. If complete, report that no required delivery step remains and offer archive as optional history management |
+| User gives no description or explicitly says continue | Inspect `status`; execute the single required next workflow step only when it is unambiguous and already authorized. Otherwise report the blocker or focused choice |
 
 An image is not automatically design evidence: a screenshot showing an actual failure belongs to `fix`; an expected visual or replacement asset belongs to `figma`; an image whose role is unclear requires one concise clarification before it is registered. A product explanation without a requested change may need no write. Multiple supplied items may form one route chain, such as `figma → reconcile → develop`; run required intermediate validation and report the chain.
 

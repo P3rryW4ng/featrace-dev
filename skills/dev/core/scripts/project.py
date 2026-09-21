@@ -49,6 +49,26 @@ def snapshot(root, baseline=None):
         evidence[rel] = hashlib.sha256(path.read_bytes()).hexdigest() if path.is_file() else None
     return {'version': 2, 'evidence': evidence, 'profile': 'android' if android else 'generic', 'git_head': git.stdout.strip() if git.returncode == 0 else '', 'files': files}
 
+def quality_snapshot_matches(root, recorded, current):
+    """Accept a later HEAD only when tracked changes are workflow records alone."""
+    if recorded == current:
+        return True
+    if not isinstance(recorded, dict) or not isinstance(current, dict):
+        return False
+    recorded_without_head = dict(recorded)
+    current_without_head = dict(current)
+    old_head = recorded_without_head.pop('git_head', '')
+    new_head = current_without_head.pop('git_head', '')
+    if recorded_without_head != current_without_head or not old_head or not new_head:
+        return False
+    changed = subprocess.run(
+        ['git', '-C', str(root), 'diff', '--name-only', '-z', old_head, new_head, '--'],
+        capture_output=True, text=True)
+    if changed.returncode != 0:
+        return False
+    paths = [path for path in changed.stdout.split('\0') if path]
+    return all(path == '.agent-workflow' or path.startswith('.agent-workflow/') for path in paths)
+
 def validate_gates(root, config):
     """Validate all selected commands before executing any; never interpret prose conditions."""
     if not isinstance(config, dict) or not isinstance(config.get('gates'), list):

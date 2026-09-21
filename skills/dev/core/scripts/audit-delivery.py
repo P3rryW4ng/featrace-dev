@@ -6,7 +6,7 @@ from pathlib import Path
 import re
 import sys
 
-from project import snapshot
+from project import quality_snapshot_matches, snapshot
 from revisions import binding
 from verification import validate_verification
 
@@ -32,7 +32,7 @@ def audit(root, feature_id):
         current = snapshot(root)
     except (OSError, ValueError, TypeError) as exc:
         return ['cannot inspect current project snapshot: ' + str(exc)]
-    if report.get('project_snapshot') != current:
+    if not quality_snapshot_matches(root, report.get('project_snapshot'), current):
         errors.append('quality report is stale for the current project snapshot')
     if req.get('feature', {}).get('baseline') is not None:
         try:
@@ -82,7 +82,7 @@ def main():
     if errors:
         return 1
     print('DELIVERY_EVIDENCE_CURRENT: selected checks passed and verified-fix test IDs were selected')
-    print('Scope: manifests, Git HEAD and registered evidence only; check task meaning, test assertions, uncommitted code and delivery report manually')
+    print('Scope: manifests, tracked content outside .agent-workflow and registered evidence only; check task meaning, test assertions, uncommitted code and delivery report manually')
     return 0
 
 
