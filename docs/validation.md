@@ -4,7 +4,7 @@
 
 新增 `/dev next` 的运行说明、分流规则、命令帮助和使用流程图。静态一致性检查通过：版本为 0.5.7，Skill 命令表与 `next-workflow.md` 互相引用，api/figma/clarify/revise/fix/develop/check 七条目标路线齐全，README、help、使用指南、架构决策和路线图均已同步；相关 Markdown 本地链接存在，`git diff --check` 通过。
 
-本次只修改 Agent 指令和文档，没有改确定性脚本，因此未把 0.5.6 的 172/172 回归描述成重新执行。通用 `quick_validate.py` 已尝试运行，但本机缺少 PyYAML，报 `ModuleNotFoundError: yaml`，不记为通过。自然语言路由仍需真实会话验证，尤其是图片用途判断、`fix` 与 `revise` 的边界、无描述时是否减少追问。当前源码尚未提交、推送或安装，本机 Claude Code 仍为 0.5.6。
+本次只修改 Agent 指令和文档，没有改确定性脚本，因此未把 0.5.6 的 172/172 回归描述成重新执行。通用 `quick_validate.py` 已尝试运行，但本机缺少 PyYAML，报 `ModuleNotFoundError: yaml`，不记为通过。自然语言路由仍需真实会话验证，尤其是图片用途判断、`fix` 与 `revise` 的边界、无描述时是否减少追问。功能提交 `3f79896ccd710043b656f4f02f4fd5967eede0eb` 已推送到 `origin/main`。Claude Code 安装器返回 `INSTALLED`，标记版本 0.5.7；安装目录与仓库 `skills/dev` 只相差安装标记文件，旧版备份位于 `/Users/mac/.feature-delivery/backups/20260921T065305-claude-7789b016`。新会话才会稳定重新加载该版本。
 
 ## 0.5.6 — 2026-09-21
 
