@@ -109,6 +109,7 @@ def build_report(root, folder, req, revision, diagnostics):
     feature = req['feature']
     requirements = req.get('requirements', [])
     tasks = read_json(folder / 'tasks.json', {}).get('tasks', [])
+    task_review = read_json(folder / 'task-review.json', {})
     decisions = read_json(folder / 'decisions.json', {}).get('decisions', [])
     trace = read_json(folder / 'traceability.json', {})
     fixes = read_json(folder / 'fixes.json', {}).get('fixes', [])
@@ -127,6 +128,10 @@ def build_report(root, folder, req, revision, diagnostics):
     lines += table(['ID', 'Status', 'Title', 'Acceptance criteria'], [(r.get('id',''), r.get('status',''), r.get('title',''), r.get('acceptance_criteria', [])) for r in requirements])
     lines += ['', '## Tasks', '']
     lines += table(['ID', 'Status', 'Title', 'Existing evidence'], [(t.get('id',''), t.get('status',''), t.get('title',''), t.get('test_evidence', [])) for t in tasks])
+    if isinstance(task_review, dict) and isinstance(task_review.get('current'), dict):
+        reviewed = task_review.get('review', {}) if isinstance(task_review.get('review'), dict) else {}
+        lines += ['', '- Task semantics: ' + ('current' if reviewed.get('digest') == task_review['current'].get('digest') else 'pending'),
+                  '- Superseded task reviews: ' + str(len(task_review.get('history', [])) if isinstance(task_review.get('history', []), list) else 'invalid')]
     lines += ['', '## Decisions', '']
     lines += table(['ID', 'Status', 'Chosen'], [(d.get('id',''), d.get('status',''), d.get('chosen','')) for d in decisions]) if decisions else ['No decisions recorded.']
     tests = trace.get('tests', []) if isinstance(trace, dict) else []

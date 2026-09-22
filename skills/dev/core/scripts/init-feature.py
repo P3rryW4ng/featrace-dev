@@ -40,6 +40,7 @@ paths = [row['path'] for row in registered]
 doc = {"feature": {"id": feature, "title": "", "status": "drafted", "workflow_version": 2,
                    "impact_required": True,
                    "history_regression_required": True,
+                   "task_review_required": True,
                    "source_status": {"prd": "present", "api": "unknown", "figma": "unknown"},
                    "source_notes": {}, "prd_path": paths[0], "prd_paths": paths}, "requirements": []}
 (folder / "spec/requirements.json").write_text(json.dumps(doc, indent=2) + "\n")

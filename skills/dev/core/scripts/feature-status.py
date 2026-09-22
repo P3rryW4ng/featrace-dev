@@ -46,6 +46,15 @@ if review_path.exists():
     print(f"HISTORICAL_REGRESSION: candidates={len(candidates)}, retest={retest}, not_applicable={excluded}, pending={max(0, len(candidates) - len(dispositions))}, superseded={len(history)}")
 elif req['feature'].get('history_regression_required'):
     print('HISTORICAL_REGRESSION: missing')
+task_review_path = folder / 'task-review.json'
+if task_review_path.exists():
+    task_review = load(task_review_path)
+    current = task_review.get('current', {}) if isinstance(task_review, dict) else {}
+    review = task_review.get('review', {}) if isinstance(task_review, dict) else {}
+    state = 'current' if current.get('digest') and current.get('digest') == review.get('digest') else 'pending'
+    print(f"TASK_SEMANTICS: {state}, history={len(task_review.get('history', [])) if isinstance(task_review.get('history', []), list) else 'invalid'}")
+elif req['feature'].get('task_review_required'):
+    print('TASK_SEMANTICS: missing')
 decisions = load(folder / "decisions.json").get("decisions", [])
 clarifications = [d for d in decisions if isinstance(d, dict) and isinstance(d.get('clarification'), dict)]
 unresolved = sum(d.get('status') in ('pending', 'blocked') for d in clarifications)

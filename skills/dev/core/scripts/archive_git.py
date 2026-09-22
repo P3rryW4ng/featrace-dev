@@ -15,7 +15,7 @@ def report(root, feature_id, modules):
     names = ['spec/requirements.json', 'spec/prd-intake.json', 'spec/spec.md', 'tasks.json', 'tasks.md',
              'decisions.json', 'decisions.md', 'traceability.json', 'traceability.md', 'fixes.json', 'fixes.md',
              'impact.json', 'impact.md', 'verification.json', 'verification.md', 'regression-review.json',
-             'regression-review.md', 'revisions', 'revisions.md', 'delivery-report.md']
+             'regression-review.md', 'task-review.json', 'task-review.md', 'revisions', 'revisions.md', 'delivery-report.md']
     paths = [prefix + n for n in names]
     paths += ['.agent-workflow/modules/index.json', '.agent-workflow/modules/index.md']
     for name in modules:

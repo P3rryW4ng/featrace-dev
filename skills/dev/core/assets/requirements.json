@@ -5,6 +5,8 @@
     "status": "drafted",
     "workflow_version": 2,
     "impact_required": true,
+    "history_regression_required": true,
+    "task_review_required": true,
     "source_status": {
       "prd": "present",
       "api": "unknown",

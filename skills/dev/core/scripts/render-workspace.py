@@ -11,6 +11,7 @@ from clarifications import render_decisions
 from impact import render_impact
 from verification import render as render_verification
 from regression_review import render as render_regression_review
+from task_review import render as render_task_review
 
 
 def load(path):
@@ -51,6 +52,7 @@ def main():
     render_impact(feature_dir)
     render_verification(feature_dir)
     render_regression_review(feature_dir)
+    render_task_review(feature_dir)
     print("WORKSPACE_RENDERED")
 
 

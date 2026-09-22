@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Task semantic review",
+  "type": "object",
+  "required": ["schema_version", "feature_id", "current", "review", "history"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "feature_id": {"type": "string", "minLength": 1},
+    "current": {"type": "object", "required": ["digest", "tasks"]},
+    "review": {"type": "object"},
+    "history": {"type": "array", "items": {"type": "object"}}
+  }
+}

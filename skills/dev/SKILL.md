@@ -58,6 +58,8 @@ For scan and scoped feature work read `core/references/module-context.md`. Estab
 
 Read `core/references/prd-analysis.md` before analyzing a PRD or changing requirement meaning. Inventory reading gaps, preserve contextual source items, map conditions/exceptions, and record semantic review before development.
 
+Read `core/references/task-semantic-review.md` after generating tasks and before/after changing task meaning. Sync and locally review changed tasks against only their linked requirements and evidence; task progress and execution evidence do not trigger this review. Existing workspaces adopt before their first semantic task edit so the prior wording is preserved.
+
 Read `core/references/workflow.md` for all feature work and `core/references/requirement-schema.md` when editing records.
 
 Before first use in a business project or adopting Git sharing, read `core/references/git-sharing.md` and run `python3 core/scripts/setup-workflow-git.py <PROJECT>`. Preserve existing ignore policy; report conflicts and already tracked local files without silently untracking them. Never commit/push as a setup side effect.
