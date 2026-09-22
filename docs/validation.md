@@ -10,6 +10,8 @@ regression-review schema 升级到 v2。候选内容改变或候选移除时，�
 
 功能提交 `9e342f6` 后已安装到本机 Claude Code 2.1.278，并在独立临时项目运行普通 `/dev develop DEMO-002` 场景，明确要求只同步、列出、不得选择。Agent 最终只生成 regression-review.json/.md；实查 schema_version=2、candidates=1、pending=1、`dispositions=[]`、`history=[]`，Git 状态无业务代码、测试或其他需求记录变化。GAP-16 的短复检通过；该单例仍不能证明所有表达和模型都遵循。安装备份位于 `/Users/mac/.feature-delivery/backups/20260922T024117-claude-85af2f6b`，远端推送尚未完成。
 
+同日追加第二个隔离端到端场景：先构造带 `retest` 和 `passed` 结果的旧候选，再仅修改历史 FIX 描述，并要求 Claude Code 只同步、不重新处置。实查新记录为 candidates=1、`dispositions=[]`、history=1；历史项完整保留旧候选快照、理由、计划检查、passed 方法/证据/测试版本和旧 review digest，`superseded_reason=candidate_changed`。随后 develop 校验返回 1 并报告 `historical fix needs disposition`，证明旧绿灯未放行当前候选；Git 只包含演练预置的历史 FIX 变化和同步生成的两份回归评审文件，无业务代码或测试变化。GAP-17 的确定性测试因此又获得一次真实 Agent 编排层证据，但仍属于合成项目。
+
 ## 0.5.11 — 2026-09-21
 
 新增历史修复回归复核：按当前需求模块与登记代码路径查找当前及其他需求中的 `verified` FIX，要求 develop/check 前逐项登记重测或不适用理由；重测结果绑定候选摘要、方法、证据和代码版本，范围或历史记录变化后自动判旧结论过期。旧 FIX 状态不被改写，未登记依赖也不会被宣称自动发现。

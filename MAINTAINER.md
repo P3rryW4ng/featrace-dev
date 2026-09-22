@@ -29,7 +29,7 @@
 
 ### 当前发布状态（2026-09-22）
 
-- 0.5.12 功能提交为 `9e342f6`，目标回归 9/9、完整合成回归 185/185 通过；已安装到本机 Claude Code，备份为 `/Users/mac/.feature-delivery/backups/20260922T024117-claude-85af2f6b`。隔离短复检确认只同步时保持 1 个候选 pending 且 `dispositions=[]`；尚未推送。
+- 0.5.12 功能提交为 `9e342f6`，目标回归 9/9、完整合成回归 185/185 通过；已安装到本机 Claude Code，备份为 `/Users/mac/.feature-delivery/backups/20260922T024117-claude-85af2f6b`。两项隔离复检确认只同步时保持候选 pending，并在历史 FIX 变化后完整留存旧 passed 结果且继续阻断 develop。功能与首轮验证提交已推送；本条追加证据尚待提交。
 
 - 0.5.11 功能提交为 `27278f4`，已推送到 `origin/main`；本机 Claude Code 安装标记为 0.5.11。合成回归 180/180 通过；隔离 Agent 演练确认机制链路与自动触发，但发现明确不代选仍写入 retest、失效结果不在记录内留史两项缺口。真实候选准确率与成本仍未验证。
 - 0.5.10 功能提交为 `362daecefc53599be4f2b8d36f5ff2f229216495`，已推送到 `origin/main`；本机 Claude Code 安装标记为 0.5.10，安装内容与仓库 `skills/dev` 一致，仅多安装标记文件。旧版备份：`/Users/mac/.feature-delivery/backups/20260921T081847-claude-a33fc59f`。
