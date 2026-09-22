@@ -12,6 +12,8 @@ regression-review schema 升级到 v2。候选内容改变或候选移除时，�
 
 同日追加第二个隔离端到端场景：先构造带 `retest` 和 `passed` 结果的旧候选，再仅修改历史 FIX 描述，并要求 Claude Code 只同步、不重新处置。实查新记录为 candidates=1、`dispositions=[]`、history=1；历史项完整保留旧候选快照、理由、计划检查、passed 方法/证据/测试版本和旧 review digest，`superseded_reason=candidate_changed`。随后 develop 校验返回 1 并报告 `historical fix needs disposition`，证明旧绿灯未放行当前候选；Git 只包含演练预置的历史 FIX 变化和同步生成的两份回归评审文件，无业务代码或测试变化。GAP-17 的确定性测试因此又获得一次真实 Agent 编排层证据，但仍属于合成项目。
 
+随后完成剩余 CLI 隔离矩阵：v1 记录同步到 v2 后保留 1 条当前 disposition 且 `FEATURE_VALID`；历史 FIX 从 verified 改为 closed 后，当前 candidates/dispositions 均为 0，旧 `not_applicable` 进入 `candidate_removed` history，develop 仍为 `FEATURE_VALID`，status 显示 `superseded=1`；对该 history 的旧理由做未授权改写后，validate 与再次 sync 均返回 1 并拒绝无效 history；对未变化的迁移场景重复 sync，regression-review.json 前后 SHA-256 完全一致。以上均使用安装版 0.5.12 和独立临时项目，证明迁移、移除、状态显示、幂等及防篡改链路；仍不替代真实需求中的候选准确率与成本验证。
+
 ## 0.5.11 — 2026-09-21
 
 新增历史修复回归复核：按当前需求模块与登记代码路径查找当前及其他需求中的 `verified` FIX，要求 develop/check 前逐项登记重测或不适用理由；重测结果绑定候选摘要、方法、证据和代码版本，范围或历史记录变化后自动判旧结论过期。旧 FIX 状态不被改写，未登记依赖也不会被宣称自动发现。
