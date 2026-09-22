@@ -2,7 +2,8 @@ import copy
 import json
 import unittest
 import test_impact
-from module_context import plan, review, catalog, validate_modules
+from module_context import plan, review, catalog, validate_modules, render_graph
+from feature_scope import set_scope, not_applicable, validate_scope, suggest
 
 
 class ModuleTests(unittest.TestCase):
@@ -132,3 +133,52 @@ class ModuleTests(unittest.TestCase):
     def test_dependency_cycles_terminate(self):
         self.index['modules'][1]['depends_on'] = ['wallet']; self.save_index()
         self.assertEqual(len(plan(self.root, ['wallet'])), 3)
+
+    def test_confirmed_capability_records_distinct_module_roles_and_graph(self):
+        scope = {'capability': {'id': 'red-envelope', 'name': '红包'}, 'assignments': [
+            {'module_id': 'wallet', 'role': 'owner', 'responsibility': 'Own amount and state rules',
+             'evidence_refs': ['wallet/code.txt']},
+            {'module_id': 'chat', 'role': 'host', 'responsibility': 'Display the envelope in conversations',
+             'evidence_refs': ['chat/code.txt']},
+        ], 'note': 'Confirmed from product scope and current code'}
+        self.req['feature']['workflow_version'] = 3
+        self.write('spec/requirements.json', self.req)
+        set_scope(self.root, 'FEAT-001', scope)
+        req = json.loads((self.folder / 'spec/requirements.json').read_text())
+        self.assertEqual(req['feature']['modules'], ['wallet', 'chat'])
+        self.assertEqual(req['feature']['module_scope']['assignments'][0]['role'], 'owner')
+        self.assertFalse(validate_scope(self.root, req['feature'], 'develop'))
+        for name in ('wallet', 'identity', 'app', 'chat'):
+            self.accept(name)
+        self.run_script('validate-feature.py', '--stage', 'develop', self.root, 'FEAT-001')
+        graph = render_graph(self.root)
+        self.assertIn('capability:red-envelope', {node['id'] for node in graph['nodes']})
+        self.assertEqual({edge['relation'] for edge in graph['edges'] if edge['from'] == 'capability:red-envelope'}, {'owner', 'host'})
+        self.assertIn('business capability', (self.modules / 'graph.md').read_text())
+        self.assertIn('red-envelope', (self.modules / 'graph.json').read_text())
+
+    def test_workflow_v3_pending_unknown_and_not_applicable_scope(self):
+        feature = {'id': 'FEAT-001', 'workflow_version': 3,
+                   'module_scope': {'status': 'pending', 'capability': None, 'assignments': [], 'note': ''}}
+        self.assertFalse(validate_scope(self.root, feature, 'draft'))
+        self.assertTrue(any('need confirmation' in value for value in validate_scope(self.root, feature, 'develop')))
+        self.req['feature'].update(feature)
+        self.write('spec/requirements.json', self.req)
+        not_applicable(self.root, 'FEAT-001', 'Documentation-only change with no runtime module')
+        req = json.loads((self.folder / 'spec/requirements.json').read_text())
+        self.assertFalse(validate_scope(self.root, req['feature'], 'develop'))
+        bad = {'capability': {'id': 'red-envelope', 'name': '红包'}, 'assignments': [
+            {'module_id': 'unknown', 'role': 'owner', 'responsibility': 'Unknown', 'evidence_refs': ['source']}]}
+        with self.assertRaises(ValueError):
+            set_scope(self.root, 'FEAT-001', bad)
+
+    def test_scope_suggestion_uses_registered_code_paths_without_claiming_semantics(self):
+        trace = json.loads((self.folder / 'traceability.json').read_text())
+        trace['links'][0]['code'] = ['wallet/code.txt']
+        self.write('traceability.json', trace)
+        result = suggest(self.root, 'FEAT-001')
+        wallet = next(row for row in result['candidates'] if row['module_id'] == 'wallet')
+        chat = next(row for row in result['candidates'] if row['module_id'] == 'chat')
+        self.assertEqual(wallet['matched_code_paths'], ['wallet/code.txt'])
+        self.assertEqual(chat['matched_code_paths'], [])
+        self.assertIn('candidates only', result['note'])

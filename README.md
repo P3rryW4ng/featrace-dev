@@ -2,7 +2,7 @@
 
 把 PRD 转换为可追溯的需求、开发任务和验证记录，支持后补 API / Figma、冲突决策和持续迭代。
 
-当前源码版本 **0.5.14**：通用工作流 + Android 适配 + Generic 适配。iOS/Web/后端可用通用流程，但没有专属自动化适配器。此工具由 Agent 执行需求理解和编码，脚本负责部分确定性检查；不能保证零遗漏或零 bug。
+当前源码版本 **0.5.15**：通用工作流 + Android 适配 + Generic 适配。iOS/Web/后端可用通用流程，但没有专属自动化适配器。此工具由 Agent 执行需求理解和编码，脚本负责部分确定性检查；不能保证零遗漏或零 bug。
 
 ## 最快开始
 
@@ -34,7 +34,7 @@ python3 scripts/install.py --agent codex
 | 查看归档 | `/dev list --archived` | `$dev list --archived` |
 | 修订需求 | `/dev revise FEAT-001 修订描述 --source /路径/补充.md` | `$dev revise FEAT-001 修订描述 --source /路径/补充.md` |
 | 归档／恢复 | `/dev archive FEAT-001` / `/dev restore FEAT-001` | `$dev archive FEAT-001` / `$dev restore FEAT-001` |
-| 模块分类 | `/dev classify FEAT-001 --module wallet` | `$dev classify FEAT-001 --module wallet` |
+| 业务能力与模块职责确认 | `/dev classify OGFR-2577` | `$dev classify OGFR-2577` |
 | 切换需求 | `/dev use FEAT-001` | `$dev use FEAT-001` |
 | 扫描项目 | `/dev scan` | `$dev scan` |
 | 拆解 PRD | `/dev prd /路径/需求.md --feature FEAT-001` | `$dev prd /路径/需求.md --feature FEAT-001` |
@@ -132,6 +132,6 @@ Skill 仓库提交源码、测试和维护文档；不收录真实业务工作�
 
 首次使用时 Agent 调用 `setup-workflow-git.py` 安装独立的 `.agent-workflow/.gitignore`。原始来源默认忽略，确认可共享后逐个放行；规格和摘录也需检查是否适合仓库权限。已有跟踪不会自动取消，既有项目规则不会被删除。新克隆项目保留已共享分析，复核后重建本机状态。详见 [Git 协作规则](skills/dev/core/references/git-sharing.md)。
 
-PRD 可由文档、HTML 交互稿或两者组成；使用 `/dev prd <首个文件> --feature <ID> --source <附加文件>`。详细边界见 [使用指南](docs/usage.md)。
+PRD 可由文档、HTML 交互稿或两者组成；使用 `/dev prd <首个文件> --feature <产品需求编号> --source <附加文件>`。产品编号必须由用户提供，Skill 不生成。PRD 分析后，Agent 根据项目模块目录和代码证据推荐业务能力及多模块职责，由用户确认有歧义的范围后才能进入开发。详细边界见 [使用指南](docs/usage.md)。
 
 已交付功能出现效果不符时可用 `/dev fix FEAT-001 <问题描述>` 建立修复记录；可先保留原因待查；任务描述遗漏和代码缺陷可共同记录。修复需关联受影响需求/任务的回归测试，跨范围测试逐项说明覆盖原因，或明确记录豁免。0.4.6 支持非缺陷、经确认撤回和重复报告的有据关闭；关闭报告不等于修复验证。具体规则见 [修复流程](skills/dev/core/references/fix-workflow.md)。

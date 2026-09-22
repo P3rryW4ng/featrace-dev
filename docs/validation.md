@@ -1,5 +1,15 @@
 # 验证与评估记录
 
+## 0.5.15 — 2026-09-22
+
+实现业务能力与代码模块的正交分类。新工作流初始化为 workflow v3 和 pending module scope；develop/check 要求确认 capability、已登记模块、固定角色、具体职责及依据，或有具体理由地标记不适用。`feature_scope.py suggest` 只报告目录与登记代码路径匹配，不自动裁决产品归属；set 操作同步 `feature.modules` 并启用模块档案门禁。旧 workflow v1/v2 保持兼容，旧标签发生改变时不会静默沿用已经确认的 v3 角色。
+
+模块目录新增确定性 `graph.json` 和 Mermaid `graph.md`，合并声明的模块依赖及已确认的 capability-role 边，旧模块标签没有职责时登记为 gap。图明确不是完整运行时调用图，不覆盖反射、动态导航、远程开关、外部服务或未登记关系。
+
+模块、归档与基础工作流目标测试 40/40 通过，包含 scan 自动生成声明关系图。第一次完整回归仅发现一处测试仍断言新工作区版本为 2；更新该夹具预期并加入 scan 图生成覆盖后，最终完整合成回归 207/207 通过（32.758 秒）。本次没有运行真实 Android 构建、真机、真实项目 scan 或普通 Agent 隔离场景；推荐准确率、用户确认次数和关系图实际价值仍待下一跨模块需求验证。
+
+修改脚本通过 py_compile，core JSON、Markdown 本地链接与 `git diff --check` 通过。skill-creator 的通用 `quick_validate.py` 仍因本机缺少 PyYAML（`ModuleNotFoundError: yaml`）未执行成功，不记为通过。
+
 ## 0.5.14 — 2026-09-22
 
 实现 GAP-05 最小修正。`project.py verify` 现在分别报告 Git HEAD、构建清单、登记证据和 staged/unstaged/untracked 非 workflow 路径；仅 `.agent-workflow/**` 提交推进 HEAD 时保持基线有效。路径只用于选择复核范围，不自动判断语义影响。scan 发布后若基线正文和除 HEAD 外的指纹完全相同，只刷新指纹且不生成完整备份；清单、登记证据或说明变化仍按原策略备份。

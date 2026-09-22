@@ -35,6 +35,10 @@ def main():
         if args.module is None and not args.clear_modules:
             raise ValueError("classify requires --module or --clear-modules")
         feature["modules"] = args.module or []
+        if "module_scope" in feature:
+            feature["module_scope"] = {"status": "pending", "capability": None, "assignments": [], "note": ""}
+            feature.pop("module_context_required", None)
+            feature.pop("module_context_note", None)
     else:
         target = args.action == "archive"
         if archive["archived"] == target:
@@ -91,6 +95,9 @@ def main():
     finally:
         if temp and temp.exists():
             temp.unlink()
+    if args.action == "classify" and (root / ".agent-workflow/modules/index.json").is_file():
+        from module_context import render_graph
+        render_graph(root)
     print("FEATURE_" + args.action.upper() + ": " + args.feature_id)
     show_git_status(root, args.feature_id, feature.get('modules', []))
     return 0

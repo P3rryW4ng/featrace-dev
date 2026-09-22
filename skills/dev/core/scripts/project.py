@@ -361,6 +361,11 @@ def scan_baseline(root, keep, action):
                 raise ValueError('draft missing required file: ' + name)
         inventory(root, candidate)
         validate_gates(root, json.loads((candidate / 'quality-gates.json').read_text()))
+        module_index = root / '.agent-workflow/modules/index.json'
+        if module_index.is_file():
+            from module_context import render_graph
+            graph = render_graph(root)
+            print('MODULE_GRAPH_RENDERED: nodes=%d edges=%d' % (len(graph['nodes']), len(graph['edges'])))
         promote(root, candidate, keep)
         shutil.rmtree(draft)
         return
@@ -378,6 +383,11 @@ def scan_baseline(root, keep, action):
             stage.rename(draft)
             print('BASELINE_DRAFT_READY: ' + str(draft / 'baseline'))
         else:
+            module_index = root / '.agent-workflow/modules/index.json'
+            if module_index.is_file():
+                from module_context import render_graph
+                graph = render_graph(root)
+                print('MODULE_GRAPH_RENDERED: nodes=%d edges=%d' % (len(graph['nodes']), len(graph['edges'])))
             promote(root, candidate, keep)
             print('BASELINE_INVENTORIED: agent review required')
 

@@ -30,6 +30,17 @@ def main():
     spec = [f"# {feature['id']} — {feature.get('title') or 'Untitled feature'}", "", f"Status: {feature.get('status', 'drafted')}", ""]
     modules, archive = metadata(feature)
     spec += ["Archived: " + str(archive["archived"]), "Modules: " + (", ".join(modules) or "unclassified"), ""]
+    scope = feature.get('module_scope')
+    if isinstance(scope, dict):
+        capability = scope.get('capability') if isinstance(scope.get('capability'), dict) else {}
+        spec += ["Module scope: " + str(scope.get('status', 'invalid')),
+                 "Capability: " + (str(capability.get('name', '')) + " (" + str(capability.get('id', 'none')) + ")" if capability else "none")]
+        for row in scope.get('assignments', []) if isinstance(scope.get('assignments'), list) else []:
+            if isinstance(row, dict):
+                spec.append("- Module role: %s = %s — %s" % (row.get('module_id', '?'), row.get('role', '?'), row.get('responsibility', '')))
+        if scope.get('note'):
+            spec.append("Scope note: " + str(scope['note']))
+        spec.append("")
     for item in req_doc.get("requirements", []):
         spec += [f"## {item.get('id', '?')} — {item.get('title', '')}", "", f"- Status: {item.get('status', '')}", f"- Statement: {item.get('statement', '')}", f"- Sources: {', '.join(s.get('ref', '') for s in item.get('sources', []))}", f"- Acceptance: {'; '.join(item.get('acceptance_criteria', []))}", f"- Tasks: {', '.join(item.get('tasks', []))}", f"- Tests: {', '.join(item.get('tests', []))}", ""]
     baseline, revisions, pending = inspect(feature_dir, req_doc)

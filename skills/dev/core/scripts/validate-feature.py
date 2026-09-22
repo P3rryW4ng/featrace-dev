@@ -10,6 +10,7 @@ from revisions import validate_revisions
 from impact import validate_impact
 from verification import validate_verification
 from module_context import validate_modules
+from feature_scope import validate_scope
 from regression_review import validate_review as validate_regression_review
 from task_review import validate_task_review
 from feature_lifecycle import metadata, require_active
@@ -194,6 +195,7 @@ def main():
     errors.extend(impact_errors)
     warnings.extend(impact_warnings)
     errors.extend(validate_verification(pathlib.Path(args.root).resolve(), feature_dir, req_doc, args.stage))
+    errors.extend(validate_scope(pathlib.Path(args.root).resolve(), feature, args.stage))
     errors.extend(validate_modules(pathlib.Path(args.root).resolve(), feature_dir, req_doc, args.stage))
     regression_errors, regression_warnings = validate_regression_review(pathlib.Path(args.root).resolve(), feature_dir, req_doc, args.stage)
     errors.extend(regression_errors)

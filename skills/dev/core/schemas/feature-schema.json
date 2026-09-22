@@ -25,6 +25,37 @@
         "history_regression_required": {
           "type": "boolean"
         },
+        "task_review_required": {
+          "type": "boolean"
+        },
+        "module_scope": {
+          "type": "object",
+          "required": ["status", "assignments", "note"],
+          "properties": {
+            "status": {"enum": ["pending", "confirmed", "not_applicable"]},
+            "capability": {
+              "type": ["object", "null"],
+              "properties": {
+                "id": {"type": "string", "minLength": 1},
+                "name": {"type": "string", "minLength": 1}
+              }
+            },
+            "assignments": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": ["module_id", "role", "responsibility", "evidence_refs"],
+                "properties": {
+                  "module_id": {"type": "string", "minLength": 1},
+                  "role": {"enum": ["owner", "host", "provider", "consumer", "shared"]},
+                  "responsibility": {"type": "string", "minLength": 1},
+                  "evidence_refs": {"type": "array", "items": {"type": "string", "minLength": 1}, "minItems": 1, "uniqueItems": true}
+                }
+              }
+            },
+            "note": {"type": "string"}
+          }
+        },
         "module_context_required": {
           "type": "boolean"
         },

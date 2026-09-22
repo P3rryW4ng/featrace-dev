@@ -23,7 +23,7 @@ Display project, ID and title before work. On missing, malformed, mismatched or 
 
 ## Creation and explicit arguments
 
-`/dev prd <path> --feature <ID> [--source <path> ...]` keeps its existing syntax and requires an explicit ID for new features. Check for an existing feature directory before initialization. If present, do not initialize, overwrite, infer that this is an approved revision, or switch selection; clarify whether to continue the existing feature or create a distinct one. The initializer also refuses existing directories.
+`/dev prd <path> --feature <ID> [--source <path> ...]` keeps its existing syntax and requires the product/work-item ID supplied by the user. Never generate an ID from the title, date or repository state. If absent, ask for it before initialization. Workflow-local `R-*`, `T-*`, `D-*` and `FIX-*` identifiers do not replace the product ID; preserve a separately supplied product subtask reference in the task record rather than changing the feature identity. Check for an existing feature directory before initialization. If present, do not initialize, overwrite, infer that this is an approved revision, or switch selection; clarify whether to continue the existing feature or create a distinct one. The initializer also refuses existing directories.
 
 Only after initialization, PRD analysis, rendering and draft validation succeed, validate the new selection with `feature-context.py use`, then set it as current. Draft warnings/pending business decisions do not imply development eligibility. A failed or interrupted import preserves the previous selection; report partial new records and resume them explicitly without reinitializing. The standalone initializer creates files but cannot select a conversation on its own.
 

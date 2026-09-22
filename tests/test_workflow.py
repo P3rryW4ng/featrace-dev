@@ -50,6 +50,8 @@ class WorkflowTests(unittest.TestCase):
         requirements = json.loads((self.folder / 'spec/requirements.json').read_text())
         self.assertTrue(requirements['feature']['history_regression_required'])
         self.assertTrue(requirements['feature']['task_review_required'])
+        self.assertEqual(requirements['feature']['workflow_version'], 3)
+        self.assertEqual(requirements['feature']['module_scope']['status'], 'pending')
         before = (self.folder / 'spec/requirements.json').read_bytes()
         self.run_script(CORE / 'init-feature.py', 'FEAT-001', self.prd, self.root, expected=1)
         self.assertEqual((self.folder / 'spec/requirements.json').read_bytes(), before)
@@ -111,6 +113,20 @@ class WorkflowTests(unittest.TestCase):
         self.assertEqual(json.loads((base / 'fingerprint.json').read_text())['profile'], 'android')
         self.assertEqual((base / 'architecture.md').read_text(), 'Reviewed architecture')
         self.run_script(project, 'verify', self.root)
+
+    def test_scan_renders_declared_module_graph(self):
+        (self.root / 'build.cfg').write_text('fixture build')
+        (self.root / 'wallet').mkdir()
+        modules = self.root / '.agent-workflow/modules'
+        modules.mkdir(parents=True)
+        (modules / 'index.json').write_text(json.dumps({'schema_version': 1, 'shared_stack': 'Fixture stack',
+            'global_files': ['build.cfg'], 'modules': [
+                {'id': 'wallet', 'summary': 'Wallet behavior', 'roots': ['wallet'],
+                 'evidence_files': [], 'depends_on': []}]}))
+        output = self.run_script(CORE / 'project.py', 'scan', self.root)
+        self.assertIn('MODULE_GRAPH_RENDERED: nodes=1 edges=0', output.stdout)
+        self.assertTrue((modules / 'graph.json').is_file())
+        self.assertIn('```mermaid', (modules / 'graph.md').read_text())
 
     def test_quality_reports_real_exit_and_unavailable(self):
         project = CORE / 'project.py'

@@ -87,9 +87,9 @@ Only `feature-archive.py` changes archive metadata in normal use. Completion sta
 
 ## Opt-in semantic baselines (0.5.0)
 
-`feature.module_context_required: true` opts scoped work into the current module dossier check (0.5.4). `feature.modules` must then name registered catalog IDs. See [module-context.md](module-context.md); metadata does not change requirement meaning.
+`feature.module_context_required: true` opts scoped work into the current module dossier check (0.5.4). `feature.modules` must then name registered catalog IDs. Workflow v3 adds `feature.module_scope`: `pending`, `confirmed`, or `not_applicable`. Confirmed scope requires `capability: {id, name}` and one or more assignments containing a registered `module_id`, `role` (`owner|host|provider|consumer|shared`), concrete `responsibility`, and nonempty `evidence_refs`; `feature.modules` mirrors assignment order. Not-applicable requires a specific note, empty modules and `module_context_required=false`. See [module-context.md](module-context.md); metadata does not change requirement meaning.
 
-New 0.5.13+ workspaces set `feature.workflow_version: 2`, `feature.impact_required: true`, `feature.history_regression_required: true` and `feature.task_review_required: true`. If the project has a module catalog, workflow v2 also requires an explicit `module_context_required` choice; false needs `module_context_note`. Older records without these markers retain compatibility and are not bulk migrated.
+New 0.5.15+ workspaces set `feature.workflow_version: 3`, a pending module scope, `feature.impact_required: true`, `feature.history_regression_required: true` and `feature.task_review_required: true`. Scope must be confirmed or specifically not applicable before develop/check. Workflow v2 keeps its catalog-dependent `module_context_required` choice; false needs `module_context_note`. Older records without these markers retain compatibility and are not bulk migrated.
 
 `feature.verification_required: true` is set when adopting the generated verification list (0.5.3). See [verification-workflow.md](verification-workflow.md) for verification.json fields and delivery gating. This metadata is not a semantic requirement revision.
 

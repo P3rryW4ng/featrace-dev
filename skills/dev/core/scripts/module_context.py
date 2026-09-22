@@ -173,17 +173,116 @@ def review(root, module_id, body, expected):
     render(root, index, module_id, doc)
 
 
+def _mermaid_label(value):
+    return str(value).replace('"', "'").replace('\n', ' ')
+
+
+def project_graph(root, index=None):
+    """Build a deterministic graph from declared modules and confirmed feature scopes."""
+    root = root.resolve(); index = index or catalog(root)
+    nodes = [{'id': 'module:' + row['id'], 'kind': 'module', 'label': row['id'], 'summary': row['summary']}
+             for row in index['modules']]
+    edges = []
+    for row in index['modules']:
+        for dep in row['depends_on']:
+            edges.append({'from': 'module:' + row['id'], 'to': 'module:' + dep, 'relation': 'depends_on',
+                          'status': 'declared', 'evidence_refs': ['.agent-workflow/modules/index.json']})
+    capabilities, assignments, gaps = {}, {}, []
+    features = root / '.agent-workflow/features'
+    if features.exists():
+        for folder in sorted(features.iterdir()):
+            path = folder / 'spec/requirements.json'
+            if not folder.is_dir() or not path.is_file():
+                continue
+            try:
+                record = read(path)
+            except (OSError, json.JSONDecodeError):
+                gaps.append(folder.name + ': unreadable feature record')
+                continue
+            feature = record.get('feature') if isinstance(record, dict) else None
+            if not isinstance(feature, dict):
+                gaps.append(folder.name + ': invalid feature record')
+                continue
+            scope = feature.get('module_scope')
+            if not isinstance(scope, dict) or scope.get('status') != 'confirmed':
+                if feature.get('modules'):
+                    gaps.append(folder.name + ': module labels have no confirmed capability roles')
+                continue
+            capability = scope.get('capability', {})
+            cid, name = capability.get('id'), capability.get('name')
+            if not isinstance(cid, str) or not isinstance(name, str):
+                gaps.append(folder.name + ': invalid confirmed capability')
+                continue
+            previous = capabilities.setdefault(cid, {'id': 'capability:' + cid, 'kind': 'capability',
+                                                       'label': name, 'feature_ids': []})
+            if previous['label'] != name:
+                gaps.append(cid + ': conflicting capability names')
+            previous['feature_ids'].append(folder.name)
+            rows = scope.get('assignments')
+            if not isinstance(rows, list):
+                gaps.append(folder.name + ': invalid module assignments')
+                continue
+            for row in rows:
+                if (not isinstance(row, dict) or row.get('module_id') not in {m['id'] for m in index['modules']}
+                        or row.get('role') not in {'owner', 'host', 'provider', 'consumer', 'shared'}
+                        or not isinstance(row.get('responsibility'), str)
+                        or not isinstance(row.get('evidence_refs'), list)
+                        or any(not isinstance(ref, str) for ref in row.get('evidence_refs', []))):
+                    gaps.append(folder.name + ': invalid or unknown module assignment')
+                    continue
+                key = (cid, row['module_id'], row.get('role'))
+                edge = assignments.setdefault(key, {'from': 'capability:' + cid, 'to': 'module:' + row['module_id'],
+                    'relation': row.get('role'), 'status': 'confirmed', 'feature_ids': [], 'responsibilities': [],
+                    'evidence_refs': []})
+                edge['feature_ids'].append(folder.name)
+                if row.get('responsibility') not in edge['responsibilities']:
+                    edge['responsibilities'].append(row.get('responsibility'))
+                edge['evidence_refs'] = sorted(set(edge['evidence_refs']) | set(row.get('evidence_refs', [])))
+    for node in capabilities.values():
+        node['feature_ids'].sort()
+    for edge in assignments.values():
+        edge['feature_ids'].sort()
+    nodes.extend(capabilities[key] for key in sorted(capabilities))
+    edges.extend(assignments[key] for key in sorted(assignments))
+    return {'schema_version': 1, 'nodes': nodes, 'edges': edges, 'gaps': sorted(set(gaps)),
+            'limits': ['Declared build/module relationships are not a complete runtime call graph.',
+                       'Capability roles come only from confirmed feature scope records.']}
+
+
+def render_graph(root, index=None):
+    root = root.resolve(); index = index or catalog(root); graph = project_graph(root, index)
+    base = safe(root, '.agent-workflow/modules')
+    write(base / 'graph.json', json.dumps(graph, ensure_ascii=False, indent=2) + '\n')
+    ids = {node['id']: ('N' + str(number)) for number, node in enumerate(graph['nodes'])}
+    lines = ['# Project module and capability graph', '',
+             'Generated from the reviewed module catalog and confirmed feature scopes. It is an impact-navigation aid, not a complete runtime call graph.', '',
+             '```mermaid', 'graph LR']
+    for node in graph['nodes']:
+        suffix = '<br/>business capability' if node['kind'] == 'capability' else '<br/>code module'
+        lines.append('    ' + ids[node['id']] + '["' + _mermaid_label(node['label']) + suffix + '"]')
+    for edge in graph['edges']:
+        lines.append('    ' + ids[edge['from']] + ' -->|"' + _mermaid_label(edge['relation']) + '"| ' + ids[edge['to']])
+    lines += ['```', '', '## Known gaps', '']
+    lines += ['- ' + gap for gap in graph['gaps']] or ['- None recorded.']
+    lines += ['', '## Evidence boundary', ''] + ['- ' + limit for limit in graph['limits']]
+    write(base / 'graph.md', '\n'.join(lines) + '\n')
+    overview = ['# Project module overview', '', index['shared_stack'], '',
+                'Registered modules (not exhaustive discovery):', '']
+    for module in index['modules']:
+        overview += ['- ' + module['id'] + ': ' + module['summary'] + '; roots=' + ', '.join(module['roots']) + '; depends_on=' + ', '.join(module['depends_on'])]
+    overview += ['', 'See graph.md for declared dependencies and confirmed business-capability roles.']
+    write(base / 'index.md', '\n'.join(overview) + '\n')
+    return graph
+
+
 def render(root, index, module_id, doc):
-    lines = ['# Project module overview', '', index['shared_stack'], '', 'Registered modules (not exhaustive discovery):', '']
-    for m in index['modules']:
-        lines += ['- ' + m['id'] + ': ' + m['summary'] + '; roots=' + ', '.join(m['roots']) + '; depends_on=' + ', '.join(m['depends_on'])]
-    write(safe(root, '.agent-workflow/modules/index.md'), '\n'.join(lines) + '\n')
     body = doc['body']; lines = ['# ' + module_id, '', 'Source reviewed at ' + doc['review']['revision'] + '; run module plan before reuse. Not runtime acceptance.', '']
     for section in SECTIONS:
         lines += ['## ' + section, '']
         lines += ['- ' + r['detail'] + ' (evidence: ' + ', '.join(r['evidence_files']) + ')' for r in body[section]]
     lines += ['', 'Related features: ' + ', '.join(body['feature_ids']), 'Gaps: ' + ('; '.join(body['gaps']) or 'none declared')]
     write(safe(root, '.agent-workflow/modules/' + module_id + '.md'), '\n'.join(lines) + '\n')
+    render_graph(root, index)
 
 
 def validate_modules(root, folder, req, stage):
@@ -213,11 +312,17 @@ def validate_modules(root, folder, req, stage):
 
 def main():
     p = argparse.ArgumentParser(description=__doc__)
-    p.add_argument('action', choices=['plan', 'review']); p.add_argument('root', type=Path)
+    p.add_argument('action', choices=['plan', 'review', 'graph']); p.add_argument('root', type=Path)
     p.add_argument('--module', action='append'); p.add_argument('--feature')
     p.add_argument('--input', type=Path); p.add_argument('--digest')
     args = p.parse_args(); root = args.root.resolve()
     try:
+        if args.action == 'graph':
+            if args.module or args.feature or args.input or args.digest:
+                raise ValueError('graph does not accept module, feature, input or digest')
+            graph = render_graph(root)
+            print(json.dumps({'nodes': len(graph['nodes']), 'edges': len(graph['edges']), 'gaps': graph['gaps']}, ensure_ascii=False))
+            return 0
         selected = args.module or []
         if args.feature:
             if selected or not re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9_-]*', args.feature):

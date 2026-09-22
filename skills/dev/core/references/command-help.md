@@ -43,7 +43,7 @@ This is display guidance, not a request to execute examples. `/dev help` shows t
 |---|---|---|
 | list | 列出需求，可筛选模块或归档历史 | `/dev list --all --module wallet` |
 | use | 选择本会话当前需求 | `/dev use FEAT-001` |
-| classify | 设置需求所属模块标签 | `/dev classify FEAT-001 --module wallet` |
+| classify | 确认业务能力及相关代码模块的职责 | `/dev classify OGFR-2577` |
 | archive | 将已完成且有验收依据的需求原地归档 | `/dev archive FEAT-001` |
 | restore | 恢复已归档需求，保留原有历史 | `/dev restore FEAT-001` |
 
@@ -66,7 +66,7 @@ This is display guidance, not a request to execute examples. `/dev help` shows t
 - status: optional positional ID after selection. Read-only summary, not a fresh build/test or proof of completion.
 - list: no ID; optional `--archived` for archive history or `--all` for both active/history, optional `--module label`. Default is active features. Lists without changing selection.
 - use: required ID. Changes only this conversation's selection for this project, not Git branch or business status. New/uncertain context requires selection again.
-- classify: optional positional ID; repeated `--module label` replaces labels, `--clear-modules` removes them. Labels help lookup, not automatic code classification or current-behavior authority.
+- classify: optional positional product ID. Agent first reads the module catalog and code evidence, proposes capability plus `owner/host/provider/consumer/shared` roles, then records only the confirmed scope. Existing `--module label` is a legacy lookup-label form; it does not invent role semantics. Missing/ambiguous ownership is asked once before develop rather than guessed.
 - archive: optional positional ID; first runs preflight, preserves an existing report or creates a review-required draft from recorded evidence, and reports module/source/Git gaps. Only completed features with reviewed delivery evidence can be archived. Hides from default list, preserves files and history; not deletion or compression.
 - restore: optional positional ID; returns archived feature to active list without erasing evidence. It does not itself rerun tests or invalidate/renew historical acceptance. Further code work follows normal rules.
 

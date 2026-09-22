@@ -25,6 +25,13 @@ modules, archive = metadata(req["feature"])
 print(f"FEATURE: {feature_id}")
 print("ARCHIVED: " + str(archive["archived"]))
 print("MODULES: " + (", ".join(modules) or "unclassified"))
+scope = req['feature'].get('module_scope')
+if isinstance(scope, dict):
+    capability = scope.get('capability') if isinstance(scope.get('capability'), dict) else {}
+    print("MODULE_SCOPE: status=%s, capability=%s" % (scope.get('status', 'invalid'), capability.get('id', 'none')))
+    for row in scope.get('assignments', []) if isinstance(scope.get('assignments'), list) else []:
+        if isinstance(row, dict):
+            print("MODULE_ROLE: %s=%s; %s" % (row.get('module_id', '?'), row.get('role', '?'), row.get('responsibility', '')))
 print("SOURCES: " + ", ".join(f"{key}={value}" for key, value in req["feature"].get("source_status", {}).items()))
 print("REQUIREMENTS: " + ", ".join(f"{key}={value}" for key, value in counts.items()))
 print(f"TASKS: done={done}/{len(tasks)}")

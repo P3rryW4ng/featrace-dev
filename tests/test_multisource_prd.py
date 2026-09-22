@@ -29,7 +29,7 @@ class MultiSourceTests(unittest.TestCase):
         self.assertEqual([s['kind'] for s in intake['sources']],['document'])
         self.assertTrue((self.feature/intake['sources'][0]['path']).is_file())
         req=json.loads((self.feature/'spec/requirements.json').read_text())
-        self.assertEqual(req['feature']['workflow_version'],2)
+        self.assertEqual(req['feature']['workflow_version'],3)
         self.assertTrue(req['feature']['impact_required'])
         with tempfile.TemporaryDirectory() as temp:
             other=Path(temp)

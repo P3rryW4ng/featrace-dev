@@ -65,6 +65,20 @@ class FeatureArchiveTests(unittest.TestCase):
         self.command('classify', '--clear-modules')
         self.assertEqual(self.feature()['modules'], [])
 
+    def test_legacy_label_change_resets_confirmed_v3_scope(self):
+        req = json.loads((self.folder / 'spec/requirements.json').read_text())
+        req['feature'].update(workflow_version=3, modules=['wallet'], module_context_required=True,
+            module_scope={'status': 'confirmed', 'capability': {'id': 'payment', 'name': 'Payment'},
+                          'assignments': [{'module_id': 'wallet', 'role': 'owner',
+                                           'responsibility': 'Own payment rules', 'evidence_refs': ['wallet/code.txt']}],
+                          'note': ''})
+        self.write('spec/requirements.json', req)
+        self.command('classify', '--module', 'identity')
+        feature = self.feature()
+        self.assertEqual(feature['modules'], ['identity'])
+        self.assertEqual(feature['module_scope']['status'], 'pending')
+        self.assertNotIn('module_context_required', feature)
+
     def test_archive_rejects_incomplete_feature_or_tasks(self):
         for change in ('status', 'tasks', 'requirements', 'sources'):
             with self.subTest(change=change):

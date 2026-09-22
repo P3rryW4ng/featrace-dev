@@ -21,7 +21,10 @@ def describe(root, feature_id):
     if not all(isinstance(feature.get(k), str) for k in ("title", "status")):
         raise ValueError("Feature title/status must be strings")
     modules, archive = metadata(feature)
-    return {"project": str(root), "id": feature_id, "modules": modules, "archived": archive["archived"],
+    scope = feature.get('module_scope') if isinstance(feature.get('module_scope'), dict) else {}
+    capability = scope.get('capability') if isinstance(scope.get('capability'), dict) else {}
+    return {"project": str(root), "id": feature_id, "modules": modules,
+            "module_scope_status": scope.get('status'), "capability": capability.get('id'), "archived": archive["archived"],
             "title": feature["title"], "status": feature["status"]}
 
 

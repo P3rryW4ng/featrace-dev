@@ -3,10 +3,16 @@
     "id": "FEATURE_ID",
     "title": "",
     "status": "drafted",
-    "workflow_version": 2,
+    "workflow_version": 3,
     "impact_required": true,
     "history_regression_required": true,
     "task_review_required": true,
+    "module_scope": {
+      "status": "pending",
+      "capability": null,
+      "assignments": [],
+      "note": ""
+    },
     "source_status": {
       "prd": "present",
       "api": "unknown",

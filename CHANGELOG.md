@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.5.15 — 2026-09-22
+
+- 新需求必须使用用户提供的产品/work-item ID；workflow v3 在 develop/check 前要求确认业务能力与模块职责，或有具体理由地标记不适用。
+- 模块分类从单一标签扩展为 capability + 多模块角色：owner、host、provider、consumer、shared；每项保存职责和依据，同时保留旧记录兼容。
+- 新增只读模块候选、确定性范围写入与门禁；路径匹配只作为候选，不自动裁决产品归属。
+- scan 发布及范围确认会生成 `graph.json` 和 Mermaid `graph.md`，展示声明依赖与已确认能力关系，并明确列出旧标签和运行时动态关系等缺口。
+
 ## 0.5.14 — 2026-09-22
 
 - `project.py verify` 区分 Git HEAD、构建清单、登记证据和工作树变化，并列出最多 50 个相关路径；未提交或未跟踪的非 workflow 文件不再被静默忽略。

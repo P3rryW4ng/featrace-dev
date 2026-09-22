@@ -7,7 +7,7 @@ Archive is a visibility/lifecycle marker in `spec/requirements.json`, independen
 - `/dev list`: active (nonarchived) features only, including completed but unarchived ones.
 - `/dev list --archived` / `--all`: historical only / both. Map to helper `--scope archived|all`.
 - `/dev list --module <label>`: exact module label filter, combinable with either scope. Use `feature-context.py list <PROJECT> --scope active|archived|all --module <label>`; inspect metadata only, not the entire project's source tree. Invalid metadata entries remain visible as errors even under a filter.
-- `/dev classify [ID] --module <label> [--module <label> ...]`: set the whole module list. Reuse existing project labels; a feature can belong to multiple modules. `/dev classify [ID] --clear-modules` clears labels. Label corrections on archived features are allowed. Labels describe grouping, not authoritative current behavior or proven code coverage.
+- `/dev classify [ID]`: for workflow v3, propose and confirm a business capability plus module roles through `feature_scope.py`; a feature can span multiple modules with different responsibilities. Legacy `--module` labels remain available for lookup and archived metadata correction, but changing them resets an existing v3 scope to pending rather than silently preserving stale roles. Labels and roles aid navigation; they are not authoritative current behavior or proven code coverage.
 - `/dev archive [ID]`: inspect completion and delivery evidence, then archive using the helper below.
 - `/dev restore [ID]`: restore visibility before further feature work, preserving all historical delivery conclusions. Restoration itself does not reset product status; new fixes/clarifications retain their existing complete→provisional behavior.
 
@@ -32,7 +32,9 @@ python3 core/scripts/archive-preflight.py <PROJECT> <ID> --revision <ACCEPTED-RE
 # Agent reviews/edits the report and removes the draft marker only after evidence review.
 python3 core/scripts/feature-archive.py archive <PROJECT> <ID> --revision <ACCEPTED-REVISION> --reason <REASON> --evidence delivery-report.md
 python3 core/scripts/feature-archive.py restore <PROJECT> <ID> --reason <REASON>
-python3 core/scripts/feature-archive.py classify <PROJECT> <ID> --module wallet --module identity
+python3 core/scripts/feature_scope.py suggest <PROJECT> <ID>
+python3 core/scripts/feature_scope.py set <PROJECT> <ID> --input <scope.json>
+python3 core/scripts/feature-archive.py classify <PROJECT> <ID> --module wallet --module identity  # legacy labels
 ```
 
 The final archive helper requires complete, confirmed active requirements, all tasks done, resolved source applicability, passing structural check (including decisions/fixes), and a nonempty reviewed local delivery report without the generated-draft marker. It records the supplied accepted revision and report SHA-256. These checks cannot prove that report text is truthful, that a named revision was installed, or that a build actually passed; the Agent must inspect the evidence. Do not invent acceptance or revision information. Original sources required by check must be restored from their authorized location if missing.
