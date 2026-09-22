@@ -17,6 +17,100 @@ from datetime import datetime, timezone
 SKIP = {'.git', '.agent-workflow', '.agents', '.claude', 'node_modules', 'build', '.gradle', '.venv', 'venv', 'vendor', 'Pods', 'DerivedData', '__pycache__'}
 NAMES = {'settings.gradle', 'settings.gradle.kts', 'build.gradle', 'build.gradle.kts', 'libs.versions.toml', 'gradle.lockfile', 'gradle-wrapper.properties', 'Package.swift', 'project.pbxproj', 'package.json', 'package-lock.json', 'pnpm-lock.yaml', 'yarn.lock', 'go.mod', 'go.sum', 'pyproject.toml', 'requirements.txt', 'pom.xml', 'Cargo.toml', 'Cargo.lock', 'Makefile', 'CMakeLists.txt'}
 
+
+def workflow_path(path):
+    return path == '.agent-workflow' or path.startswith('.agent-workflow/')
+
+
+def git_paths(root, *args):
+    run = subprocess.run(['git', '-C', str(root), *args], capture_output=True)
+    if run.returncode != 0:
+        return None
+    return sorted(set(path.decode('utf-8', 'surrogateescape') for path in run.stdout.split(b'\0') if path))
+
+
+def committed_paths(root, old_head, new_head):
+    if not old_head or not new_head or old_head == new_head:
+        return []
+    return git_paths(root, 'diff', '--name-only', '-z', old_head, new_head, '--')
+
+
+def worktree_paths(root):
+    groups = [
+        git_paths(root, 'diff', '--name-only', '-z', '--'),
+        git_paths(root, 'diff', '--cached', '--name-only', '-z', '--'),
+        git_paths(root, 'ls-files', '--others', '--exclude-standard', '-z', '--'),
+    ]
+    if any(group is None for group in groups):
+        return []
+    return sorted(set(path for group in groups for path in group if not workflow_path(path)))
+
+
+def changed_keys(before, after):
+    before = before if isinstance(before, dict) else {}
+    after = after if isinstance(after, dict) else {}
+    return sorted(key for key in set(before) | set(after) if before.get(key) != after.get(key))
+
+
+def print_paths(label, paths, limit=50):
+    if paths is None:
+        print(label + ': unavailable')
+        return
+    shown = paths[:limit]
+    print(label + ': ' + (', '.join(shown) or 'none'))
+    if len(paths) > limit:
+        print(label + '_MORE: ' + str(len(paths) - limit))
+
+
+def baseline_diagnostics(root, recorded, current):
+    reasons = []
+    if not isinstance(recorded, dict) or not isinstance(current, dict):
+        return ['invalid_fingerprint'], None, [], [], []
+    if set(recorded) != set(current):
+        reasons.append('fingerprint_shape')
+    if recorded.get('version') != current.get('version'):
+        reasons.append('fingerprint_version')
+    if recorded.get('profile') != current.get('profile'):
+        reasons.append('profile')
+    manifest_paths = changed_keys(recorded.get('files'), current.get('files'))
+    if manifest_paths:
+        reasons.append('manifests')
+    evidence_paths = changed_keys(recorded.get('evidence'), current.get('evidence'))
+    if evidence_paths:
+        reasons.append('evidence')
+    old_head, new_head = recorded.get('git_head', ''), current.get('git_head', '')
+    head_paths = []
+    if old_head != new_head:
+        reasons.append('git_head')
+        head_paths = committed_paths(root, old_head, new_head)
+    return reasons, head_paths, manifest_paths, evidence_paths, worktree_paths(root)
+
+
+def verify_baseline(root, recorded, current):
+    reasons, head_paths, manifest_paths, evidence_paths, dirty_paths = baseline_diagnostics(root, recorded, current)
+    if reasons == ['git_head'] and head_paths and all(workflow_path(path) for path in head_paths) and not dirty_paths:
+        print('BASELINE_VALID: manifests and registered evidence only')
+        print_paths('BASELINE_HEAD_ADVANCED_WORKFLOW_ONLY', head_paths)
+        return 0
+    if reasons:
+        print('BASELINE_STALE: review changed project files before refreshing the baseline')
+        print('BASELINE_STALE_REASONS: ' + ', '.join(reasons))
+        if 'git_head' in reasons:
+            print_paths('HEAD_CHANGED_PATHS', head_paths)
+        if manifest_paths:
+            print_paths('MANIFEST_CHANGED_PATHS', manifest_paths)
+        if evidence_paths:
+            print_paths('EVIDENCE_CHANGED_PATHS', evidence_paths)
+        if dirty_paths:
+            print_paths('WORKTREE_CHANGED_PATHS', dirty_paths)
+        return 3
+    if dirty_paths:
+        print('BASELINE_WORKTREE_REVIEW_REQUIRED: uncommitted project paths are outside the baseline fingerprint')
+        print_paths('WORKTREE_CHANGED_PATHS', dirty_paths)
+        return 3
+    print('BASELINE_VALID: manifests and registered evidence only')
+    return 0
+
 def snapshot(root, baseline=None):
     files = {}
     android = False
@@ -145,6 +239,18 @@ def tree_digest(path):
         for k, v in tree_bytes(path).items()}, sort_keys=True).encode()).hexdigest()
 
 
+def fingerprint_head_only_change(current_bytes, candidate_bytes):
+    try:
+        current = json.loads(current_bytes)
+        candidate = json.loads(candidate_bytes)
+    except (json.JSONDecodeError, TypeError):
+        return False
+    if not isinstance(current, dict) or not isinstance(candidate, dict):
+        return False
+    old_head, new_head = current.pop('git_head', None), candidate.pop('git_head', None)
+    return bool(old_head and new_head and old_head != new_head and current == candidate)
+
+
 @contextmanager
 def baseline_lock(root):
     # OS locks release on process death; no stale lock-file deletion race.
@@ -176,8 +282,20 @@ def baseline_lock(root):
 def promote(root, candidate, keep):
     work = root / '.agent-workflow'
     base = work / 'project-baseline'
-    if tree_bytes(base) == tree_bytes(candidate):
+    current_tree, candidate_tree = tree_bytes(base), tree_bytes(candidate)
+    if current_tree == candidate_tree:
         print('BASELINE_UNCHANGED: no backup created')
+        return
+    current_content = {key: value for key, value in current_tree.items() if key != 'fingerprint.json'}
+    candidate_content = {key: value for key, value in candidate_tree.items() if key != 'fingerprint.json'}
+    if (base.exists() and current_content == candidate_content
+            and fingerprint_head_only_change(current_tree.get('fingerprint.json'), candidate_tree.get('fingerprint.json'))):
+        source = candidate / 'fingerprint.json'
+        if not source.is_file():
+            raise ValueError('candidate fingerprint missing')
+        os.replace(source, base / 'fingerprint.json')
+        shutil.rmtree(candidate)
+        print('BASELINE_FINGERPRINT_REFRESHED: baseline content unchanged; no backup created')
         return
     history = work / 'baseline-backups' / 'managed-v1'
     if history.is_symlink() or history.parent.is_symlink():
@@ -283,9 +401,7 @@ def main():
     if args.action == 'verify':
         if not fingerprint.exists():
             print('BASELINE_MISSING'); return 2
-        if json.loads(fingerprint.read_text()) != snapshot(root):
-            print('BASELINE_STALE: review changed project files and rescan'); return 3
-        print('BASELINE_VALID: manifests and registered evidence only'); return 0
+        return verify_baseline(root, json.loads(fingerprint.read_text()), snapshot(root))
     config = base / 'quality-gates.json'
     if not config.exists():
         print('QUALITY_UNAVAILABLE: no configuration'); return 2
