@@ -10,6 +10,8 @@
 
 修改脚本通过 py_compile，core JSON、Markdown 本地链接与 `git diff --check` 通过。skill-creator 的通用 `quick_validate.py` 仍因本机缺少 PyYAML（`ModuleNotFoundError: yaml`）未执行成功，不记为通过。
 
+功能提交 `77dbb32` 已推送到 `origin/main`。本机 Claude Code 安装器返回 `INSTALLED`，安装标记为 0.5.15；安装目录与仓库 `skills/dev` 仅相差安装标记文件，旧版备份位于 `/Users/mac/.feature-delivery/backups/20260922T093854-claude-b5355388`。新会话才会稳定重新加载该版本。
+
 ## 0.5.14 — 2026-09-22
 
 实现 GAP-05 最小修正。`project.py verify` 现在分别报告 Git HEAD、构建清单、登记证据和 staged/unstaged/untracked 非 workflow 路径；仅 `.agent-workflow/**` 提交推进 HEAD 时保持基线有效。路径只用于选择复核范围，不自动判断语义影响。scan 发布后若基线正文和除 HEAD 外的指纹完全相同，只刷新指纹且不生成完整备份；清单、登记证据或说明变化仍按原策略备份。
