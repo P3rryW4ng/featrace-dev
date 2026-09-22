@@ -8,7 +8,7 @@
 
 修改脚本通过 py_compile，Markdown 本地链接与 `git diff --check` 通过。skill-creator 的通用 `quick_validate.py` 仍因本机缺少 PyYAML（`ModuleNotFoundError: yaml`）未执行成功，不记为通过。
 
-本版本没有删除 HEAD 检查，没有扫描忽略文件、推断依赖或自动选择全量/局部范围。尚未提交、推送、安装或执行普通 Agent 隔离复检；真实项目的 Agent 阅读时间仍需下一次 scan 测量。
+本版本没有删除 HEAD 检查，没有扫描忽略文件、推断依赖或自动选择全量/局部范围。功能提交 `7f3cca1` 已推送到 `origin/main`；本机 Claude Code 安装器返回 `INSTALLED`，安装标记为 0.5.14，安装目录与仓库 `skills/dev` 仅相差安装标记文件，备份位于 `/Users/mac/.feature-delivery/backups/20260922T080154-claude-8c64c38c`。尚未执行普通 Agent 隔离复检；真实项目的 Agent 阅读时间仍需下一次 scan 测量。
 
 ## GAP-05 扫描粒度隔离测量 — 2026-09-22
 
