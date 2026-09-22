@@ -8,7 +8,7 @@
 
 新增及接入脚本通过 py_compile，7 份 JSON schema/模板完成解析，Markdown 本地链接与 `git diff --check` 通过。skill-creator 的通用 `quick_validate.py` 仍因本机缺少 PyYAML（`ModuleNotFoundError: yaml`）未执行成功，不记为通过。
 
-尚未提交、推送或安装，也未完成普通 Agent 隔离场景或真实需求成本测量。下一步应在隔离项目验证一次“只改任务状态不触发复核”和一次“将任务标题改成相反含义后 develop 阻断、局部复核后恢复”；真实需求继续记录额外耗时、误阻塞和实际捕获偏差。
+功能提交 `f360a8e` 已推送到 `origin/main`。本机 Claude Code 安装器返回 `INSTALLED`，安装标记为 0.5.13；安装目录与仓库 `skills/dev` 仅相差安装标记文件，备份位于 `/Users/mac/.feature-delivery/backups/20260922T052943-claude-85aefbb8`。尚未完成普通 Agent 隔离场景或真实需求成本测量。下一步应在隔离项目验证一次“只改任务状态不触发复核”和一次“将任务标题改成相反含义后 develop 阻断、局部复核后恢复”；真实需求继续记录额外耗时、误阻塞和实际捕获偏差。
 
 ## 0.5.12 — 2026-09-22
 
