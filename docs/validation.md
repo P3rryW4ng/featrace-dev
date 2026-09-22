@@ -6,7 +6,9 @@
 
 regression-review schema 升级到 v2。候选内容改变或候选移除时，旧候选快照、disposition、retest result、旧/新摘要移入只读 history；history 不参与当前放行。同步采用内容摘要生成稳定 history_id，重复同步字节级幂等；损坏或重复历史会拒绝同步，避免静默擦除。读取兼容 v1，下次同步迁移到 v2。
 
-目标回归 9/9 通过，覆盖原有发现/门禁、v1 读取及迁移、changed 留史、removed 留史、旧结果完整保存、history 不误放行、重复同步幂等、留史内容防篡改、损坏历史拒绝以及 Agent 指令边界。最终完整合成回归 185/185 通过（30.338 秒）；三个修改脚本通过 py_compile，JSON schema 解析与 `git diff --check` 通过。通用 `quick_validate.py` 因本机缺少 PyYAML（`ModuleNotFoundError: yaml`）未执行成功，不记为通过。未运行真实业务构建或真机，尚未提交、推送或安装。
+目标回归 9/9 通过，覆盖原有发现/门禁、v1 读取及迁移、changed 留史、removed 留史、旧结果完整保存、history 不误放行、重复同步幂等、留史内容防篡改、损坏历史拒绝以及 Agent 指令边界。最终完整合成回归 185/185 通过（30.338 秒）；三个修改脚本通过 py_compile，JSON schema 解析与 `git diff --check` 通过。通用 `quick_validate.py` 因本机缺少 PyYAML（`ModuleNotFoundError: yaml`）未执行成功，不记为通过。未运行真实业务构建或真机。
+
+功能提交 `9e342f6` 后已安装到本机 Claude Code 2.1.278，并在独立临时项目运行普通 `/dev develop DEMO-002` 场景，明确要求只同步、列出、不得选择。Agent 最终只生成 regression-review.json/.md；实查 schema_version=2、candidates=1、pending=1、`dispositions=[]`、`history=[]`，Git 状态无业务代码、测试或其他需求记录变化。GAP-16 的短复检通过；该单例仍不能证明所有表达和模型都遵循。安装备份位于 `/Users/mac/.feature-delivery/backups/20260922T024117-claude-85af2f6b`，远端推送尚未完成。
 
 ## 0.5.11 — 2026-09-21
 
