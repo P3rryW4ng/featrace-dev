@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.5.12 — 2026-09-22
+
+- 明确回归候选同步只负责发现：用户要求只同步、列出或停止时，Agent 必须保留 pending，不得自行写入 retest 或 not_applicable。
+- regression-review.json 升级到 schema v2；候选变化或移除时，将旧 disposition、result 和候选快照移入只读 history，而不是删除。
+- superseded history 不满足当前 develop/check 门禁；同步幂等，状态摘要和归档报告显示历史数量，v1 记录可继续读取并在下次同步时迁移。
+
 ## 0.5.11 — 2026-09-21
 
 - develop/fix/revise 实现前与 check 前增加历史修复回归提醒，不新增用户命令；按已登记模块和代码路径查找当前及其他需求中的 verified FIX。

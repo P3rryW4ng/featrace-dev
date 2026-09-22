@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Historical fix regression review",
   "type": "object",
-  "required": ["schema_version", "feature_id", "scope", "candidates", "review_digest", "dispositions"],
+  "required": ["schema_version", "feature_id", "scope", "candidates", "review_digest", "dispositions", "history"],
   "properties": {
-    "schema_version": {"const": 1},
+    "schema_version": {"const": 2},
     "feature_id": {"type": "string", "minLength": 1},
     "scope": {
       "type": "object",
@@ -16,6 +16,24 @@
     },
     "candidates": {"type": "array", "items": {"type": "object"}},
     "review_digest": {"type": "string", "minLength": 1},
-    "dispositions": {"type": "array", "items": {"type": "object"}}
+    "dispositions": {"type": "array", "items": {"type": "object"}},
+    "history": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["history_id", "candidate_id", "candidate_digest", "review_digest", "candidate", "disposition", "superseded_reason", "superseded_by_candidate_digest", "superseded_by_review_digest"],
+        "properties": {
+          "history_id": {"type": "string", "minLength": 1},
+          "candidate_id": {"type": "string", "minLength": 1},
+          "candidate_digest": {"type": "string", "minLength": 1},
+          "review_digest": {"type": "string"},
+          "candidate": {"type": "object"},
+          "disposition": {"type": "object"},
+          "superseded_reason": {"enum": ["candidate_changed", "candidate_removed"]},
+          "superseded_by_candidate_digest": {"type": "string"},
+          "superseded_by_review_digest": {"type": "string", "minLength": 1}
+        }
+      }
+    }
   }
 }

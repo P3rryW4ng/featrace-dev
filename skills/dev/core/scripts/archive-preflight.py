@@ -145,6 +145,7 @@ def build_report(root, folder, req, revision, diagnostics):
     if isinstance(regression, dict) and isinstance(regression.get('candidates'), list):
         rows = regression_rows(regression)
         lines += table(['Historical fix', 'Match', 'Action', 'Result'], rows) if rows else ['No related verified fixes were found from registered modules and paths.']
+        lines += ['', f"Superseded audit entries: {len(regression.get('history', [])) if isinstance(regression.get('history', []), list) else 'invalid'}."]
     else:
         lines += ['Historical regression review not adopted for this feature.']
     lines += ['', '## Archive preflight', '',

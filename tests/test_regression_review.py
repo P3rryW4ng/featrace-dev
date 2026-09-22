@@ -1,4 +1,5 @@
 import json
+from pathlib import Path
 import unittest
 
 import test_impact
@@ -56,6 +57,22 @@ class HistoricalRegressionReviewTests(unittest.TestCase):
         self.store(record)
         self.assertEqual(self.validate(), [])
 
+    def test_version_one_record_remains_readable_and_sync_migrates_it(self):
+        record, _ = sync(self.root, 'FEAT-001')
+        candidate = record['candidates'][0]
+        record['schema_version'] = 1
+        record.pop('history')
+        record['dispositions'] = [{'candidate_id': candidate['id'],
+                                   'candidate_digest': candidate['candidate_digest'],
+                                   'action': 'not_applicable',
+                                   'reason': 'The current adapter does not invoke conversion state.'}]
+        self.store(record)
+        self.assertEqual(self.validate(), [])
+        migrated, _ = sync(self.root, 'FEAT-001')
+        self.assertEqual(migrated['schema_version'], 2)
+        self.assertEqual(migrated['history'], [])
+        self.assertEqual(len(migrated['dispositions']), 1)
+
     def test_retest_needs_current_result_and_stales_when_history_changes(self):
         record, _ = sync(self.root, 'FEAT-001')
         candidate = record['candidates'][0]
@@ -75,6 +92,75 @@ class HistoricalRegressionReviewTests(unittest.TestCase):
         fixes['fixes'][0]['description'] = 'Updated historical repair description'
         (self.historical / 'fixes.json').write_text(json.dumps(fixes))
         self.assertTrue(any('stale' in error for error in self.validate('check')))
+
+    def test_sync_preserves_changed_disposition_and_result_as_audit_history(self):
+        record, _ = sync(self.root, 'FEAT-001')
+        candidate = record['candidates'][0]
+        disposition = {'candidate_id': candidate['id'], 'candidate_digest': candidate['candidate_digest'],
+                       'action': 'retest', 'reason': 'Touches the repaired conversion path.',
+                       'planned_checks': ['Repeat OLD-REG against the current build'],
+                       'result': {'status': 'passed', 'method': 'fixture regression',
+                                  'evidence': 'OLD-REG passed', 'tested_revision': 'current-v2',
+                                  'review_digest': record['review_digest']}}
+        record['dispositions'] = [disposition]
+        self.store(record)
+        fixes = json.loads((self.historical / 'fixes.json').read_text())
+        fixes['fixes'][0]['description'] = 'Conversion and retries must remain side-effect free'
+        (self.historical / 'fixes.json').write_text(json.dumps(fixes))
+
+        updated, _ = sync(self.root, 'FEAT-001')
+        self.assertEqual(updated['schema_version'], 2)
+        self.assertEqual(updated['dispositions'], [])
+        self.assertEqual(len(updated['history']), 1)
+        archived = updated['history'][0]
+        self.assertEqual(archived['superseded_reason'], 'candidate_changed')
+        self.assertEqual(archived['candidate']['description'], 'Conversion loses preserved state')
+        self.assertEqual(archived['disposition'], disposition)
+        self.assertTrue(any('needs disposition' in error for error in self.validate()))
+
+        first_bytes = (self.folder / 'regression-review.json').read_bytes()
+        repeated, _ = sync(self.root, 'FEAT-001')
+        self.assertEqual(repeated['history'], updated['history'])
+        self.assertEqual((self.folder / 'regression-review.json').read_bytes(), first_bytes)
+        repeated['history'][0]['disposition']['result']['evidence'] = 'edited after archival'
+        self.store(repeated)
+        self.assertTrue(any('invalid' in error for error in self.validate()))
+        with self.assertRaisesRegex(ValueError, 'invalid or duplicate history'):
+            sync(self.root, 'FEAT-001')
+
+    def test_sync_preserves_removed_candidate_disposition_as_audit_history(self):
+        record, _ = sync(self.root, 'FEAT-001')
+        candidate = record['candidates'][0]
+        record['dispositions'] = [{'candidate_id': candidate['id'],
+                                   'candidate_digest': candidate['candidate_digest'],
+                                   'action': 'not_applicable',
+                                   'reason': 'The current adapter does not invoke conversion state.'}]
+        self.store(record)
+        fixes = json.loads((self.historical / 'fixes.json').read_text())
+        fixes['fixes'][0]['status'] = 'closed'
+        (self.historical / 'fixes.json').write_text(json.dumps(fixes))
+
+        updated, _ = sync(self.root, 'FEAT-001')
+        self.assertEqual(updated['candidates'], [])
+        self.assertEqual(updated['dispositions'], [])
+        self.assertEqual(updated['history'][0]['superseded_reason'], 'candidate_removed')
+        self.assertEqual(updated['history'][0]['superseded_by_candidate_digest'], '')
+        self.assertEqual(self.validate('check'), [])
+
+    def test_sync_rejects_malformed_history_instead_of_erasing_it(self):
+        record, _ = sync(self.root, 'FEAT-001')
+        record['history'] = [{'candidate_id': 'broken'}]
+        self.store(record)
+        with self.assertRaisesRegex(ValueError, 'invalid or duplicate history'):
+            sync(self.root, 'FEAT-001')
+
+    def test_agent_instructions_preserve_explicit_sync_only_scope(self):
+        repository = Path(__file__).resolve().parents[1]
+        reference = (repository / 'skills/dev/core/references/historical-regression.md').read_text()
+        entrypoint = (repository / 'skills/dev/SKILL.md').read_text()
+        self.assertIn('Sync is discovery, not disposition.', reference)
+        self.assertIn('only sync, list, inspect, stop, or not choose', reference)
+        self.assertIn('leave new candidates pending and stop', entrypoint)
 
     def test_closed_report_is_not_a_regression_candidate(self):
         self.req['feature']['modules'] = ['chat']

@@ -40,9 +40,10 @@ if review_path.exists():
     review = load(review_path)
     candidates = review.get('candidates', []) if isinstance(review, dict) else []
     dispositions = review.get('dispositions', []) if isinstance(review, dict) else []
+    history = review.get('history', []) if isinstance(review, dict) else []
     retest = sum(row.get('action') == 'retest' for row in dispositions if isinstance(row, dict))
     excluded = sum(row.get('action') == 'not_applicable' for row in dispositions if isinstance(row, dict))
-    print(f"HISTORICAL_REGRESSION: candidates={len(candidates)}, retest={retest}, not_applicable={excluded}, pending={max(0, len(candidates) - len(dispositions))}")
+    print(f"HISTORICAL_REGRESSION: candidates={len(candidates)}, retest={retest}, not_applicable={excluded}, pending={max(0, len(candidates) - len(dispositions))}, superseded={len(history)}")
 elif req['feature'].get('history_regression_required'):
     print('HISTORICAL_REGRESSION: missing')
 decisions = load(folder / "decisions.json").get("decisions", [])

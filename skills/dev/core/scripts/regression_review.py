@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Discover related verified fixes and validate the current feature's regression review."""
 import argparse
+import copy
 import hashlib
 import json
 import os
@@ -19,6 +20,30 @@ def text(value):
 
 def strings(value):
     return isinstance(value, list) and all(text(item) for item in value)
+
+
+def history_ids(history):
+    if not isinstance(history, list):
+        raise ValueError('history must be an array')
+    identifiers = set()
+    for entry in history:
+        archived_disposition = entry.get('disposition') if isinstance(entry, dict) else None
+        identity_payload = copy.deepcopy(entry) if isinstance(entry, dict) else {}
+        recorded_id = identity_payload.pop('history_id', None)
+        if (not isinstance(entry, dict) or not text(entry.get('history_id'))
+                or entry['history_id'] in identifiers
+                or recorded_id != digest(identity_payload)
+                or entry.get('superseded_reason') not in ('candidate_changed', 'candidate_removed')
+                or not text(entry.get('candidate_id'))
+                or not text(entry.get('candidate_digest'))
+                or not isinstance(entry.get('candidate'), dict)
+                or not isinstance(archived_disposition, dict)
+                or archived_disposition.get('candidate_id') != entry.get('candidate_id')
+                or archived_disposition.get('candidate_digest') != entry.get('candidate_digest')
+                or not text(entry.get('superseded_by_review_digest'))):
+            raise ValueError('invalid or duplicate history entry')
+        identifiers.add(entry['history_id'])
+    return identifiers
 
 
 def read(path, default=None):
@@ -135,8 +160,10 @@ def validate_review(root, folder, requirements, stage):
         return errors, warnings
     try:
         doc = read(path)
-        if not isinstance(doc, dict) or doc.get('schema_version') != 1 or doc.get('feature_id') != folder.name:
+        if (not isinstance(doc, dict) or doc.get('schema_version') not in (1, 2)
+                or doc.get('feature_id') != folder.name):
             raise ValueError('identity/schema mismatch')
+        history_ids(doc.get('history', []))
         scope, candidates, review_digest, discovery_warnings = discover(root, folder.name)
         warnings.extend(discovery_warnings)
         if doc.get('scope') != scope or doc.get('candidates') != candidates or doc.get('review_digest') != review_digest:
@@ -209,6 +236,20 @@ def render(folder):
                   '- Evidence: ' + result.get('evidence', ''), '']
     if not doc.get('candidates'):
         lines += ['No related verified fixes were found from registered modules and code paths.', '']
+    history = doc.get('history', [])
+    if history:
+        lines += ['# Superseded history', '',
+                  'Preserved for audit only; these entries do not satisfy the current review.', '']
+        for entry in history:
+            item = entry.get('disposition', {})
+            result = item.get('result', {}) if isinstance(item.get('result'), dict) else {}
+            lines += ['## ' + entry.get('candidate_id', '?'), '',
+                      '- Superseded reason: ' + entry.get('superseded_reason', ''),
+                      '- Prior action: ' + item.get('action', ''),
+                      '- Prior result: ' + result.get('status', ''),
+                      '- Prior candidate digest: ' + entry.get('candidate_digest', ''),
+                      '- Replacement candidate digest: ' + entry.get('superseded_by_candidate_digest', ''),
+                      '- Replacement review digest: ' + entry.get('superseded_by_review_digest', ''), '']
     (folder / 'regression-review.md').write_text('\n'.join(lines))
 
 
@@ -235,14 +276,53 @@ def sync(root, feature_id):
         raise ValueError('current requirements record is invalid')
     scope, candidates, review_digest, warnings = discover(root, feature_id)
     old = read(folder / 'regression-review.json', {})
-    old_by_id = {row.get('candidate_id'): row for row in old.get('dispositions', []) if isinstance(row, dict)} if isinstance(old, dict) and isinstance(old.get('dispositions', []), list) else {}
+    if not isinstance(old, dict):
+        raise ValueError('existing regression review must be an object')
+    old_dispositions = old.get('dispositions', [])
+    old_history = old.get('history', [])
+    old_candidates = old.get('candidates', [])
+    if not isinstance(old_dispositions, list) or not isinstance(old_history, list) or not isinstance(old_candidates, list):
+        raise ValueError('existing regression review arrays are invalid')
+    old_by_id = {}
+    for row in old_dispositions:
+        if (not isinstance(row, dict) or not text(row.get('candidate_id'))
+                or not text(row.get('candidate_digest')) or row['candidate_id'] in old_by_id):
+            raise ValueError('existing regression review has invalid or duplicate dispositions')
+        old_by_id[row['candidate_id']] = row
+    old_candidate_by_id = {row.get('id'): row for row in old_candidates
+                           if isinstance(row, dict) and text(row.get('id'))}
+    history = copy.deepcopy(old_history)
+    try:
+        known_history_ids = history_ids(history)
+    except ValueError as exc:
+        raise ValueError('existing regression review has ' + str(exc)) from exc
     dispositions = []
+    current_by_id = {candidate['id']: candidate for candidate in candidates}
     for candidate in candidates:
         item = old_by_id.get(candidate['id'])
         if isinstance(item, dict) and item.get('candidate_digest') == candidate['candidate_digest']:
-            dispositions.append(item)
-    record = {'schema_version': 1, 'feature_id': feature_id, 'scope': scope, 'candidates': candidates,
-              'review_digest': review_digest, 'dispositions': dispositions}
+            dispositions.append(copy.deepcopy(item))
+    for candidate_id, item in old_by_id.items():
+        current = current_by_id.get(candidate_id)
+        if current and item.get('candidate_digest') == current['candidate_digest']:
+            continue
+        reason = 'candidate_changed' if current else 'candidate_removed'
+        archived = {
+            'candidate_id': candidate_id,
+            'candidate_digest': item.get('candidate_digest', ''),
+            'review_digest': old.get('review_digest', ''),
+            'candidate': copy.deepcopy(old_candidate_by_id.get(candidate_id, {})),
+            'disposition': copy.deepcopy(item),
+            'superseded_reason': reason,
+            'superseded_by_candidate_digest': current.get('candidate_digest', '') if current else '',
+            'superseded_by_review_digest': review_digest,
+        }
+        archived['history_id'] = digest(archived)
+        if archived['history_id'] not in known_history_ids:
+            history.append(archived)
+            known_history_ids.add(archived['history_id'])
+    record = {'schema_version': 2, 'feature_id': feature_id, 'scope': scope, 'candidates': candidates,
+              'review_digest': review_digest, 'dispositions': dispositions, 'history': history}
     requirements['feature']['history_regression_required'] = True
     if req_path.read_bytes() != original_requirements:
         raise ValueError('requirements changed during regression review sync; retry')
