@@ -10,7 +10,7 @@
 | 开发路线图与阶段计划 | [ROADMAP.md](ROADMAP.md) | 各阶段进度、下一优先项、启动与完成条件、待处理问题 |
 | 架构与产品决策记录 | [architecture.md](docs/decisions/architecture.md) | 为什么这样设计、哪些原则已确认、哪些实现仍待验证 |
 | 验证与评估记录 | [validation.md](docs/validation.md) | 实际验证了什么、结果和证据是什么、哪些未验证 |
-| 阶段审查报告 | [阶段审查](docs/reviews/2026-09-17.md)、[真实案例 CASE-01](docs/reviews/2026-09-18-case-01.md)、[真实案例 CASE-02](docs/reviews/2026-09-21-case-02.md)、[0.5.11 隔离演练](docs/reviews/2026-09-21-historical-regression-isolation.md) | 某个时点发现的问题及复现依据；当前处理状态以路线图为准 |
+| 阶段审查报告 | [阶段审查](docs/reviews/2026-09-17.md)、[真实案例 CASE-01](docs/reviews/2026-09-18-case-01.md)、[真实案例 CASE-02](docs/reviews/2026-09-21-case-02.md)、[0.5.11 隔离演练](docs/reviews/2026-09-21-historical-regression-isolation.md)、[0.5.13 隔离演练](docs/reviews/2026-09-22-task-semantic-review-isolation.md) | 某个时点发现的问题及复现依据；当前处理状态以路线图为准 |
 | 使用与迭代指南 | [usage.md](docs/usage.md) | 使用者如何操作当前版本、流程和限制是什么 |
 | 版本变更记录 | [CHANGELOG.md](CHANGELOG.md) | 每个版本发生了哪些变化；不代替当前进度与远端发布核对 |
 | 仓库维护规则 | [AGENTS.md](AGENTS.md) | 维护者和 Agent 修改本仓库时遵守什么规则 |
@@ -29,7 +29,7 @@
 
 ### 当前发布状态（2026-09-22）
 
-- 0.5.13 功能提交为 `f360a8e`，已推送到 `origin/main`；任务语义目标回归 9/9、完整合成回归 194/194 通过。本机 Claude Code 已安装 0.5.13，安装内容与仓库 `skills/dev` 一致，仅多安装标记文件；备份为 `/Users/mac/.feature-delivery/backups/20260922T052943-claude-85aefbb8`。下一步完成一次 Agent 隔离复检，真实成本留待下一需求测量。
+- 0.5.13 功能提交为 `f360a8e`，已推送到 `origin/main`；任务语义目标回归 9/9、完整合成回归 194/194 通过。本机 Claude Code 已安装 0.5.13，安装内容与仓库 `skills/dev` 一致，仅多安装标记文件；备份为 `/Users/mac/.feature-delivery/backups/20260922T052943-claude-85aefbb8`。四步 Agent 隔离复检覆盖进度不失效、冲突阻断、局部复核、未批准中间态不留史及历史防篡改，全部符合预期；真实成本留待下一需求测量。
 - 0.5.12 功能提交为 `9e342f6`，目标回归 9/9、完整合成回归 185/185 通过；已安装到本机 Claude Code，备份为 `/Users/mac/.feature-delivery/backups/20260922T024117-claude-85af2f6b`。隔离复检覆盖只同步保持 pending、changed/removed 留史、旧 passed 不放行、v1 迁移、幂等、状态展示和历史防篡改，全部符合预期；真实候选准确率与成本留待下一需求统一验证。
 
 - 0.5.11 功能提交为 `27278f4`，已推送到 `origin/main`；本机 Claude Code 安装标记为 0.5.11。合成回归 180/180 通过；隔离 Agent 演练确认机制链路与自动触发，但发现明确不代选仍写入 retest、失效结果不在记录内留史两项缺口。真实候选准确率与成本仍未验证。
@@ -137,7 +137,7 @@
 
 ## 换会话或换机的接续点（2026-09-21）
 
-第一阶段已完成；剩余可靠性问题保留开放状态。0.5.13 已提交、推送并安装到本机 Claude Code，下一步是 GAP-04 Agent 隔离复检。本机 Codex 尚未安装该 Skill。下一真实需求统一验证历史候选准确率、任务局部复核成本、遗漏共享依赖和误阻塞。完整自动依赖发现、规则取代和传播仍待后续范围确认。
+第一阶段已完成；剩余可靠性问题保留开放状态。0.5.13 已提交、推送、安装并完成 GAP-04 Agent 隔离复检。本机 Codex 尚未安装该 Skill。下一真实需求统一验证历史候选准确率、任务局部复核成本、遗漏共享依赖和误阻塞。完整自动依赖发现、规则取代和传播仍待后续范围确认。
 
 先读 [CASE-01 脱敏校对](docs/reviews/2026-09-18-case-01.md)，再按路线图接续。审查与资料归档已完成；GAP-01/02 已在 0.4.6 源码实现并通过合成回归，真实使用效果仍待验证。GAP-03 的确定性提醒已在 0.5.11 发布，GAP-07/08 的确定性部分已在 0.4.7 实现；首个真实项目已最终验收，但该案例通过不证明所有记录语义可靠。GAP-04 与局部影响面继续按真实案例试行；提交、推送和安装状态分别以 Git 与各机器安装标记核对，不能从版本号推断。
 

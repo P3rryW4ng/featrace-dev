@@ -8,7 +8,9 @@
 
 新增及接入脚本通过 py_compile，7 份 JSON schema/模板完成解析，Markdown 本地链接与 `git diff --check` 通过。skill-creator 的通用 `quick_validate.py` 仍因本机缺少 PyYAML（`ModuleNotFoundError: yaml`）未执行成功，不记为通过。
 
-功能提交 `f360a8e` 已推送到 `origin/main`。本机 Claude Code 安装器返回 `INSTALLED`，安装标记为 0.5.13；安装目录与仓库 `skills/dev` 仅相差安装标记文件，备份位于 `/Users/mac/.feature-delivery/backups/20260922T052943-claude-85aefbb8`。尚未完成普通 Agent 隔离场景或真实需求成本测量。下一步应在隔离项目验证一次“只改任务状态不触发复核”和一次“将任务标题改成相反含义后 develop 阻断、局部复核后恢复”；真实需求继续记录额外耗时、误阻塞和实际捕获偏差。
+功能提交 `f360a8e` 已推送到 `origin/main`。本机 Claude Code 安装器返回 `INSTALLED`，安装标记为 0.5.13；安装目录与仓库 `skills/dev` 仅相差安装标记文件，备份位于 `/Users/mac/.feature-delivery/backups/20260922T052943-claude-85aefbb8`。发布时尚未完成普通 Agent 隔离场景或真实需求成本测量，后续结果如下；真实需求仍需记录额外耗时、误阻塞和实际捕获偏差。
+
+随后使用安装版在独立临时项目完成普通 Claude Code 四步演练：纯状态变化保持 current 且不增加历史；冲突标题使 develop 阻断；符合需求的新措辞经 T-1/R-1/PRD 局部复核后恢复通过，未批准的中间态没有进入历史；篡改历史 notes 后 develop 与 sync 均硬失败，原字节恢复后再次通过。完整脱敏证据见[任务语义复核隔离演练](reviews/2026-09-22-task-semantic-review-isolation.md)。GAP-04 的确定性机制和本次 Agent 编排通过，真实需求成本与复杂场景准确率仍待验证。
 
 ## 0.5.12 — 2026-09-22
 
