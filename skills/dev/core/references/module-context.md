@@ -1,4 +1,19 @@
-# Scoped module knowledge and capability graph (0.5.15)
+# Scoped module knowledge and capability graph (0.5.16)
+
+## Android Gradle candidate discovery
+
+During Android `scan`, `scan-prepare`, and `scan-publish`, the Skill reads the root `settings.gradle(.kts)` plus discovered module `build.gradle(.kts)` files. It recognizes common literal `include`, literal `projectDir`, and configuration-to-`project(":path")` declarations. It writes:
+
+- `modules/candidates.json`: deterministic candidate records, file hashes, file/line evidence, registered-module matches and parsing gaps;
+- `modules/candidates.md`: a readable candidate list and dashed Mermaid dependency graph.
+
+The artifact uses `status: candidate_only`; each module uses `pending_review`. It never edits `modules/index.json`, does not create dossiers, and cannot satisfy scope/develop/check gates. Review actual build configuration and source boundaries before adding accepted modules or dependencies to the formal catalog. Dynamic/composite includes, computed paths, type-safe project accessors, convention-plugin relationships, aliases, reflection, navigation and runtime services may be absent. A missing candidate therefore does not prove that no relationship exists.
+
+Run discovery directly only when inspecting the mechanism:
+
+```text
+python3 core/scripts/module_context.py discover <PROJECT>
+```
 
 Use during scan, feature intake/develop/fix/revise investigation and delivery. Keep original feature archives unchanged. Module dossiers describe reviewed current implementation; historical requirements document what was delivered then. Neither replaces the other or overrides confirmed product intent.
 
@@ -55,7 +70,7 @@ After creating or revising the catalog, and after changing confirmed feature sco
 python3 core/scripts/module_context.py graph <PROJECT>
 ```
 
-This writes generated `modules/graph.json` and `modules/graph.md`. The graph contains declared module dependencies and confirmed capability-role edges, plus explicit gaps for legacy labels without roles. Mermaid is a human navigation view; JSON is the deterministic generated view. Static declarations and confirmed feature records do not reveal every runtime call, reflection, dynamic route, remote flag or external service, so the graph must not be presented as exhaustive.
+This writes generated `modules/graph.json` and `modules/graph.md`. The graph contains declared module dependencies and confirmed capability-role edges, plus explicit gaps for legacy labels without roles. When a valid Gradle candidate artifact exists, unconfirmed relationships appear as dashed `candidate` edges and unmatched build modules appear as candidate nodes; they remain separate from formal declarations. Mermaid is a human navigation view; JSON is the deterministic generated view. Static declarations and confirmed feature records do not reveal every runtime call, reflection, dynamic route, remote flag or external service, so the graph must not be presented as exhaustive.
 
 ## Review dossier contents
 

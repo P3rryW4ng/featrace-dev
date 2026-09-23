@@ -2,7 +2,7 @@ import copy
 import json
 import unittest
 import test_impact
-from module_context import plan, review, catalog, validate_modules, render_graph
+from module_context import plan, review, catalog, validate_modules, render_graph, discover_gradle_candidates
 from feature_scope import set_scope, not_applicable, validate_scope, suggest
 
 
@@ -182,3 +182,40 @@ class ModuleTests(unittest.TestCase):
         self.assertEqual(wallet['matched_code_paths'], ['wallet/code.txt'])
         self.assertEqual(chat['matched_code_paths'], [])
         self.assertIn('candidates only', result['note'])
+
+    def test_gradle_discovery_keeps_static_dependencies_as_candidates(self):
+        (self.root / 'settings.gradle.kts').write_text('include(\n  ":app",\n  ":feature:wallet",\n  ":core"\n)\nproject(":feature:wallet").projectDir = file("wallet")\n')
+        (self.root / 'app' / 'build.gradle.kts').write_text('dependencies {\n  implementation(\n    project(":feature:wallet")\n  )\n  api(project(path = ":core"))\n}\n')
+        (self.root / 'wallet' / 'build.gradle').write_text("dependencies { implementation project(':core') }\n")
+        (self.root / 'core').mkdir(); (self.root / 'core' / 'build.gradle.kts').write_text('plugins { id("java-library") }\n')
+        result = discover_gradle_candidates(self.root)
+        self.assertEqual([row['build_id'] for row in result['modules']], [':app', ':core', ':feature:wallet'])
+        self.assertEqual(next(row for row in result['modules'] if row['build_id'] == ':feature:wallet')['root'], 'wallet')
+        self.assertEqual(next(row for row in result['modules'] if row['build_id'] == ':feature:wallet')['registered_module_ids'], ['wallet'])
+        self.assertEqual({(row['from'], row['to']) for row in result['edges']},
+                         {(':app', ':feature:wallet'), (':app', ':core'), (':feature:wallet', ':core')})
+        self.assertEqual(result['status'], 'candidate_only')
+        self.assertIn('pending review', (self.modules / 'candidates.md').read_text())
+        graph = render_graph(self.root)
+        self.assertTrue(any(edge.get('status') == 'candidate' for edge in graph['edges']))
+        self.assertIn('-. "candidate', (self.modules / 'graph.md').read_text())
+
+    def test_gradle_discovery_records_dynamic_and_missing_evidence_gaps(self):
+        (self.root / 'settings.gradle').write_text("includeBuild('tools')\ninclude modulesFromProperty\ninclude ':app'\n")
+        (self.root / 'app' / 'build.gradle').write_text("dependencies { implementation(project(projectPath)); api(projects.wallet) }\n")
+        result = discover_gradle_candidates(self.root)
+        self.assertEqual([row['build_id'] for row in result['modules']], [':app'])
+        self.assertTrue(any('not statically understood' in gap for gap in result['gaps']))
+        self.assertTrue(any('composite build' in gap for gap in result['gaps']))
+        self.assertTrue(any('type-safe project accessor' in gap for gap in result['gaps']))
+        self.assertFalse(result['edges'])
+
+    def test_stale_gradle_candidates_do_not_enter_formal_graph(self):
+        (self.root / 'settings.gradle.kts').write_text('include(":wallet", ":identity")\n')
+        (self.root / 'wallet' / 'build.gradle.kts').write_text('dependencies { implementation(project(":identity")) }\n')
+        (self.root / 'identity' / 'build.gradle.kts').write_text('plugins { id("java-library") }\n')
+        discover_gradle_candidates(self.root)
+        (self.root / 'wallet' / 'build.gradle.kts').write_text('dependencies { }\n')
+        graph = render_graph(self.root)
+        self.assertFalse(any(edge.get('status') == 'candidate' for edge in graph['edges']))
+        self.assertTrue(any('candidate evidence is stale' in gap for gap in graph['gaps']))

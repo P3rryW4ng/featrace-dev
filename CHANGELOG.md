@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.5.16 — 2026-09-23
+
+- Android scan 从常见 `settings.gradle(.kts)` include、`projectDir` 与模块 `build.gradle(.kts)` project 依赖生成 `modules/candidates.json` 和可读候选图；每条关系保留文件与行号依据。
+- 候选层固定标记为 `candidate_only` / `pending_review`，不会自动写入正式 `modules/index.json`，不能满足模块职责、档案或开发门禁；动态 Gradle 表达式和缺失构建文件登记为解析缺口。
+- 正式模块图在存在候选时用虚线展示静态 Gradle 关系，并继续用实线区分人工声明依赖与已确认业务职责；Generic 项目和旧记录保持原行为。
+
 ## 0.5.15 — 2026-09-22
 
 - 新需求必须使用用户提供的产品/work-item ID；workflow v3 在 develop/check 前要求确认业务能力与模块职责，或有具体理由地标记不适用。

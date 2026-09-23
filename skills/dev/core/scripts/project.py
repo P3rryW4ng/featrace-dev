@@ -361,6 +361,12 @@ def scan_baseline(root, keep, action):
                 raise ValueError('draft missing required file: ' + name)
         inventory(root, candidate)
         validate_gates(root, json.loads((candidate / 'quality-gates.json').read_text()))
+        candidate_snapshot = snapshot(root, candidate)
+        if candidate_snapshot['profile'] == 'android':
+            from module_context import discover_gradle_candidates
+            discovered = discover_gradle_candidates(root)
+            print('MODULE_CANDIDATES_RENDERED: modules=%d edges=%d gaps=%d' %
+                  (len(discovered['modules']), len(discovered['edges']), len(discovered['gaps'])))
         module_index = root / '.agent-workflow/modules/index.json'
         if module_index.is_file():
             from module_context import render_graph
@@ -382,7 +388,17 @@ def scan_baseline(root, keep, action):
             (stage / 'state.json').write_text(json.dumps({'base_digest': tree_digest(base), 'project': snapshot(root)}))
             stage.rename(draft)
             print('BASELINE_DRAFT_READY: ' + str(draft / 'baseline'))
+            if snapshot(root, draft / 'baseline')['profile'] == 'android':
+                from module_context import discover_gradle_candidates
+                discovered = discover_gradle_candidates(root)
+                print('MODULE_CANDIDATES_RENDERED: modules=%d edges=%d gaps=%d' %
+                      (len(discovered['modules']), len(discovered['edges']), len(discovered['gaps'])))
         else:
+            if snapshot(root, candidate)['profile'] == 'android':
+                from module_context import discover_gradle_candidates
+                discovered = discover_gradle_candidates(root)
+                print('MODULE_CANDIDATES_RENDERED: modules=%d edges=%d gaps=%d' %
+                      (len(discovered['modules']), len(discovered['edges']), len(discovered['gaps'])))
             module_index = root / '.agent-workflow/modules/index.json'
             if module_index.is_file():
                 from module_context import render_graph

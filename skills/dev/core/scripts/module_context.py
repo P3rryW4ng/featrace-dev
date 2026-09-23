@@ -12,6 +12,8 @@ import tempfile
 from impact import digest, git, path_name
 
 SECTIONS = ('technology', 'behaviors', 'entry_points', 'state_lifecycle', 'tests')
+GRADLE_SETTINGS = ('settings.gradle.kts', 'settings.gradle')
+GRADLE_BUILDS = ('build.gradle.kts', 'build.gradle')
 
 
 def read(path):
@@ -177,6 +179,189 @@ def _mermaid_label(value):
     return str(value).replace('"', "'").replace('\n', ' ')
 
 
+def _line_ref(root, path, number):
+    return str(path.relative_to(root)) + ':' + str(number)
+
+
+def _without_gradle_comments(text):
+    text = re.sub(r'/\*.*?\*/', lambda match: ''.join('\n' if char == '\n' else ' ' for char in match.group()), text, flags=re.S)
+    return '\n'.join(line.split('//', 1)[0] for line in text.splitlines())
+
+
+def _line_number(text, offset):
+    return text.count('\n', 0, offset) + 1
+
+
+def _gradle_id(value):
+    return ':' + ':'.join(part for part in value.split(':') if part)
+
+
+def _default_gradle_root(build_id):
+    return '/'.join(part for part in build_id.split(':') if part)
+
+
+def _registered_matches(index, candidate_root):
+    if not index:
+        return []
+    result = []
+    root = candidate_root.rstrip('/')
+    for module in index['modules']:
+        for declared in module['roots']:
+            declared = declared.rstrip('/')
+            if root == declared or root.startswith(declared + '/') or declared.startswith(root + '/'):
+                result.append(module['id'])
+                break
+    return sorted(result)
+
+
+def discover_gradle_candidates(root, index=None):
+    """Extract conservative Gradle project/dependency candidates; never update the reviewed catalog."""
+    root = root.resolve()
+    settings = next((root / name for name in GRADLE_SETTINGS if (root / name).is_file()), None)
+    gaps, source_files = [], {}
+    modules, mappings = {}, {}
+    if settings is None:
+        gaps.append('No root settings.gradle(.kts) file was found; Gradle module discovery was not attempted.')
+    else:
+        if settings.is_symlink():
+            raise ValueError('Gradle settings evidence must not be a symlink')
+        relative = str(settings.relative_to(root))
+        source_files[relative] = hashlib.sha256(settings.read_bytes()).hexdigest()
+        text = _without_gradle_comments(settings.read_text(errors='replace'))
+        for match in re.finditer(r'\bincludeBuild\s*\(', text):
+            gaps.append(_line_ref(root, settings, _line_number(text, match.start())) + ': composite build requires manual review')
+        include_ranges = []
+        for pattern in (r'\binclude\s*\((.*?)\)', r'\binclude\s+([^\n]+)'):
+            for match in re.finditer(pattern, text, re.S if '\\n' not in pattern else 0):
+                if any(start <= match.start() < end for start, end in include_ranges):
+                    continue
+                include_ranges.append(match.span())
+                number = _line_number(text, match.start())
+                found = [_gradle_id(value) for value in re.findall(r'["\'](:[^"\']+)["\']', match.group(1))]
+                if not found:
+                    gaps.append(_line_ref(root, settings, number) + ': include expression was not statically understood')
+                for build_id in found:
+                    modules.setdefault(build_id, {'build_id': build_id, 'root': _default_gradle_root(build_id),
+                                                   'evidence_refs': []})['evidence_refs'].append(_line_ref(root, settings, number))
+        for match in re.finditer(
+                r'project\s*\(\s*["\'](:[^"\']+)["\']\s*\)\s*\.\s*projectDir\s*=\s*'
+                r'(?:rootProject\s*\.\s*)?(?:file|File)\s*\(\s*["\']([^"\']+)["\']\s*\)', text, re.S):
+            number = _line_number(text, match.start())
+            build_id, path = _gradle_id(match.group(1)), match.group(2).replace('\\', '/')
+            try:
+                path_name(path)
+            except ValueError:
+                gaps.append(_line_ref(root, settings, number) + ': unsafe projectDir was ignored')
+                continue
+            mappings[build_id] = (path.rstrip('/'), _line_ref(root, settings, number))
+        for build_id, (path, ref) in mappings.items():
+            row = modules.setdefault(build_id, {'build_id': build_id, 'root': path, 'evidence_refs': []})
+            row['root'] = path
+            row['evidence_refs'].append(ref)
+
+    try:
+        index = index or (catalog(root) if (root / '.agent-workflow/modules/index.json').is_file() else None)
+    except (OSError, ValueError, TypeError, KeyError) as exc:
+        gaps.append('Reviewed module catalog could not be used for candidate matching: ' + str(exc))
+        index = None
+
+    edges = {}
+    for build_id, row in sorted(modules.items()):
+        build_root = root / row['root']
+        build_file = next((build_root / name for name in GRADLE_BUILDS if (build_root / name).is_file()), None)
+        if build_file is None:
+            gaps.append(build_id + ': no build.gradle(.kts) found at ' + row['root'])
+            continue
+        if build_file.is_symlink():
+            gaps.append(build_id + ': symlinked build file requires manual review')
+            continue
+        relative = str(build_file.relative_to(root))
+        source_files[relative] = hashlib.sha256(build_file.read_bytes()).hexdigest()
+        build_text = _without_gradle_comments(build_file.read_text(errors='replace'))
+        matched_lines = set()
+        patterns = (
+            r'(?P<configuration>[A-Za-z][A-Za-z0-9_]*)\s*\(\s*project\s*\(\s*'
+            r'(?:(?:path\s*=|path\s*:)\s*)?["\'](?P<target>:[^"\']+)["\']',
+            r'(?P<configuration>[A-Za-z][A-Za-z0-9_]*)\s+project\s*\(\s*'
+            r'(?:(?:path\s*=|path\s*:)\s*)?["\'](?P<target>:[^"\']+)["\']',
+        )
+        for pattern in patterns:
+            for match in re.finditer(pattern, build_text, re.S):
+                number = _line_number(build_text, match.start())
+                matched_lines.add(number)
+                target = _gradle_id(match.group('target'))
+                key = (build_id, target, match.group('configuration'))
+                edge = edges.setdefault(key, {'from': build_id, 'to': target,
+                    'configuration': match.group('configuration'), 'status': 'candidate', 'evidence_refs': []})
+                edge['evidence_refs'].append(_line_ref(root, build_file, number))
+                if target not in modules:
+                    gaps.append(_line_ref(root, build_file, number) + ': dependency target ' + target + ' is not a static include candidate')
+        for match in re.finditer(r'\b(?:implementation|api|compileOnly|runtimeOnly|testImplementation)\b[^\n;]*project\s*\(', build_text):
+            number = _line_number(build_text, match.start())
+            if number not in matched_lines:
+                gaps.append(_line_ref(root, build_file, number) + ': project dependency expression was not statically understood')
+        for match in re.finditer(r'\b(?:implementation|api|compileOnly|runtimeOnly|testImplementation)\s*\([^\n;]*\bprojects\.', build_text):
+            gaps.append(_line_ref(root, build_file, _line_number(build_text, match.start())) +
+                        ': type-safe project accessor requires manual review')
+
+    rows = []
+    for build_id, row in sorted(modules.items()):
+        rows.append({**row, 'evidence_refs': sorted(set(row['evidence_refs'])),
+                     'registered_module_ids': _registered_matches(index, row['root']), 'status': 'pending_review'})
+    result = {'schema_version': 1, 'kind': 'gradle_static_candidates', 'status': 'candidate_only',
+              'source_files': dict(sorted(source_files.items())), 'modules': rows,
+              'edges': [{**edge, 'evidence_refs': sorted(set(edge['evidence_refs']))}
+                        for _, edge in sorted(edges.items())], 'gaps': sorted(set(gaps)),
+              'limits': ['Static Gradle declarations are candidates, not confirmed module ownership or runtime calls.',
+                         'Dynamic/composite includes, type-safe accessors, convention plugins, aliases, reflection and runtime navigation require manual review.']}
+    base = safe(root, '.agent-workflow/modules')
+    write(base / 'candidates.json', json.dumps(result, ensure_ascii=False, indent=2) + '\n')
+    node_ids = {row['build_id']: 'C' + str(number) for number, row in enumerate(rows)}
+    lines = ['# Gradle module dependency candidates', '',
+             'Generated from static Gradle declarations. Every module and edge is pending review and does not update the reviewed module catalog.', '',
+             '```mermaid', 'graph LR']
+    for row in rows:
+        lines.append('    ' + node_ids[row['build_id']] + '["' + _mermaid_label(row['build_id'] + '<br/>' + row['root']) + '"]')
+    for edge in result['edges']:
+        if edge['from'] in node_ids and edge['to'] in node_ids:
+            lines.append('    ' + node_ids[edge['from']] + ' -. "candidate ' + _mermaid_label(edge['configuration']) + '" .-> ' + node_ids[edge['to']])
+    lines += ['```', '', '## Candidates', '']
+    lines += ['- ' + row['build_id'] + ': root=' + row['root'] + '; registered=' +
+              (', '.join(row['registered_module_ids']) or 'none') + '; evidence=' + ', '.join(row['evidence_refs']) for row in rows] or ['- None discovered.']
+    lines += ['', '## Parsing gaps', ''] + (['- ' + gap for gap in result['gaps']] or ['- None recorded.'])
+    lines += ['', '## Evidence boundary', ''] + ['- ' + limit for limit in result['limits']]
+    write(base / 'candidates.md', '\n'.join(lines) + '\n')
+    return result
+
+
+def load_gradle_candidates(root):
+    path = safe(root, '.agent-workflow/modules/candidates.json')
+    doc = read(path)
+    if (not isinstance(doc, dict) or doc.get('schema_version') != 1
+            or doc.get('kind') != 'gradle_static_candidates' or doc.get('status') != 'candidate_only'):
+        raise ValueError('candidate artifact identity/status is invalid')
+    if not isinstance(doc.get('source_files'), dict) or not isinstance(doc.get('modules'), list) or not isinstance(doc.get('edges'), list):
+        raise ValueError('candidate artifact shape is invalid')
+    for name, expected in doc['source_files'].items():
+        path_name(name); source = safe(root, name)
+        if not source.is_file() or source.is_symlink() or hashlib.sha256(source.read_bytes()).hexdigest() != expected:
+            raise ValueError('candidate evidence is stale: ' + name)
+    ids = set()
+    for row in doc['modules']:
+        if (not isinstance(row, dict) or not isinstance(row.get('build_id'), str) or row['build_id'] in ids
+                or not isinstance(row.get('root'), str) or row.get('status') != 'pending_review'
+                or not isinstance(row.get('registered_module_ids'), list)):
+            raise ValueError('candidate module is invalid or duplicated')
+        ids.add(row['build_id']); path_name(row['root'])
+    for row in doc['edges']:
+        if (not isinstance(row, dict) or row.get('from') not in ids or row.get('to') not in ids
+                or row.get('status') != 'candidate' or not isinstance(row.get('configuration'), str)):
+            raise ValueError('candidate edge is invalid')
+    if not isinstance(doc.get('gaps'), list) or not isinstance(doc.get('limits'), list):
+        raise ValueError('candidate gaps/limits are invalid')
+    return doc
+
+
 def project_graph(root, index=None):
     """Build a deterministic graph from declared modules and confirmed feature scopes."""
     root = root.resolve(); index = index or catalog(root)
@@ -244,9 +429,33 @@ def project_graph(root, index=None):
         edge['feature_ids'].sort()
     nodes.extend(capabilities[key] for key in sorted(capabilities))
     edges.extend(assignments[key] for key in sorted(assignments))
+    candidate_path = root / '.agent-workflow/modules/candidates.json'
+    if candidate_path.is_file():
+        try:
+            candidate_doc = load_gradle_candidates(root)
+            candidate_nodes = {}
+            registered_ids = {row['id'] for row in index['modules']}
+            extra_nodes, extra_edges = [], []
+            for row in candidate_doc.get('modules', []):
+                matches = row.get('registered_module_ids', [])
+                target = 'module:' + matches[0] if len(matches) == 1 and matches[0] in registered_ids else 'candidate:' + row['build_id']
+                candidate_nodes[row['build_id']] = target
+                if target.startswith('candidate:'):
+                    extra_nodes.append({'id': target, 'kind': 'module_candidate', 'label': row['build_id'],
+                                        'root': row['root'], 'status': 'pending_review'})
+            for row in candidate_doc.get('edges', []):
+                if row.get('from') in candidate_nodes and row.get('to') in candidate_nodes:
+                    extra_edges.append({'from': candidate_nodes[row['from']], 'to': candidate_nodes[row['to']],
+                                        'relation': row.get('configuration', 'depends_on'), 'status': 'candidate',
+                                        'evidence_refs': row.get('evidence_refs', [])})
+            nodes.extend(extra_nodes); edges.extend(extra_edges)
+            gaps.extend('Gradle candidate: ' + gap for gap in candidate_doc.get('gaps', []))
+        except (OSError, ValueError, TypeError, KeyError, json.JSONDecodeError) as exc:
+            gaps.append('Gradle candidate artifact is invalid: ' + str(exc))
     return {'schema_version': 1, 'nodes': nodes, 'edges': edges, 'gaps': sorted(set(gaps)),
             'limits': ['Declared build/module relationships are not a complete runtime call graph.',
-                       'Capability roles come only from confirmed feature scope records.']}
+                       'Capability roles come only from confirmed feature scope records.',
+                       'Dashed Gradle relationships are unconfirmed static candidates.']}
 
 
 def render_graph(root, index=None):
@@ -261,7 +470,8 @@ def render_graph(root, index=None):
         suffix = '<br/>business capability' if node['kind'] == 'capability' else '<br/>code module'
         lines.append('    ' + ids[node['id']] + '["' + _mermaid_label(node['label']) + suffix + '"]')
     for edge in graph['edges']:
-        lines.append('    ' + ids[edge['from']] + ' -->|"' + _mermaid_label(edge['relation']) + '"| ' + ids[edge['to']])
+        arrow = ' -. "candidate ' + _mermaid_label(edge['relation']) + '" .-> ' if edge.get('status') == 'candidate' else ' -->|"' + _mermaid_label(edge['relation']) + '"| '
+        lines.append('    ' + ids[edge['from']] + arrow + ids[edge['to']])
     lines += ['```', '', '## Known gaps', '']
     lines += ['- ' + gap for gap in graph['gaps']] or ['- None recorded.']
     lines += ['', '## Evidence boundary', ''] + ['- ' + limit for limit in graph['limits']]
@@ -312,11 +522,18 @@ def validate_modules(root, folder, req, stage):
 
 def main():
     p = argparse.ArgumentParser(description=__doc__)
-    p.add_argument('action', choices=['plan', 'review', 'graph']); p.add_argument('root', type=Path)
+    p.add_argument('action', choices=['plan', 'review', 'graph', 'discover']); p.add_argument('root', type=Path)
     p.add_argument('--module', action='append'); p.add_argument('--feature')
     p.add_argument('--input', type=Path); p.add_argument('--digest')
     args = p.parse_args(); root = args.root.resolve()
     try:
+        if args.action == 'discover':
+            if args.module or args.feature or args.input or args.digest:
+                raise ValueError('discover does not accept module, feature, input or digest')
+            result = discover_gradle_candidates(root)
+            print(json.dumps({'modules': len(result['modules']), 'edges': len(result['edges']),
+                              'gaps': result['gaps'], 'status': result['status']}, ensure_ascii=False))
+            return 0
         if args.action == 'graph':
             if args.module or args.feature or args.input or args.digest:
                 raise ValueError('graph does not accept module, feature, input or digest')

@@ -1,5 +1,11 @@
 # 验证与评估记录
 
+## 0.5.16 — 2026-09-23
+
+Android Gradle 候选发现已实现：支持常见 Kotlin/Groovy literal include、projectDir 映射及 project dependency，输出 `candidate_only` 记录、文件哈希、行号依据、正式目录匹配、解析缺口和独立 Mermaid 图。存在正式目录时，项目图用虚线合并候选边；候选不写回 index、不生成 dossier、不放行范围或开发门禁。
+
+目标回归 17/17 通过，覆盖静态依赖、custom projectDir、动态/复合 include、type-safe accessor 缺口、旧正式图兼容及候选过期拒绝；完整合成回归 211/211 通过（约 31.35 秒），另含 scan 无目录自动生成候选。Python 编译、核心 JSON 解析和 `git diff --check` 通过。通用 `quick_validate.py` 仍因本机没有 PyYAML 失败，不记为通过。当前没有真实 Android 仓库结果，不能据此宣称候选完整、准确或能节省固定比例时间；convention plugin、计算路径、运行时导航、反射和外部服务仍需人工调查。
+
 ## 0.5.15 — 2026-09-22
 
 实现业务能力与代码模块的正交分类。新工作流初始化为 workflow v3 和 pending module scope；develop/check 要求确认 capability、已登记模块、固定角色、具体职责及依据，或有具体理由地标记不适用。`feature_scope.py suggest` 只报告目录与登记代码路径匹配，不自动裁决产品归属；set 操作同步 `feature.modules` 并启用模块档案门禁。旧 workflow v1/v2 保持兼容，旧标签发生改变时不会静默沿用已经确认的 v3 角色。

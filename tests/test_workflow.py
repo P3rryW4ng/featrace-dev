@@ -128,6 +128,17 @@ class WorkflowTests(unittest.TestCase):
         self.assertTrue((modules / 'graph.json').is_file())
         self.assertIn('```mermaid', (modules / 'graph.md').read_text())
 
+    def test_android_scan_renders_unconfirmed_gradle_candidates_without_catalog(self):
+        (self.root / 'settings.gradle.kts').write_text('include(":app", ":wallet")\n')
+        (self.root / 'app').mkdir(); (self.root / 'wallet').mkdir()
+        (self.root / 'app' / 'build.gradle.kts').write_text('plugins { id("com.android.application") }\ndependencies { implementation(project(":wallet")) }\n')
+        (self.root / 'wallet' / 'build.gradle.kts').write_text('plugins { id("com.android.library") }\n')
+        output = self.run_script(CORE / 'project.py', 'scan', self.root)
+        self.assertIn('MODULE_CANDIDATES_RENDERED: modules=2 edges=1 gaps=0', output.stdout)
+        candidates = json.loads((self.root / '.agent-workflow/modules/candidates.json').read_text())
+        self.assertEqual(candidates['status'], 'candidate_only')
+        self.assertFalse((self.root / '.agent-workflow/modules/index.json').exists())
+
     def test_quality_reports_real_exit_and_unavailable(self):
         project = CORE / 'project.py'
         self.run_script(project, 'scan', self.root)

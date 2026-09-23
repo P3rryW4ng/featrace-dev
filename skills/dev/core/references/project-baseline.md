@@ -4,7 +4,7 @@ Since 0.5.4, module-context.md defines scoped dossier review. Plain scan still u
 
 ## Scan contract
 
-`project.py scan-prepare <PROJECT>` prepares an isolated baseline draft, inventories build manifests and chooses android or generic. Edit the printed `baseline-draft/baseline` directory, never the current baseline during scan review. The scanner does not interpret module semantics. Before declaring the scan ready, the Agent must:
+`project.py scan-prepare <PROJECT>` prepares an isolated baseline draft, inventories build manifests and chooses android or generic. For Android, it also refreshes `.agent-workflow/modules/candidates.json` and `.md` from supported static Gradle declarations. These are review inputs outside the baseline draft: they do not modify the formal module catalog or certify module semantics. Edit the printed `baseline-draft/baseline` directory, never the current baseline during scan review. Before declaring the scan ready, the Agent must:
 
 1. Cross-check module names and paths against actual build configuration. Distinguish normative rules (how code should be written) from descriptive documentation (which may be stale). Record discrepancies rather than silently treating old docs as observed facts.
 2. Inspect representative implementations and record exact paths. An existing empty DI module is a declaration example, not evidence of a binding/provider pattern. Label unexecuted examples as source-reviewed, not runtime-verified.
