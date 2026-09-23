@@ -2,7 +2,9 @@
 
 Read for `dev prd`, PRD revisions, and when API/Figma reconciliation changes requirement meaning. This standardizes the analysis process, not the author's document format. Never demand that the product author rewrite a PRD to our template.
 
-Registered evidence kinds are `document`, `html`, `design`, and `api`. Initial `/dev prd` files are inferred as document/HTML. Supplementary API or Figma evidence is copied and indexed with `register-source.py`; a design link without a direct export first needs a local manifest containing its exact URL/node/version and observed access limits. Registration does not count as reading or semantic reconciliation.
+For a new feature, after `feature-selection.md` confirms the user-supplied ID and that the target does not already exist, initialize with `bash core/scripts/init-feature.sh <ID> <PRIMARY-DOCUMENT-OR-HTML> <PROJECT> [--source <ADDITIONAL-FILE> ...]`. A single document or HTML file is sufficient. The initializer preserves source bytes and extension; a failed or interrupted import must be resumed without overwriting it. Read project `.agent-workflow/config.yaml` when present; otherwise copy `core/assets/config.yaml` as Agent guidance, not an executable policy engine. Use readers for Word/PDF before decomposing them and record any unreadable portions.
+
+Registered evidence kinds are `document`, `html`, `design`, and `api`. Initial `/dev prd` files are inferred as document/HTML. For supplementary API or Figma material, first preserve the accessible export or an Agent-authored evidence manifest as a regular local file, then run `python3 core/scripts/register-source.py <PROJECT> <ID> <FILE> --kind api|design`. This single helper copies immutable evidence and synchronizes intake sources with `feature.prd_paths`; do not edit those indexes separately. If a link cannot be exported, the manifest must record its exact URL, relevant operation/node, version and access gaps without inventing content. Registration does not count as reading or semantic reconciliation.
 
 ## 1. Reading inventory
 

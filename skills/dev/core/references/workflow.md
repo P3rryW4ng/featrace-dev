@@ -1,5 +1,9 @@
 # Workflow invariants
 
+For API and Figma separately set `feature.source_status` to `present`, `missing`, `unknown`, or `not_applicable`; explain not-applicable in `feature.source_notes`. A feature that needs neither source can complete if all other conditions hold. Missing required evidence permits provisional work only; never invent an API or design artifact to satisfy a field.
+
+Legacy YAML migration uses `migrate-workspace.py` only to create an empty scaffold while preserving old records. Reconstruct requirements, tasks, decisions and traceability from actual evidence and validate before development; the helper is not a semantic converter.
+
 - Before business-code edits follow impact-review.md: impact.json is the investigation/boundary record, impact.md its generated view. Reuse requirement/decision/fix references; review scope expansion and verify preserved behavior.
 - Before business-code edits and before check follow historical-regression.md: sync verified-fix candidates from registered modules/paths, disposition every candidate, and record current retest results where selected. This reminder does not reopen old fixes or replace impact analysis.
 - After source, requirement or decision meaning changes, refresh the applicable PRD review. After task wording/scope changes, sync and record the focused task semantic review against linked requirements/evidence. Rerun develop validation before continuing business-code edits. Do not defer known structural gaps until check; task progress alone does not trigger semantic review.

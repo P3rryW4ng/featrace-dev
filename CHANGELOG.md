@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.5.17 — 2026-09-23
+
+- 确认当前开发者增强目标、持续变化需求的战略北极星与有边界自主交付愿景是递进关系，并以 PRODUCT.md 作为方向权威。
+- 保留单一 `/dev` 入口，将现有流程组织为 Requirement、Scope、Build、Verify、Repair、Deliver 六个内部阶段；每阶段定义输入、产物、退出条件和按需加载规则。
+- 阶段交接复用已有权威记录和摘要，不新增第二套状态或通用交接文件；本版仍为同一 Agent 的渐进加载，不宣称已启用多 Skill 独立上下文或多 Agent。
+- 主 Skill 入口由约 2613 词缩至 721 词；初始化、来源适用性、迁移和完成条件转入对应阶段参考文件，保持现有命令及门禁约束。
+
 ## 0.5.16 — 2026-09-23
 
 - Android scan 从常见 `settings.gradle(.kts)` include、`projectDir` 与模块 `build.gradle(.kts)` project 依赖生成 `modules/candidates.json` 和可读候选图；每条关系保留文件与行号依据。

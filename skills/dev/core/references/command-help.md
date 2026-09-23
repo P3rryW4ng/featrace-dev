@@ -1,6 +1,6 @@
 # Command help
 
-This is display guidance, not a request to execute examples. `/dev help` shows the five groups below, one short explanation and one example per command, plus help itself. `/dev help <command>` shows only that command's syntax from SKILL.md, when to use it, required/optional parameters, one example and the relevant distinction below. Keep explanations brief, in the user's language; use `$dev` for Codex and `/dev` for Claude. Unknown topics: state not supported and show available names; do not execute a guessed command. Do not require project access or feature selection for help.
+This is display guidance, not a request to execute examples. `/dev help` shows the five groups below, one short explanation and one example per command, plus help itself. `/dev help <command>` shows only that command's syntax and stage from SKILL.md, when to use it, required/optional parameters, one example and the relevant distinction below. Keep explanations brief, in the user's language; use `$dev` for Codex and `/dev` for Claude. Unknown topics: state not supported and show available names; do not execute a guessed command. Do not require project access or feature selection for help.
 
 ## Overview (Chinese examples; localize when needed)
 

@@ -2,7 +2,7 @@
 
 把 PRD 转换为可追溯的需求、开发任务、代码修改和验证记录，帮助 Claude Code 或 Codex 在持续迭代中保留需求依据、决策和历史修复。
 
-当前版本 **0.5.16**，提供通用工作流、Android 适配和 Generic 适配。Android 项目可从 Gradle 获得待人工确认的模块与依赖候选；iOS、Web 和后端项目可以使用通用流程，但暂时没有专属扫描适配器。
+当前源码版本 **0.5.17**，提供通用工作流、Android 适配和 Generic 适配。一个用户入口在内部按 Requirement、Scope、Build、Verify、Repair、Deliver 六阶段加载规则；当前仍由同一 Agent 执行。Android 项目可从 Gradle 获得待人工确认的模块与依赖候选；iOS、Web 和后端项目可以使用通用流程，但暂时没有专属扫描适配器。
 
 > Skill 能减少遗漏和上下文漂移，但不会自动证明 PRD 理解、依赖关系或最终实现完全正确。Agent 仍需读取实际资料、代码和验证结果。
 
@@ -247,6 +247,7 @@ status
 
 以下文档用于维护 Skill 自身，不是普通使用的必读内容。保留在仓库中是为了让其他机器、账号和 Agent 能准确接续开发，避免依赖单次会话记忆。
 
+- [产品方向基线](PRODUCT.md)
 - [项目维护总览与交接](MAINTAINER.md)
 - [开发路线图与阶段计划](ROADMAP.md)
 - [架构与产品决策](docs/decisions/architecture.md)

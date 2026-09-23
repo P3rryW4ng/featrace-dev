@@ -1,12 +1,12 @@
 # Natural-language continuation (`next`)
 
-`/dev next [description] [--feature ID]` is the normal continuation entry after a feature exists. In active session delivery mode, ordinary delivery messages are treated as this entry without requiring the `/dev next` prefix. It reduces command recall; it does not replace the underlying workflow contracts or create a second state machine.
+`/dev next [description] [--feature ID]` is the normal continuation entry after a feature exists. In active session delivery mode, ordinary delivery messages are treated as this entry without requiring the `/dev next` prefix. It reduces command recall; it does not replace the underlying workflow contracts or create a second state machine. Apply `orchestration.md` to choose the professional stage and its minimal reference set.
 
 ## Resolve context first
 
 Resolve the selected feature using `feature-selection.md`, reread its records and run the read-only status summary. `--feature ID` overrides only this invocation. If no reliable selection or explicit ID exists, list available features and ask the user to choose; never guess from recency or a sole directory. A new feature still starts with `/dev prd ... --feature ID`.
 
-State the selected route in one short line, for example `Route: figma → develop (new design assets for the current feature)`, then perform the applicable workflow rather than merely recommending its command. Underlying actions write their normal records; `next` creates no separate routing file.
+State the selected route in one short line, including stages when useful, for example `Route: Requirement/figma → Scope → Build (new design assets for the current feature)`, then perform only the eligible portion rather than merely recommending its command. Underlying actions write their normal records and the stage handoff uses those records; `next` creates no separate routing file.
 
 ## Route by the role of the input
 

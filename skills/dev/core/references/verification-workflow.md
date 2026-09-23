@@ -2,9 +2,11 @@
 
 Use within `/dev check`, and after authorized develop/fix implementation when preparing acceptance. No new user-facing command. The Agent selects applicable commands, then generates the checklist and executes the automated portion. Ask the user only for remaining observations or business judgments. Respect requests for analysis-only or no execution.
 
+Complete requires active requirements confirmed against evidence, all tasks done, no unresolved fixes or pending conflicts, required sources reconciled or justified as not applicable, traceability and actual test evidence, and applicable quality gates passed for the delivered revision. Run `validate-feature.py --stage check` and `audit-delivery.py`, then inspect task/decision meaning, code and test assertions, and the delivery report. Structural validity and audit currency do not prove semantic or UI correctness. Controlled requirement baselines additionally need delivery registration under `revision-workflow.md`. If checks cannot run, report unavailable and provisional rather than success.
+
 ## Generate and review
 
-Prepare the impact checklist under impact-review.md and select concrete quality-gates.json commands under existing project rules. Run:
+Prepare the impact checklist under impact-review.md. Read `project-baseline.md` for quality candidate/selection semantics, then select concrete quality-gates.json commands under existing project rules. Run:
 
 ```text
 python3 core/scripts/verification.py sync <PROJECT> <ID>
