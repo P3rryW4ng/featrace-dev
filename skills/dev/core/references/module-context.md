@@ -1,4 +1,4 @@
-# Scoped module knowledge and capability graph (0.5.20 candidate source)
+# Scoped module knowledge and capability graph (0.5.20)
 
 ## Android Gradle candidate discovery
 
