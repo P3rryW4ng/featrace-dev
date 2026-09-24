@@ -1,20 +1,32 @@
-# Feature Delivery Skill
+# FeatraceDev
 
-**让变化的需求，成为可验证的软件交付。**
+**简体中文** | [English](README.en.md)
 
-Feature Delivery 帮助 Coding Agent 在已有代码库中处理需求、调查影响、开发、修复和验收。它把原始资料、已确认的需求、开发任务、历史修复和测试证据连起来，让下一次改动有据可查，也让“完成”有明确的验证范围。
+**Feature · Trace · Delivery**
 
-适用于 Claude Code 和 Codex；目前提供通用工作流及 Android 适配。当前已发布版本为 **0.5.20**；各机器的已安装版本仍需分别核对。
+**将持续变化的需求，转化为可验证的交付。**
+
+FeatraceDev 帮助 Coding Agent 在已有代码库中处理需求、调查影响、开发、修复和验收。它把原始资料、已确认的需求、开发任务、历史修复和测试证据连起来，让下一次改动有据可查，也让“完成”有明确的验证范围。
+
+适用于 Claude Code 和 Codex；目前提供通用工作流及 Android 适配。当前已发布版本为 **0.5.22**；各机器的已安装版本仍需分别核对。
 
 > 当前是开发者参与的交付工具。它会提醒缺失的决策与证据，但不能保证自动理解所有 PRD、发现所有代码依赖，或替代真机与主观体验验收。
+
+## 名称与理念
+
+- **Feature**：理解功能需求与变化，明确实现边界。
+- **Trace**：连接需求、决策、代码和验证依据，保护已确认的行为。
+- **Delivery**：以可以验收、能够接续的交付结果为目标。
+
+FeatraceDev 是品牌名，Dev 表示开发；Feature · Trace · Delivery 是产品理念：功能是起点，追溯是保障，交付是结果。
 
 ## 安装
 
 需要 Python 3.9+、Git，以及 Claude Code 或 Codex。Android 项目还需项目本身要求的 JDK 和 Android SDK。
 
 ```bash
-git clone https://github.com/P3rryW4ng/feature-delivery-skill.git
-cd feature-delivery-skill
+git clone https://github.com/P3rryW4ng/featrace-dev.git
+cd featrace-dev
 python3 scripts/install.py
 ```
 
@@ -94,6 +106,18 @@ python3 scripts/install.py --agent both --update
 
 更新后打开新会话。只更新一个工具时，把 `both` 改为 `claude` 或 `codex`。卸载使用 `python3 scripts/install.py --agent both --uninstall`；安装器将旧副本放入 `~/.feature-delivery/backups/`。若安装目录不属于本工具或曾被本地修改，安装器会拒绝覆盖。
 
+### 从旧仓库迁移
+
+原 `feature-delivery-skill` 用户在已有克隆中更新远端即可继续使用：
+
+```bash
+git remote set-url origin https://github.com/P3rryW4ng/featrace-dev.git
+git pull --ff-only
+python3 scripts/install.py --agent both --update
+```
+
+本地克隆目录可以自行改为 `featrace-dev`。安装器兼容旧包标记，更新前备份旧副本；`/dev`、`$dev`、`skills/dev` 与业务项目 `.agent-workflow/` 保持兼容。旧安装标记文件名和备份目录保留，避免现有用户搬迁记录。
+
 若 Claude Code 提示 `Unknown skill: dev`，请确认已安装到 `~/.claude/skills/dev/`，并打开新会话。Codex 入口为 `$dev`。
 
 ## 更多信息
@@ -103,3 +127,7 @@ python3 scripts/install.py --agent both --update
 - [项目维护者入口](MAINTAINER.md)
 
 仓库当前尚未选择开源许可证。公开分发或再发布前，请由仓库所有者明确许可范围。
+
+---
+
+Created by [Perry Wang](https://github.com/P3rryW4ng).

@@ -13,6 +13,8 @@ import uuid
 REPO = Path(__file__).resolve().parents[1]
 SOURCE = REPO / 'skills/dev'
 MARKER = '.feature-delivery-install.json'
+PACKAGE = 'featrace-dev'
+LEGACY_PACKAGE = 'feature-delivery-skill'
 
 def hashes(folder):
     result = {}
@@ -38,6 +40,7 @@ def main():
     locations = {'claude': home / '.claude/skills/dev', 'codex': home / '.agents/skills/dev'}
     targets = list(locations.values()) if args.agent == 'both' else [locations[args.agent]]
     source_hash = hashes(SOURCE)
+    version = (REPO / 'VERSION').read_text().strip()
     actions = []
     # Preflight all destinations before mutation: never overwrite someone else's dev skill.
     for target in targets:
@@ -48,9 +51,10 @@ def main():
             if not marker.is_file():
                 raise ValueError('Existing unowned skill; choose a different install location or move it yourself: ' + str(target))
             old = json.loads(marker.read_text())
-            if old.get('package') != 'feature-delivery-skill' or hashes(target) != old.get('files'):
+            if old.get('package') not in {PACKAGE, LEGACY_PACKAGE} or hashes(target) != old.get('files'):
                 raise ValueError('Existing skill is unowned or locally modified; preserve/reconcile changes first: ' + str(target))
-            if not args.uninstall and hashes(target) == source_hash:
+            if (not args.uninstall and hashes(target) == source_hash
+                    and old.get('package') == PACKAGE and old.get('version') == version):
                 print('ALREADY_INSTALLED: ' + str(target)); continue
             if not args.update and not args.uninstall:
                 raise ValueError('New package differs; rerun with --update: ' + str(target))
@@ -65,7 +69,7 @@ def main():
             temp = Path(tempfile.mkdtemp(prefix='.feature-delivery-stage-', dir=target.parent))
             try:
                 shutil.copytree(SOURCE, temp, dirs_exist_ok=True, ignore=shutil.ignore_patterns('__pycache__', '*.pyc'))
-                (temp / MARKER).write_text(json.dumps({'package': 'feature-delivery-skill', 'version': (REPO / 'VERSION').read_text().strip(), 'files': hashes(temp)}, indent=2) + '\n')
+                (temp / MARKER).write_text(json.dumps({'package': PACKAGE, 'version': version, 'files': hashes(temp)}, indent=2) + '\n')
             except Exception:
                 shutil.rmtree(temp); raise
         try:
@@ -87,7 +91,7 @@ def main():
         if backup:
             print('BACKUP: ' + str(backup))
     if not args.uninstall:
-        print('Claude: /dev scan | Codex: $dev scan. Open a new agent session if not discovered.')
+        print('FeatraceDev by Perry Wang | Claude: /dev scan | Codex: $dev scan. Open a new agent session if not discovered.')
     return 0
 
 if __name__ == '__main__':

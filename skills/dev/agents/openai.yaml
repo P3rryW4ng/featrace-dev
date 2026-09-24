@@ -1,4 +1,4 @@
 interface:
-  display_name: "Feature Delivery"
+  display_name: "FeatraceDev"
   short_description: "Traceable PRD-to-code delivery across project stacks"
   default_prompt: "Use $dev to analyze this project and deliver the PRD with traceable requirements, decisions, and validation."

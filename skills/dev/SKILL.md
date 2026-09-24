@@ -3,7 +3,7 @@ name: dev
 description: Deliver PRD-driven software features with persistent specifications, source reconciliation, tasks, and validation. Use for dev session mode, help/next/revise/archive/restore/classify/list/use/scan/prd/api/figma/develop/clarify/fix/check/status requests, or continued feature-delivery messages after mode activation; not isolated coding questions. Android has a bundled adapter; other stacks use evidence-based generic configuration.
 ---
 
-# Feature Delivery
+# FeatraceDev
 
 Use the user's project root or the established workspace. Paths below are relative to this Skill directory; scripts take explicit project paths. Keep project records in that project, never in the installed Skill. This is an Agent workflow, not a shell CLI. Claude Code uses `/dev`; Codex uses `$dev`. Plain `dev ...` works only when the host selects this Skill.
 

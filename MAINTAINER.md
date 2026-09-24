@@ -1,4 +1,4 @@
-# 项目维护总览与交接
+# FeatraceDev 项目维护总览与交接
 
 ## 文档名称与分工
 
@@ -26,7 +26,9 @@
 
 ## 当前目标与版本
 
-当前源码 [VERSION](VERSION) 为 **0.5.21**，本机 Claude Code 安装版为 **0.5.21**；本次交接核对日期 **2026-09-24**。第一阶段已完成；第二阶段已实现最小语义修订、经 Agent 审阅的模块档案、业务能力与多模块职责确认，以及 Android 静态 Gradle 模块/依赖候选。0.5.17 开始在单一入口内部按六个专业阶段组织规则与交接；当前仍是同一 Agent 的渐进加载，不是多 Agent 隔离。候选只缩小人工调查范围，不自动成为正式模块事实。完整来源权威、动态运行时调用图和自动影响传播尚未实现。运行 Skill 名为 dev；唯一源码权威是 skills/dev，安装目录只是副本。
+产品名 **FeatraceDev**，仓库名 `featrace-dev`，本地路径 `/Users/mac/Entrepôt/featrace-dev`。品牌理念为 Feature · Trace · Delivery，作者署名为 Created by Perry Wang。0.5.22 完成品牌与双语 README 迁移；运行入口仍为 dev，安装器兼容旧身份。本次未更新个人安装副本，现有 0.5.21 功能可继续使用。
+
+当前源码 [VERSION](VERSION) 为 **0.5.22**，本机 Claude Code 安装版仍为 **0.5.21**；本次交接核对日期 **2026-09-24**。第一阶段已完成；第二阶段已实现最小语义修订、经 Agent 审阅的模块档案、业务能力与多模块职责确认，以及 Android 静态 Gradle 模块/依赖候选。0.5.17 开始在单一入口内部按六个专业阶段组织规则与交接；当前仍是同一 Agent 的渐进加载，不是多 Agent 隔离。候选只缩小人工调查范围，不自动成为正式模块事实。完整来源权威、动态运行时调用图和自动影响传播尚未实现。运行 Skill 名为 dev；唯一源码权威是 skills/dev，安装目录只是副本。
 
 0.5.18 修复追溯 Markdown 渲染：旧生成器漏读 `links[].tasks`。独立复核 OGFR-2577 确认共享切图消费者遗漏，也出现了两处与隔离副本事实不符的断言；用户后续目视查看未见异常。暂不改变该业务需求的归档/验收结论，不据此启动六 Skill 拆分。依据与局限见[本次审查](docs/reviews/2026-09-24-ogfr2577-independent-verify.md)。下一轮 Verify 对照按[试验协议](docs/evaluations/verify-comparison-protocol.md)执行。
 

@@ -10,9 +10,11 @@
 
 通用核心不要求 UI、后端或某一种语言。API/Figma 状态分别为 present / missing / unknown / not_applicable。只有业务范围不需要时才能 not_applicable，并在 feature.source_notes 中记录理由。present 表示资料存在，不自动表示已完成对齐。
 
+产品展示名为 FeatraceDev；本次更名保持 `/dev`、`$dev` 与既有业务记录兼容。中文/英文安装入口见 [README](../README.md) / [English README](../README.en.md)。
+
 ## 日常工作流
 
-适用源码版本：0.5.21；最后核对：2026-09-24。下图描述当前 Agent 工作流程；结构校验由脚本辅助，资料理解、冲突判断和最终完成条件仍需 Agent 结合证据核对。0.5.19 在 Verify 开始前增加只读输入核对，不改变已有命令、记录权威或验收门禁。
+适用源码版本：0.5.22；最后核对：2026-09-24。下图描述当前 Agent 工作流程；结构校验由脚本辅助，资料理解、冲突判断和最终完成条件仍需 Agent 结合证据核对。0.5.19 在 Verify 开始前增加只读输入核对，不改变已有命令、记录权威或验收门禁。
 
 不记得命令时使用 `/dev help`；想区分报错修复与需求变更时使用 `/dev help fix` 或 `/dev help revise`。帮助无需选择项目或需求，不执行任何工作流操作。Codex 使用 `$dev help`。
 
@@ -249,13 +251,13 @@ scan 结束使用 `project.py validate-gates <PROJECT>` 只校验配置。字符
 
 当前选择“克隆 + 一个 Python 安装命令”：不依赖远程安装服务，也不需要维护两份 Skill。安装器把同一个 skills/dev 完整复制到个人发现目录。更新需 git pull 后再次运行 --update；不是自动同步。
 
-仓库地址：[P3rryW4ng/feature-delivery-skill](https://github.com/P3rryW4ng/feature-delivery-skill)。代码提交到远端后，给使用者发送仓库 README 即可。Codex 用户也可请求内置 skill-installer 安装仓库中的 skills/dev（访问私库须授权）；本仓库测试覆盖的是本地安装脚本。
+仓库地址：[P3rryW4ng/featrace-dev](https://github.com/P3rryW4ng/featrace-dev)。代码提交到远端后，给使用者发送仓库 README 即可。Codex 用户也可请求内置 skill-installer 安装仓库中的 skills/dev（访问私库须授权）；本仓库测试覆盖的是本地安装脚本。
 
 ## 维护交接
 
 对其他 Agent 说：
 
-> 继续维护 feature-delivery-skill。先读 MAINTAINER.md、ROADMAP.md、CHANGELOG.md、docs/decisions/architecture.md 和 skills/dev/SKILL.md。运行已有测试，核对实现与文档；只实施当前明确授权的下一项，不改变既定原则。完成后更新变更记录、版本和交接状态，报告实际验证及限制。
+> 继续维护 FeatraceDev（仓库 featrace-dev）。先读 MAINTAINER.md、ROADMAP.md、CHANGELOG.md、docs/decisions/architecture.md 和 skills/dev/SKILL.md。运行已有测试，核对实现与文档；只实施当前明确授权的下一项，不改变既定原则。完成后更新变更记录、版本和交接状态，报告实际验证及限制。
 
 Git 管理本体；项目 .agent-workflow/ 另行管理。聊天分享链接只是背景，不能替代可运行代码和交接文档。
 

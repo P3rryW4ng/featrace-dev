@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.5.22 — 2026-09-24
+
+- 产品更名为 FeatraceDev，仓库和本地目录采用 `featrace-dev`；README 提供中文/英文双向切换，并解释 Feature · Trace · Delivery 理念与 Perry Wang 署名。
+- `/dev`、`$dev`、`skills/dev` 和业务记录保持兼容；安装器接受旧 `feature-delivery-skill` 包身份，更新时备份旧副本并写入新身份。保留旧安装标记文件名和备份路径。
+- 本版为品牌与分发迁移，不代表自主交付或多 Agent 能力升级。
+
 ## 0.5.21 — 2026-09-24
 
 - 修复 Gradle 候选中存在未被静态 include 的依赖目标时，正式模块图拒绝整份候选、丢失所有候选边与具体缺口的问题。
