@@ -1,5 +1,9 @@
 # 验证与评估记录
 
+## 0.5.20 — 2026-09-24：已安装 Claude Code 的隔离采用性演练
+
+两个全新 Claude Code 会话分别在隔离 Android 构建声明副本和合成缺证据 Feature 中执行 Scope 与 Verify。工具轨迹确认 Scope 实际读取 0.5.20 的外部 settings 与动态依赖提示，并手动追查配置，未把 30 个静态候选当成完整模块图；Verify 实际运行只读输入核对，将 `review_required`、缺失原始 PRD 与旧质量报告如实作为验收缺口，未把脚本退出码 0 当成通过。输入文件 SHA-256 均不变；仅 Scope 生成候选文件。两次 Agent 执行约 67.1 秒、30.5 秒，CLI 报告费用合计约 0.871 美元。该演练证明明确提示下的采用行为，不是自然新需求、完整 scan、端到端验收或独立 Verify A/B 对照。过程与边界见[隔离演练记录](reviews/2026-09-24-installed-claude-0520-isolation.md)。
+
 ## 0.5.20 — 2026-09-24：动态 Gradle 配置缺口提示
 
 根据[真实 Android 只读核对](reviews/2026-09-24-android-static-candidate-real-check.md)，静态候选发现器现在遇到外部 settings `apply(from=...)` 和 `add(..., project(...))` 时，记录文件/行号供人工复核；不执行外部脚本，不自动补齐模块或依赖边。Kotlin/Groovy、注释排除及 `add` 形式的合成目标测试通过。同一构建声明隔离副本重跑：模块 30→30、候选边 166→166、缺口 19→21；新增提示指向原先静默遗漏的两处。业务项目 Git 状态未改变，未执行 Gradle 或完整 scan。完整合成回归 **222/222 通过**（34.675 秒）；这是机制回归，不证明 Agent 已阅读提示。
