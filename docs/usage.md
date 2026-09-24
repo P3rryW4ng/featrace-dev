@@ -257,7 +257,7 @@ scan 结束使用 `project.py validate-gates <PROJECT>` 只校验配置。字符
 
 对其他 Agent 说：
 
-> 继续维护 FeatraceDev（仓库 featrace-dev）。先读 MAINTAINER.md、ROADMAP.md、CHANGELOG.md、docs/decisions/architecture.md 和 skills/dev/SKILL.md。运行已有测试，核对实现与文档；只实施当前明确授权的下一项，不改变既定原则。完成后更新变更记录、版本和交接状态，报告实际验证及限制。
+> 继续维护 FeatraceDev（仓库 featrace-dev）。先读 PRODUCT.md、MAINTAINER.md、ROADMAP.md、docs/decisions/architecture.md、docs/validation.md，再核对 CHANGELOG.md 和 skills/dev/SKILL.md。核对实现与文档；只实施当前明确授权的下一项，不改变既定原则。脚本变更运行完整回归，发布时更新版本和变更记录；纯文档修正检查一致性与链接即可。更新交接状态，报告实际验证及限制。
 
 Git 管理本体；项目 .agent-workflow/ 另行管理。聊天分享链接只是背景，不能替代可运行代码和交接文档。
 
