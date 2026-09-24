@@ -16,6 +16,10 @@ GRADLE_SETTINGS = ('settings.gradle.kts', 'settings.gradle')
 GRADLE_BUILDS = ('build.gradle.kts', 'build.gradle')
 
 
+class ConditionalDependencyConflict(ValueError):
+    """A reviewed catalog flattened a variant-only Gradle declaration."""
+
+
 def read(path):
     return json.loads(path.read_text())
 
@@ -196,6 +200,10 @@ def _gradle_id(value):
     return ':' + ':'.join(part for part in value.split(':') if part)
 
 
+def _valid_gradle_id(value):
+    return isinstance(value, str) and bool(re.fullmatch(r':[^:\s/\\]+(?::[^:\s/\\]+)*', value))
+
+
 def _default_gradle_root(build_id):
     return '/'.join(part for part in build_id.split(':') if part)
 
@@ -273,7 +281,7 @@ def discover_gradle_candidates(root, index=None):
         gaps.append('Reviewed module catalog could not be used for candidate matching: ' + str(exc))
         index = None
 
-    edges = {}
+    edges, conditional_edges = {}, {}
     for build_id, row in sorted(modules.items()):
         build_root = root / row['root']
         build_file = next((build_root / name for name in GRADLE_BUILDS if (build_root / name).is_file()), None)
@@ -311,9 +319,27 @@ def discover_gradle_candidates(root, index=None):
         for match in re.finditer(r'\b(?:implementation|api|compileOnly|runtimeOnly|testImplementation)\s*\([^\n;]*\bprojects\.', build_text):
             gaps.append(_line_ref(root, build_file, _line_number(build_text, match.start())) +
                         ': type-safe project accessor requires manual review')
+        add_lines = set()
+        for match in re.finditer(
+                r'\badd\s*\(\s*(?P<configuration>[^,;\n]+),\s*project\s*\(\s*["\'](?P<target>:[^"\']+)["\']',
+                build_text):
+            number = _line_number(build_text, match.start())
+            add_lines.add(number)
+            ref = _line_ref(root, build_file, number)
+            gaps.append(ref + ': add-style project dependency requires manual review')
+            expression = match.group('configuration').strip()
+            literal = re.fullmatch(r'["\']([^"\']+)["\']', expression)
+            variant_literal = literal and re.fullmatch(
+                r'[A-Za-z0-9_]+(?:Implementation|Api|CompileOnly|RuntimeOnly)', literal.group(1))
+            if '$' in expression or variant_literal:
+                target = _gradle_id(match.group('target'))
+                key = (build_id, target, expression)
+                row = conditional_edges.setdefault(key, {'from': build_id, 'to': target,
+                    'configuration_expression': expression, 'status': 'conditional_candidate', 'evidence_refs': []})
+                row['evidence_refs'].append(ref)
         for match in re.finditer(r'\badd\s*\(\s*[^,;\n]+,\s*project\s*\(', build_text):
             number = _line_number(build_text, match.start())
-            if number not in matched_lines:
+            if number not in matched_lines and number not in add_lines:
                 gaps.append(_line_ref(root, build_file, number) + ': add-style project dependency requires manual review')
 
     rows = []
@@ -323,23 +349,36 @@ def discover_gradle_candidates(root, index=None):
     result = {'schema_version': 1, 'kind': 'gradle_static_candidates', 'status': 'candidate_only',
               'source_files': dict(sorted(source_files.items())), 'modules': rows,
               'edges': [{**edge, 'evidence_refs': sorted(set(edge['evidence_refs']))}
-                        for _, edge in sorted(edges.items())], 'gaps': sorted(set(gaps)),
+                        for _, edge in sorted(edges.items())],
+              'conditional_edges': [{**edge, 'evidence_refs': sorted(set(edge['evidence_refs']))}
+                                    for _, edge in sorted(conditional_edges.items())],
+              'gaps': sorted(set(gaps)),
               'limits': ['Static Gradle declarations are candidates, not confirmed module ownership or runtime calls.',
                          'Dynamic/composite includes, type-safe accessors, convention plugins, aliases, reflection and runtime navigation require manual review.']}
     base = safe(root, '.agent-workflow/modules')
     write(base / 'candidates.json', json.dumps(result, ensure_ascii=False, indent=2) + '\n')
     node_ids = {row['build_id']: 'C' + str(number) for number, row in enumerate(rows)}
+    unresolved = sorted({edge['to'] for edge in result['edges'] + result['conditional_edges'] if edge['to'] not in node_ids})
+    node_ids.update({build_id: 'C' + str(len(rows) + number) for number, build_id in enumerate(unresolved)})
     lines = ['# Gradle module dependency candidates', '',
              'Generated from static Gradle declarations. Every module and edge is pending review and does not update the reviewed module catalog.', '',
              '```mermaid', 'graph LR']
     for row in rows:
         lines.append('    ' + node_ids[row['build_id']] + '["' + _mermaid_label(row['build_id'] + '<br/>' + row['root']) + '"]')
+    for build_id in unresolved:
+        lines.append('    ' + node_ids[build_id] + '["' + _mermaid_label(build_id + '<br/>unresolved target') + '"]')
     for edge in result['edges']:
         if edge['from'] in node_ids and edge['to'] in node_ids:
             lines.append('    ' + node_ids[edge['from']] + ' -. "candidate ' + _mermaid_label(edge['configuration']) + '" .-> ' + node_ids[edge['to']])
+    for edge in result['conditional_edges']:
+        lines.append('    ' + node_ids[edge['from']] + ' -. "conditional? ' +
+                     _mermaid_label(edge['configuration_expression']) + '" .-> ' + node_ids[edge['to']])
     lines += ['```', '', '## Candidates', '']
     lines += ['- ' + row['build_id'] + ': root=' + row['root'] + '; registered=' +
               (', '.join(row['registered_module_ids']) or 'none') + '; evidence=' + ', '.join(row['evidence_refs']) for row in rows] or ['- None discovered.']
+    lines += ['', '## Conditional configuration candidates', '']
+    lines += ['- ' + row['from'] + ' -> ' + row['to'] + ': ' + row['configuration_expression'] +
+              '; evidence=' + ', '.join(row['evidence_refs']) for row in result['conditional_edges']] or ['- None recorded.']
     lines += ['', '## Parsing gaps', ''] + (['- ' + gap for gap in result['gaps']] or ['- None recorded.'])
     lines += ['', '## Evidence boundary', ''] + ['- ' + limit for limit in result['limits']]
     write(base / 'candidates.md', '\n'.join(lines) + '\n')
@@ -352,7 +391,9 @@ def load_gradle_candidates(root):
     if (not isinstance(doc, dict) or doc.get('schema_version') != 1
             or doc.get('kind') != 'gradle_static_candidates' or doc.get('status') != 'candidate_only'):
         raise ValueError('candidate artifact identity/status is invalid')
-    if not isinstance(doc.get('source_files'), dict) or not isinstance(doc.get('modules'), list) or not isinstance(doc.get('edges'), list):
+    if (not isinstance(doc.get('source_files'), dict) or not isinstance(doc.get('modules'), list)
+            or not isinstance(doc.get('edges'), list) or not isinstance(doc.get('gaps'), list)
+            or not isinstance(doc.get('limits'), list) or not isinstance(doc.get('conditional_edges', []), list)):
         raise ValueError('candidate artifact shape is invalid')
     for name, expected in doc['source_files'].items():
         path_name(name); source = safe(root, name)
@@ -366,11 +407,24 @@ def load_gradle_candidates(root):
             raise ValueError('candidate module is invalid or duplicated')
         ids.add(row['build_id']); path_name(row['root'])
     for row in doc['edges']:
-        if (not isinstance(row, dict) or row.get('from') not in ids or row.get('to') not in ids
-                or row.get('status') != 'candidate' or not isinstance(row.get('configuration'), str)):
+        if (not isinstance(row, dict) or row.get('from') not in ids or not _valid_gradle_id(row.get('to'))
+                or row.get('status') != 'candidate' or not isinstance(row.get('configuration'), str)
+                or not isinstance(row.get('evidence_refs'), list) or not row['evidence_refs']
+                or any(not isinstance(ref, str) or not ref for ref in row['evidence_refs'])):
             raise ValueError('candidate edge is invalid')
-    if not isinstance(doc.get('gaps'), list) or not isinstance(doc.get('limits'), list):
-        raise ValueError('candidate gaps/limits are invalid')
+        if row['to'] not in ids and any(
+                ref + ': dependency target ' + row['to'] + ' is not a static include candidate' not in doc['gaps']
+                for ref in row['evidence_refs']):
+            raise ValueError('candidate unknown target has no matching gap')
+    for row in doc.get('conditional_edges', []):
+        if (not isinstance(row, dict) or row.get('from') not in ids or not _valid_gradle_id(row.get('to'))
+                or row.get('status') != 'conditional_candidate'
+                or not isinstance(row.get('configuration_expression'), str) or not row['configuration_expression'].strip()
+                or not isinstance(row.get('evidence_refs'), list) or not row['evidence_refs']
+                or any(not isinstance(ref, str) or not ref or
+                       ref + ': add-style project dependency requires manual review' not in doc['gaps']
+                       for ref in row['evidence_refs'])):
+            raise ValueError('conditional candidate edge is invalid')
     return doc
 
 
@@ -455,13 +509,36 @@ def project_graph(root, index=None):
                 if target.startswith('candidate:'):
                     extra_nodes.append({'id': target, 'kind': 'module_candidate', 'label': row['build_id'],
                                         'root': row['root'], 'status': 'pending_review'})
+            for build_id in sorted({row['to'] for row in candidate_doc['edges'] + candidate_doc.get('conditional_edges', [])
+                                    if row['to'] not in candidate_nodes}):
+                target = 'candidate:' + build_id
+                candidate_nodes[build_id] = target
+                extra_nodes.append({'id': target, 'kind': 'module_candidate', 'label': build_id,
+                                    'status': 'unresolved_target'})
             for row in candidate_doc.get('edges', []):
                 if row.get('from') in candidate_nodes and row.get('to') in candidate_nodes:
                     extra_edges.append({'from': candidate_nodes[row['from']], 'to': candidate_nodes[row['to']],
                                         'relation': row.get('configuration', 'depends_on'), 'status': 'candidate',
                                         'evidence_refs': row.get('evidence_refs', [])})
+            static_pairs = {(row['from'], row['to']) for row in candidate_doc['edges']}
+            catalog_by_id = {row['id']: row for row in index['modules']}
+            candidate_by_id = {row['build_id']: row for row in candidate_doc['modules']}
+            for row in candidate_doc.get('conditional_edges', []):
+                source_ids = candidate_by_id[row['from']]['registered_module_ids']
+                target_ids = candidate_by_id.get(row['to'], {}).get('registered_module_ids', [])
+                if (len(source_ids) == len(target_ids) == 1 and
+                        (row['from'], row['to']) not in static_pairs and
+                        target_ids[0] in catalog_by_id[source_ids[0]]['depends_on']):
+                    raise ConditionalDependencyConflict(
+                        'conditional Gradle dependency ' + row['from'] + ' -> ' + row['to'] +
+                        ' cannot be recorded as unconditional depends_on; review ' + ', '.join(row['evidence_refs']))
+                extra_edges.append({'from': candidate_nodes[row['from']], 'to': candidate_nodes[row['to']],
+                                    'relation': row['configuration_expression'], 'status': 'conditional_candidate',
+                                    'evidence_refs': row['evidence_refs']})
             nodes.extend(extra_nodes); edges.extend(extra_edges)
             gaps.extend('Gradle candidate: ' + gap for gap in candidate_doc.get('gaps', []))
+        except ConditionalDependencyConflict:
+            raise
         except (OSError, ValueError, TypeError, KeyError, json.JSONDecodeError) as exc:
             gaps.append('Gradle candidate artifact is invalid: ' + str(exc))
     return {'schema_version': 1, 'nodes': nodes, 'edges': edges, 'gaps': sorted(set(gaps)),
@@ -479,10 +556,16 @@ def render_graph(root, index=None):
              'Generated from the reviewed module catalog and confirmed feature scopes. It is an impact-navigation aid, not a complete runtime call graph.', '',
              '```mermaid', 'graph LR']
     for node in graph['nodes']:
-        suffix = '<br/>business capability' if node['kind'] == 'capability' else '<br/>code module'
+        suffix = ('<br/>business capability' if node['kind'] == 'capability' else
+                  '<br/>unresolved build target' if node.get('status') == 'unresolved_target' else
+                  '<br/>pending build candidate' if node['kind'] == 'module_candidate' else '<br/>code module')
         lines.append('    ' + ids[node['id']] + '["' + _mermaid_label(node['label']) + suffix + '"]')
     for edge in graph['edges']:
-        arrow = ' -. "candidate ' + _mermaid_label(edge['relation']) + '" .-> ' if edge.get('status') == 'candidate' else ' -->|"' + _mermaid_label(edge['relation']) + '"| '
+        arrow = (' -. "conditional? ' + _mermaid_label(edge['relation']) + '" .-> '
+                 if edge.get('status') == 'conditional_candidate' else
+                 ' -. "candidate ' + _mermaid_label(edge['relation']) + '" .-> '
+                 if edge.get('status') == 'candidate' else
+                 ' -->|"' + _mermaid_label(edge['relation']) + '"| ')
         lines.append('    ' + ids[edge['from']] + arrow + ids[edge['to']])
     lines += ['```', '', '## Known gaps', '']
     lines += ['- ' + gap for gap in graph['gaps']] or ['- None recorded.']

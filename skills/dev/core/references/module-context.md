@@ -1,4 +1,4 @@
-# Scoped module knowledge and capability graph (0.5.20)
+# Scoped module knowledge and capability graph (0.5.21)
 
 ## Android Gradle candidate discovery
 
@@ -7,9 +7,9 @@ During Android `scan`, `scan-prepare`, and `scan-publish`, the Skill reads the r
 - `modules/candidates.json`: deterministic candidate records, file hashes, file/line evidence, registered-module matches and parsing gaps;
 - `modules/candidates.md`: a readable candidate list and dashed Mermaid dependency graph.
 
-The artifact uses `status: candidate_only`; each module uses `pending_review`. It never edits `modules/index.json`, does not create dossiers, and cannot satisfy scope/develop/check gates. Review actual build configuration and source boundaries before adding accepted modules or dependencies to the formal catalog. Dynamic/composite includes, computed paths, type-safe project accessors, convention-plugin relationships, aliases, reflection, navigation and runtime services may be absent. A missing candidate therefore does not prove that no relationship exists.
+The artifact uses `status: candidate_only`; each module uses `pending_review`. A dependency target absent from static includes remains an unresolved target node with a dashed candidate edge and a line-level gap in the generated views; it is not a discovered or confirmed module. The artifact never edits `modules/index.json`, does not create dossiers, and cannot satisfy scope/develop/check gates. Review actual build configuration and source boundaries before adding accepted modules or dependencies to the formal catalog. Dynamic/composite includes, computed paths, type-safe project accessors, convention-plugin relationships, aliases, reflection, navigation and runtime services may be absent. A missing candidate therefore does not prove that no relationship exists.
 
-If the root settings applies an external settings script, discovery records its file and line as a manual-review gap; it does not execute or parse that script. `add(..., project(...))` dependencies likewise receive a line-level gap rather than a guessed edge. Other computed or plugin-provided declarations may still be missed, so the Agent must inspect the referenced settings and affected build files before accepting module scope.
+If the root settings applies an external settings script, discovery records its file and line as a manual-review gap; it does not execute or parse that script. `add(..., project(...))` dependencies receive a line-level gap. Recognizable variant-specific forms such as `add("${flavor}Implementation", project(":debug"))` additionally become dashed `conditional_candidate` edges, never unconditional facts. Do not put a variant-only relation in the formal catalog's unconditional `depends_on`: graph rendering and scan publish reject that conflict when both modules map uniquely and no ordinary static declaration supports the same pair. Correct the reviewed catalog, then rerender; do not delete the source gap to bypass review. Other computed or plugin-provided declarations may still be missed, so inspect the referenced settings and affected build files before accepting module scope.
 
 Run discovery directly only when inspecting the mechanism:
 
@@ -72,7 +72,7 @@ After creating or revising the catalog, and after changing confirmed feature sco
 python3 core/scripts/module_context.py graph <PROJECT>
 ```
 
-This writes generated `modules/graph.json` and `modules/graph.md`. The graph contains declared module dependencies and confirmed capability-role edges, plus explicit gaps for legacy labels without roles. When a valid Gradle candidate artifact exists, unconfirmed relationships appear as dashed `candidate` edges and unmatched build modules appear as candidate nodes; they remain separate from formal declarations. Mermaid is a human navigation view; JSON is the deterministic generated view. Static declarations and confirmed feature records do not reveal every runtime call, reflection, dynamic route, remote flag or external service, so the graph must not be presented as exhaustive.
+This writes generated `modules/graph.json` and `modules/graph.md`. The graph contains declared module dependencies and confirmed capability-role edges, plus explicit gaps for legacy labels without roles. When a valid Gradle candidate artifact exists, unconfirmed relationships appear as dashed `candidate` edges; recognized variant dependencies use dashed `conditional_candidate` edges. Unmatched build modules and unresolved dependency targets appear as separate pending nodes. Unknown targets keep their line-level gaps and do not become formal modules. Mermaid is a human navigation view; JSON is the deterministic generated view. Static declarations and confirmed feature records do not reveal every runtime call, reflection, dynamic route, remote flag or external service, so the graph must not be presented as exhaustive.
 
 ## Review dossier contents
 

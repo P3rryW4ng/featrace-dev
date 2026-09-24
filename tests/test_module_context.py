@@ -200,6 +200,50 @@ class ModuleTests(unittest.TestCase):
         self.assertTrue(any(edge.get('status') == 'candidate' for edge in graph['edges']))
         self.assertIn('-. "candidate', (self.modules / 'graph.md').read_text())
 
+    def test_unknown_gradle_target_keeps_known_edges_and_review_gaps_in_both_graphs(self):
+        (self.root / 'settings.gradle.kts').write_text('include(":app", ":identity")\n')
+        (self.root / 'app' / 'build.gradle.kts').write_text(
+            'dependencies {\n'
+            '  implementation(project(":identity"))\n'
+            '  implementation(project(":external"))\n'
+            '}\n')
+        (self.root / 'identity' / 'build.gradle.kts').write_text('plugins { id("java-library") }\n')
+        result = discover_gradle_candidates(self.root)
+        self.assertEqual(len(result['edges']), 2)
+        self.assertIn('app/build.gradle.kts:3: dependency target :external is not a static include candidate', result['gaps'])
+        candidate_view = (self.modules / 'candidates.md').read_text()
+        self.assertIn(':external<br/>unresolved target', candidate_view)
+        self.assertEqual(candidate_view.count('-. "candidate'), 2)
+
+        graph = render_graph(self.root)
+        candidate_edges = [edge for edge in graph['edges'] if edge.get('status') == 'candidate']
+        self.assertEqual({(edge['from'], edge['to']) for edge in candidate_edges},
+                         {('module:app', 'module:identity'), ('module:app', 'candidate::external')})
+        self.assertIn({'id': 'candidate::external', 'kind': 'module_candidate',
+                       'label': ':external', 'status': 'unresolved_target'}, graph['nodes'])
+        self.assertIn('Gradle candidate: app/build.gradle.kts:3: dependency target :external is not a static include candidate',
+                      graph['gaps'])
+        self.assertIn('unresolved build target', (self.modules / 'graph.md').read_text())
+        self.assertFalse(any('candidate artifact is invalid' in gap for gap in graph['gaps']))
+
+    def test_unknown_gradle_target_without_matching_gap_is_rejected(self):
+        (self.root / 'settings.gradle.kts').write_text('include(":app")\n')
+        (self.root / 'app' / 'build.gradle.kts').write_text(
+            'dependencies { implementation(project(":external")) }\n')
+        discover_gradle_candidates(self.root)
+        candidate_path = self.modules / 'candidates.json'
+        candidate = json.loads(candidate_path.read_text())
+        candidate['gaps'] = []
+        candidate_path.write_text(json.dumps(candidate))
+        graph = render_graph(self.root)
+        self.assertFalse(any(edge.get('status') == 'candidate' for edge in graph['edges']))
+        self.assertTrue(any('unknown target has no matching gap' in gap for gap in graph['gaps']))
+
+        candidate['edges'][0]['to'] = ':bad/target'
+        candidate_path.write_text(json.dumps(candidate))
+        graph = render_graph(self.root)
+        self.assertTrue(any('candidate edge is invalid' in gap for gap in graph['gaps']))
+
     def test_gradle_discovery_records_dynamic_and_missing_evidence_gaps(self):
         (self.root / 'settings.gradle').write_text("includeBuild('tools')\ninclude modulesFromProperty\ninclude ':app'\n")
         (self.root / 'app' / 'build.gradle').write_text("dependencies { implementation(project(projectPath)); api(projects.wallet) }\n")
@@ -225,9 +269,61 @@ class ModuleTests(unittest.TestCase):
         result = discover_gradle_candidates(self.root)
         self.assertEqual([row['build_id'] for row in result['modules']], [':app'])
         self.assertFalse(result['edges'])
+        self.assertEqual([(row['from'], row['to'], row['configuration_expression'])
+                          for row in result['conditional_edges']],
+                         [(':app', ':legacy', '"${flavor}Implementation"')])
         self.assertIn('settings.gradle.kts:3: applied settings script (extra.settings.gradle) requires manual review', result['gaps'])
         self.assertIn('app/build.gradle.kts:2: add-style project dependency requires manual review', result['gaps'])
         self.assertFalse(any('ignored' in gap or 'phantom' in gap for gap in result['gaps']))
+
+    def test_variant_only_dependency_stays_pending_and_blocks_unconditional_catalog_edge(self):
+        (self.root / 'settings.gradle.kts').write_text('include(":app", ":identity")\n')
+        (self.root / 'app' / 'build.gradle.kts').write_text(
+            'dependencies { add("${flavor}Implementation", project(":identity")) }\n')
+        (self.root / 'identity' / 'build.gradle.kts').write_text('plugins { id("java-library") }\n')
+        discovered = discover_gradle_candidates(self.root)
+        self.assertFalse(discovered['edges'])
+        self.assertEqual(discovered['conditional_edges'][0]['evidence_refs'], ['app/build.gradle.kts:1'])
+        graph = render_graph(self.root)
+        self.assertTrue(any(edge['from'] == 'module:app' and edge['to'] == 'module:identity'
+                            and edge['status'] == 'conditional_candidate' for edge in graph['edges']))
+        self.assertNotIn('identity', next(row for row in self.index['modules'] if row['id'] == 'app')['depends_on'])
+        self.assertIn('conditional?', (self.modules / 'graph.md').read_text())
+
+        next(row for row in self.index['modules'] if row['id'] == 'app')['depends_on'].append('identity')
+        self.save_index()
+        with self.assertRaisesRegex(ValueError, 'cannot be recorded as unconditional depends_on'):
+            render_graph(self.root)
+
+    def test_unconditional_source_edge_allows_catalog_dependency_alongside_variant_edge(self):
+        (self.root / 'settings.gradle.kts').write_text('include(":app", ":identity")\n')
+        (self.root / 'app' / 'build.gradle.kts').write_text(
+            'dependencies {\n'
+            '  implementation(project(":identity"))\n'
+            '  add("${flavor}Implementation", project(":identity"))\n'
+            '}\n')
+        (self.root / 'identity' / 'build.gradle.kts').write_text('plugins { id("java-library") }\n')
+        next(row for row in self.index['modules'] if row['id'] == 'app')['depends_on'].append('identity')
+        self.save_index()
+        discovered = discover_gradle_candidates(self.root)
+        self.assertEqual([(row['from'], row['to']) for row in discovered['edges']], [(':app', ':identity')])
+        graph = render_graph(self.root)
+        self.assertTrue(any(edge['from'] == 'module:app' and edge['to'] == 'module:identity'
+                            and edge['status'] == 'declared' for edge in graph['edges']))
+
+    def test_invalid_conditional_candidate_is_not_accepted_as_evidence(self):
+        (self.root / 'settings.gradle.kts').write_text('include(":app", ":identity")\n')
+        (self.root / 'app' / 'build.gradle.kts').write_text(
+            'dependencies { add("${flavor}Implementation", project(":identity")) }\n')
+        (self.root / 'identity' / 'build.gradle.kts').write_text('plugins { id("java-library") }\n')
+        discover_gradle_candidates(self.root)
+        path = self.modules / 'candidates.json'
+        candidate = json.loads(path.read_text())
+        candidate['conditional_edges'][0]['evidence_refs'] = ['app/build.gradle.kts:99']
+        path.write_text(json.dumps(candidate))
+        graph = render_graph(self.root)
+        self.assertFalse(any(edge.get('status') == 'conditional_candidate' for edge in graph['edges']))
+        self.assertTrue(any('conditional candidate edge is invalid' in gap for gap in graph['gaps']))
 
     def test_gradle_discovery_flags_groovy_applied_settings(self):
         (self.root / 'settings.gradle').write_text("include ':app'\napply from: 'extra.gradle'\n")
