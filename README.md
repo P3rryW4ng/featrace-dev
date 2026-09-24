@@ -1,14 +1,16 @@
 # Feature Delivery Skill
 
-把 PRD 转换为可追溯的需求、开发任务、代码修改和验证记录，帮助 Claude Code 或 Codex 在持续迭代中保留需求依据、决策和历史修复。
+**让变化的需求，成为可验证的软件交付。**
 
-当前源码版本 **0.5.17**，提供通用工作流、Android 适配和 Generic 适配。一个用户入口在内部按 Requirement、Scope、Build、Verify、Repair、Deliver 六阶段加载规则；当前仍由同一 Agent 执行。Android 项目可从 Gradle 获得待人工确认的模块与依赖候选；iOS、Web 和后端项目可以使用通用流程，但暂时没有专属扫描适配器。
+Feature Delivery 帮助 Coding Agent 在已有代码库中处理需求、调查影响、开发、修复和验收。它把原始资料、已确认的需求、开发任务、历史修复和测试证据连起来，让下一次改动有据可查，也让“完成”有明确的验证范围。
 
-> Skill 能减少遗漏和上下文漂移，但不会自动证明 PRD 理解、依赖关系或最终实现完全正确。Agent 仍需读取实际资料、代码和验证结果。
+适用于 Claude Code 和 Codex；目前提供通用工作流及 Android 适配。当前版本为 **0.5.17**。
+
+> 当前是开发者参与的交付工具。它会提醒缺失的决策与证据，但不能保证自动理解所有 PRD、发现所有代码依赖，或替代真机与主观体验验收。
 
 ## 安装
 
-需要 Python 3.9+、Git，以及 Claude Code 或 Codex。Android 项目还需要其自身要求的 JDK 和 Android SDK。
+需要 Python 3.9+、Git，以及 Claude Code 或 Codex。Android 项目还需项目本身要求的 JDK 和 Android SDK。
 
 ```bash
 git clone https://github.com/P3rryW4ng/feature-delivery-skill.git
@@ -16,241 +18,88 @@ cd feature-delivery-skill
 python3 scripts/install.py
 ```
 
-默认同时安装到当前用户的 Claude Code 和 Codex Skill 目录。也可以只安装一个：
+默认安装到当前用户的 Claude Code 和 Codex。只安装一个工具时使用 `--agent claude` 或 `--agent codex`。安装后打开**新会话**，使 Agent 加载新版本。
 
-```bash
-python3 scripts/install.py --agent claude
-# 或
-python3 scripts/install.py --agent codex
-```
+## 从这里开始
 
-安装完成后，请打开一个新的 Agent 会话。
-
-## 会话开发模式
-
-在需要开发的业务项目中打开 Claude Code，然后输入：
+在业务项目中打开 Claude Code，输入一次 `/dev` 进入当前会话的开发模式。之后直接说要做什么，不必反复输入 `/dev next`：
 
 ```text
 /dev
-```
-
-这会让当前会话进入 Feature Delivery 开发模式。之后可以直接使用自然语言或裸命令，不必每次重复输入 `/dev`：
-
-```text
 scan
 prd ./需求文档.md --feature OGFR-1234
 继续开发当前需求
-我拿到了新的设计图片，路径是 ./design/
-status
-check
-```
-
-退出当前会话的开发模式：
-
-```text
-dev off
-```
-
-会话模式有三个边界：
-
-- 只对当前会话和当前项目有效；
-- 新会话或切换项目后需要重新进入；
-- 不会向业务项目写入永久的会话开关或修改个人规则。
-
-Codex 使用 `$dev` 调用 Skill，例如 `$dev scan`、`$dev status`。在支持连续上下文的当前任务中，也可以先输入 `$dev`，再继续描述开发工作。
-
-## 最小工作流
-
-第一次在项目中使用：
-
-```text
-/dev
-scan
-prd ./prd.md --feature OGFR-1234
-继续开发
-check
+我补充了新的设计稿，请核对影响
 status
 ```
 
-各步骤的含义：
+`OGFR-1234` 应是产品或项目已经分配的编号；Skill 不会自行编造。首次使用项目时运行 `scan`，让 Agent 了解构建方式和模块候选。创建需求后，该需求会成为当前会话、当前项目的选中需求。
 
-1. `scan`：了解项目、构建配置和模块边界；Android 项目会生成待确认的 Gradle 模块候选。
-2. `prd`：保存需求来源，使用产品已经分配的需求编号创建工作区。
-3. `继续开发`：Agent 根据当前状态进入澄清、拆解、编码、修复或验证流程。
-4. `check`：执行已经选择的自动检查，并列出仍需人工确认的项目。
-5. `status`：只读查看当前进度、阻塞和下一步。
+在 Codex 中用 `$dev` 调用，例如 `$dev scan` 和 `$dev prd ./需求文档.md --feature OGFR-1234`。Claude Code 会话中的开发模式可用 `dev off` 退出；新会话或切换项目后需要重新进入。该模式不会向业务项目写入永久开关，也不保证跨会话保留。
 
-已有需求可以先选择，再继续工作：
+### 日常只需记住这些
 
-```text
-list
-use OGFR-1234
-继续开发
-```
-
-成功创建 PRD 后，该需求会自动成为当前需求。同一会话、同一项目内，后续命令通常可以省略需求 ID。
-
-## 日常只需记住
-
-| 命令 | 用途 |
+| 输入 | 什么时候用 |
 |---|---|
-| `prd <文件> --feature <产品编号>` | 创建新需求 |
-| `next <描述>` 或直接描述工作 | 让 Agent 根据当前状态选择下一流程 |
-| `status` | 查看进度和阻塞，不重新运行构建 |
-| `help` / `help <命令>` | 查看命令和使用时机 |
-| `dev off` | 退出会话开发模式 |
+| `prd <文件> --feature <产品编号>` | 创建新需求，登记原始资料 |
+| 直接描述工作，或 `next <描述>` | 让 Agent 根据当前需求状态选择下一步 |
+| `status` | 查看已有进度、阻塞和下一步；不重跑构建 |
+| `list` / `use <产品编号>` | 查找并切换需求 |
+| `check` | 执行所选检查，列出仍需人工验收的项目 |
+| `help` / `help <命令>` | 查看全部精确命令及使用时机 |
+| `dev off` | 退出 Claude Code 当前会话的开发模式 |
 
-不知道该用哪个命令时，优先输入：
+不确定命令时，直接说明情况，例如“返回按钮没有按确认的行为工作”“这份 PRD 改了开关规则”“我拿到了新的交互稿”。Agent 应分别调查故障、处理需求修订或补充来源；影响产品含义的选择仍需你确认。
 
-```text
-help
-```
+## 它怎样帮助交付
 
-## 精确命令
+1. **理解变化**：保留原始 PRD、设计、API 或 HTML 交互稿；把澄清、修订和已确认需求分开记录。单份资料或多份资料都可以开始。
+2. **调查影响**：定位相关模块、调用关系和应保持不变的行为，并提示可能需要重测的历史修复。Android Gradle 关系只作为待确认候选，不冒充完整调用图。
+3. **开发与验证**：把需求关联到任务和代码，运行实际选定的检查，分清自动测试、人工目视及真机结果。失败和过期证据不会自动变成通过。
+4. **接续与回看**：业务项目的 `.agent-workflow/` 保存当前需求、决策、修复与交付记录；换会话或换开发者时可从记录继续，而不是依赖聊天记忆。
 
-精确命令适合明确指定处理方式，或者在重要步骤中减少自然语言歧义。
+一个需求可以跨模块。例如红包规则在钱包模块，红包展示在聊天模块；Skill 会提出候选职责和证据，而不会因为功能名称就自动认定唯一归属。
 
-| 场景 | Claude Code | Codex |
-|---|---|---|
-| 扫描项目 | `/dev scan` | `$dev scan` |
-| 创建需求 | `/dev prd ./prd.md --feature OGFR-1234` | `$dev prd ./prd.md --feature OGFR-1234` |
-| 继续当前需求 | `/dev next 继续开发` | `$dev next 继续开发` |
-| 查看进度 | `/dev status` | `$dev status` |
-| 查看需求列表 | `/dev list` | `$dev list` |
-| 切换需求 | `/dev use OGFR-1234` | `$dev use OGFR-1234` |
-| 补充 API | `/dev api ./api.yaml --feature OGFR-1234` | `$dev api ./api.yaml --feature OGFR-1234` |
-| 补充设计 | `/dev figma <链接或导出文件> --feature OGFR-1234` | `$dev figma <链接或导出文件> --feature OGFR-1234` |
-| 澄清需求 | `/dev clarify OGFR-1234 <疑问>` | `$dev clarify OGFR-1234 <疑问>` |
-| 修订需求 | `/dev revise OGFR-1234 <修订说明>` | `$dev revise OGFR-1234 <修订说明>` |
-| 记录并修复偏差 | `/dev fix OGFR-1234 <实际问题>` | `$dev fix OGFR-1234 <实际问题>` |
-| 确认能力与模块职责 | `/dev classify OGFR-1234` | `$dev classify OGFR-1234` |
-| 开发 | `/dev develop OGFR-1234` | `$dev develop OGFR-1234` |
-| 检查与验收 | `/dev check OGFR-1234` | `$dev check OGFR-1234` |
-| 归档／恢复 | `/dev archive OGFR-1234` / `/dev restore OGFR-1234` | `$dev archive OGFR-1234` / `$dev restore OGFR-1234` |
+内部流程目前分为 Requirement、Scope、Build、Verify、Repair、Deliver 六个按需加载的阶段，**仍由同一个 Agent 执行**。阶段名称是工作边界，不是六个要记住的新命令，也不表示已经具备独立 Agent 的自动交付能力。
 
-### 什么时候用 clarify、revise 或 fix
+## 补充资料与修复
 
-- `clarify`：需求存在疑问，需要调查或请产品确认；确认不代表已经实现。
-- `revise`：已经确认要修改或补充需求含义；保留原 PRD 和修订历史。
-- `fix`：已经观察到实现效果与预期不符；先记录实际现象，再判断是代码缺陷、需求遗漏还是需求变化。
-
-普通说明不一定需要专门命令；会影响需求、实现或验收结论的内容应当留下记录。
-
-## PRD 和补充资料
-
-一个需求可以只有文档、只有 HTML 交互稿，也可以由多份资料共同组成：
+创建需求时可以同时提供文档和交互稿：
 
 ```text
-/dev prd ./产品需求.md --feature OGFR-1234 --source ./prototype.html
+prd ./产品需求.md --feature OGFR-1234 --source ./prototype.html
 ```
 
-后续拿到 API 或设计资料时，不需要重建需求：
+后续补充 API 或设计资料，不必重建需求：
 
 ```text
-/dev api ./api.yaml --feature OGFR-1234
-/dev figma ./figma-export.md --feature OGFR-1234
+api ./api.yaml
+figma ./设计导出.md
 ```
 
-来源存在冲突时，Skill 会保留冲突并要求确认，不会因为文件更新时间更晚就自动覆盖已经确认的需求。
+需要明确指定处理方式时，可以使用 `clarify`（调查疑问）、`revise`（修订已确认需求）或 `fix`（记录效果偏差并调查修复）。来源更新时间更晚，不会自动覆盖已经确认的需求；修复中的代码缺陷也不会被自动改写成 PRD 变更。完整参数和其他命令见[使用与迭代指南](docs/usage.md)。
 
-## 业务能力和代码模块
+## 项目记录与共享
 
-业务能力不必强行归入一个代码模块。例如“红包”可以由钱包模块负责业务规则，同时由聊天模块负责展示。Agent 会推荐相关模块及 `owner`、`host`、`provider`、`consumer` 或 `shared` 职责，并在有歧义时请用户确认。
+Skill 源码仓库与业务项目的 `.agent-workflow/` 是两处不同位置。当前需求、任务、决策、追溯及已审阅的模块说明通常可以按团队规则共享；原始 PRD、日志、扫描草稿及本机质量命令可能含敏感或环境相关信息，应逐项检查。Skill 不会因初始化而自动提交、推送或上传业务资料。更多说明见 [Git 协作规则](skills/dev/core/references/git-sharing.md)。
 
-Android scan 生成的 Gradle 关系只是候选：
+## 更新与卸载
 
-- 不会自动成为正式模块目录；
-- 不代表业务归属；
-- 不代表完整运行时调用图；
-- 动态 Gradle、导航、反射和外部服务仍需人工调查。
-
-## 项目中会生成什么
-
-业务项目会创建 `.agent-workflow/`，用于保存需求、任务、决策、追溯、修复、验证和模块记录。它与 Skill 源码仓库分开。
-
-通常适合团队共享：
-
-- 当前需求、任务、决策和追溯关系；
-- 已审阅的模块说明；
-- 可共享的交付报告和修复结论。
-
-通常只保留本机：
-
-- 原始 PRD、日志或含敏感信息的来源；
-- 扫描草稿和历史备份；
-- 本机质量命令选择及临时运行结果。
-
-首次使用时，Agent 可以配置 `.agent-workflow/.gitignore`。上传前仍应按业务仓库权限检查具体内容；Skill 不会自动提交、推送或上传项目资料。
-
-## 更新
-
-进入已经克隆的 Skill 仓库：
+在已克隆的 Skill 仓库中：
 
 ```bash
 git pull --ff-only
-python3 scripts/install.py --agent claude --update
+python3 scripts/install.py --agent both --update
 ```
 
-Codex 用户把 `claude` 换成 `codex`；两个工具都更新则使用 `both`。更新后打开新会话，旧会话可能仍使用已经加载的旧规则。
+更新后打开新会话。只更新一个工具时，把 `both` 改为 `claude` 或 `codex`。卸载使用 `python3 scripts/install.py --agent both --uninstall`；安装器将旧副本放入 `~/.feature-delivery/backups/`。若安装目录不属于本工具或曾被本地修改，安装器会拒绝覆盖。
 
-## 卸载
+若 Claude Code 提示 `Unknown skill: dev`，请确认已安装到 `~/.claude/skills/dev/`，并打开新会话。Codex 入口为 `$dev`。
 
-```bash
-python3 scripts/install.py --agent claude --uninstall
-```
-
-安装器会把旧副本移到 `~/.feature-delivery/backups/`，不会直接永久删除。若安装目录没有本工具的安装标记，或内容被本地修改，安装器会拒绝覆盖。
-
-## 常见问题
-
-### Claude Code 提示 `Unknown skill: dev`
-
-1. 确认执行过 `python3 scripts/install.py --agent claude`；
-2. 确认安装输出没有冲突错误；
-3. 关闭旧会话并打开新会话；
-4. 检查 `~/.claude/skills/dev/` 是否存在。
-
-### 更新后行为还是旧版本
-
-`git pull` 只更新源码仓库，还需要再次运行安装器的 `--update`。Agent 通常在会话开始时加载 Skill，因此还需要新开会话。
-
-### 不知道下一步做什么
-
-进入会话模式后直接输入：
-
-```text
-status
-```
-
-或：
-
-```text
-继续当前需求，并告诉我现在的阻塞和下一步
-```
-
-### 构建通过是否代表需求完成
-
-不代表。UI、真机、账号、开关和跨页面流程可能仍需人工验收。`check` 会区分自动检查和剩余人工项目；证据不足时需求应保持 provisional。
-
-### 能否保证每次扫描都不遗漏
-
-不能。扫描和候选图用于缩小调查范围，动态依赖、未登记调用、运行时行为和外部系统仍可能需要扩大调查。
-
-## 使用文档
+## 更多信息
 
 - [完整使用与迭代指南](docs/usage.md)
 - [版本变更记录](CHANGELOG.md)
-- [模块与能力范围说明](skills/dev/core/references/module-context.md)
-- [Git 协作和来源共享规则](skills/dev/core/references/git-sharing.md)
-
-## 项目维护者
-
-以下文档用于维护 Skill 自身，不是普通使用的必读内容。保留在仓库中是为了让其他机器、账号和 Agent 能准确接续开发，避免依赖单次会话记忆。
-
-- [产品方向基线](PRODUCT.md)
-- [项目维护总览与交接](MAINTAINER.md)
-- [开发路线图与阶段计划](ROADMAP.md)
-- [架构与产品决策](docs/decisions/architecture.md)
-- [验证与评估记录](docs/validation.md)
+- [项目维护者入口](MAINTAINER.md)
 
 仓库当前尚未选择开源许可证。公开分发或再发布前，请由仓库所有者明确许可范围。
