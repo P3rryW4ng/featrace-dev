@@ -2,6 +2,14 @@
 
 Use within `/dev check`, and after authorized develop/fix implementation when preparing acceptance. No new user-facing command. The Agent selects applicable commands, then generates the checklist and executes the automated portion. Ask the user only for remaining observations or business judgments. Respect requests for analysis-only or no execution.
 
+At the start of Verify, run the internal, read-only input inventory before relying on source or quality claims:
+
+```text
+python3 core/scripts/verify-inputs.py <PROJECT> <ID>
+```
+
+Inspect the actual readable source files and hashes, source-index disagreement, Git HEAD/worktree changes, and the quality report's recorded test time/revision. Files in the feature's `sources/` directory that are not in the source index are listed as supplementary evidence, not silently treated as approved requirements. A report from an older HEAD may still be current after workflow-only commits; use the existing audit to decide currency. Exit 0 means the inventory was produced, not that verification passed. Missing or uncertain inputs remain explicit; do not infer that an absent file was read or borrow an old quality result. This step writes no project records, builds nothing, and does not replace `validate-feature.py`, `verification.py` or `audit-delivery.py`.
+
 Complete requires active requirements confirmed against evidence, all tasks done, no unresolved fixes or pending conflicts, required sources reconciled or justified as not applicable, traceability and actual test evidence, and applicable quality gates passed for the delivered revision. Run `validate-feature.py --stage check` and `audit-delivery.py`, then inspect task/decision meaning, code and test assertions, and the delivery report. Structural validity and audit currency do not prove semantic or UI correctness. Controlled requirement baselines additionally need delivery registration under `revision-workflow.md`. If checks cannot run, report unavailable and provisional rather than success.
 
 ## Generate and review
