@@ -1,4 +1,4 @@
-# Scoped module knowledge and capability graph (0.5.16)
+# Scoped module knowledge and capability graph (0.5.20 candidate source)
 
 ## Android Gradle candidate discovery
 
@@ -8,6 +8,8 @@ During Android `scan`, `scan-prepare`, and `scan-publish`, the Skill reads the r
 - `modules/candidates.md`: a readable candidate list and dashed Mermaid dependency graph.
 
 The artifact uses `status: candidate_only`; each module uses `pending_review`. It never edits `modules/index.json`, does not create dossiers, and cannot satisfy scope/develop/check gates. Review actual build configuration and source boundaries before adding accepted modules or dependencies to the formal catalog. Dynamic/composite includes, computed paths, type-safe project accessors, convention-plugin relationships, aliases, reflection, navigation and runtime services may be absent. A missing candidate therefore does not prove that no relationship exists.
+
+If the root settings applies an external settings script, discovery records its file and line as a manual-review gap; it does not execute or parse that script. `add(..., project(...))` dependencies likewise receive a line-level gap rather than a guessed edge. Other computed or plugin-provided declarations may still be missed, so the Agent must inspect the referenced settings and affected build files before accepting module scope.
 
 Run discovery directly only when inspecting the mechanism:
 

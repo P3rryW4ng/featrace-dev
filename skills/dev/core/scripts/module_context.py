@@ -230,6 +230,14 @@ def discover_gradle_candidates(root, index=None):
         text = _without_gradle_comments(settings.read_text(errors='replace'))
         for match in re.finditer(r'\bincludeBuild\s*\(', text):
             gaps.append(_line_ref(root, settings, _line_number(text, match.start())) + ': composite build requires manual review')
+        # Applied settings can register modules through loops, projectDir mappings
+        # or plugins. Point reviewers to the handoff without evaluating the script.
+        for match in re.finditer(r'\bapply\s*(?:\(\s*from\s*=|\s+from\s*:)', text):
+            suffix = text[match.end():].split('\n', 1)[0]
+            literal = re.match(r'\s*(?:file\s*\(\s*)?["\']([^"\']+)["\']', suffix)
+            hint = ' (' + literal.group(1) + ')' if literal else ''
+            gaps.append(_line_ref(root, settings, _line_number(text, match.start())) +
+                        ': applied settings script' + hint + ' requires manual review')
         include_ranges = []
         for pattern in (r'\binclude\s*\((.*?)\)', r'\binclude\s+([^\n]+)'):
             for match in re.finditer(pattern, text, re.S if '\\n' not in pattern else 0):
@@ -303,6 +311,10 @@ def discover_gradle_candidates(root, index=None):
         for match in re.finditer(r'\b(?:implementation|api|compileOnly|runtimeOnly|testImplementation)\s*\([^\n;]*\bprojects\.', build_text):
             gaps.append(_line_ref(root, build_file, _line_number(build_text, match.start())) +
                         ': type-safe project accessor requires manual review')
+        for match in re.finditer(r'\badd\s*\(\s*[^,;\n]+,\s*project\s*\(', build_text):
+            number = _line_number(build_text, match.start())
+            if number not in matched_lines:
+                gaps.append(_line_ref(root, build_file, number) + ': add-style project dependency requires manual review')
 
     rows = []
     for build_id, row in sorted(modules.items()):

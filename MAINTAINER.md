@@ -11,7 +11,7 @@
 | 开发路线图与阶段计划 | [ROADMAP.md](ROADMAP.md) | 各阶段进度、下一优先项、启动与完成条件、待处理问题 |
 | 架构与产品决策记录 | [architecture.md](docs/decisions/architecture.md) | 为什么这样设计、哪些原则已确认、哪些实现仍待验证 |
 | 验证与评估记录 | [validation.md](docs/validation.md) | 实际验证了什么、结果和证据是什么、哪些未验证 |
-| 阶段审查报告 | [阶段审查](docs/reviews/2026-09-17.md)、[真实案例 CASE-01](docs/reviews/2026-09-18-case-01.md)、[真实案例 CASE-02](docs/reviews/2026-09-21-case-02.md)、[OGFR-2577 独立复核](docs/reviews/2026-09-24-ogfr2577-independent-verify.md)、[0.5.11 隔离演练](docs/reviews/2026-09-21-historical-regression-isolation.md)、[0.5.13 隔离演练](docs/reviews/2026-09-22-task-semantic-review-isolation.md)、[GAP-05 隔离测量](docs/reviews/2026-09-22-scan-granularity-isolation.md)、[GAP-05 Agent 复检](docs/reviews/2026-09-22-scan-diagnostics-agent-isolation.md) | 某个时点发现的问题及复现依据；当前处理状态以路线图为准 |
+| 阶段审查报告 | [阶段审查](docs/reviews/2026-09-17.md)、[真实案例 CASE-01](docs/reviews/2026-09-18-case-01.md)、[真实案例 CASE-02](docs/reviews/2026-09-21-case-02.md)、[OGFR-2577 独立复核](docs/reviews/2026-09-24-ogfr2577-independent-verify.md)、[Android 模块候选只读核对](docs/reviews/2026-09-24-android-static-candidate-real-check.md)、[0.5.11 隔离演练](docs/reviews/2026-09-21-historical-regression-isolation.md)、[0.5.13 隔离演练](docs/reviews/2026-09-22-task-semantic-review-isolation.md)、[GAP-05 隔离测量](docs/reviews/2026-09-22-scan-granularity-isolation.md)、[GAP-05 Agent 复检](docs/reviews/2026-09-22-scan-diagnostics-agent-isolation.md) | 某个时点发现的问题及复现依据；当前处理状态以路线图为准 |
 | 使用与迭代指南 | [usage.md](docs/usage.md) | 使用者如何操作当前版本、流程和限制是什么 |
 | 版本变更记录 | [CHANGELOG.md](CHANGELOG.md) | 每个版本发生了哪些变化；不代替当前进度与远端发布核对 |
 | 仓库维护规则 | [AGENTS.md](AGENTS.md) | 维护者和 Agent 修改本仓库时遵守什么规则 |
@@ -26,13 +26,17 @@
 
 ## 当前目标与版本
 
-当前源码 [VERSION](VERSION) 与本机 Claude Code 安装版均为 **0.5.19**；本次交接核对日期 **2026-09-24**。第一阶段已完成；第二阶段已实现最小语义修订、经 Agent 审阅的模块档案、业务能力与多模块职责确认，以及 Android 静态 Gradle 模块/依赖候选。0.5.17 开始在单一入口内部按六个专业阶段组织规则与交接；当前仍是同一 Agent 的渐进加载，不是多 Agent 隔离。候选只缩小人工调查范围，不自动成为正式模块事实。完整来源权威、动态运行时调用图和自动影响传播尚未实现。运行 Skill 名为 dev；唯一源码权威是 skills/dev，安装目录只是副本。
+当前源码 [VERSION](VERSION) 为 **0.5.20 候选版**，本机 Claude Code 安装版仍为 **0.5.19**；本次交接核对日期 **2026-09-24**。第一阶段已完成；第二阶段已实现最小语义修订、经 Agent 审阅的模块档案、业务能力与多模块职责确认，以及 Android 静态 Gradle 模块/依赖候选。0.5.17 开始在单一入口内部按六个专业阶段组织规则与交接；当前仍是同一 Agent 的渐进加载，不是多 Agent 隔离。候选只缩小人工调查范围，不自动成为正式模块事实。完整来源权威、动态运行时调用图和自动影响传播尚未实现。运行 Skill 名为 dev；唯一源码权威是 skills/dev，安装目录只是副本。
 
 0.5.18 修复追溯 Markdown 渲染：旧生成器漏读 `links[].tasks`。独立复核 OGFR-2577 确认共享切图消费者遗漏，也出现了两处与隔离副本事实不符的断言；用户后续目视查看未见异常。暂不改变该业务需求的归档/验收结论，不据此启动六 Skill 拆分。依据与局限见[本次审查](docs/reviews/2026-09-24-ogfr2577-independent-verify.md)。下一轮 Verify 对照按[试验协议](docs/evaluations/verify-comparison-protocol.md)执行。
 
 0.5.19 在既有 Verify 阶段加入只读输入核对：明确列出可读来源、补充文件、工作树变化与质量报告的记录版本；不新增日常命令、记录格式或验收通过条件。参见[验证记录](docs/validation.md)；发布与安装状态见下方实际核对。
 
 0.5.19 目标测试 **8/8**、完整合成回归 **220/220 通过**（34.460 秒）；目标测试覆盖来源索引兼容与符号链接拒绝。OGFR-2577 隔离副本只读核对发现两份索引来源与一份补充图片均可读，同时提示报告登记版本早于当前 HEAD。合成纵向演练从失败测试走到修复复测，并发现、修正旧版 intake 的误报；这验证了盘点和脚本链路，尚未证明独立 Agent 的判断质量或完整自主开发。详见[验证记录](docs/validation.md)。
+
+本轮在另一真实 Android 项目的构建声明隔离副本上核对静态候选：直接声明的 30 个模块全被发现，但外部 settings 脚本动态声明的 16 个模块均漏掉，且脚本加载本身未被缺口提示。已按[只读核对记录](docs/reviews/2026-09-24-android-static-candidate-real-check.md)保留证据并在 GAP-09 登记最小修正；没有修改业务项目、运行 Gradle 或更新安装版。
+
+0.5.20 候选源码已按该记录补两类行号提示：外部 settings 加载与 `add` 形式的项目依赖。同一隔离副本复跑仅使解析缺口从 19 增至 21，模块 30 和候选边 166 保持不变；它提醒人工调查，不自动补齐 16 个动态模块。目标回归 19/19、完整合成回归 222/222 通过（34.675 秒）；实际范围及限制见[验证记录](docs/validation.md)；当前没有发布或更新安装副本。
 
 ### 当前发布状态（2026-09-24）
 

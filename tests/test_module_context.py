@@ -210,6 +210,31 @@ class ModuleTests(unittest.TestCase):
         self.assertTrue(any('type-safe project accessor' in gap for gap in result['gaps']))
         self.assertFalse(result['edges'])
 
+    def test_gradle_discovery_flags_applied_settings_and_add_style_dependency(self):
+        (self.root / 'settings.gradle.kts').write_text(
+            '// apply(from = "ignored.gradle")\n'
+            'include(":app")\n'
+            'apply(from = "extra.settings.gradle")\n')
+        (self.root / 'extra.settings.gradle').write_text(
+            "['legacy'].each { include(\":${it}\") }\n")
+        (self.root / 'app' / 'build.gradle.kts').write_text(
+            'dependencies {\n'
+            '  add("${flavor}Implementation", project(":legacy"))\n'
+            '  // add("ignored", project(":phantom"))\n'
+            '}\n')
+        result = discover_gradle_candidates(self.root)
+        self.assertEqual([row['build_id'] for row in result['modules']], [':app'])
+        self.assertFalse(result['edges'])
+        self.assertIn('settings.gradle.kts:3: applied settings script (extra.settings.gradle) requires manual review', result['gaps'])
+        self.assertIn('app/build.gradle.kts:2: add-style project dependency requires manual review', result['gaps'])
+        self.assertFalse(any('ignored' in gap or 'phantom' in gap for gap in result['gaps']))
+
+    def test_gradle_discovery_flags_groovy_applied_settings(self):
+        (self.root / 'settings.gradle').write_text("include ':app'\napply from: 'extra.gradle'\n")
+        (self.root / 'app' / 'build.gradle.kts').write_text('plugins { id("java-library") }\n')
+        result = discover_gradle_candidates(self.root)
+        self.assertIn('settings.gradle:2: applied settings script (extra.gradle) requires manual review', result['gaps'])
+
     def test_stale_gradle_candidates_do_not_enter_formal_graph(self):
         (self.root / 'settings.gradle.kts').write_text('include(":wallet", ":identity")\n')
         (self.root / 'wallet' / 'build.gradle.kts').write_text('dependencies { implementation(project(":identity")) }\n')

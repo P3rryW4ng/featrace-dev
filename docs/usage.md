@@ -126,7 +126,7 @@ flowchart TD
 
 - **归档与 Git 分开**：归档后报告共享记录保存状态，渲染视图后再核对最终改动。审阅后将记录随对应代码分支提交；推送另需授权。本机日志/来源按共享规则处理，不自动全部上传。未跟踪文件不会因切换分支自动隔离。
 
-- **模块档案与能力图**：Android 初次 scan 会从常见静态 Gradle 声明生成 `modules/candidates.json`/`.md`，列出文件/行号依据和未解析缺口。它只帮助人工建立目录，不会自动确认模块、职责或运行时调用；动态 Gradle 配置仍需阅读。确认后的代码模块目录生成 `modules/graph.json` 与 Mermaid `graph.md`，候选依赖为虚线，人工声明依赖和已确认职责为实线；`/dev scan --module wallet` 聚焦登记的目标模块、直接调用方和依赖。新需求使用用户提供的产品编号，PRD 分析后由 Agent 推荐业务能力及各模块的 owner/host/provider/consumer/shared 职责，再让用户确认歧义。红包可以是业务能力，同时由 wallet 拥有规则、chat 承载展示，不强制归为单一模块。图不是完整运行时调用图。详见 [模块规范](../skills/dev/core/references/module-context.md)。
+- **模块档案与能力图**：Android 初次 scan 会从常见静态 Gradle 声明生成 `modules/candidates.json`/`.md`，列出文件/行号依据和未解析缺口。它只帮助人工建立目录，不会自动确认模块、职责或运行时调用；动态 Gradle 配置仍需阅读。0.5.20 候选源码会对外部 settings 加载和 `add(..., project(...))` 依赖给出带行号的人工复核提示，仍不会自动确认动态模块。确认后的代码模块目录生成 `modules/graph.json` 与 Mermaid `graph.md`，候选依赖为虚线，人工声明依赖和已确认职责为实线；`/dev scan --module wallet` 聚焦登记的目标模块、直接调用方和依赖。新需求使用用户提供的产品编号，PRD 分析后由 Agent 推荐业务能力及各模块的 owner/host/provider/consumer/shared 职责，再让用户确认歧义。红包可以是业务能力，同时由 wallet 拥有规则、chat 承载展示，不强制归为单一模块。图不是完整运行时调用图。详见 [模块规范](../skills/dev/core/references/module-context.md)。
 
 - **验证列表自动化**：check 自动整理需求验收条件、影响行为和已选检查；可执行项自动运行，剩余项提供操作与预期供人工验收。构建通过不等于页面验收通过；失败和旧版本结果保留。代码或规则变化会保守地让列表证据过期，目前未实现按行为精准挑选重验。操作细则见 [验证流程](../skills/dev/core/references/verification-workflow.md)。
 
