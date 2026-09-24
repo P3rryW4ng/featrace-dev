@@ -57,7 +57,10 @@ def main():
     (feature_dir / "spec" / "spec.md").write_text("\n".join(spec))
     (feature_dir / "tasks.md").write_text("# Tasks\n\n" + "\n".join(f"- {t.get('id', '?')} [{t.get('status', '')}] {t.get('title', '')}" for t in tasks) + "\n")
     render_decisions(feature_dir, decisions)
-    (feature_dir / "traceability.md").write_text("# Traceability\n\n" + "\n".join(f"- {x.get('requirement_id', '?')} → {x.get('task_id', '?')} → {', '.join(x.get('tests', []))}" for x in links) + "\n")
+    (feature_dir / "traceability.md").write_text("# Traceability\n\n" + "\n".join(
+        f"- {x.get('requirement_id', '?')} → {', '.join(x['tasks']) if x.get('tasks') else x.get('task_id', '?')} → {', '.join(x.get('tests', []))}"
+        for x in links
+    ) + "\n")
     render_intake(feature_dir)
     render_fixes(feature_dir, sys.argv[2])
     render_impact(feature_dir)

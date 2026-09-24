@@ -11,7 +11,7 @@
 | 开发路线图与阶段计划 | [ROADMAP.md](ROADMAP.md) | 各阶段进度、下一优先项、启动与完成条件、待处理问题 |
 | 架构与产品决策记录 | [architecture.md](docs/decisions/architecture.md) | 为什么这样设计、哪些原则已确认、哪些实现仍待验证 |
 | 验证与评估记录 | [validation.md](docs/validation.md) | 实际验证了什么、结果和证据是什么、哪些未验证 |
-| 阶段审查报告 | [阶段审查](docs/reviews/2026-09-17.md)、[真实案例 CASE-01](docs/reviews/2026-09-18-case-01.md)、[真实案例 CASE-02](docs/reviews/2026-09-21-case-02.md)、[0.5.11 隔离演练](docs/reviews/2026-09-21-historical-regression-isolation.md)、[0.5.13 隔离演练](docs/reviews/2026-09-22-task-semantic-review-isolation.md)、[GAP-05 隔离测量](docs/reviews/2026-09-22-scan-granularity-isolation.md)、[GAP-05 Agent 复检](docs/reviews/2026-09-22-scan-diagnostics-agent-isolation.md) | 某个时点发现的问题及复现依据；当前处理状态以路线图为准 |
+| 阶段审查报告 | [阶段审查](docs/reviews/2026-09-17.md)、[真实案例 CASE-01](docs/reviews/2026-09-18-case-01.md)、[真实案例 CASE-02](docs/reviews/2026-09-21-case-02.md)、[OGFR-2577 独立复核](docs/reviews/2026-09-24-ogfr2577-independent-verify.md)、[0.5.11 隔离演练](docs/reviews/2026-09-21-historical-regression-isolation.md)、[0.5.13 隔离演练](docs/reviews/2026-09-22-task-semantic-review-isolation.md)、[GAP-05 隔离测量](docs/reviews/2026-09-22-scan-granularity-isolation.md)、[GAP-05 Agent 复检](docs/reviews/2026-09-22-scan-diagnostics-agent-isolation.md) | 某个时点发现的问题及复现依据；当前处理状态以路线图为准 |
 | 使用与迭代指南 | [usage.md](docs/usage.md) | 使用者如何操作当前版本、流程和限制是什么 |
 | 版本变更记录 | [CHANGELOG.md](CHANGELOG.md) | 每个版本发生了哪些变化；不代替当前进度与远端发布核对 |
 | 仓库维护规则 | [AGENTS.md](AGENTS.md) | 维护者和 Agent 修改本仓库时遵守什么规则 |
@@ -26,9 +26,13 @@
 
 ## 当前目标与版本
 
-当前源码版本以 [VERSION](VERSION) 为准，当前工作树源码 **0.5.17（已提交并安装）**，本次交接核对日期 **2026-09-23**。第一阶段已完成；第二阶段已实现最小语义修订、经 Agent 审阅的模块档案、业务能力与多模块职责确认，以及 Android 静态 Gradle 模块/依赖候选。0.5.17 开始在单一入口内部按六个专业阶段组织规则与交接；当前仍是同一 Agent 的渐进加载，不是多 Agent 隔离。候选只缩小人工调查范围，不自动成为正式模块事实。完整来源权威、动态运行时调用图和自动影响传播尚未实现。运行 Skill 名为 dev；唯一源码权威是 skills/dev，安装目录只是副本。
+当前源码与本机 Claude Code 安装版本以 [VERSION](VERSION) 为准，为 **0.5.18**；本次交接核对日期 **2026-09-24**。第一阶段已完成；第二阶段已实现最小语义修订、经 Agent 审阅的模块档案、业务能力与多模块职责确认，以及 Android 静态 Gradle 模块/依赖候选。0.5.17 开始在单一入口内部按六个专业阶段组织规则与交接；当前仍是同一 Agent 的渐进加载，不是多 Agent 隔离。候选只缩小人工调查范围，不自动成为正式模块事实。完整来源权威、动态运行时调用图和自动影响传播尚未实现。运行 Skill 名为 dev；唯一源码权威是 skills/dev，安装目录只是副本。
 
-### 当前发布状态（2026-09-23）
+0.5.18 修复追溯 Markdown 渲染：旧生成器漏读 `links[].tasks`。独立复核 OGFR-2577 确认共享切图消费者遗漏，也出现了两处与隔离副本事实不符的断言；用户后续目视查看未见异常。暂不改变该业务需求的归档/验收结论，不据此启动六 Skill 拆分。依据与局限见[本次审查](docs/reviews/2026-09-24-ogfr2577-independent-verify.md)。下一轮 Verify 对照按[试验协议](docs/evaluations/verify-comparison-protocol.md)执行。
+
+### 当前发布状态（2026-09-24）
+
+- 0.5.18 修复追溯 Markdown 任务显示，完整合成回归 212/212 通过（34.341 秒）。本机 Claude Code 安装副本与源码 66 个文件哈希一致；旧版备份为 `/Users/mac/.feature-delivery/backups/20260924T031154-claude-cab433f1`。已建立下一轮独立 Verify [对照协议](docs/evaluations/verify-comparison-protocol.md)，尚未执行严格双组对照。
 
 - 0.5.17 功能提交 `5b2a21a`；本机 Claude Code 已更新到 0.5.17，安装副本与源码 66 个文件哈希一致，旧版备份为 `/Users/mac/.feature-delivery/backups/20260923T074003-claude-d6c0181b`。主 Skill 入口从约 2613 词缩至 721 词，实际上下文与时间收益尚待真实需求测量。完整合成回归本轮重跑 211/211 通过（34.691 秒），本地链接与差异检查通过。临时插件中的独立 Claude Code 新会话完成六类文字路由演练：首次自动评分 5/6，唯一失败是无项目归属情况下的评分标准歧义；修订标准并全新复跑该例通过，工具轨迹显示正确加载候选 Skill 与对应参考文件。它不证明实际项目写入或开发闭环。通用 quick validator 因本机缺 PyYAML 未运行成功。远端同步以 Git 为准。
 

@@ -67,6 +67,15 @@ class WorkflowTests(unittest.TestCase):
         self.valid(); self.validate(); self.validate('check')
         self.run_script(CORE / 'render-workspace.py', self.root, 'FEAT-001')
         self.assertIn('Uppercase', (self.folder / 'spec/spec.md').read_text())
+        self.assertIn('R-1 → T-1 → UT-1', (self.folder / 'traceability.md').read_text())
+
+    def test_render_traceability_displays_current_task_list(self):
+        self.valid()
+        self.record('traceability.json', {'feature_id': 'FEAT-001', 'links': [
+            {'requirement_id': 'R-1', 'tasks': ['T-1', 'T-2'], 'tests': ['UT-1']},
+        ]})
+        self.run_script(CORE / 'render-workspace.py', self.root, 'FEAT-001')
+        self.assertIn('R-1 → T-1, T-2 → UT-1', (self.folder / 'traceability.md').read_text())
 
     def test_not_applicable_requires_reason(self):
         self.valid(); self.req['feature']['source_notes'] = {}
