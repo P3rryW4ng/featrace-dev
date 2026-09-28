@@ -1,0 +1,18 @@
+{
+  "full-tests.txt": "a2ea964b9bbe055d031243b289e3c512d71252b9b1ac2b2e81a42f2999382c39",
+  "measurements.json": "b0acd49f3208a334838cbc00bbb7a2cc9530a619d5188d77ce89638bfb058f97",
+  "BLOCKED-assessment.md": "6f5735d2c9b7d3c08a6d68c1de243123312aeac06043ea1abed11245d9045f24",
+  "READY-assessment.md": "6a1988ee3f74b1d0cbe26f0da166f1564c28b57093d120d6fb673f9b4c051416",
+  "READY3-assessment.md": "1a5206d27eb083de394f143843f6ab2f3d05fa4de6fbb899897264890eb46c36",
+  "READY2-assessment.md": "056fbaa50c53362f35a0fbcc6bfae52b65608c3b92faf66d2e5793d473313c3d",
+  "target-tests.txt": "1c0d1b3309dafd039903e8731c4c904357e9ad3e38a1cda9b2fad3e3f09da87d",
+  "BLOCKED2-assessment.md": "0513a16ede8e8e9646ea3c703d7915922fc2a1a6b1dc645f4b4d698f1a02a12c",
+  "READY3/check-0.log": "a6707d4eff38012da33ddc34bc6dc076a3b17151cfc9aef223c8790cbe64c3da",
+  "READY3/integration-report.json": "08e789a69367508ff6c0f427fa11e48e329e6b4e29b203469a353de8369b45eb",
+  "READY3/returns/T-UP/patch.diff": "20cc901335ef7b39fc2bf1785e48aad2e435fea68f3c6355946b526aa7af7fd8",
+  "READY3/returns/T-UP/result.json": "7c976897e213a2ecf8111ffdee9551b8be7f6240d50508041d56eed40fb788cd",
+  "READY3/returns/T-UP/check-0.log": "fb184ea57734512b1f088f9181209901b9cd46df3eb7eaa2500ea9e48dde20b5",
+  "READY3/returns/T-LOW/patch.diff": "5d29991ac4218cfc88428b6443a70f30d981180eb9d8a6676ea4c573143d7708",
+  "READY3/returns/T-LOW/result.json": "2baa75a7d589e0e56412fd427c25ef0c773a8b2250779d16ce7553d936e3b703",
+  "READY3/returns/T-LOW/check-0.log": "fb184ea57734512b1f088f9181209901b9cd46df3eb7eaa2500ea9e48dde20b5"
+}

@@ -22,7 +22,7 @@ Use the user's project root or the established workspace. Paths below are relati
 | `api FILE-OR-LINK`, `figma FILE-OR-LINK` | Requirement evidence; `prd-analysis.md` |
 | `clarify [ID] QUESTION`, `revise [ID] CHANGE` | Requirement; `clarify-workflow.md` or `revision-workflow.md` |
 | `classify [ID]` | Scope; `module-context.md`; legacy labels also use `feature-archive.md` |
-| `develop [ID]` | Scope → Build; `impact-review.md`, `task-semantic-review.md`, `historical-regression.md`, project profile; explicit `--parallel` uses `parallel-build.md` |
+| `develop [ID]` | Scope → Build; `impact-review.md`, `task-semantic-review.md`, `historical-regression.md`, project profile; explicit `--parallel` uses `parallel-build.md` after the same Scope prerequisites |
 | `fix [ID] PROBLEM` | Repair → Verify; `fix-workflow.md` |
 | `check [ID]` | Verify → eligible Deliver; `verification-workflow.md`; explicit `--independent` uses the read-only pilot in `independent-verify.md` |
 | `archive [ID]`, `restore [ID]` | History; `feature-archive.md` (archive requires delivery evidence; restore does not rerun check) |
@@ -31,6 +31,8 @@ Use the user's project root or the established workspace. Paths below are relati
 Read `core/references/requirement-schema.md` when editing feature records, `core/references/git-sharing.md` before first project setup or sharing, and the Android or Generic profile for the actual target module. An inaccessible API/Figma link requires an authorized connector or supplied export; a URL alone is not source content. A new feature requires the product/work-item ID supplied by the user; do not invent one.
 
 ## Boundaries that apply across stages
+
+For `develop --parallel`, first load `orchestration.md` and complete the normal Scope route using `workflow.md`, `impact-review.md`, `task-semantic-review.md` and `historical-regression.md`. Then use `parallel-build.md`; a supplied plan or green legacy validator does not replace current Scope reviews. Missing reviews with writes disallowed mean stop before prepare/dispatch.
 
 - Original evidence remains unchanged. Requirements, tasks, decisions, traceability and fixes use their canonical JSON; Markdown views are generated. Newer text alone does not override an approved requirement. Missing evidence, unresolved product choices and actual failures remain visible.
 - After source or requirement meaning changes, renew the PRD review. After task meaning changes, review changed tasks against only their linked requirements and evidence. Task progress alone does not trigger semantic review. Run `validate-feature.py --stage draft|develop|check` at the relevant boundary; it checks structure, not truth.

@@ -1,0 +1,8 @@
+diff --git a/lower.py b/lower.py
+index dcc23cd..daefb35 100644
+--- a/lower.py
++++ b/lower.py
+@@ -1,2 +1,2 @@
+ def convert(value):
+-    return value
++    return value.lower()

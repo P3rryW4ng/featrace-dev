@@ -1,0 +1,69 @@
+{
+  "run_digest": "9679016e1b32a1d3f82704a8e8d4d83396e6db4f97cba3b56cc3648ba1a7deef",
+  "task_id": "T-LOW",
+  "status": "ready",
+  "summary": "lower.py convert now returns value.lower(); input string not mutated (str immutable), empty stays empty; upper.py untouched",
+  "checks": [
+    {
+      "command": [
+        "/Library/Developer/CommandLineTools/usr/bin/python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-p",
+        "test_lower.py"
+      ],
+      "status": "passed",
+      "returncode": 0,
+      "log": "check-0.log",
+      "log_sha256": "fb184ea57734512b1f088f9181209901b9cd46df3eb7eaa2500ea9e48dde20b5"
+    }
+  ],
+  "worker_state": {
+    "files": {
+      ".gitignore": {
+        "state": "file",
+        "sha256": "cce4895a3bc799fea5fe0badd4320fe37faa8c13d010ed06120901f24569d857",
+        "size": 30
+      },
+      "lower.py": {
+        "state": "file",
+        "sha256": "dc00ddf36405b738971ae727dc043a05de40eef165d1ec91d0058e3445f0c854",
+        "size": 45
+      },
+      "tests/test_composition.py": {
+        "state": "file",
+        "sha256": "64ec4fba9006e84f58ab78e188e3689ef645772ec6d6a3fe60f571b58d812405",
+        "size": 376
+      },
+      "tests/test_lower.py": {
+        "state": "file",
+        "sha256": "12f557b2eaebf10bf346ce7950cb35fd29f3f38ce395fb6a894ebe97e321750b",
+        "size": 162
+      },
+      "tests/test_upper.py": {
+        "state": "file",
+        "sha256": "332770fa0ef9747afedcff27e921f531f6fd519a5b60e18f31ed6e39c1dc67f4",
+        "size": 162
+      },
+      "upper.py": {
+        "state": "file",
+        "sha256": "15943f5cb218972a16eb02f3377fa909d22d5a5e0631087bf15c3087534e5482",
+        "size": 37
+      }
+    },
+    "workflow": {
+      ".agent-workflow": {
+        "state": "missing"
+      }
+    },
+    "index": "8d2cc8fc068f429550261e85def627ad545542ba5bcf721fcf4f4c5cbf1ed3c3"
+  },
+  "changed_paths": [
+    "lower.py"
+  ],
+  "patch_sha256": "5d29991ac4218cfc88428b6443a70f30d981180eb9d8a6676ea4c573143d7708",
+  "record_digest": "82165d28a7536dc5588bafda61246d98b47ac3d9d2971c0b42bcf4f93cd92e9c"
+}

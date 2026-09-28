@@ -1,8 +1,16 @@
-# Opt-in two-task parallel Build pilot (0.5.25)
+# Opt-in two-task parallel Build pilot (0.5.26)
 
 Load for explicit `develop --parallel` or a request to implement two tasks concurrently. Default develop remains serial. This pilot creates two detached Git worktrees and a third integration candidate outside the primary project. It does not launch processes by itself, apply changes to the primary checkout, commit/push, update task status or approve delivery. If the host cannot provide two independent execution contexts, report unavailable and offer ordinary serial Build.
 
 ## Router eligibility and plan
+
+Parallel Build replaces only the execution of an eligible Build slice; it is not a shortcut past Scope. Before preparing a plan or dispatching, load `orchestration.md`, the develop section of `workflow.md`, `impact-review.md`, `task-semantic-review.md` and `historical-regression.md`. Load the applicable project profile before choosing or interpreting commands; load `module-context.md` only when module selection/catalog/dossier rules apply. Do not load unrelated Requirement/Repair/Deliver references just because this mode is parallel.
+
+Use those ordinary Scope rules to inspect current authority, task meaning, change/preserve boundary and historical protection. Existing current reviews may be checked and reused; do not manufacture new reviews or refresh timestamps merely for dispatch. If review records are absent, the router completes their existing sync/review flow **before** prepare, only when record writes and any required decisions are authorized. If the user restricts the run to read-only, sync-only or disallows choices, report Scope blocked and stop; do not use compatibility warnings as permission, silently switch to serial, or ask a worker to fill records.
+
+For this opt-in mode, both `task-review.json` and `regression-review.json` must exist and pass the existing develop validator, even for legacy features where missing records would ordinarily warn. A missing record stops prepare before creating scratch/worktrees; stale/pending/invalid records also stop. A zero-candidate history sync is a valid record, not permission to invent a retest. This additional eligibility rule does not retroactively change ordinary serial develop or historical delivery validation.
+
+The router's Scope exit must identify the selected tasks, requirement/source basis, current review evidence, impact paths/preserved behavior, applicable module/profile constraints and actual develop result. Then move to Build → prepare → preflight → dispatch. After prepare, no canonical writes are allowed until workers stop; a necessary Scope correction requires a new attempt. Hash/structure checks cannot prove that the Agent loaded instructions or understood their meaning.
 
 Complete the ordinary Scope prerequisites first: confirmed requirements, reviewed task meaning and source authority, module/impact investigation and historical regression review when required. Existing develop validation remains in force; warnings are not permission to skip the investigation. Restore archived features before changes. This pilot additionally requires a reviewed impact.json with exact allowed paths and a clean business worktree. Preserve pre-existing work and use serial Build when there are uncommitted business files, submodules, ignored assigned business paths or unsupported paths.
 

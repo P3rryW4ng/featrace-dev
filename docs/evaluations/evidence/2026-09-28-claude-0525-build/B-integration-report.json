@@ -1,0 +1,36 @@
+{
+  "run_digest": "bbfcb3dc327acb5703bda38fe65710b746eb9377ead3f62f3f0d1def251c2114",
+  "candidate": "/private/tmp/featrace-claude-0525-s4owgoyc/B/attempt/integration",
+  "status": "checks_failed",
+  "base_revision": "8017a0c0ab5cd6d3096e21ff7ce1d64f9d357cdf",
+  "checks": [
+    {
+      "command": [
+        "/Library/Developer/CommandLineTools/usr/bin/python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests"
+      ],
+      "status": "passed",
+      "returncode": 0,
+      "log": "check-0.log",
+      "log_sha256": "e6ec182765cd965f2837d8eeaef5a64af48a104f245cd1a0b7281559194c57c1"
+    },
+    {
+      "command": [
+        "/Library/Developer/CommandLineTools/usr/bin/python3",
+        "-c",
+        "raise SystemExit(4)"
+      ],
+      "status": "failed",
+      "returncode": 4,
+      "log": "check-1.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "note": "Candidate only; no primary writes or delivery approval.",
+  "candidate_tree": "f3f707297ce94aa31f44cd6733f213699c596421",
+  "record_digest": "3b64db938020e52ddc8f3858e69613b429378d613166e88f2bff13e6fc1971c9"
+}

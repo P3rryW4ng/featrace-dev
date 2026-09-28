@@ -1,0 +1,494 @@
+[
+  {
+    "case": "READY",
+    "execution": {
+      "started_at_epoch": 1790588109.4009118,
+      "case": "READY",
+      "exit_code": 0,
+      "elapsed_seconds": 49.837
+    },
+    "cost_usd_list": 0.29267980000000005,
+    "model_usage": {
+      "claude-opus-5-5": {
+        "inputTokens": 12,
+        "outputTokens": 3705,
+        "cacheReadInputTokens": 139499,
+        "cacheCreationInputTokens": 23829,
+        "webSearchRequests": 0,
+        "costUSD": 0.29267980000000005,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 385,
+        "canonicalModel": "claude-opus-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "agent_count": 0
+  },
+  {
+    "case": "BLOCKED",
+    "execution": {
+      "started_at_epoch": 1790588104.699849,
+      "case": "BLOCKED",
+      "exit_code": 0,
+      "elapsed_seconds": 53.361
+    },
+    "cost_usd_list": 0.2774646,
+    "model_usage": {
+      "claude-opus-5-5": {
+        "inputTokens": 10,
+        "outputTokens": 3573,
+        "cacheReadInputTokens": 110223,
+        "cacheCreationInputTokens": 22990,
+        "webSearchRequests": 0,
+        "costUSD": 0.2774646,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 431,
+        "canonicalModel": "claude-opus-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "agent_count": 0
+  },
+  {
+    "case": "READY2",
+    "execution": {
+      "started_at_epoch": 1790588399.343772,
+      "case": "READY2",
+      "exit_code": 0,
+      "elapsed_seconds": 107.436
+    },
+    "cost_usd_list": 0.6311052,
+    "model_usage": {
+      "claude-opus-5-5": {
+        "inputTokens": 22,
+        "outputTokens": 7849,
+        "cacheReadInputTokens": 414946,
+        "cacheCreationInputTokens": 48881,
+        "webSearchRequests": 0,
+        "costUSD": 0.6311052,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 1790,
+        "canonicalModel": "claude-opus-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "agent_count": 0,
+    "primary_unchanged": true,
+    "head_unchanged": true,
+    "status_unchanged": true,
+    "personal_install_version": "0.5.25",
+    "personal_install_matches_marker": true,
+    "temporary_version": "0.5.26",
+    "reference_read_commands": {
+      "orchestration.md": [
+        {
+          "tool": "Bash",
+          "description": "Read orchestration, workflow, parallel-build references",
+          "input": "cd /private/tmp/featrace-claude-0526-w1ged5mr/READY2/.claude/skills/dev/core/references && for f in orchestration.md workflow.md parallel-build.md; do echo \"=== $f\"; cat $f; done"
+        }
+      ],
+      "workflow.md": [
+        {
+          "tool": "Bash",
+          "description": "Read orchestration, workflow, parallel-build references",
+          "input": "cd /private/tmp/featrace-claude-0526-w1ged5mr/READY2/.claude/skills/dev/core/references && for f in orchestration.md workflow.md parallel-build.md; do echo \"=== $f\"; cat $f; done"
+        }
+      ],
+      "impact-review.md": [
+        {
+          "tool": "Bash",
+          "description": "Read Scope references and generic profile",
+          "input": "cd /private/tmp/featrace-claude-0526-w1ged5mr/READY2/.claude/skills/dev && for f in core/references/impact-review.md core/references/task-semantic-review.md core/references/historical-regression.md core/references/feature-selection.md profiles/generic/PROFILE.md; do echo \"=== $f\"; cat $f; done"
+        }
+      ],
+      "task-semantic-review.md": [
+        {
+          "tool": "Bash",
+          "description": "Read Scope references and generic profile",
+          "input": "cd /private/tmp/featrace-claude-0526-w1ged5mr/READY2/.claude/skills/dev && for f in core/references/impact-review.md core/references/task-semantic-review.md core/references/historical-regression.md core/references/feature-selection.md profiles/generic/PROFILE.md; do echo \"=== $f\"; cat $f; done"
+        }
+      ],
+      "historical-regression.md": [
+        {
+          "tool": "Bash",
+          "description": "Read Scope references and generic profile",
+          "input": "cd /private/tmp/featrace-claude-0526-w1ged5mr/READY2/.claude/skills/dev && for f in core/references/impact-review.md core/references/task-semantic-review.md core/references/historical-regression.md core/references/feature-selection.md profiles/generic/PROFILE.md; do echo \"=== $f\"; cat $f; done"
+        }
+      ],
+      "parallel-build.md": [
+        {
+          "tool": "Bash",
+          "description": "Read orchestration, workflow, parallel-build references",
+          "input": "cd /private/tmp/featrace-claude-0526-w1ged5mr/READY2/.claude/skills/dev/core/references && for f in orchestration.md workflow.md parallel-build.md; do echo \"=== $f\"; cat $f; done"
+        }
+      ],
+      "PROFILE.md": [
+        {
+          "tool": "Bash",
+          "description": "Read Scope references and generic profile",
+          "input": "cd /private/tmp/featrace-claude-0526-w1ged5mr/READY2/.claude/skills/dev && for f in core/references/impact-review.md core/references/task-semantic-review.md core/references/historical-regression.md core/references/feature-selection.md profiles/generic/PROFILE.md; do echo \"=== $f\"; cat $f; done"
+        }
+      ]
+    },
+    "integration": null,
+    "returns": {},
+    "agents": []
+  },
+  {
+    "case": "BLOCKED2",
+    "execution": {
+      "started_at_epoch": 1790588388.773063,
+      "case": "BLOCKED2",
+      "exit_code": 0,
+      "elapsed_seconds": 88.492
+    },
+    "cost_usd_list": 0.523197,
+    "model_usage": {
+      "claude-opus-5-5": {
+        "inputTokens": 20,
+        "outputTokens": 6307,
+        "cacheReadInputTokens": 334085,
+        "cacheCreationInputTokens": 41270,
+        "webSearchRequests": 0,
+        "costUSD": 0.523197,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 391,
+        "canonicalModel": "claude-opus-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "agent_count": 0,
+    "primary_unchanged": true,
+    "head_unchanged": true,
+    "status_unchanged": true,
+    "personal_install_version": "0.5.25",
+    "personal_install_matches_marker": true,
+    "temporary_version": "0.5.26",
+    "reference_read_commands": {
+      "orchestration.md": [
+        {
+          "tool": "Bash",
+          "description": "List skill references and read orchestration",
+          "input": "cd /private/tmp/featrace-claude-0526-w1ged5mr/BLOCKED2/.claude/skills/dev && ls core/references core/scripts specialists/*; python3 -c \"import json;d=json.load(open('.feature-delivery-install.json'));print({k:v for k,v in d.items() if not isinstance(v,(list,dict))})\"; cat core/references/orchestration.md"
+        }
+      ],
+      "workflow.md": [
+        {
+          "tool": "Bash",
+          "description": "Read Scope and parallel-build references",
+          "input": "cd /private/tmp/featrace-claude-0526-w1ged5mr/BLOCKED2/.claude/skills/dev/core/references && cat workflow.md impact-review.md task-semantic-review.md historical-regression.md parallel-build.md"
+        }
+      ],
+      "impact-review.md": [
+        {
+          "tool": "Bash",
+          "description": "Read Scope and parallel-build references",
+          "input": "cd /private/tmp/featrace-claude-0526-w1ged5mr/BLOCKED2/.claude/skills/dev/core/references && cat workflow.md impact-review.md task-semantic-review.md historical-regression.md parallel-build.md"
+        }
+      ],
+      "task-semantic-review.md": [
+        {
+          "tool": "Bash",
+          "description": "Read Scope and parallel-build references",
+          "input": "cd /private/tmp/featrace-claude-0526-w1ged5mr/BLOCKED2/.claude/skills/dev/core/references && cat workflow.md impact-review.md task-semantic-review.md historical-regression.md parallel-build.md"
+        }
+      ],
+      "historical-regression.md": [
+        {
+          "tool": "Bash",
+          "description": "Read Scope and parallel-build references",
+          "input": "cd /private/tmp/featrace-claude-0526-w1ged5mr/BLOCKED2/.claude/skills/dev/core/references && cat workflow.md impact-review.md task-semantic-review.md historical-regression.md parallel-build.md"
+        }
+      ],
+      "parallel-build.md": [
+        {
+          "tool": "Bash",
+          "description": "Read Scope and parallel-build references",
+          "input": "cd /private/tmp/featrace-claude-0526-w1ged5mr/BLOCKED2/.claude/skills/dev/core/references && cat workflow.md impact-review.md task-semantic-review.md historical-regression.md parallel-build.md"
+        }
+      ],
+      "PROFILE.md": []
+    },
+    "integration": null,
+    "returns": {},
+    "agents": []
+  },
+  {
+    "case": "READY3",
+    "execution": {
+      "started_at_epoch": 1790588732.7401228,
+      "case": "READY3",
+      "exit_code": 0,
+      "elapsed_seconds": 168.993
+    },
+    "cost_usd_list": 1.2997756,
+    "model_usage": {
+      "claude-opus-5-5": {
+        "inputTokens": 60,
+        "outputTokens": 16478,
+        "cacheReadInputTokens": 1041808,
+        "cacheCreationInputTokens": 116456,
+        "webSearchRequests": 0,
+        "costUSD": 1.2997756,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 1464,
+        "canonicalModel": "claude-opus-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "agent_count": 2,
+    "primary_unchanged": true,
+    "head_unchanged": true,
+    "status_unchanged": true,
+    "personal_install_version": "0.5.25",
+    "personal_install_matches_marker": true,
+    "temporary_version": "0.5.26",
+    "reference_read_commands": {
+      "orchestration.md": [
+        {
+          "tool": "Bash",
+          "description": "Read orchestration and workflow references",
+          "input": "cd /private/tmp/featrace-claude-0526-w1ged5mr/READY3/.claude/skills/dev/core/references && cat orchestration.md workflow.md"
+        }
+      ],
+      "workflow.md": [
+        {
+          "tool": "Bash",
+          "description": "Read orchestration and workflow references",
+          "input": "cd /private/tmp/featrace-claude-0526-w1ged5mr/READY3/.claude/skills/dev/core/references && cat orchestration.md workflow.md"
+        }
+      ],
+      "impact-review.md": [
+        {
+          "tool": "Bash",
+          "description": "Read Scope and parallel-build references",
+          "input": "cd /private/tmp/featrace-claude-0526-w1ged5mr/READY3/.claude/skills/dev && cat core/references/impact-review.md core/references/task-semantic-review.md core/references/historical-regression.md core/references/parallel-build.md; grep -rn \"0\\.5\\.\" . | head"
+        }
+      ],
+      "task-semantic-review.md": [
+        {
+          "tool": "Bash",
+          "description": "Read Scope and parallel-build references",
+          "input": "cd /private/tmp/featrace-claude-0526-w1ged5mr/READY3/.claude/skills/dev && cat core/references/impact-review.md core/references/task-semantic-review.md core/references/historical-regression.md core/references/parallel-build.md; grep -rn \"0\\.5\\.\" . | head"
+        }
+      ],
+      "historical-regression.md": [
+        {
+          "tool": "Bash",
+          "description": "Read Scope and parallel-build references",
+          "input": "cd /private/tmp/featrace-claude-0526-w1ged5mr/READY3/.claude/skills/dev && cat core/references/impact-review.md core/references/task-semantic-review.md core/references/historical-regression.md core/references/parallel-build.md; grep -rn \"0\\.5\\.\" . | head"
+        }
+      ],
+      "parallel-build.md": [
+        {
+          "tool": "Bash",
+          "description": "Read Scope and parallel-build references",
+          "input": "cd /private/tmp/featrace-claude-0526-w1ged5mr/READY3/.claude/skills/dev && cat core/references/impact-review.md core/references/task-semantic-review.md core/references/historical-regression.md core/references/parallel-build.md; grep -rn \"0\\.5\\.\" . | head"
+        }
+      ],
+      "PROFILE.md": [
+        {
+          "tool": "Bash",
+          "description": "Load generic profile, run develop validator",
+          "input": "S=/private/tmp/featrace-claude-0526-w1ged5mr/READY3/.claude/skills/dev; P=/private/tmp/featrace-claude-0526-w1ged5mr/READY3/project; cat $S/profiles/generic/PROFILE.md; echo ---; python3 $S/core/scripts/validate-feature.py --help 2>&1 | head -20; echo ---; python3 $S/core/scripts/validate-feature.py $P FEAT-001 --stage develop; echo \"exit=$?\"; python3 $S/core/scripts/feature-status.py --help 2>&1 | head -5; python3 $S/core/scripts/task_review.py --help 2>&1 | head; python3 $S/core/scripts/regression_review.py --help 2>&1|head"
+        }
+      ]
+    },
+    "integration": {
+      "run_digest": "600e4f9b8470570b7a3cc6b1c856712871c2cc186c3508e3497c58de6aa3b213",
+      "candidate": "/private/tmp/featrace-claude-0526-w1ged5mr/READY3/attempt/integration",
+      "status": "candidate_checks_passed",
+      "base_revision": "0999e6e36fa8ad2a4ee91fbf70f7275a6c4a6bfd",
+      "checks": [
+        {
+          "command": [
+            "/Library/Developer/CommandLineTools/usr/bin/python3",
+            "-m",
+            "unittest",
+            "discover",
+            "-s",
+            "tests"
+          ],
+          "status": "passed",
+          "returncode": 0,
+          "log": "check-0.log",
+          "log_sha256": "a6707d4eff38012da33ddc34bc6dc076a3b17151cfc9aef223c8790cbe64c3da"
+        }
+      ],
+      "note": "Candidate only; no primary writes or delivery approval.",
+      "candidate_tree": "d52165715259258da3837731a70eac3849b7da96"
+    },
+    "returns": {
+      "T-UP": {
+        "run_digest": "600e4f9b8470570b7a3cc6b1c856712871c2cc186c3508e3497c58de6aa3b213",
+        "task_id": "T-UP",
+        "status": "ready",
+        "summary": "upper.convert now returns value.upper(); only upper.py changed, lower.py untouched, convert(str)->str interface preserved, pure with no side effects.",
+        "checks": [
+          {
+            "command": [
+              "/Library/Developer/CommandLineTools/usr/bin/python3",
+              "-m",
+              "unittest",
+              "discover",
+              "-s",
+              "tests",
+              "-p",
+              "test_upper.py"
+            ],
+            "status": "passed",
+            "returncode": 0,
+            "log": "check-0.log",
+            "log_sha256": "fb184ea57734512b1f088f9181209901b9cd46df3eb7eaa2500ea9e48dde20b5"
+          }
+        ],
+        "worker_state": {
+          "files": {
+            ".gitignore": {
+              "state": "file",
+              "sha256": "086f660840b53b942b214433f54396586954bdcd26fd3662b44f38ae20877f89",
+              "size": 39
+            },
+            "lower.py": {
+              "state": "file",
+              "sha256": "15943f5cb218972a16eb02f3377fa909d22d5a5e0631087bf15c3087534e5482",
+              "size": 37
+            },
+            "tests/test_lower.py": {
+              "state": "file",
+              "sha256": "12f557b2eaebf10bf346ce7950cb35fd29f3f38ce395fb6a894ebe97e321750b",
+              "size": 162
+            },
+            "tests/test_upper.py": {
+              "state": "file",
+              "sha256": "332770fa0ef9747afedcff27e921f531f6fd519a5b60e18f31ed6e39c1dc67f4",
+              "size": 162
+            },
+            "upper.py": {
+              "state": "file",
+              "sha256": "7351976f90ef627bdfd804537c76051e37398cad732f88d7f6f09c655965a1e0",
+              "size": 45
+            }
+          },
+          "workflow": {
+            ".agent-workflow": {
+              "state": "missing"
+            }
+          },
+          "index": "8d5d18317d21b5d8b67164031120aaaf961c94ab15db99a375dd6d1e4e0a94ad"
+        },
+        "changed_paths": [
+          "upper.py"
+        ],
+        "patch_sha256": "20cc901335ef7b39fc2bf1785e48aad2e435fea68f3c6355946b526aa7af7fd8"
+      },
+      "T-LOW": {
+        "run_digest": "600e4f9b8470570b7a3cc6b1c856712871c2cc186c3508e3497c58de6aa3b213",
+        "task_id": "T-LOW",
+        "status": "ready",
+        "summary": "Implemented lowercase conversion in lower.py: convert(value) now returns value.lower(); pure str->str, no other files changed.",
+        "checks": [
+          {
+            "command": [
+              "/Library/Developer/CommandLineTools/usr/bin/python3",
+              "-m",
+              "unittest",
+              "discover",
+              "-s",
+              "tests",
+              "-p",
+              "test_lower.py"
+            ],
+            "status": "passed",
+            "returncode": 0,
+            "log": "check-0.log",
+            "log_sha256": "fb184ea57734512b1f088f9181209901b9cd46df3eb7eaa2500ea9e48dde20b5"
+          }
+        ],
+        "worker_state": {
+          "files": {
+            ".gitignore": {
+              "state": "file",
+              "sha256": "086f660840b53b942b214433f54396586954bdcd26fd3662b44f38ae20877f89",
+              "size": 39
+            },
+            "lower.py": {
+              "state": "file",
+              "sha256": "dc00ddf36405b738971ae727dc043a05de40eef165d1ec91d0058e3445f0c854",
+              "size": 45
+            },
+            "tests/test_lower.py": {
+              "state": "file",
+              "sha256": "12f557b2eaebf10bf346ce7950cb35fd29f3f38ce395fb6a894ebe97e321750b",
+              "size": 162
+            },
+            "tests/test_upper.py": {
+              "state": "file",
+              "sha256": "332770fa0ef9747afedcff27e921f531f6fd519a5b60e18f31ed6e39c1dc67f4",
+              "size": 162
+            },
+            "upper.py": {
+              "state": "file",
+              "sha256": "15943f5cb218972a16eb02f3377fa909d22d5a5e0631087bf15c3087534e5482",
+              "size": 37
+            }
+          },
+          "workflow": {
+            ".agent-workflow": {
+              "state": "missing"
+            }
+          },
+          "index": "8d5d18317d21b5d8b67164031120aaaf961c94ab15db99a375dd6d1e4e0a94ad"
+        },
+        "changed_paths": [
+          "lower.py"
+        ],
+        "patch_sha256": "5d29991ac4218cfc88428b6443a70f30d981180eb9d8a6676ea4c573143d7708"
+      }
+    },
+    "agents": [
+      {
+        "description": "Build worker T-UP",
+        "subagent_type": "general-purpose",
+        "run_in_background": null
+      },
+      {
+        "description": "Build worker T-LOW",
+        "subagent_type": "general-purpose",
+        "run_in_background": null
+      }
+    ]
+  },
+  {
+    "case": "temporary-native-discovery",
+    "duration_ms": 13027,
+    "cost_usd_list": 0.1697222,
+    "model_usage": {
+      "claude-opus-5-5": {
+        "inputTokens": 4,
+        "outputTokens": 1236,
+        "cacheReadInputTokens": 18491,
+        "cacheCreationInputTokens": 17661,
+        "webSearchRequests": 0,
+        "costUSD": 0.1697222,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 36,
+        "canonicalModel": "claude-opus-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "outcome": "personal 0.5.25 selected; temporary 0.5.26 native entry not validated"
+  }
+]

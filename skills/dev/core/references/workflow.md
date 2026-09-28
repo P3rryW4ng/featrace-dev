@@ -32,3 +32,5 @@ An explicit `check --independent` or request for independent review takes the re
 ## Optional isolated parallel Build
 
 For an explicit `develop --parallel` or concurrent two-task implementation request, load `parallel-build.md` after ordinary Scope/develop prerequisites. It returns an external integration candidate, not a primary feature completion. Ordinary develop stays serial.
+
+Parallel execution does not skip the develop Scope steps above. Before prepare, read `impact-review.md`, `task-semantic-review.md` and `historical-regression.md`, reuse current evidence or complete the authorized existing review flows. The pilot requires both review records even for legacy features; if writing them is outside this request, stop with Scope blocked, without worktrees or workers.

@@ -1,5 +1,19 @@
 # 验证与评估记录
 
+## 2026-09-28：0.5.26 并行 Scope 接续补强与复检
+
+先复用普通 Scope，prepare 在创建工作区前要求当前任务语义/历史 review，不以兼容警告豁免；只读缺项停止，不由 worker 补记录。23/23 目标、267/267 完整回归通过（30.728 / 81.037 秒）。临时 Claude 显式加载 0.5.26：缺 review 停止，另一次标题缺项停止；修正新夹具后两独立 native Agent 返回 ready，集成 2/2，未应用到主项目或改共享记录。维护者核对补丁、日志、worker 状态、candidate tree 和原项目不变，个人安装仍 0.5.25、73 文件匹配。
+
+初始同名发现仍选个人旧版；后续直接读临时 Skill 证明规则采用与真实 Agent 链路，**不证明新版原生 /dev 入口**。待授权发布/安装后核对。整轮含初始失败标价估计 3.193944 美元，无串行对照；不证明真实收益。quick_validate 缺 PyYAML，未通过。源码/本轮文档未提交推送，个人安装未改；过程、夹具限制和证据见[复检记录](evaluations/2026-09-28-parallel-scope-handoff.md)。
+
+## 2026-09-28：0.5.25 已安装 Claude 并行 Build 演练
+
+原生 /dev 新会话实际派发两个 background general-purpose Agent，各只改自己的文件并真实单测通过；第三工作区集成 4/4，candidate_checks_passed。另两份失败演练在直接读取安装规则的分支验证：集成指定命令退出 4 后保留 checks_failed，不重试/采用；归属重叠 prepare 退出 1 且零派发/零工作区。项目代码、来源、记录、HEAD/索引/状态及个人安装 73 文件前后一致。维护者回读返回、补丁、日志并重新检查输入/worker/candidate 状态。见 [本轮报告](evaluations/2026-09-28-claude-0525-build.md)。
+
+初始空 setting-sources 导致 Unknown skill；启用正常用户发现、会话 hooks 关闭后补测原生入口通过。初次成本不隐去；四次演练及发现补测 CLI 标价总估约 3.171765 USD，不等于实际扣费。正常原生全链 164.004 秒，无串行对照，不能宣称收益。
+
+本轮发现原生路由未完整加载 ordinary Scope 前置规则，兼容夹具的两个 review 缺失只有警告。故机制目标通过，规则采用仍需补强与窄范围复检；不把缺项视为正式新需求的豁免。未改运行代码/版本、未重跑 265 项回归、未提交或推送，也未进行主项目应用与最终 Verify。
+
 ## 2026-09-28：0.5.25 提交推送与 Claude 安装
 
 用户授权后，实现、维护文档及合成证据提交 `87214d0` 已推送至 GitHub origin/main。本机 Claude Code 安装器返回 INSTALLED：个人副本 0.5.25，73 个运行文件与源码及安装标记 SHA-256 完全一致，包身份 featrace-dev。旧版备份为 `/Users/mac/.feature-delivery/backups/20260928T090925-claude-dd434ed8`。

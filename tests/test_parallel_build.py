@@ -10,6 +10,8 @@ from unittest.mock import patch
 
 from intake_helpers import attach_intake, CORE
 from impact import MECHANISMS
+import task_review
+import regression_review
 
 spec = importlib.util.spec_from_file_location('parallel_build', CORE / 'parallel-build.py')
 build = importlib.util.module_from_spec(spec)
@@ -54,6 +56,11 @@ class ParallelBuildTests(unittest.TestCase):
             'allowed_paths': ['upper.py', 'lower.py'], 'inspected_paths': ['upper.py', 'lower.py'],
             'excluded_changes': {}, 'mechanisms': {k: {'status': 'reviewed', 'evidence': 'Synthetic independent files reviewed'} for k in MECHANISMS},
             'behaviors': [{'id': 'B-1', 'kind': 'change', 'statement': 'Case conversion', 'basis': 'R-1', 'requirement_ids': ['R-1']}]})
+        task_review.sync(self.root, 'FEAT-001')
+        task_review.review(self.root, 'FEAT-001', 'synthetic-fixture-reviewer',
+                           'Compared both task meanings with confirmed R-1 and the synthetic source.',
+                           ['T-UP', 'T-LOW'], ['R-1'], ['R-1 statement/AC; sources/prd-original.txt:1'])
+        regression_review.sync(self.root, 'FEAT-001')
         self.plan = {'schema_version': 1, 'independence': {'reason': 'Two separate pure entry points',
             'evidence': ['upper.py:1-2', 'lower.py:1-2'], 'interfaces': ['convert(str)->str'],
             'preserve': ['Do not change the other entry point']},
@@ -101,6 +108,35 @@ class ParallelBuildTests(unittest.TestCase):
         self.assertFalse(self.run.exists())
         self.plan['tasks'][1]['allowed_paths'] = ['lower.py']; self.plan['tasks'][1]['depends_on'] = ['T-UP']
         with self.assertRaisesRegex(ValueError, 'dependent'): self.prepare()
+
+    def test_legacy_warning_cannot_bypass_parallel_scope(self):
+        req = build.load(self.folder / 'spec/requirements.json')
+        for marker in ['task_review_required', 'history_regression_required']:
+            req['feature'].pop(marker, None)
+        self.put('spec/requirements.json', req)
+        for name in ['task-review.json', 'regression-review.json']:
+            (self.folder / name).unlink()
+        ordinary = subprocess.run([sys.executable, str(CORE / 'validate-feature.py'),
+                                   str(self.root), 'FEAT-001', '--stage', 'develop'], capture_output=True, text=True)
+        self.assertEqual(ordinary.returncode, 0, ordinary.stdout + ordinary.stderr)
+        self.assertIn('WARNING', ordinary.stdout)
+        before = build.candidate_state(self.root)
+        with self.assertRaisesRegex(ValueError, 'parallel Scope review missing: task-review.json, regression-review.json'):
+            self.prepare()
+        self.assertFalse(self.run.exists())
+        self.assertEqual(before, build.candidate_state(self.root))
+
+    def test_present_but_unreviewed_or_stale_scope_still_blocks(self):
+        tasks = build.load(self.folder / 'tasks.json')
+        tasks['tasks'][0]['description'] = 'Return lowercase despite uppercase requirement'
+        self.put('tasks.json', tasks)
+        with self.assertRaisesRegex(ValueError, 'develop prerequisites failed'):
+            self.prepare()
+        self.assertFalse(self.run.exists())
+        task_review.sync(self.root, 'FEAT-001')
+        with self.assertRaisesRegex(ValueError, 'task semantics need review'):
+            self.prepare()
+        self.assertFalse(self.run.exists())
 
     def test_noncanonical_paths_and_malformed_record_rejected(self):
         self.plan['tasks'][0]['allowed_paths'] = ['upper.py', './lower.py']

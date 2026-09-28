@@ -1,0 +1,28 @@
+test_check_mutation_is_not_green (test_parallel_build.ParallelBuildTests) ... ok
+test_dirty_primary_out_inside_project_and_ineligible_task_rejected (test_parallel_build.ParallelBuildTests) ... ok
+test_failed_and_missing_return_do_not_merge (test_parallel_build.ParallelBuildTests) ... ok
+test_frozen_evidence_and_real_logs_are_bound (test_parallel_build.ParallelBuildTests) ... ok
+test_frozen_inventory_addition_rejected (test_parallel_build.ParallelBuildTests) ... ok
+test_inspection_git_error_is_not_labeled_merge_conflict (test_parallel_build.ParallelBuildTests) ... ok
+test_integration_failure_does_not_promote_or_hide_candidate (test_parallel_build.ParallelBuildTests) ... ok
+test_legacy_warning_cannot_bypass_parallel_scope (test_parallel_build.ParallelBuildTests) ... ok
+test_missing_check_executable_is_failed_not_passed (test_parallel_build.ParallelBuildTests) ... ok
+test_noncanonical_paths_and_malformed_record_rejected (test_parallel_build.ParallelBuildTests) ... ok
+test_ownership_conflict_and_dependencies_rejected_before_worktree_creation (test_parallel_build.ParallelBuildTests) ... ok
+test_present_but_unreviewed_or_stale_scope_still_blocks (test_parallel_build.ParallelBuildTests) ... ok
+test_real_apply_conflict_preserves_candidate (test_parallel_build.ParallelBuildTests) ... ok
+test_shared_record_write_and_scratch_tampering_rejected (test_parallel_build.ParallelBuildTests) ... ok
+test_sources_drift_and_worker_changes_expire_results (test_parallel_build.ParallelBuildTests) ... ok
+test_task_check_failure_records_actual_exit (test_parallel_build.ParallelBuildTests) ... ok
+test_two_isolated_workers_integrate_and_primary_records_stay_unchanged (test_parallel_build.ParallelBuildTests) ... ok
+test_worker_changes_after_checks_are_not_accepted (test_parallel_build.ParallelBuildTests) ... ok
+test_worker_commit_and_missing_return_rejected (test_parallel_build.ParallelBuildTests) ... ok
+test_worker_index_change_after_return_rejected (test_parallel_build.ParallelBuildTests) ... ok
+test_worker_index_changes_during_or_after_checks_rejected (test_parallel_build.ParallelBuildTests) ... ok
+test_worker_scope_expansion_blocks_integration_and_preserves_work (test_parallel_build.ParallelBuildTests) ... ok
+test_worker_symlink_rejected (test_parallel_build.ParallelBuildTests) ... ok
+
+----------------------------------------------------------------------
+Ran 23 tests in 30.728s
+
+OK

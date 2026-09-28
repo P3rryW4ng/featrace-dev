@@ -104,6 +104,11 @@ def prepare(project, feature_id, plan, out):
     changed += handoff.names(git(project, 'ls-files', '--others', '--exclude-standard', '-z'))
     if any(not (p == '.agent-workflow' or p.startswith('.agent-workflow/')) for p in changed):
         raise ValueError('uncommitted business paths: preserve work and use serial Build')
+    missing = [name for name in ('task-review.json', 'regression-review.json')
+               if not (folder / name).is_file()]
+    if missing:
+        raise ValueError('parallel Scope review missing: ' + ', '.join(missing)
+                         + '; complete ordinary Scope before prepare; no workers created')
     valid = subprocess.run([sys.executable, str(CORE / 'validate-feature.py'), '--stage', 'develop',
                             str(project), feature_id], capture_output=True, text=True)
     if valid.returncode:

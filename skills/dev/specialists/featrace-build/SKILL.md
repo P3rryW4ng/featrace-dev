@@ -13,7 +13,7 @@ Before reading task evidence or editing code, run:
 python3 <SKILL>/core/scripts/parallel-build.py preflight <RUN>
 ```
 
-Stop if it fails. Read `<RUN>/run.json` for your exact task, interfaces, preservation rules, allowed paths and selected checks. Read relevant original sources, confirmed requirements, decisions, impact and reviewed task meaning under `<RUN>/inputs/.agent-workflow/`; use these frozen copies as the authority. Missing detail, a conflicting contract or a newly discovered dependency is a blocker, not permission to invent behavior.
+Stop if it fails. Preflight precedes reading run.json, task evidence or code. Scope review is the router's completed prerequisite: do not perform adoption, sync, review or canonical writes from a worker. Read `<RUN>/run.json` for your exact task, interfaces, preservation rules, allowed paths and selected checks. Read relevant original sources, confirmed requirements, decisions, impact and reviewed task meaning under `<RUN>/inputs/.agent-workflow/`; use these frozen copies as the authority. Missing detail, a conflicting contract or a newly discovered dependency is a blocker, not permission to invent behavior.
 
 ## Implementation boundary
 

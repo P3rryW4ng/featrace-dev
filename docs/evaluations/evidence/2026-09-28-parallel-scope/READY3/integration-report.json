@@ -1,0 +1,25 @@
+{
+  "run_digest": "600e4f9b8470570b7a3cc6b1c856712871c2cc186c3508e3497c58de6aa3b213",
+  "candidate": "/private/tmp/featrace-claude-0526-w1ged5mr/READY3/attempt/integration",
+  "status": "candidate_checks_passed",
+  "base_revision": "0999e6e36fa8ad2a4ee91fbf70f7275a6c4a6bfd",
+  "checks": [
+    {
+      "command": [
+        "/Library/Developer/CommandLineTools/usr/bin/python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests"
+      ],
+      "status": "passed",
+      "returncode": 0,
+      "log": "check-0.log",
+      "log_sha256": "a6707d4eff38012da33ddc34bc6dc076a3b17151cfc9aef223c8790cbe64c3da"
+    }
+  ],
+  "note": "Candidate only; no primary writes or delivery approval.",
+  "candidate_tree": "d52165715259258da3837731a70eac3849b7da96",
+  "record_digest": "d26187a8be5985c1bd10d0fdea8b80eed018ed06aacc52f6cfe08c1781a32fc3"
+}

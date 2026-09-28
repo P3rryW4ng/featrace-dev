@@ -1,0 +1,220 @@
+{
+  "cases": [
+    {
+      "case": "A",
+      "wall_seconds": 169.095,
+      "cli_version": "2.1.283",
+      "model": "claude-opus-5-5",
+      "dev_discoverable": false,
+      "manual_fallback": true,
+      "agent_calls": 2,
+      "integration_status": "candidate_checks_passed",
+      "primary_unchanged": true,
+      "install_unchanged": true,
+      "permission_denials": [],
+      "cost_usd_list": 0.8862878000000002,
+      "model_usage": {
+        "claude-opus-5-5": {
+          "inputTokens": 60,
+          "outputTokens": 13257,
+          "cacheReadInputTokens": 695879,
+          "cacheCreationInputTokens": 72209,
+          "webSearchRequests": 0,
+          "costUSD": 0.8862878000000002,
+          "contextWindow": 1000000,
+          "maxOutputTokens": 128000,
+          "thinkingTokens": 875,
+          "canonicalModel": "claude-opus-5-5",
+          "provider": "firstParty",
+          "costBasis": "list"
+        }
+      },
+      "agent_dispatches": [
+        {
+          "id": "toolu_01QEadJz17hEVeqbFPaVFkqp",
+          "input": {
+            "description": "Build worker T-UP",
+            "subagent_type": "general-purpose",
+            "run_in_background": true,
+            "prompt": "You are an isolated FeatraceDev Build worker in an authorized synthetic exercise. First read and follow the bundled specialist guidance at /Users/mac/.claude/skills/dev/specialists/featrace-build/SKILL.md exactly.\n\nAssignment:\n- SKILL root: /Users/mac/.claude/skills/dev\n- RUN: /private/tmp/featrace-claude-0525-s4owgoyc/A/attempt\n- TASK-ID: T-UP\n- Your worktree (the ONLY place you may edit, and only your task's allowed paths listed in RUN/run.json): /private/tmp/featrace-claude-0525-s4owgoyc/A/attempt/workers/T-UP\n- Frozen authority inputs: /private/tmp/featrace-claude-0525-s4owgoyc/A/attempt/inputs/.agent-workflow\n\nUse the installed helper at <SKILL>/core/scripts/parallel-build.py (preflight first, finish exactly once). Determine the implementation yourself from the frozen requirements/sources and run.json.\n\nSide-effect restrictions: do not write to the primary project (/private/tmp/featrace-claude-0525-s4owgoyc/A/project), the other worker (workers/T-LOW), frozen inputs, run.json/snapshot.json, or any .agent-workflow records. No commits, pushes, branch/config/worktree changes, installs, networking, MCP calls, task/status updates or cleanup. Do not retry finish or overwrite a returned result. These are instruction constraints; the host does not sandbox them.\n\nWhen done, report: the helper's finish output verbatim (status JSON), the files you changed, a short diff summary, and anything blocking."
+          }
+        },
+        {
+          "id": "toolu_01FgBf7ETzPJ9ENp8fb244X2",
+          "input": {
+            "description": "Build worker T-LOW",
+            "subagent_type": "general-purpose",
+            "run_in_background": true,
+            "prompt": "You are an isolated FeatraceDev Build worker in an authorized synthetic exercise. First read and follow the bundled specialist guidance at /Users/mac/.claude/skills/dev/specialists/featrace-build/SKILL.md exactly.\n\nAssignment:\n- SKILL root: /Users/mac/.claude/skills/dev\n- RUN: /private/tmp/featrace-claude-0525-s4owgoyc/A/attempt\n- TASK-ID: T-LOW\n- Your worktree (the ONLY place you may edit, and only your task's allowed paths listed in RUN/run.json): /private/tmp/featrace-claude-0525-s4owgoyc/A/attempt/workers/T-LOW\n- Frozen authority inputs: /private/tmp/featrace-claude-0525-s4owgoyc/A/attempt/inputs/.agent-workflow\n\nUse the installed helper at <SKILL>/core/scripts/parallel-build.py (preflight first, finish exactly once). Determine the implementation yourself from the frozen requirements/sources and run.json.\n\nSide-effect restrictions: do not write to the primary project (/private/tmp/featrace-claude-0525-s4owgoyc/A/project), the other worker (workers/T-UP), frozen inputs, run.json/snapshot.json, or any .agent-workflow records. No commits, pushes, branch/config/worktree changes, installs, networking, MCP calls, task/status updates or cleanup. Do not retry finish or overwrite a returned result. These are instruction constraints; the host does not sandbox them.\n\nWhen done, report: the helper's finish output verbatim (status JSON), the files you changed, a short diff summary, and anything blocking."
+          }
+        }
+      ],
+      "unknown_skill_observed": true,
+      "integration_call_count": 1,
+      "return_check_call_counts": {
+        "T-UP": 1,
+        "T-LOW": 1
+      }
+    },
+    {
+      "case": "B",
+      "wall_seconds": 166.47,
+      "cli_version": "2.1.283",
+      "model": "claude-opus-5-5",
+      "dev_discoverable": false,
+      "manual_fallback": true,
+      "agent_calls": 2,
+      "integration_status": "checks_failed",
+      "primary_unchanged": true,
+      "install_unchanged": true,
+      "permission_denials": [],
+      "cost_usd_list": 0.8472826,
+      "model_usage": {
+        "claude-opus-5-5": {
+          "inputTokens": 60,
+          "outputTokens": 14022,
+          "cacheReadInputTokens": 659003,
+          "cacheCreationInputTokens": 64365,
+          "webSearchRequests": 0,
+          "costUSD": 0.8472826,
+          "contextWindow": 1000000,
+          "maxOutputTokens": 128000,
+          "thinkingTokens": 836,
+          "canonicalModel": "claude-opus-5-5",
+          "provider": "firstParty",
+          "costBasis": "list"
+        }
+      },
+      "agent_dispatches": [
+        {
+          "id": "toolu_013KdonNyYxv1MzeU8i5pPmD",
+          "input": {
+            "description": "Build worker T-UP",
+            "subagent_type": "general-purpose",
+            "run_in_background": true,
+            "prompt": "You are an isolated FeatraceDev Build worker in an authorized synthetic exercise. First read and follow exactly the bundled specialist guidance at /Users/mac/.claude/skills/dev/specialists/featrace-build/SKILL.md (Skill root: /Users/mac/.claude/skills/dev, installed version 0.5.25). Use the installed helper at /Users/mac/.claude/skills/dev/core/scripts/parallel-build.py, not any other copy.\n\nAssignment:\n- Task ID: T-UP\n- RUN (attempt directory): /private/tmp/featrace-claude-0525-s4owgoyc/B/attempt\n- Your worktree: /private/tmp/featrace-claude-0525-s4owgoyc/B/attempt/workers/T-UP\n- Frozen authority inputs: /private/tmp/featrace-claude-0525-s4owgoyc/B/attempt/inputs/.agent-workflow/ (plus /private/tmp/featrace-claude-0525-s4owgoyc/B/attempt/run.json for your task, interfaces, preservation rules, allowed paths and checks)\n\nSide-effect restrictions (instructions; not enforced by a sandbox \u2014 the helper checks final scope/hashes afterward):\n- Edit only your assigned path(s) from run.json inside your own worktree. Do not touch the primary project /private/tmp/featrace-claude-0525-s4owgoyc/B/project, the other worker's worktree, frozen inputs, run.json/snapshot, or any .agent-workflow records.\n- No commits, pushes, branch/config/worktree changes, installs, network access, MCP calls, or custom agents/settings. Leave edits uncommitted.\n- Run only the helper preflight and the single helper finish call described in the specialist guidance (finish runs the selected checks). Invoke finish exactly once; do not retry, rewrite or overwrite its results. If blocked or failed, return that status honestly.\n\nWhen done, report: the preflight output, the exact change you made (diff), the full finish helper output (status/JSON), and elapsed time/token use if observable."
+          }
+        },
+        {
+          "id": "toolu_01PE3SV8q7jHtEBoVKHwsMsE",
+          "input": {
+            "description": "Build worker T-LOW",
+            "subagent_type": "general-purpose",
+            "run_in_background": true,
+            "prompt": "You are an isolated FeatraceDev Build worker in an authorized synthetic exercise. First read and follow exactly the bundled specialist guidance at /Users/mac/.claude/skills/dev/specialists/featrace-build/SKILL.md (Skill root: /Users/mac/.claude/skills/dev, installed version 0.5.25). Use the installed helper at /Users/mac/.claude/skills/dev/core/scripts/parallel-build.py, not any other copy.\n\nAssignment:\n- Task ID: T-LOW\n- RUN (attempt directory): /private/tmp/featrace-claude-0525-s4owgoyc/B/attempt\n- Your worktree: /private/tmp/featrace-claude-0525-s4owgoyc/B/attempt/workers/T-LOW\n- Frozen authority inputs: /private/tmp/featrace-claude-0525-s4owgoyc/B/attempt/inputs/.agent-workflow/ (plus /private/tmp/featrace-claude-0525-s4owgoyc/B/attempt/run.json for your task, interfaces, preservation rules, allowed paths and checks)\n\nSide-effect restrictions (instructions; not enforced by a sandbox \u2014 the helper checks final scope/hashes afterward):\n- Edit only your assigned path(s) from run.json inside your own worktree. Do not touch the primary project /private/tmp/featrace-claude-0525-s4owgoyc/B/project, the other worker's worktree, frozen inputs, run.json/snapshot, or any .agent-workflow records.\n- No commits, pushes, branch/config/worktree changes, installs, network access, MCP calls, or custom agents/settings. Leave edits uncommitted.\n- Run only the helper preflight and the single helper finish call described in the specialist guidance (finish runs the selected checks). Invoke finish exactly once; do not retry, rewrite or overwrite its results. If blocked or failed, return that status honestly.\n\nWhen done, report: the preflight output, the exact change you made (diff), the full finish helper output (status/JSON), and elapsed time/token use if observable."
+          }
+        }
+      ],
+      "unknown_skill_observed": true,
+      "integration_call_count": 1,
+      "return_check_call_counts": {
+        "T-UP": 1,
+        "T-LOW": 1
+      }
+    },
+    {
+      "case": "C",
+      "wall_seconds": 69.431,
+      "cli_version": "2.1.283",
+      "model": "claude-opus-5-5",
+      "dev_discoverable": false,
+      "manual_fallback": true,
+      "agent_calls": 0,
+      "integration_status": null,
+      "primary_unchanged": true,
+      "install_unchanged": true,
+      "permission_denials": [],
+      "cost_usd_list": 0.3035344,
+      "model_usage": {
+        "claude-opus-5-5": {
+          "inputTokens": 18,
+          "outputTokens": 4839,
+          "cacheReadInputTokens": 158452,
+          "cacheCreationInputTokens": 21874,
+          "webSearchRequests": 0,
+          "costUSD": 0.3035344,
+          "contextWindow": 1000000,
+          "maxOutputTokens": 128000,
+          "thinkingTokens": 632,
+          "canonicalModel": "claude-opus-5-5",
+          "provider": "firstParty",
+          "costBasis": "list"
+        }
+      },
+      "agent_dispatches": [],
+      "unknown_skill_observed": true,
+      "integration_call_count": 0,
+      "return_check_call_counts": {
+        "T-UP": 0,
+        "T-LOW": 0
+      }
+    },
+    {
+      "case": "A2",
+      "wall_seconds": 164.004,
+      "cli_version": "2.1.283",
+      "model": "claude-opus-5-5",
+      "dev_discoverable": true,
+      "manual_fallback": false,
+      "agent_calls": 2,
+      "integration_status": "candidate_checks_passed",
+      "primary_unchanged": true,
+      "install_unchanged": true,
+      "permission_denials": [],
+      "cost_usd_list": 1.0172500000000002,
+      "model_usage": {
+        "claude-opus-5-5": {
+          "inputTokens": 56,
+          "outputTokens": 12769,
+          "cacheReadInputTokens": 809605,
+          "cacheCreationInputTokens": 92003,
+          "webSearchRequests": 0,
+          "costUSD": 1.0172500000000002,
+          "contextWindow": 1000000,
+          "maxOutputTokens": 128000,
+          "thinkingTokens": 670,
+          "canonicalModel": "claude-opus-5-5",
+          "provider": "firstParty",
+          "costBasis": "list"
+        }
+      },
+      "agent_dispatches": [
+        {
+          "id": "toolu_01TMutEX1NipeeQoCmRuXpJp",
+          "input": {
+            "description": "Build worker T-UP",
+            "subagent_type": "general-purpose",
+            "run_in_background": true,
+            "prompt": "You are an isolated FeatraceDev Build worker in a fresh context for an authorized synthetic isolation exercise. First read and follow exactly the bundled specialist instructions at:\n/Users/mac/.claude/skills/dev/specialists/featrace-build/SKILL.md\n\nAssignment:\n- SKILL root: /Users/mac/.claude/skills/dev (use its installed helper core/scripts/parallel-build.py; not any other copy)\n- RUN: /private/tmp/featrace-claude-0525-s4owgoyc/A2/attempt\n- Task ID: T-UP\n- Your worktree (the only place you may edit): /private/tmp/featrace-claude-0525-s4owgoyc/A2/attempt/workers/T-UP\n- Allowed path to edit within that worktree: upper.py only\n- Frozen authority (read-only): /private/tmp/featrace-claude-0525-s4owgoyc/A2/attempt/inputs/.agent-workflow/ plus RUN/run.json\n\nSide-effect restrictions (instruction-enforced, not a sandbox; post-run hash/scope checks will detect deviation):\n- Do not write to the primary project /private/tmp/featrace-claude-0525-s4owgoyc/A2/project, the other worker (workers/T-LOW), frozen inputs, run.json, or any .agent-workflow records.\n- No commits, branches, git config or worktree changes, pushes, installs, network, MCP calls, settings changes.\n- Do not replace or weaken the selected checks; do not edit tests.\n- Invoke `parallel-build.py finish` exactly once with an honest status and summary; never rewrite or overwrite its outputs, and do not retry after a failed return.\n\nReport back: the preflight result, the exact diff you made, the full finish helper output (status), and elapsed time/token use if visible to you."
+          }
+        },
+        {
+          "id": "toolu_01FTJESd4PSFbTeXPYEiLsbi",
+          "input": {
+            "description": "Build worker T-LOW",
+            "subagent_type": "general-purpose",
+            "run_in_background": true,
+            "prompt": "You are an isolated FeatraceDev Build worker in a fresh context for an authorized synthetic isolation exercise. First read and follow exactly the bundled specialist instructions at:\n/Users/mac/.claude/skills/dev/specialists/featrace-build/SKILL.md\n\nAssignment:\n- SKILL root: /Users/mac/.claude/skills/dev (use its installed helper core/scripts/parallel-build.py; not any other copy)\n- RUN: /private/tmp/featrace-claude-0525-s4owgoyc/A2/attempt\n- Task ID: T-LOW\n- Your worktree (the only place you may edit): /private/tmp/featrace-claude-0525-s4owgoyc/A2/attempt/workers/T-LOW\n- Allowed path to edit within that worktree: lower.py only\n- Frozen authority (read-only): /private/tmp/featrace-claude-0525-s4owgoyc/A2/attempt/inputs/.agent-workflow/ plus RUN/run.json\n\nSide-effect restrictions (instruction-enforced, not a sandbox; post-run hash/scope checks will detect deviation):\n- Do not write to the primary project /private/tmp/featrace-claude-0525-s4owgoyc/A2/project, the other worker (workers/T-UP), frozen inputs, run.json, or any .agent-workflow records.\n- No commits, branches, git config or worktree changes, pushes, installs, network, MCP calls, settings changes.\n- Do not replace or weaken the selected checks; do not edit tests.\n- Invoke `parallel-build.py finish` exactly once with an honest status and summary; never rewrite or overwrite its outputs, and do not retry after a failed return.\n\nReport back: the preflight result, the exact diff you made, the full finish helper output (status), and elapsed time/token use if visible to you."
+          }
+        }
+      ],
+      "unknown_skill_observed": false,
+      "integration_call_count": 1,
+      "return_check_call_counts": {
+        "T-UP": 1,
+        "T-LOW": 1
+      }
+    }
+  ],
+  "discovery": {
+    "dev_listed": true,
+    "cli_version": "2.1.283",
+    "model": "claude-opus-5-5",
+    "duration_ms": 9578,
+    "cost_usd_list": 0.1174102,
+    "result": "The `dev` skill (FeatraceDev) loaded from `/Users/mac/.claude/skills/dev`. The slash command already loaded it, so I didn't call the Skill tool a second time. I didn't run any commands, read any other files or edit anything.",
+    "scope": "Read-only normal discovery, user settings enabled, session hooks disabled; no personal config edits."
+  },
+  "cost_basis": "CLI list-price estimates; not confirmed account charges. Includes initial manual-fallback runs and corrected native-entry run.",
+  "total_cost_usd_list": 3.171765
+}
