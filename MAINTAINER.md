@@ -26,9 +26,9 @@
 
 ## 当前目标与版本
 
-产品名 **FeatraceDev**，仓库名 `featrace-dev`，本地路径 `/Users/mac/Entrepôt/featrace-dev`。品牌理念为 Feature · Trace · Delivery，作者署名为 Created by Perry Wang。0.5.22 完成品牌与双语 README 迁移；运行入口仍为 dev，安装器兼容旧身份。2026-09-28 本机 Claude Code 已更新至 0.5.25，安装器保留旧版备份。
+产品名 **FeatraceDev**，仓库名 `featrace-dev`，本地路径 `/Users/mac/Entrepôt/featrace-dev`。品牌理念为 Feature · Trace · Delivery，作者署名为 Created by Perry Wang。0.5.22 完成品牌与双语 README 迁移；运行入口仍为 dev，安装器兼容旧身份。2026-09-28 本机 Claude Code 已更新至 0.5.26，安装器保留旧版备份。
 
-当前源码 [VERSION](VERSION) 为 **0.5.26（本轮未提交、未推送、未安装）**；此前 0.5.25 实现提交 `87214d0` 和发布记录 `8525bba` 已推送至 `origin/main`。本机 Claude Code 为 **0.5.25**，73 个运行文件与发布时 0.5.25 源码及安装标记 SHA-256 完全一致，包含 Build 与 Verify 专业说明。第一阶段已完成，第二阶段最小变更管理已落地，但完整来源权威、动态运行时调用图、自动影响传播与普遍可靠的自主交付尚未实现。0.5.23 可选独立 Verify 和 0.5.25 显式两任务隔离 Build 均依赖宿主的独立 Agent 能力，默认仍串行并按需加载。运行 Skill 名为 dev；唯一源码权威是 skills/dev，安装目录只是副本。
+当前源码 [VERSION](VERSION) 为 **0.5.26**；实现提交 `c794152` 已推送至 `origin/main`（包括维护文档和两轮隔离证据）。本机 Claude Code 为 **0.5.26**，73 个运行文件与当前源码及安装标记 SHA-256 完全一致，包含 Build 与 Verify 专业说明。第一阶段已完成，第二阶段最小变更管理已落地，但完整来源权威、动态运行时调用图、自动影响传播与普遍可靠的自主交付尚未实现。0.5.23 可选独立 Verify 和 0.5.25 显式两任务隔离 Build 均依赖宿主的独立 Agent 能力，默认仍串行并按需加载。运行 Skill 名为 dev；唯一源码权威是 skills/dev，安装目录只是副本。
 
 0.5.18 修复追溯 Markdown 渲染：旧生成器漏读 `links[].tasks`。独立复核 OGFR-2577 确认共享切图消费者遗漏，也出现了两处与隔离副本事实不符的断言；用户后续目视查看未见异常。暂不改变该业务需求的归档/验收结论，不据此启动六 Skill 拆分。依据与局限见[本次审查](docs/reviews/2026-09-24-ogfr2577-independent-verify.md)。下一轮 Verify 对照按[试验协议](docs/evaluations/verify-comparison-protocol.md)执行。
 
@@ -55,7 +55,7 @@ GAP-18 已在 0.5.21 源码修复：未知目标以待审节点和虚线边进�
 - **已实现**：0.5.23 可选独立只读 Verify，普通 check 不变；总路由准备输入、独立 Agent 调查、总路由核实发现。新增随包 Build 专业说明和两任务隔离辅助脚本，仅显式选择时使用；共享记录由总路由后续串行处理。
 - **已验证**：此前目标 15/15、完整 244/244 回归通过；Codex 无历史上下文演练覆盖专业复核、完整路由派发和输入过期停止。详见 [演练记录](docs/evaluations/2026-09-28-independent-verify-pilot.md)。0.5.24 又完成三例判断/派发隔离复检，见 [规则复检](docs/evaluations/2026-09-28-verify-judgment-and-dispatch.md)；本次完整回归与 Build 隔离结果另见下方新版本记录，不改写上述历史测试口径。
 - **尚未完成**：调用成本评审；真实需求中的遗漏、误判与总耗时对照。0.5.24 本机 Claude 三例目标采用复检已完成，不等于所有表达都可靠。临时安装到 `.claude` 目录不等于 Claude Code 已执行。
-- **下一步**：0.5.24 本机 Claude 三例已验证缺陷发现、正确实现无当前误报、缺证据如实说明及派发前过期停止，见 [宿主复检](docs/evaluations/2026-09-28-claude-0524-verify.md)。正常 A/B 各约 176 秒；C 无 reviewer 但路由仍约 79 秒。先收口记录并评审成本，随后在自然需求中对照；独立 Verify 保持可选；用户现已授权两任务 Build 原型，隔离演练已通过。Claude 宿主目标演练已完成并记录成本；发现 Scope 前置规则加载不完整，0.5.26 接续及临时规则采用复检已完成，先经授权发布/安装并核对新版原生入口，再考虑真实项目试用。操作顺序和启动边界见 [路线图](ROADMAP.md#verify-pilot-next)。
+- **下一步**：0.5.24 本机 Claude 三例已验证缺陷发现、正确实现无当前误报、缺证据如实说明及派发前过期停止，见 [宿主复检](docs/evaluations/2026-09-28-claude-0524-verify.md)。正常 A/B 各约 176 秒；C 无 reviewer 但路由仍约 79 秒。先收口记录并评审成本，随后在自然需求中对照；独立 Verify 保持可选；用户现已授权两任务 Build 原型，隔离演练已通过。Claude 宿主目标演练已完成并记录成本；发现 Scope 前置规则加载不完整，0.5.26 接续及临时规则采用复检已完成，0.5.26 已按授权发布/安装并通过新版原生帮助入口核对，随后考虑真实项目试用。操作顺序和启动边界见 [路线图](ROADMAP.md#verify-pilot-next)。
 
 Claude Code 首轮发现共享逻辑回归，第二轮正确拒绝旧输入并停止；维护者核对返回、来源与产物。报告仍有状态/产品权威/测试 ID 的误推断，详见 [反馈评审](docs/evaluations/2026-09-28-claude-independent-verify.md)。不据此宣布复核全正确或效率提升。
 
@@ -81,9 +81,15 @@ Claude Code 首轮发现共享逻辑回归，第二轮正确拒绝旧输入并�
 
 按本轮授权，明确并行只替换 Build 执行方式，先加载总路由/普通 develop 与必要 Scope 规则，核对实际来源、任务语义、影响和历史保护，复用已有当前依据。prepare 在创建工作区前要求 task-review.json 与 regression-review.json 存在并通过既有 develop 校验，兼容警告不再作为并行资格；普通串行兼容不变。
 
-缺项且禁止写记录/作选择时停在 Scope，不派发或悄悄改成串行。补齐由获授权的总路由使用原同步/复核流程完成，worker 只编码与返回。没有新增 Scope 自报布尔值或另一套权威记录。源码目标 23/23、完整回归 267/267 已通过。临时 0.5.26 Claude 显式规则采用复检：缺 review 停止，前置齐全时两独立 Agent 返回 ready、候选真实集成 2/2；主项目和个人安装不变。另一次夹具缺标题也被正常规则阻断。见[接续复检](docs/evaluations/2026-09-28-parallel-scope-handoff.md)。同名发现仍优先个人旧版，因此新版原生 /dev 入口须安装后再核对；不能把本机 0.5.25 说成已更新。
+缺项且禁止写记录/作选择时停在 Scope，不派发或悄悄改成串行。补齐由获授权的总路由使用原同步/复核流程完成，worker 只编码与返回。没有新增 Scope 自报布尔值或另一套权威记录。源码目标 23/23、完整回归 267/267 已通过。临时 0.5.26 Claude 显式规则采用复检：缺 review 停止，前置齐全时两独立 Agent 返回 ready、候选真实集成 2/2；主项目和个人安装不变。另一次夹具缺标题也被正常规则阻断。见[接续复检](docs/evaluations/2026-09-28-parallel-scope-handoff.md)。当时同名发现优先个人旧版；本轮发布后原生 /dev help 发现及版本核对已通过，详见下方安装记录。这不是已安装新版完整并行链重跑。
 
-### 本机安装核对（2026-09-28）
+### 0.5.26 本机安装核对（2026-09-28）
+
+实现提交 `c794152` 已推送 GitHub；安装器更新 `/Users/mac/.claude/skills/dev` 至 0.5.26，73 个运行文件与源码及标记哈希相等。旧版 0.5.25 备份：`/Users/mac/.feature-delivery/backups/20260928T100007-claude-75804d95`。
+
+新 Claude 会话原生 `/dev help` 发现 dev，读取安装版帮助与标记 0.5.26；28.903 秒、CLI 标价估计 0.255298 美元，零 Agent、无项目修改。未重跑此前 267 项回归或完整并行链；帮助入口可用不证明真实收益。证据见[安装快照](docs/evaluations/evidence/2026-09-28-claude-0526-install.json)。用户现有旧会话请重新打开，以免沿用已加载指令。
+
+### 0.5.25 历史安装核对（2026-09-28）
 
 0.5.25 实现提交 `87214d0` 已推送至 GitHub origin/main；Claude Code 安装目录 `/Users/mac/.claude/skills/dev` 已更新至 0.5.25，包身份 `featrace-dev`。73 个运行文件与源码及安装标记 SHA-256 完全一致。旧版 0.5.24 备份：`/Users/mac/.feature-delivery/backups/20260928T090925-claude-dd434ed8`。
 

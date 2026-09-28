@@ -1,0 +1,43 @@
+{
+  "date": "2026-09-28",
+  "implementation_commit": "c794152e7ec94440dbbf13e5d74c48444d596997",
+  "remote": "https://github.com/P3rryW4ng/featrace-dev",
+  "version": "0.5.26",
+  "installed_path": "/Users/mac/.claude/skills/dev",
+  "runtime_file_count": 73,
+  "source_install_marker_hashes_equal": true,
+  "backup": "/Users/mac/.feature-delivery/backups/20260928T100007-claude-75804d95",
+  "native_help": {
+    "command": "/dev help",
+    "dev_in_native_skill_list": true,
+    "model": "claude-opus-5-5",
+    "execution": {
+      "exit_code": 0,
+      "elapsed_seconds": 28.903
+    },
+    "cost_usd_list": 0.2552978,
+    "agent_calls": 0,
+    "read_only_calls": [
+      {
+        "tool": "Read",
+        "input": {
+          "file_path": "/Users/mac/.claude/skills/dev/core/references/command-help.md"
+        }
+      },
+      {
+        "tool": "Bash",
+        "input": {
+          "command": "ls -la /Users/mac/.claude/skills/dev; ls -la /Users/mac/.claude/skills/dev/.* 2>/dev/null | head -50",
+          "description": "List files in the installed dev skill directory"
+        }
+      },
+      {
+        "tool": "Read",
+        "input": {
+          "file_path": "/Users/mac/.claude/skills/dev/.feature-delivery-install.json"
+        }
+      }
+    ]
+  },
+  "limits": "Help discovery/version only; no installed full parallel Build rerun. Prior 267-test run not rerun during release."
+}
