@@ -26,9 +26,9 @@
 
 ## 当前目标与版本
 
-产品名 **FeatraceDev**，仓库名 `featrace-dev`，本地路径 `/Users/mac/Entrepôt/featrace-dev`。品牌理念为 Feature · Trace · Delivery，作者署名为 Created by Perry Wang。0.5.22 完成品牌与双语 README 迁移；运行入口仍为 dev，安装器兼容旧身份。2026-09-28 本机 Claude Code 已更新至 0.5.24，安装器保留旧版备份。
+产品名 **FeatraceDev**，仓库名 `featrace-dev`，本地路径 `/Users/mac/Entrepôt/featrace-dev`。品牌理念为 Feature · Trace · Delivery，作者署名为 Created by Perry Wang。0.5.22 完成品牌与双语 README 迁移；运行入口仍为 dev，安装器兼容旧身份。2026-09-28 本机 Claude Code 已更新至 0.5.25，安装器保留旧版备份。
 
-当前源码 [VERSION](VERSION) 为 **0.5.25（本轮未提交、未推送、未安装）**；此前 0.5.24 实现提交 `74b4104` 已推送，当前已提交 HEAD 为 `3e91498`。本机 Claude Code 仍为 **0.5.24**，70 个登记文件此前已核对；新增原型不在该安装副本中。第一阶段已完成，第二阶段最小变更管理已落地，但完整来源权威、动态运行时调用图、自动影响传播与普遍可靠的自主交付尚未实现。0.5.23 可选独立 Verify 和 0.5.25 显式两任务隔离 Build 均依赖宿主的独立 Agent 能力，默认仍串行并按需加载。运行 Skill 名为 dev；唯一源码权威是 skills/dev，安装目录只是副本。
+当前源码 [VERSION](VERSION) 为 **0.5.25**，实现提交 `87214d0` 已推送至 `origin/main`。本机 Claude Code 为 **0.5.25**，73 个运行文件与源码及安装标记 SHA-256 完全一致，包含 Build 与 Verify 专业说明。第一阶段已完成，第二阶段最小变更管理已落地，但完整来源权威、动态运行时调用图、自动影响传播与普遍可靠的自主交付尚未实现。0.5.23 可选独立 Verify 和 0.5.25 显式两任务隔离 Build 均依赖宿主的独立 Agent 能力，默认仍串行并按需加载。运行 Skill 名为 dev；唯一源码权威是 skills/dev，安装目录只是副本。
 
 0.5.18 修复追溯 Markdown 渲染：旧生成器漏读 `links[].tasks`。独立复核 OGFR-2577 确认共享切图消费者遗漏，也出现了两处与隔离副本事实不符的断言；用户后续目视查看未见异常。暂不改变该业务需求的归档/验收结论，不据此启动六 Skill 拆分。依据与局限见[本次审查](docs/reviews/2026-09-24-ogfr2577-independent-verify.md)。下一轮 Verify 对照按[试验协议](docs/evaluations/verify-comparison-protocol.md)执行。
 
@@ -67,11 +67,15 @@ Claude Code 首轮发现共享逻辑回归，第二轮正确拒绝旧输入并�
 
 目标 21/21、完整 265/265 通过；两个实际 Codex 新上下文 Agent 分别守住文件范围、真实单测通过，集成 2/2，主项目和 canonical tasks 未变。冲突、任务失败、缺失返回和过期等由脚本合成故障测试覆盖；不能冒充 Claude 失败处置验证。详见[原型记录](docs/evaluations/2026-09-28-parallel-build-pilot.md)。
 
-未做主项目自动接管、通用调度、重试、清理或安全沙箱；忽略环境与语义完整性仍须审查。当前源版本未发布/未安装，个人 Claude 仍 .24；下一步授权发布后做 Claude 隔离采用与总成本测量，再考虑真正独立的真实需求。任务数和并行本身不代表收益。
+未做主项目自动接管、通用调度、重试、清理或安全沙箱；忽略环境与语义完整性仍须审查。源码与本机安装现均为 0.5.25；下一步做 Claude 隔离采用与总成本测量，再考虑真正独立的真实需求。任务数和并行本身不代表收益。
 
 ### 本机安装核对（2026-09-28）
 
-Claude Code 安装目录 `/Users/mac/.claude/skills/dev` 已更新到 0.5.24，包身份为 `featrace-dev`；70 个文件与源码及安装标记的 SHA-256 完全一致，包含独立 Verify 专业 Skill。0.5.23 备份位于 `/Users/mac/.feature-delivery/backups/20260928T080538-claude-cb55847d`。功能提交 `74b4104` 已推送。安装核对不证明 0.5.24 已在 Claude 会话中执行；此前 0.5.23 两轮 Claude 演练已有反馈；0.5.24 本机三例目标复检已完成，真实收益仍待对照。
+0.5.25 实现提交 `87214d0` 已推送至 GitHub origin/main；Claude Code 安装目录 `/Users/mac/.claude/skills/dev` 已更新至 0.5.25，包身份 `featrace-dev`。73 个运行文件与源码及安装标记 SHA-256 完全一致。旧版 0.5.24 备份：`/Users/mac/.feature-delivery/backups/20260928T090925-claude-dd434ed8`。
+
+当前安装核对不证明 0.5.25 已在 Claude 会话实际派发两个 Build Agent；本轮没有重跑此前 265 项测试或开展新的 Claude 演练。源码合成与 Codex 双 Agent 证据保留原执行口径。下一步打开新 Claude Code 会话，做隔离采用及成本复检，再考虑真实需求并行。
+
+此前 0.5.24 功能提交 `74b4104`、70 文件安装核对和三例 Claude Verify 目标复检为历史依据；0.5.23 备份为 `/Users/mac/.feature-delivery/backups/20260928T080538-claude-cb55847d`。
 
 ### 发布与安装快照（2026-09-24，历史核对）
 
