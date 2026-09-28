@@ -26,9 +26,9 @@
 
 ## 当前目标与版本
 
-产品名 **FeatraceDev**，仓库名 `featrace-dev`，本地路径 `/Users/mac/Entrepôt/featrace-dev`。品牌理念为 Feature · Trace · Delivery，作者署名为 Created by Perry Wang。0.5.22 完成品牌与双语 README 迁移；运行入口仍为 dev，安装器兼容旧身份。2026-09-28 本机 Claude Code 已更新至 0.5.23，安装器完成旧身份迁移并保留备份。
+产品名 **FeatraceDev**，仓库名 `featrace-dev`，本地路径 `/Users/mac/Entrepôt/featrace-dev`。品牌理念为 Feature · Trace · Delivery，作者署名为 Created by Perry Wang。0.5.22 完成品牌与双语 README 迁移；运行入口仍为 dev，安装器兼容旧身份。2026-09-28 本机 Claude Code 已更新至 0.5.24，安装器保留旧版备份。
 
-当前源码 [VERSION](VERSION) 为 **0.5.24**（本次工作树实现，发布状态另查），本机 Claude Code 安装版为 **0.5.23**；本次交接核对日期 **2026-09-28**（0.5.23 安装时 70 个登记文件哈希一致；新增 0.5.24 规则尚未更新到个人安装）。第一阶段已完成；第二阶段已实现最小语义修订、经 Agent 审阅的模块档案、业务能力与多模块职责确认，以及 Android 静态 Gradle 模块/依赖候选。0.5.17 开始在单一入口内部按六个专业阶段组织规则与交接；默认仍是同一 Agent 的渐进加载；0.5.23 增加显式选择的独立只读 Verify，依赖宿主提供全新上下文。候选只缩小人工调查范围，不自动成为正式模块事实。完整来源权威、动态运行时调用图和自动影响传播尚未实现。运行 Skill 名为 dev；唯一源码权威是 skills/dev，安装目录只是副本。
+当前源码 [VERSION](VERSION) 为 **0.5.24**，实现提交 `74b4104` 已推送至 `origin/main`；本机 Claude Code 安装版为 **0.5.24**。本次交接核对日期 **2026-09-28**，70 个登记文件与源码及安装标记哈希完全一致。第一阶段已完成；第二阶段已实现最小语义修订、经 Agent 审阅的模块档案、业务能力与多模块职责确认，以及 Android 静态 Gradle 模块/依赖候选。0.5.17 开始在单一入口内部按六个专业阶段组织规则与交接；默认仍是同一 Agent 的渐进加载；0.5.23 增加显式选择的独立只读 Verify，依赖宿主提供全新上下文。候选只缩小人工调查范围，不自动成为正式模块事实。完整来源权威、动态运行时调用图和自动影响传播尚未实现。运行 Skill 名为 dev；唯一源码权威是 skills/dev，安装目录只是副本。
 
 0.5.18 修复追溯 Markdown 渲染：旧生成器漏读 `links[].tasks`。独立复核 OGFR-2577 确认共享切图消费者遗漏，也出现了两处与隔离副本事实不符的断言；用户后续目视查看未见异常。暂不改变该业务需求的归档/验收结论，不据此启动六 Skill 拆分。依据与局限见[本次审查](docs/reviews/2026-09-24-ogfr2577-independent-verify.md)。下一轮 Verify 对照按[试验协议](docs/evaluations/verify-comparison-protocol.md)执行。
 
@@ -54,8 +54,8 @@ GAP-18 已在 0.5.21 源码修复：未知目标以待审节点和虚线边进�
 
 - **已实现**：0.5.23 可选独立只读 Verify，普通 check 不变；总路由准备输入、独立 Agent 调查、总路由核实发现。只拆出 Verify 专业能力，没有并行开发。
 - **已验证**：此前目标 15/15、完整 244/244 回归通过；Codex 无历史上下文演练覆盖专业复核、完整路由派发和输入过期停止。详见 [演练记录](docs/evaluations/2026-09-28-independent-verify-pilot.md)。0.5.24 又完成三例判断/派发隔离复检，见 [规则复检](docs/evaluations/2026-09-28-verify-judgment-and-dispatch.md)；本次未重跑此前脚本回归。
-- **尚未完成**：0.5.23/0.5.24 提交和推送、0.5.24 个人安装与 Claude 采用复检；调用成本评审；真实需求中的遗漏、误判与总耗时对照。临时安装到 `.claude` 目录不等于 Claude Code 已执行。
-- **下一步**：安装及 Claude Code 正常复核/过期停止两轮已取得反馈与产物核对，0.5.24 已补判断规则及派发前停止；Codex 三例行为复检已完成，下一步更新个人安装并核对 Claude 采用及成本；提交、推送及新版安装仍待执行。操作顺序、验收条件和后续并行 Build 启动边界统一见 [路线图](ROADMAP.md#verify-pilot-next)。最新动作是 0.5.24 规则补强与隔离复检，未提交、推送或更新个人安装。
+- **尚未完成**：0.5.24 的 Claude 实际采用复检；调用成本评审；真实需求中的遗漏、误判与总耗时对照。临时安装到 `.claude` 目录不等于 Claude Code 已执行。
+- **下一步**：0.5.23 的 Claude 正常复核/过期停止两轮已取得反馈与产物核对，0.5.24 的 Codex 三例行为复检符合指定预期。实现已提交推送，个人安装已更新；下一步在 Claude 新会话核对规则采用，再收集真实需求成本。操作顺序和并行 Build 启动边界统一见 [路线图](ROADMAP.md#verify-pilot-next)。
 
 Claude Code 首轮发现共享逻辑回归，第二轮正确拒绝旧输入并停止；维护者核对返回、来源与产物。报告仍有状态/产品权威/测试 ID 的误推断，详见 [反馈评审](docs/evaluations/2026-09-28-claude-independent-verify.md)。不据此宣布复核全正确或效率提升。
 
@@ -63,7 +63,7 @@ Claude Code 首轮发现共享逻辑回归，第二轮正确拒绝旧输入并�
 
 ### 本机安装核对（2026-09-28）
 
-Claude Code 安装目录 `/Users/mac/.claude/skills/dev` 已更新到 0.5.23，包身份为 `featrace-dev`；70 个文件在安装时与 0.5.23 源码及安装标记的 SHA-256 完全一致，包含独立 Verify 专业 Skill。旧版保存在 `/Users/mac/.feature-delivery/backups/20260928T022427-claude-fa36efb3`。安装本身不证明实际调用；随后 0.5.23 两轮 Claude 演练已有反馈与产物核对，0.5.24 新规则的 Claude 采用仍待验证。
+Claude Code 安装目录 `/Users/mac/.claude/skills/dev` 已更新到 0.5.24，包身份为 `featrace-dev`；70 个文件与源码及安装标记的 SHA-256 完全一致，包含独立 Verify 专业 Skill。0.5.23 备份位于 `/Users/mac/.feature-delivery/backups/20260928T080538-claude-cb55847d`。功能提交 `74b4104` 已推送。安装核对不证明 0.5.24 已在 Claude 会话中执行；此前 0.5.23 两轮 Claude 演练已有反馈，新规则采用仍待确认。
 
 ### 发布与安装快照（2026-09-24，历史核对）
 
