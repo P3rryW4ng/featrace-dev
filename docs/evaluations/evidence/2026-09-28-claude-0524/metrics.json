@@ -1,0 +1,134 @@
+[
+  {
+    "case": "A",
+    "wall_seconds": 175.523,
+    "cli_duration_ms": 174042,
+    "reported_cost_usd_list": 0.573038,
+    "model": "claude-opus-5-5",
+    "cli": "2.1.283",
+    "agent_calls": 1,
+    "subagent_report": [
+      {
+        "subagent_tokens": 23216,
+        "duration_ms": 95882
+      }
+    ],
+    "project_files_unchanged": true,
+    "head_unchanged": true,
+    "git_status_unchanged": true,
+    "return_check": {
+      "exit": 0,
+      "stdout": "{\n  \"status\": \"VERIFY_REVIEW_RETURN_CURRENT\",\n  \"input_digest\": \"c24469f0ff4d5fe4ca02122d1cf47a950e6a3a0a52786cd97f5a142a21ba1468\",\n  \"review_status\": \"reviewed\",\n  \"note\": \"Input/return contract only; router must validate findings and existing delivery gates.\"\n}\n",
+      "stderr": ""
+    },
+    "reviewer_result_exists": true,
+    "permission_denials": 0,
+    "model_usage": {
+      "claude-opus-5-5": {
+        "inputTokens": 38,
+        "outputTokens": 11464,
+        "cacheReadInputTokens": 314125,
+        "cacheCreationInputTokens": 43381,
+        "webSearchRequests": 0,
+        "costUSD": 0.573038,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 513,
+        "canonicalModel": "claude-opus-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "output_sha256": {
+      "snapshot.json": "45382fc6510232567320bb5da96be27e783f73c9250b88bf85fd74e65a13e3f1",
+      "result.json": "e860db8122d77cad8d6b6acd47cb83cf5fef7f3730eae30228dbe7b5e3db9d73",
+      "assessment.md": "431473b8392b952249266621dc7f0f6d510f1dbca4371b160008dbdc281e504e"
+    }
+  },
+  {
+    "case": "B",
+    "wall_seconds": 175.368,
+    "cli_duration_ms": 173100,
+    "reported_cost_usd_list": 0.5809059999999999,
+    "model": "claude-opus-5-5",
+    "cli": "2.1.283",
+    "agent_calls": 1,
+    "subagent_report": [
+      {
+        "subagent_tokens": 26179,
+        "duration_ms": 83414
+      }
+    ],
+    "project_files_unchanged": true,
+    "head_unchanged": true,
+    "git_status_unchanged": true,
+    "return_check": {
+      "exit": 0,
+      "stdout": "{\n  \"status\": \"VERIFY_REVIEW_RETURN_CURRENT\",\n  \"input_digest\": \"34c54f61bedc04254330059d199afd80922e93f94c6c21328ece927f8706f9ea\",\n  \"review_status\": \"reviewed\",\n  \"note\": \"Input/return contract only; router must validate findings and existing delivery gates.\"\n}\n",
+      "stderr": ""
+    },
+    "reviewer_result_exists": true,
+    "permission_denials": 0,
+    "model_usage": {
+      "claude-opus-5-5": {
+        "inputTokens": 38,
+        "outputTokens": 11710,
+        "cacheReadInputTokens": 329905,
+        "cacheCreationInputTokens": 42062,
+        "webSearchRequests": 0,
+        "costUSD": 0.5809059999999999,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 727,
+        "canonicalModel": "claude-opus-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "output_sha256": {
+      "snapshot.json": "d6165a9a3bf34dc950fd8c2c00cb17523decd7722b29c24a9c4568dd688cb964",
+      "result.json": "4514096cab1f13bc18254a8dc26a7e1e0ab029820e3001b65e381b6c60a92344",
+      "assessment.md": "2d9ac9d898c751d9ea7eaeac3dc154e1ab8011d2d25d7d95b49de376323a6ef0"
+    }
+  },
+  {
+    "case": "C",
+    "wall_seconds": 79.187,
+    "cli_duration_ms": 77747,
+    "reported_cost_usd_list": 0.2837856,
+    "model": "claude-opus-5-5",
+    "cli": "2.1.283",
+    "agent_calls": 0,
+    "subagent_report": [],
+    "project_files_unchanged": true,
+    "head_unchanged": true,
+    "git_status_unchanged": true,
+    "return_check": {
+      "exit": 1,
+      "stdout": "",
+      "stderr": "VERIFY_HANDOFF_ERROR: review inputs stale; preserve result and redispatch with current inputs\n"
+    },
+    "reviewer_result_exists": false,
+    "permission_denials": 0,
+    "model_usage": {
+      "claude-opus-5-5": {
+        "inputTokens": 14,
+        "outputTokens": 4201,
+        "cacheReadInputTokens": 134548,
+        "cacheCreationInputTokens": 21600,
+        "webSearchRequests": 0,
+        "costUSD": 0.2837856,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 578,
+        "canonicalModel": "claude-opus-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "output_sha256": {
+      "snapshot.json": "7172e78c4055daff41cfe1d5a92d77841fb79d50ab4018578786a03f1a36a224",
+      "assessment.md": "f875a9098d5785aef8e287a59db275f3334b1ae5626648649cabd1e30493ccfa"
+    }
+  }
+]

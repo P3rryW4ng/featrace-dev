@@ -22,7 +22,7 @@ Use the user's project root or the established workspace. Paths below are relati
 | `api FILE-OR-LINK`, `figma FILE-OR-LINK` | Requirement evidence; `prd-analysis.md` |
 | `clarify [ID] QUESTION`, `revise [ID] CHANGE` | Requirement; `clarify-workflow.md` or `revision-workflow.md` |
 | `classify [ID]` | Scope; `module-context.md`; legacy labels also use `feature-archive.md` |
-| `develop [ID]` | Scope → Build; `impact-review.md`, `task-semantic-review.md`, `historical-regression.md`, project profile |
+| `develop [ID]` | Scope → Build; `impact-review.md`, `task-semantic-review.md`, `historical-regression.md`, project profile; explicit `--parallel` uses `parallel-build.md` |
 | `fix [ID] PROBLEM` | Repair → Verify; `fix-workflow.md` |
 | `check [ID]` | Verify → eligible Deliver; `verification-workflow.md`; explicit `--independent` uses the read-only pilot in `independent-verify.md` |
 | `archive [ID]`, `restore [ID]` | History; `feature-archive.md` (archive requires delivery evidence; restore does not rerun check) |

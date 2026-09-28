@@ -1,0 +1,64 @@
+{
+  "run_digest": "e9f6b168bccbf4322e99b437e79cbe2a861649e1edab65fe10e5d2dd1440379c",
+  "task_id": "T-UP",
+  "status": "ready",
+  "summary": "Changed only upper.py convert(value) to return value.upper() for the confirmed uppercase transformation; preserved the other entry point.",
+  "checks": [
+    {
+      "command": [
+        "/Library/Developer/CommandLineTools/usr/bin/python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-p",
+        "test_upper.py"
+      ],
+      "status": "passed",
+      "returncode": 0,
+      "log": "check-0.log",
+      "log_sha256": "fb184ea57734512b1f088f9181209901b9cd46df3eb7eaa2500ea9e48dde20b5"
+    }
+  ],
+  "worker_state": {
+    "files": {
+      ".gitignore": {
+        "state": "file",
+        "sha256": "cce4895a3bc799fea5fe0badd4320fe37faa8c13d010ed06120901f24569d857",
+        "size": 30
+      },
+      "lower.py": {
+        "state": "file",
+        "sha256": "15943f5cb218972a16eb02f3377fa909d22d5a5e0631087bf15c3087534e5482",
+        "size": 37
+      },
+      "tests/test_lower.py": {
+        "state": "file",
+        "sha256": "12f557b2eaebf10bf346ce7950cb35fd29f3f38ce395fb6a894ebe97e321750b",
+        "size": 162
+      },
+      "tests/test_upper.py": {
+        "state": "file",
+        "sha256": "332770fa0ef9747afedcff27e921f531f6fd519a5b60e18f31ed6e39c1dc67f4",
+        "size": 162
+      },
+      "upper.py": {
+        "state": "file",
+        "sha256": "7351976f90ef627bdfd804537c76051e37398cad732f88d7f6f09c655965a1e0",
+        "size": 45
+      }
+    },
+    "workflow": {
+      ".agent-workflow": {
+        "state": "missing"
+      }
+    },
+    "index": "f8e77762d15e0578fdc027b0916c90587303a49d5d7c7d0ba3ee38f4e0afe93b"
+  },
+  "changed_paths": [
+    "upper.py"
+  ],
+  "patch_sha256": "20cc901335ef7b39fc2bf1785e48aad2e435fea68f3c6355946b526aa7af7fd8",
+  "record_digest": "066dc0e1261c9ee9acbe4d664bbb4f9935d027c5a677c680a68a83cfd07d51bb"
+}

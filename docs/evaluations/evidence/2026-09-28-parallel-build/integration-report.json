@@ -1,0 +1,25 @@
+{
+  "run_digest": "e9f6b168bccbf4322e99b437e79cbe2a861649e1edab65fe10e5d2dd1440379c",
+  "candidate": "/private/var/folders/d_/q6w_z5qx1vl939khdfl92b540000gn/T/featrace-parallel-0525-vfyookkq/attempt/integration",
+  "status": "candidate_checks_passed",
+  "base_revision": "f05d544a78dc5ff2fea158626c8a8d673e3594c4",
+  "checks": [
+    {
+      "command": [
+        "/Library/Developer/CommandLineTools/usr/bin/python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests"
+      ],
+      "status": "passed",
+      "returncode": 0,
+      "log": "check-0.log",
+      "log_sha256": "a6707d4eff38012da33ddc34bc6dc076a3b17151cfc9aef223c8790cbe64c3da"
+    }
+  ],
+  "note": "Candidate only; no primary writes or delivery approval.",
+  "candidate_tree": "12f554c99f71845aa90f9d238c463537138e1982",
+  "record_digest": "5f659d8f18a6c87c2c486ac92c88f03d1e9ead3763132dd85fbc8bb897bad85f"
+}

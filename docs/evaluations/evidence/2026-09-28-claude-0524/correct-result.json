@@ -1,0 +1,68 @@
+{
+  "input_digest": "34c54f61bedc04254330059d199afd80922e93f94c6c21328ece927f8706f9ea",
+  "status": "reviewed",
+  "summary": "Reviewed DEMO-PREVIEW at HEAD 8101730 against base 017914f (clean worktree; changed paths src/formatting.py, tests/README.md, tests/test_preview.py). At HEAD the code appears consistent with confirmed requirement R-1: preview() truncates to a new PREVIEW_LIMIT = 8, and the shared DISPLAY_LIMIT = 12 used by receipt_reference() is back to its base value. The intermediate commit 160a530 had changed the shared DISPLAY_LIMIT to 8, which broke receipt references. Commit 8101730 undid that, so the current diff from base leaves receipt behavior untouched. TEST-PREVIEW is mapped by tests/README.md to two unittest cases whose assertions match R-1 by reading, but those tests were not run in this review, and the only recorded quality evidence is a synthetic compile claim. There are three remaining gaps: the layout.png source is unavailable, impact.json is missing, and the length boundaries are only partly covered. Whether the next action is eligible depends on authorized test execution by the router. No confirmed mismatch was found, and that does not mean delivery passed. Elapsed time and token usage were not measured.",
+  "read_paths": [
+    ".agent-workflow/features/DEMO-PREVIEW/sources/prd.txt",
+    ".agent-workflow/features/DEMO-PREVIEW/spec/prd-intake.json",
+    ".agent-workflow/features/DEMO-PREVIEW/spec/requirements.json",
+    ".agent-workflow/features/DEMO-PREVIEW/decisions.json",
+    ".agent-workflow/features/DEMO-PREVIEW/tasks.json",
+    ".agent-workflow/features/DEMO-PREVIEW/traceability.json",
+    ".agent-workflow/project-baseline/quality-report.json",
+    "src/formatting.py",
+    "src/receipt.py",
+    "tests/README.md",
+    "tests/test_preview.py",
+    "base:src/formatting.py",
+    "base:src/receipt.py",
+    "base:tests/test_preview.py",
+    "base:.gitignore"
+  ],
+  "findings": [
+    {
+      "claim": "Risk (resolved at HEAD, not a current mismatch): the intermediate implementation commit 160a530 changed the shared DISPLAY_LIMIT from 12 to 8. That shortened receipt references too, which violated R-1's rule to keep receipt behavior. The current HEAD restores DISPLAY_LIMIT = 12 and adds a separate PREVIEW_LIMIT = 8, so the change from base only affects preview().",
+      "evidence": [
+        {"path": "base:src/formatting.py", "locator": "line 1-4", "observation": "At base, DISPLAY_LIMIT = 12 and preview() returns value[:DISPLAY_LIMIT]."},
+        {"path": "src/formatting.py", "locator": "line 1-5", "observation": "At HEAD, DISPLAY_LIMIT = 12 is unchanged, PREVIEW_LIMIT = 8 is added, and preview() returns value[:PREVIEW_LIMIT]."},
+        {"path": "src/receipt.py", "locator": "line 1-4", "observation": "receipt_reference() imports DISPLAY_LIMIT from src.formatting and returns value[:DISPLAY_LIMIT]. The file is identical at base and HEAD. It is the only other consumer of the shared constant found by a repository search."},
+        {"path": ".agent-workflow/features/DEMO-PREVIEW/spec/requirements.json", "locator": "/requirements/0", "observation": "R-1 has status confirmed. Its acceptance criteria are 'Preview shows at most 8 characters' and 'Receipt references retain existing behavior'."},
+        {"path": ".agent-workflow/features/DEMO-PREVIEW/sources/prd.txt", "locator": "line 1", "observation": "The PRD says preview labels must show at most eight characters and receipt reference formatting must stay the same."}
+      ]
+    },
+    {
+      "claim": "Risk: traceability lists only src/formatting.py as code for R-1. It does not name src/receipt.py, which consumes the shared DISPLAY_LIMIT and is directly covered by R-1's preservation criterion. There is also no impact record showing that consumer analysis was done.",
+      "evidence": [
+        {"path": ".agent-workflow/features/DEMO-PREVIEW/traceability.json", "locator": "/links/0/code", "observation": "The code list is [\"src/formatting.py\"] only, and the tests list is [\"TEST-PREVIEW\"]."},
+        {"path": "src/receipt.py", "locator": "line 1", "observation": "Imports DISPLAY_LIMIT from src.formatting."}
+      ]
+    },
+    {
+      "claim": "The logical test TEST-PREVIEW maps to executable cases whose assertions, by reading, cover both R-1 criteria at one input length each. Coverage of the length boundaries is partial.",
+      "evidence": [
+        {"path": "tests/README.md", "locator": "line 1", "observation": "Maps TEST-PREVIEW to PreviewTests.test_label_limit and PreviewTests.test_receipt_preserved in tests/test_preview.py. The run command is 'python3 -m unittest discover -s tests'."},
+        {"path": "tests/test_preview.py", "locator": "line 6-9", "observation": "Asserts that preview('ABCDEFGHIJKL') == 'ABCDEFGH' (a 12-character input gives 8 characters) and receipt_reference('ABCDEFGHIJKLM') == 'ABCDEFGHIJKL' (a 13-character input gives 12 characters). Inputs of exactly 8 or 9 characters, and inputs under 8 characters, are not asserted."},
+        {"path": "base:tests/test_preview.py", "locator": "line 5-6", "observation": "The base test test_short_input (preview('abc') == 'abc') was replaced, so a short-input case is no longer present."}
+      ]
+    },
+    {
+      "claim": "Quality evidence does not show that the tests ran: the only recorded result is a synthetic compile claim.",
+      "evidence": [
+        {"path": ".agent-workflow/project-baseline/quality-report.json", "locator": "/tested_at, /results", "observation": "tested_at is 'synthetic fixture; not a real measured run'. The only result is compile: passed, with the note 'synthetic fixture claim'. The recorded git_head matches HEAD 8101730. No unittest result is recorded."}
+      ]
+    }
+  ],
+  "gaps": [
+    "Source S2 sources/layout.png is listed in prd-intake.json and requirements.json prd_paths but is unavailable according to verify-inputs.py. Any layout or visual constraints it may contain on preview labels were not reviewed. The Figma source_status is 'missing'.",
+    "impact.json is missing for DEMO-PREVIEW, so there is no impact record to confirm that consumer analysis was done. The repository search in this review found only src/receipt.py as another consumer of DISPLAY_LIMIT.",
+    "There are no executed test results for TEST-PREVIEW at HEAD 8101730. The assertions were checked by reading only.",
+    "Boundary behavior is not tested: preview of inputs with exactly 8 or 9 characters, preview of inputs under 8 characters (the base short-input test was removed), and a receipt input of exactly 12 characters.",
+    "Feature status is provisional and task T-1 is marked done. No acceptance evidence or approval record was found, and decisions.json is empty. None is needed for R-1 as confirmed, but delivery acceptance is not established.",
+    "No .agent-workflow/quality-gates.json or config.yaml exists (the snapshot marks both missing), so the required project gates are undefined."
+  ],
+  "checks_not_run": [
+    "python3 -m unittest discover -s tests (run from the project root): would execute the TEST-PREVIEW cases at HEAD to confirm the preview limit of 8 and that receipt references are preserved. Not run because the reviewer is read-only; the router owns authorized execution.",
+    "Adding or running boundary tests for preview at 8, 9 and fewer than 8 characters and for receipt_reference at 12 characters: would confirm the boundaries. Not written or run because the reviewer is read-only.",
+    "A compile/lint check at HEAD: would replace the synthetic compile claim with a real observation. Not run."
+  ]
+}

@@ -1,0 +1,101 @@
+{
+  "input_digest": "c24469f0ff4d5fe4ca02122d1cf47a950e6a3a0a52786cd97f5a142a21ba1468",
+  "status": "reviewed",
+  "summary": "Reviewed DEMO-PREVIEW from base 017914f to HEAD 9148c13 (clean worktree). The diff lowers the shared constant DISPLAY_LIMIT from 12 to 8 in src/formatting.py and adds tests/README.md. Base scope matches tasks/traceability: T-1 is the only task and R-1 lists only src/formatting.py as code. src/receipt.py was not changed, but it imports the same constant. Receipt references are now cut to 8 characters instead of 12, which breaks the confirmed rule that receipt formatting must stay unchanged. This is an implementation defect, not a product question. The next step is a technical fix: decouple the receipt limit so it stays at 12, add tests for preview length over 8 and for receipt behavior at base, then have the router run tests. No new product decision is needed and accepting the regression is not an authorized option. The only mapped test (short input) does not cover the new length limit or receipt behavior. Source S2 (sources/layout.png) is unavailable. Elapsed time and token usage were not measured.",
+  "read_paths": [
+    ".agent-workflow/features/DEMO-PREVIEW/decisions.json",
+    ".agent-workflow/features/DEMO-PREVIEW/sources/prd.txt",
+    ".agent-workflow/features/DEMO-PREVIEW/spec/prd-intake.json",
+    ".agent-workflow/features/DEMO-PREVIEW/spec/requirements.json",
+    ".agent-workflow/features/DEMO-PREVIEW/tasks.json",
+    ".agent-workflow/features/DEMO-PREVIEW/traceability.json",
+    ".agent-workflow/project-baseline/quality-report.json",
+    ".gitignore",
+    "src/formatting.py",
+    "src/receipt.py",
+    "tests/README.md",
+    "tests/test_preview.py",
+    "base:src/formatting.py",
+    "base:src/receipt.py"
+  ],
+  "findings": [
+    {
+      "claim": "Confirmed mismatch (implementation defect): changing the shared DISPLAY_LIMIT from 12 to 8 also cuts receipt references to 8 characters. This breaks R-1's confirmed rule to keep receipt formatting unchanged. Fixing it restores confirmed behavior with a technical change (for example, a separate receipt limit of 12, or a preview-only constant). It does not need a new product decision.",
+      "evidence": [
+        {
+          "path": "base:src/formatting.py",
+          "locator": "line 1",
+          "observation": "At base, DISPLAY_LIMIT = 12."
+        },
+        {
+          "path": "src/formatting.py",
+          "locator": "line 1",
+          "observation": "At HEAD, DISPLAY_LIMIT = 8 (changed in commit 160a530 'shorten preview labels')."
+        },
+        {
+          "path": "src/receipt.py",
+          "locator": "lines 1-4",
+          "observation": "receipt_reference imports DISPLAY_LIMIT from src.formatting and returns value[:DISPLAY_LIMIT]. The file is the same as at base, so its behavior changes from a 12-character cut to an 8-character cut."
+        },
+        {
+          "path": ".agent-workflow/features/DEMO-PREVIEW/spec/requirements.json",
+          "locator": "/requirements/0",
+          "observation": "R-1 has status 'confirmed'. The statement is 'Limit preview labels to eight characters; preserve existing receipt formatting'. One acceptance criterion is 'Receipt references retain existing behavior'."
+        },
+        {
+          "path": ".agent-workflow/features/DEMO-PREVIEW/sources/prd.txt",
+          "locator": "line 1",
+          "observation": "Original source: 'Receipt reference formatting must remain unchanged.'"
+        },
+        {
+          "path": ".agent-workflow/features/DEMO-PREVIEW/decisions.json",
+          "locator": "/decisions",
+          "observation": "Empty. No approved decision allows receipt behavior to change."
+        }
+      ]
+    },
+    {
+      "claim": "Impact record gap: traceability links R-1 only to src/formatting.py, and tasks.json marks T-1 done. The receipt consumer of the shared constant is not listed.",
+      "evidence": [
+        {
+          "path": ".agent-workflow/features/DEMO-PREVIEW/traceability.json",
+          "locator": "/links/0/code",
+          "observation": "Only ['src/formatting.py']."
+        },
+        {
+          "path": ".agent-workflow/features/DEMO-PREVIEW/tasks.json",
+          "locator": "/tasks/0/status",
+          "observation": "T-1 'Shorten preview label' has status 'done'."
+        }
+      ]
+    },
+    {
+      "claim": "Test coverage is only partial. The only mapped test uses a 3-character input, so it passes with a limit of 12 or 8. It does not prove the 8-character limit, and no test covers receipt behavior.",
+      "evidence": [
+        {
+          "path": "tests/README.md",
+          "locator": "line 1",
+          "observation": "TEST-PREVIEW maps to tests/test_preview.py::PreviewTests.test_short_input; the run command is python3 -m unittest discover -s tests."
+        },
+        {
+          "path": "tests/test_preview.py",
+          "locator": "lines 5-6",
+          "observation": "The only assertion is preview('abc') == 'abc'. There is no input longer than 8 characters and no call to receipt_reference."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    "Source S2 sources/layout.png is listed in prd-intake.json and requirements.json prd_paths but is unavailable (verify-inputs: 'source file does not exist'). Any layout or visual requirement from it could not be reviewed.",
+    "The requirements.json source_status reports figma as 'missing'. No design evidence was available.",
+    "No impact.json record exists for DEMO-PREVIEW. Consumer impact analysis is not recorded.",
+    "The quality-report.json 'compile passed' result is self-described as a synthetic fixture claim, not a measured run. It is not independent evidence, and no tests were rerun.",
+    "The feature status is 'provisional'. R-1 is still confirmed, and acceptance is not established.",
+    "No project config.yaml, quality-gates.json or modules records exist (snapshot marks them missing)."
+  ],
+  "checks_not_run": [
+    "python3 -m unittest discover -s tests (the mapped TEST-PREVIEW command); not run by rule. After the fix, the router should run it.",
+    "Recommended new tests (not written or run): preview on input longer than 8 characters returns 8 characters; receipt_reference on input longer than 12 characters returns 12 characters, the same as at base.",
+    "No build or compile check was run; only the synthetic quality-report claim is available."
+  ]
+}

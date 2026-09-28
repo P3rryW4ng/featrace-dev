@@ -30,7 +30,7 @@ Use a host capability that creates a genuinely fresh Agent/context (no inherited
 
 Supply only project, feature, Skill path, snapshot path, external output path, the neutral review question and side-effect restrictions. Requirements/decisions in canonical files remain available; do not pass the implementer's proposed answer, suspected defect or green summary as instructions. Restrict the reviewer to read-only project access when the host supports it, with output writes only to scratch. When permissions cannot enforce that split, state that read-only is an instruction-level restriction with post-run checks, not a sandbox guarantee.
 
-If the host cannot provide a fresh context, report `independent review unavailable`; offer ordinary check or an explicitly launched new review session. Never silently run in the current context and label it independent. Do not install/login to another tool or add credentials as a side effect. One reviewer at a time; no parallel Build or concurrent record writes.
+If the host cannot provide a fresh context, report `independent review unavailable`; offer ordinary check or an explicitly launched new review session. Never silently run in the current context and label it independent. Do not install/login to another tool or add credentials as a side effect. One reviewer at a time. Pause all Build workers before Verify; no concurrent implementation or record writes during review. The optional parallel Build pilot must finish and hand back its integration candidate first.
 
 ## Return and reconcile
 

@@ -38,7 +38,7 @@ Write facts to the existing requirement, task, decision, impact, fix, verificati
 
 This release uses the same Agent with progressive disclosure. Load the orchestration contract first, then only the chosen stage references. A chained route loads the next stage only after the previous exit condition is met. Do not preload every reference "for safety"; load a direct dependency when a real condition activates it.
 
-Independent Verify is opt-in under `independent-verify.md`: a fresh, read-only reviewer loads `specialists/featrace-verify/SKILL.md`, returns evidence, and the router reconciles it. Ordinary check remains unchanged; unsupported hosts report unavailable. No other stage is isolated by this release and no parallel Build is enabled. Expand only after measuring omissions, false assumptions, handoff loss, interventions, time and token cost against the same-stage baseline.
+Independent Verify is opt-in under `independent-verify.md`: a fresh, read-only reviewer loads `specialists/featrace-verify/SKILL.md`, returns evidence, and the router reconciles it. Ordinary check remains unchanged; unsupported hosts report unavailable. An explicit two-task Build pilot is available under `parallel-build.md`, using the bundled `specialists/featrace-build/SKILL.md`, separate detached worktrees and a tested external integration candidate. It never writes canonical records or promotes code by itself. Default Build remains serial; no general scheduler or default parallelism is enabled. Expand only after measuring omissions, false assumptions, handoff loss, interventions, time and token cost against the same-stage baseline.
 
 ## Stop and return rules
 

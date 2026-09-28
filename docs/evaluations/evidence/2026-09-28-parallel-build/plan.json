@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "independence": {
+    "reason": "Two separate pure entry points",
+    "evidence": [
+      "upper.py:1-2",
+      "lower.py:1-2"
+    ],
+    "interfaces": [
+      "convert(str)->str"
+    ],
+    "preserve": [
+      "Do not change the other entry point"
+    ]
+  },
+  "tasks": [
+    {
+      "task_id": "T-UP",
+      "allowed_paths": [
+        "upper.py"
+      ],
+      "depends_on": [],
+      "checks": [
+        [
+          "/Library/Developer/CommandLineTools/usr/bin/python3",
+          "-m",
+          "unittest",
+          "discover",
+          "-s",
+          "tests",
+          "-p",
+          "test_upper.py"
+        ]
+      ]
+    },
+    {
+      "task_id": "T-LOW",
+      "allowed_paths": [
+        "lower.py"
+      ],
+      "depends_on": [],
+      "checks": [
+        [
+          "/Library/Developer/CommandLineTools/usr/bin/python3",
+          "-m",
+          "unittest",
+          "discover",
+          "-s",
+          "tests",
+          "-p",
+          "test_lower.py"
+        ]
+      ]
+    }
+  ],
+  "integration_checks": [
+    [
+      "/Library/Developer/CommandLineTools/usr/bin/python3",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "tests"
+    ]
+  ],
+  "timeout_seconds": 10
+}

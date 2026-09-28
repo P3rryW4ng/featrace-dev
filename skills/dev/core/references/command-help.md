@@ -71,3 +71,5 @@ This is display guidance, not a request to execute examples. `/dev help` shows t
 - restore: optional positional ID; returns archived feature to active list without erasing evidence. It does not itself rerun tests or invalidate/renew historical acceptance. Further code work follows normal rules.
 
 Maintain this overview whenever commands or parameter semantics change. The main command table and per-workflow references remain authoritative; this help does not add new execution semantics.
+
+Advanced opt-in: `develop ID --parallel` uses two independently scoped Build Agents and external worktrees. It returns a checked integration candidate; default develop remains serial. Availability and limits: `parallel-build.md`.

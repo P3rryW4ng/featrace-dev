@@ -1,0 +1,62 @@
+# Opt-in two-task parallel Build pilot (0.5.25)
+
+Load for explicit `develop --parallel` or a request to implement two tasks concurrently. Default develop remains serial. This pilot creates two detached Git worktrees and a third integration candidate outside the primary project. It does not launch processes by itself, apply changes to the primary checkout, commit/push, update task status or approve delivery. If the host cannot provide two independent execution contexts, report unavailable and offer ordinary serial Build.
+
+## Router eligibility and plan
+
+Complete the ordinary Scope prerequisites first: confirmed requirements, reviewed task meaning and source authority, module/impact investigation and historical regression review when required. Existing develop validation remains in force; warnings are not permission to skip the investigation. Restore archived features before changes. This pilot additionally requires a reviewed impact.json with exact allowed paths and a clean business worktree. Preserve pre-existing work and use serial Build when there are uncommitted business files, submodules, ignored assigned business paths or unsupported paths.
+
+Select exactly two existing planned/in_progress tasks. Read entry points, callers, shared state/resources and interfaces to assess independence. No overlapping file or ancestor/descendant ownership, no task dependencies, no unresolved interface decisions. Different files alone are insufficient: if both modify the same behavior or one relies on the other's new output, serialize them. Record a concise technical rationale with file/line evidence, agreed interfaces and behavior to preserve. A script checks declarations, not semantic independence.
+
+Put the reviewed plan in a fresh external scratch location. Example shape (replace the task IDs, paths, evidence and approved commands):
+
+```json
+{
+  "schema_version": 1,
+  "independence": {
+    "reason": "Two separate pure functions with no shared mutable state",
+    "evidence": ["upper.py:1-2", "lower.py:1-2"],
+    "interfaces": ["convert(str) returns str; imports remain unchanged"],
+    "preserve": ["Each task preserves the other entry point"]
+  },
+  "tasks": [
+    {"task_id": "T-UP", "allowed_paths": ["upper.py"], "depends_on": [],
+     "checks": [["python3", "-m", "unittest", "discover", "-s", "tests", "-p", "test_upper.py"]]},
+    {"task_id": "T-LOW", "allowed_paths": ["lower.py"], "depends_on": [],
+     "checks": [["python3", "-m", "unittest", "discover", "-s", "tests", "-p", "test_lower.py"]]}
+  ],
+  "integration_checks": [["python3", "-m", "unittest", "discover", "-s", "tests"]],
+  "timeout_seconds": 120
+}
+```
+
+Commands are actual argv arrays approved for this task/environment, not strings evaluated by a shell. Review their effects; arbitrary programs are not made safe by an argv array. Include integration assertions for cross-task behavior and relevant preserved/history behavior. No real tests configured means no eligible parallel attempt; do not substitute a synthetic exit 0.
+
+```text
+python3 core/scripts/parallel-build.py prepare <PROJECT> <ID> --plan <PLAN> --out <NEW-EXTERNAL-RUN>
+python3 core/scripts/parallel-build.py preflight <RUN>
+```
+
+Prepare captures current primary inputs with the existing Verify helper, freezes canonical evidence under inputs/, checks develop eligibility and path ownership, and creates two detached workers from current HEAD. It writes only external scratch and Git worktree metadata. Existing output directories are refused. Failure may leave worktree registration and partial scratch; preserve and inspect them. The input manifest is disposable attempt data, never another authoritative project state.
+
+## Dispatch two workers
+
+After successful router preflight, use the host's native independent Agent mechanism. Give each worker only its task ID, its worktree, RUN, frozen input path, Skill root, `specialists/featrace-build/SKILL.md` and side-effect restrictions. They use the same specialist with separate contexts/code directories. Do not pass a guessed implementation answer or give either worker write access to the primary/shared records. State whether permissions enforce the split or it remains an instruction plus post-run checks.
+
+Workers return through parallel-build.py finish. Each return has its own directory; failed/blocked/missing returns stop integration, and cannot be silently overwritten. Source/requirement/Skill drift, frozen input edits, code changes after checks, edits to workflow records, or expansion beyond assigned paths also block. A cancelled Agent is not a successful empty patch. Do not automatically retry while the other worker writes; retain edits and arrange a new attempt when the cause is resolved.
+
+## Integrate and hand back
+
+Wait for both Agents to finish; never integrate while workers are still writing. Inspect actual patches/command logs and preservation/interface compatibility. Both ready is insufficient if a semantic conflict is visible. Only the router calls:
+
+```text
+python3 core/scripts/parallel-build.py integrate <RUN>
+```
+
+The helper rechecks primary/frozen inputs and exact worker patches/logs, applies both patches in a new integration worktree and executes the approved integration commands. Ownership collisions fail before dispatch/acceptance; Git apply conflicts and nonzero/timeout/unavailable integration checks retain the failed candidate. Inputs modified by checks are not accepted as green. No repeated integration over an existing candidate.
+
+`candidate_checks_passed` means only that this external candidate passed those commands. The report names the base and candidate Git tree; it is not a final primary commit or a delivery quality report. Return to the router with that candidate, patches, actual results, scope and remaining gaps. Applying code to the primary project and serially updating existing records is a separate ordinary authorized Build step: recheck primary freshness immediately before applying, do not reuse a changed candidate, then execute the applicable ordinary Verify/check/audit against the actual primary snapshot. An explicitly requested independent Verify runs after writers pause. No automatic complete/verified state or remote publication.
+
+Retain scratch/worktrees until changes and evidence are safely handled. Cleanup is explicit: inspect `git worktree list` and use ordinary `git worktree remove <PATH>` only for a clean workspace. Never force-delete uncommitted work or remove another attempt. The helper has no automatic cleanup, worktree pool, retry scheduler, concurrent record writes, partial-task eligibility or broad dependency graph. Git worktrees share metadata and are not security sandboxes; ignored environment/build outputs, Git filters, external side effects and semantic completeness remain limits. Measure total preparation, both worker times, integration, interventions and token cost before wider adoption.
+
+Worker check evidence also binds the visible worktree and index state; staged-index or visible-file changes during/after checks require a new attempt. Other ignored environment files, Git filters and external inputs are not fully bound. Frozen authority inventory additions are rejected as well as edits. These hashes detect drift; they are not signatures or a security sandbox.

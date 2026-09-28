@@ -28,3 +28,7 @@ For material requirement questions/proposals, use `clarify` and read `clarify-wo
 ## Optional independent review
 
 An explicit `check --independent` or request for independent review takes the read-only pilot in `independent-verify.md` before the ordinary check execution steps. It does not run builds, update project records or mark delivery complete. Default check behavior is unchanged.
+
+## Optional isolated parallel Build
+
+For an explicit `develop --parallel` or concurrent two-task implementation request, load `parallel-build.md` after ordinary Scope/develop prerequisites. It returns an external integration candidate, not a primary feature completion. Ordinary develop stays serial.

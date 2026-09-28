@@ -1,0 +1,8 @@
+diff --git a/upper.py b/upper.py
+index dcc23cd..5958750 100644
+--- a/upper.py
++++ b/upper.py
+@@ -1,2 +1,2 @@
+ def convert(value):
+-    return value
++    return value.upper()

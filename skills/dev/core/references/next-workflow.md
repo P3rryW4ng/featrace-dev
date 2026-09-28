@@ -35,3 +35,5 @@ Do not use `next` to bypass restore, PRD review, impact, module, verification or
 ## Explicit independent review
 
 When the user explicitly asks for independent review, route to Verify using `independent-verify.md`. It is an opt-in read-only pilot. Do not invoke it automatically on plain next/check or a progress question, and do not silently replace fresh-context review with the current Agent.
+
+For an explicit request to implement two independent tasks concurrently, load `parallel-build.md`. Do not infer parallelism from “continue” or task count alone.
