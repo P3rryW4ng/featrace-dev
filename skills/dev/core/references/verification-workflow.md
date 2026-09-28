@@ -2,6 +2,8 @@
 
 Use within `/dev check`, and after authorized develop/fix implementation when preparing acceptance. No new user-facing command. The Agent selects applicable commands, then generates the checklist and executes the automated portion. Ask the user only for remaining observations or business judgments. Respect requests for analysis-only or no execution.
 
+For an explicit independent review request (`check --independent`), use `independent-verify.md` instead of the mutation/execution steps below. That pilot reviews existing evidence only; it does not replace ordinary check or prove delivery. If the user separately requests test execution, complete the authorized normal checks before capturing reviewer inputs.
+
 At the start of Verify, run the internal, read-only input inventory before relying on source or quality claims:
 
 ```text

@@ -24,3 +24,7 @@ Legacy YAML migration uses `migrate-workspace.py` only to create an empty scaffo
 - Follow `git-sharing.md` before sharing workspace records. Ignored original sources must be restored through an authorized channel on another machine; missing evidence cannot be treated as reviewed or made not_applicable solely to pass validation.
 
 For material requirement questions/proposals, use `clarify` and read `clarify-workflow.md`; share decisions with fixes. Approved answers and application evidence are distinct; do not silently treat discussion as implementation authorization.
+
+## Optional independent review
+
+An explicit `check --independent` or request for independent review takes the read-only pilot in `independent-verify.md` before the ordinary check execution steps. It does not run builds, update project records or mark delivery complete. Default check behavior is unchanged.

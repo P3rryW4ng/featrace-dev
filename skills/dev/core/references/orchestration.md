@@ -32,13 +32,13 @@ Before moving between stages, make the handoff recoverable from canonical projec
 - allowed next stage or stages;
 - blockers and the exact human input, permission or environment change needed.
 
-Write facts to the existing requirement, task, decision, impact, fix, verification, delivery or module records that own them. Do not create a generic handoff JSON, duplicate full source text, or treat a chat summary as authority. A downstream stage must reject stale inputs using existing digests and validators rather than trusting prose.
+Write facts to the existing requirement, task, decision, impact, fix, verification, delivery or module records that own them. Do not create a second canonical handoff JSON, duplicate full source text, or treat a chat summary as authority. The optional independent reviewer uses only a disposable scratch input manifest, never a new project state. A downstream stage must reject stale inputs using existing digests and validators rather than trusting prose.
 
 ## Loading and isolation policy
 
 This release uses the same Agent with progressive disclosure. Load the orchestration contract first, then only the chosen stage references. A chained route loads the next stage only after the previous exit condition is met. Do not preload every reference "for safety"; load a direct dependency when a real condition activates it.
 
-Independent Agent/context execution is not enabled by this contract. If later enabled, Verify is the first candidate because a separate reviewer may reduce implementer self-confirmation. It must receive the handoff envelope and read canonical evidence directly. It must not inherit a green conclusion from Build, and its result must still satisfy the same deterministic gates. Expand isolation only after measuring omissions, false assumptions, handoff loss, interventions, time and token cost against this same-stage baseline.
+Independent Verify is opt-in under `independent-verify.md`: a fresh, read-only reviewer loads `specialists/featrace-verify/SKILL.md`, returns evidence, and the router reconciles it. Ordinary check remains unchanged; unsupported hosts report unavailable. No other stage is isolated by this release and no parallel Build is enabled. Expand only after measuring omissions, false assumptions, handoff loss, interventions, time and token cost against the same-stage baseline.
 
 ## Stop and return rules
 

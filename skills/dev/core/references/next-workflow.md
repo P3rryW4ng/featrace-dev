@@ -31,3 +31,7 @@ An image is not automatically design evidence: a screenshot showing an actual fa
 Inspect sources, decisions and current behavior before asking the user to classify the command. If two routes remain plausible, ask only when the distinction changes product authority or the record type. Preserve supplied evidence while waiting; do not call a defect a requirement change or treat a design export as product approval.
 
 Do not use `next` to bypass restore, PRD review, impact, module, verification or check gates. Archived work must be restored before mutation. After source or semantic changes, follow the normal fresh review and develop validation order. Finish by reporting what route ran, records/code changed, remaining blocker and one recommended next action; do not make the user reconstruct a list of commands.
+
+## Explicit independent review
+
+When the user explicitly asks for independent review, route to Verify using `independent-verify.md`. It is an opt-in read-only pilot. Do not invoke it automatically on plain next/check or a progress question, and do not silently replace fresh-context review with the current Agent.

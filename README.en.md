@@ -8,7 +8,7 @@
 
 FeatraceDev helps coding agents understand requirements, investigate impact, implement changes, repair defects, and verify delivery in existing codebases. It connects original sources, confirmed requirements, tasks, historical fixes, and test evidence so future changes can build on recorded facts and completion claims have a clear verification scope.
 
-Works with Claude Code and Codex. Includes a generic workflow and an Android adapter. Current version: **0.5.22**. Check the installed version separately on each machine.
+Works with Claude Code and Codex. Includes a generic workflow and an Android adapter. Current source version: **0.5.24**. Check the installed version separately on each machine.
 
 > This is a developer-assisted delivery tool. It surfaces missing decisions and evidence, but cannot guarantee complete PRD understanding, discover every dependency, or replace device testing and subjective acceptance.
 
@@ -31,6 +31,8 @@ python3 scripts/install.py
 ```
 
 By default, the installer installs for both Claude Code and Codex under the current user. Use `--agent claude` or `--agent codex` to install for just one. Open a **new session** after installation to load the updated skill.
+
+Optional independent review: `/dev check OGFR-1234 --independent`. Requires a host that can create a fresh Agent context. It reviews existing evidence read-only; it does not build, run tests, or approve delivery. Ordinary `check` is unchanged.
 
 ## Start here
 

@@ -12,7 +12,7 @@ Use the user's project root or the established workspace. Paths below are relati
 - `help [command]`: read `core/references/command-help.md` and answer without project setup, selection, execution or writes. Return after help.
 - Empty `/dev`, `dev off`, and continued messages in delivery mode: read `core/references/session-mode.md`. Activation alone starts no work; mode lasts only for this conversation and project.
 - `list`, `use`, new-feature creation and feature-scoped actions: read `core/references/feature-selection.md`. Confirm the project, feature ID and title before mutation. Never guess the selected feature in a new or uncertain context.
-- Feature mutation or `next`: read `core/references/orchestration.md` and `core/references/workflow.md`. Route through Requirement, Scope, Build, Verify, Repair or Deliver. Load only the chosen stage's references and direct prerequisites. Save handoff facts in existing canonical records; no second state machine or generic handoff file. This version uses one Agent, without independent context isolation.
+- Feature mutation or `next`: read `core/references/orchestration.md` and `core/references/workflow.md`. Route through Requirement, Scope, Build, Verify, Repair or Deliver. Load only the chosen stage's references and direct prerequisites. Save handoff facts in existing canonical records; no second state machine or generic handoff file. Default execution uses one Agent. For an explicit independent review request or `check --independent`, load `core/references/independent-verify.md` and dispatch the bundled Verify specialist in a fresh context when the host supports it.
 - `next [description] [--feature ID]`: also read `core/references/next-workflow.md`. Inspect current status, announce the route and execute its eligible steps. Progress questions stay read-only unless fresh verification is requested. A failure screenshot enters Repair; a replacement or expected visual enters Requirement. Do not bypass any review, impact, module, restore or verification gate.
 
 | Action | Stage or reference |
@@ -24,7 +24,7 @@ Use the user's project root or the established workspace. Paths below are relati
 | `classify [ID]` | Scope; `module-context.md`; legacy labels also use `feature-archive.md` |
 | `develop [ID]` | Scope → Build; `impact-review.md`, `task-semantic-review.md`, `historical-regression.md`, project profile |
 | `fix [ID] PROBLEM` | Repair → Verify; `fix-workflow.md` |
-| `check [ID]` | Verify → eligible Deliver; `verification-workflow.md` |
+| `check [ID]` | Verify → eligible Deliver; `verification-workflow.md`; explicit `--independent` uses the read-only pilot in `independent-verify.md` |
 | `archive [ID]`, `restore [ID]` | History; `feature-archive.md` (archive requires delivery evidence; restore does not rerun check) |
 | `list`, `use ID`, `status [ID]` | Selection/read-only; `feature-selection.md` |
 
