@@ -1,0 +1,291 @@
+{
+  "case": "READY",
+  "execution": {
+    "started_at_epoch": 1790647387.3124092,
+    "case": "READY",
+    "exit_code": 0,
+    "elapsed_seconds": 183.233
+  },
+  "cost_usd_list": 1.3406246,
+  "model_usage": {
+    "claude-opus-5-5": {
+      "inputTokens": 66,
+      "outputTokens": 16005,
+      "cacheReadInputTokens": 1234748,
+      "cacheCreationInputTokens": 116795,
+      "webSearchRequests": 0,
+      "costUSD": 1.3406246,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 1465,
+      "canonicalModel": "claude-opus-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "primary_unchanged": true,
+  "head_unchanged": true,
+  "status_unchanged": true,
+  "reference_read_commands": {
+    "orchestration.md": [
+      {
+        "tool": "Read",
+        "description": "",
+        "input": "/Users/mac/.claude/skills/dev/core/references/orchestration.md"
+      }
+    ],
+    "workflow.md": [
+      {
+        "tool": "Read",
+        "description": "",
+        "input": "/Users/mac/.claude/skills/dev/core/references/workflow.md"
+      }
+    ],
+    "impact-review.md": [
+      {
+        "tool": "Read",
+        "description": "",
+        "input": "/Users/mac/.claude/skills/dev/core/references/impact-review.md"
+      }
+    ],
+    "task-semantic-review.md": [
+      {
+        "tool": "Read",
+        "description": "",
+        "input": "/Users/mac/.claude/skills/dev/core/references/task-semantic-review.md"
+      }
+    ],
+    "historical-regression.md": [
+      {
+        "tool": "Read",
+        "description": "",
+        "input": "/Users/mac/.claude/skills/dev/core/references/historical-regression.md"
+      }
+    ],
+    "parallel-build.md": [
+      {
+        "tool": "Read",
+        "description": "",
+        "input": "/Users/mac/.claude/skills/dev/core/references/parallel-build.md"
+      }
+    ],
+    "PROFILE.md": [
+      {
+        "tool": "Read",
+        "description": "",
+        "input": "/Users/mac/.claude/skills/dev/profiles/generic/PROFILE.md"
+      }
+    ]
+  },
+  "prepare_calls": [
+    {
+      "command": "cd /private/tmp/featrace-native-0526-6ockj9og/READY && shasum -a 256 plan.json; T0=$(date +%s); python3 /Users/mac/.claude/skills/dev/core/scripts/parallel-build.py prepare $PWD/project FEAT-001 --plan $PWD/plan.json --out $PWD/attempt; echo \"prepare rc=$? secs=$(( $(date +%s)-T0 ))\"; python3 /Users/mac/.claude/skills/dev/core/scripts/parallel-build.py preflight $PWD/attempt; echo \"preflight rc=$?\"; shasum -a 256 plan.json; ls -la attempt; git -C project worktree list",
+      "description": "Prepare new external attempt and run router preflight"
+    }
+  ],
+  "integration": {
+    "run_digest": "2b48e8e7ce465a1873db3bee1f08c2550baf17833486baae1b35aa27581fee00",
+    "candidate": "/private/tmp/featrace-native-0526-6ockj9og/READY/attempt/integration",
+    "status": "candidate_checks_passed",
+    "base_revision": "d7e071ff9f856106835b4e2bf9d0aad66c259c80",
+    "checks": [
+      {
+        "command": [
+          "/Library/Developer/CommandLineTools/usr/bin/python3",
+          "-m",
+          "unittest",
+          "discover",
+          "-s",
+          "tests"
+        ],
+        "status": "passed",
+        "returncode": 0,
+        "log": "check-0.log",
+        "log_sha256": "e6ec182765cd965f2837d8eeaef5a64af48a104f245cd1a0b7281559194c57c1"
+      }
+    ],
+    "note": "Candidate only; no primary writes or delivery approval.",
+    "candidate_tree": "fb2809f218165b11dbf641f15f8f5350d192948c"
+  },
+  "returns": {
+    "T-UP": {
+      "run_digest": "2b48e8e7ce465a1873db3bee1f08c2550baf17833486baae1b35aa27581fee00",
+      "task_id": "T-UP",
+      "status": "ready",
+      "summary": "Implemented upper.convert(value) as value.upper(); pure str->str, no other files changed, lower.py untouched.",
+      "checks": [
+        {
+          "command": [
+            "/Library/Developer/CommandLineTools/usr/bin/python3",
+            "-m",
+            "unittest",
+            "discover",
+            "-s",
+            "tests",
+            "-p",
+            "test_upper.py"
+          ],
+          "status": "passed",
+          "returncode": 0,
+          "log": "check-0.log",
+          "log_sha256": "fb184ea57734512b1f088f9181209901b9cd46df3eb7eaa2500ea9e48dde20b5"
+        }
+      ],
+      "worker_state": {
+        "files": {
+          ".gitignore": {
+            "state": "file",
+            "sha256": "086f660840b53b942b214433f54396586954bdcd26fd3662b44f38ae20877f89",
+            "size": 39
+          },
+          "lower.py": {
+            "state": "file",
+            "sha256": "15943f5cb218972a16eb02f3377fa909d22d5a5e0631087bf15c3087534e5482",
+            "size": 37
+          },
+          "tests/test_integration.py": {
+            "state": "file",
+            "sha256": "f2c28b6f6ead4549d0c03930b64d0292dd9513225306dcec6ae043cd3d4398bd",
+            "size": 326
+          },
+          "tests/test_lower.py": {
+            "state": "file",
+            "sha256": "12f557b2eaebf10bf346ce7950cb35fd29f3f38ce395fb6a894ebe97e321750b",
+            "size": 162
+          },
+          "tests/test_upper.py": {
+            "state": "file",
+            "sha256": "332770fa0ef9747afedcff27e921f531f6fd519a5b60e18f31ed6e39c1dc67f4",
+            "size": 162
+          },
+          "upper.py": {
+            "state": "file",
+            "sha256": "7351976f90ef627bdfd804537c76051e37398cad732f88d7f6f09c655965a1e0",
+            "size": 45
+          }
+        },
+        "workflow": {
+          ".agent-workflow": {
+            "state": "missing"
+          }
+        },
+        "index": "3b3fb424fac56903f7d13a2bc771fa6525d8e8962a14e4ae8e28e12645e3ad8a"
+      },
+      "changed_paths": [
+        "upper.py"
+      ],
+      "patch_sha256": "20cc901335ef7b39fc2bf1785e48aad2e435fea68f3c6355946b526aa7af7fd8"
+    },
+    "T-LOW": {
+      "run_digest": "2b48e8e7ce465a1873db3bee1f08c2550baf17833486baae1b35aa27581fee00",
+      "task_id": "T-LOW",
+      "status": "ready",
+      "summary": "Implemented lower.convert(str)->str as value.lower() per R-1 (lower ABC gives abc); only lower.py changed; upper.py untouched.",
+      "checks": [
+        {
+          "command": [
+            "/Library/Developer/CommandLineTools/usr/bin/python3",
+            "-m",
+            "unittest",
+            "discover",
+            "-s",
+            "tests",
+            "-p",
+            "test_lower.py"
+          ],
+          "status": "passed",
+          "returncode": 0,
+          "log": "check-0.log",
+          "log_sha256": "fb184ea57734512b1f088f9181209901b9cd46df3eb7eaa2500ea9e48dde20b5"
+        }
+      ],
+      "worker_state": {
+        "files": {
+          ".gitignore": {
+            "state": "file",
+            "sha256": "086f660840b53b942b214433f54396586954bdcd26fd3662b44f38ae20877f89",
+            "size": 39
+          },
+          "lower.py": {
+            "state": "file",
+            "sha256": "dc00ddf36405b738971ae727dc043a05de40eef165d1ec91d0058e3445f0c854",
+            "size": 45
+          },
+          "tests/test_integration.py": {
+            "state": "file",
+            "sha256": "f2c28b6f6ead4549d0c03930b64d0292dd9513225306dcec6ae043cd3d4398bd",
+            "size": 326
+          },
+          "tests/test_lower.py": {
+            "state": "file",
+            "sha256": "12f557b2eaebf10bf346ce7950cb35fd29f3f38ce395fb6a894ebe97e321750b",
+            "size": 162
+          },
+          "tests/test_upper.py": {
+            "state": "file",
+            "sha256": "332770fa0ef9747afedcff27e921f531f6fd519a5b60e18f31ed6e39c1dc67f4",
+            "size": 162
+          },
+          "upper.py": {
+            "state": "file",
+            "sha256": "15943f5cb218972a16eb02f3377fa909d22d5a5e0631087bf15c3087534e5482",
+            "size": 37
+          }
+        },
+        "workflow": {
+          ".agent-workflow": {
+            "state": "missing"
+          }
+        },
+        "index": "3b3fb424fac56903f7d13a2bc771fa6525d8e8962a14e4ae8e28e12645e3ad8a"
+      },
+      "changed_paths": [
+        "lower.py"
+      ],
+      "patch_sha256": "5d29991ac4218cfc88428b6443a70f30d981180eb9d8a6676ea4c573143d7708"
+    }
+  },
+  "personal_install_version": "0.5.26",
+  "personal_install_matches_marker": true,
+  "candidate_tree_independently_equal": true,
+  "installed_version": "0.5.26",
+  "native_dev_in_init_list": true,
+  "actual_model": "claude-opus-5-5",
+  "raw_primary_index_sha256_unchanged": true,
+  "source_head_and_status_unchanged_before_documentation": true,
+  "source_install_marker_hashes_equal": true,
+  "runtime_file_count": 73,
+  "agent_dispatch_summary": [
+    {
+      "tool_id": "toolu_017Y3xoXDYhm2X3kxjrsoiEh",
+      "message_id": "msg_011CfWujPNcaAE4Kf4CGzeFd",
+      "timestamp": "2026-09-29T02:04:21.675Z",
+      "description": "Build worker T-UP",
+      "subagent_type": "general-purpose",
+      "run_in_background": null
+    },
+    {
+      "tool_id": "toolu_01433jkVJhtiagVFZtZXiLvV",
+      "message_id": "msg_011CfWujPNcaAE4Kf4CGzeFd",
+      "timestamp": "2026-09-29T02:04:26.646Z",
+      "description": "Build worker T-LOW",
+      "subagent_type": "general-purpose",
+      "run_in_background": null
+    }
+  ],
+  "worker_sequence_observations": [
+    {
+      "worker": "Build worker T-UP",
+      "preflight_before_task_evidence": true,
+      "edit_and_finish_same_message": true,
+      "message_id": "msg_011CfWumWQqHNDeBxL1ZjAJf"
+    },
+    {
+      "worker": "Build worker T-LOW",
+      "preflight_before_task_evidence": true,
+      "edit_and_finish_same_message": true,
+      "message_id": "msg_011CfWumgnAu3yRJfLPAtirj"
+    }
+  ],
+  "approved_plan_equal_to_supplied_contract": true
+}

@@ -1,0 +1,79 @@
+diff --git a/upper.py b/upper.py
+index fa04402..cfa1110 100644
+--- a/upper.py
++++ b/upper.py
+@@ -1,2 +1,73 @@
++"""CSV catalog importer: pure local convert(text) -> {'records': [...], 'errors': [...]}."""
++
++import csv
++import io
++from decimal import Decimal, InvalidOperation, localcontext
++
++_HEADER = ["sku", "name", "price"]
++_CENT = Decimal("0.01")
++
++
++def _parse_price(raw):
++    """Return the price formatted with exactly two decimals, or None if invalid."""
++    try:
++        value = Decimal(raw)
++    except (InvalidOperation, ValueError, TypeError):
++        return None
++    if not value.is_finite() or value < 0:
++        return None
++    if value.as_tuple().exponent < -2:
++        return None
++    if value == 0:
++        value = Decimal(0)  # normalize "-0" to "0"
++    with localcontext() as ctx:
++        ctx.prec = max(28, len(value.as_tuple().digits) + max(value.as_tuple().exponent, 0) + 3)
++        try:
++            return format(value.quantize(_CENT), "f")
++        except InvalidOperation:
++            return None
++
++
+ def convert(text):
+-    raise NotImplementedError
++    records = []
++    errors = []
++    if text.startswith("﻿"):
++        text = text[1:]
++    if text == "":
++        return {"records": records, "errors": errors}
++
++    reader = csv.reader(io.StringIO(text, newline=""))
++    seen = set()
++    line = 0
++    try:
++        for row in reader:
++            line += 1
++            fields = [field.strip() for field in row]
++            if line == 1:
++                if fields != _HEADER:
++                    errors.append({"line": 1, "code": "header"})
++                    break
++                continue
++            if not row:
++                # Entirely blank logical row: nothing to import.
++                continue
++            if len(fields) != len(_HEADER):
++                errors.append({"line": line, "code": "invalid_row"})
++                continue
++            sku, name, raw_price = fields
++            if not sku or not name:
++                errors.append({"line": line, "code": "invalid_row"})
++                continue
++            price = _parse_price(raw_price)
++            if price is None:
++                errors.append({"line": line, "code": "invalid_price"})
++                continue
++            if sku in seen:
++                errors.append({"line": line, "code": "duplicate_sku"})
++                continue
++            seen.add(sku)
++            records.append({"sku": sku, "name": name, "price": price})
++    except csv.Error:
++        errors.append({"line": line + 1, "code": "invalid_row"})
++
++    return {"records": records, "errors": errors}

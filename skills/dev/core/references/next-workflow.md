@@ -36,4 +36,4 @@ Do not use `next` to bypass restore, PRD review, impact, module, verification or
 
 When the user explicitly asks for independent review, route to Verify using `independent-verify.md`. It is an opt-in read-only pilot. Do not invoke it automatically on plain next/check or a progress question, and do not silently replace fresh-context review with the current Agent.
 
-For an explicit request to implement two independent tasks concurrently, load `parallel-build.md`. Do not infer parallelism from “continue” or task count alone.
+When next reaches an authorized eligible develop step, load `build-strategy.md` and choose serial or two workers from current Scope evidence and expected benefit. The user need not type --parallel. Task count or “continue” alone does not justify concurrency; --serial/no-subagents is respected. Only an eligible pair loads `parallel-build.md`; status-only and planning-only requests never dispatch.

@@ -1,6 +1,6 @@
 ---
 name: featrace-build
-description: Implement one confirmed FeatraceDev task in its assigned isolated worktree and return code with executed task checks. Loaded by the dev router for the explicit two-task parallel Build pilot; never edits shared feature records or integrates a peer's changes.
+description: Implement one confirmed FeatraceDev task in its assigned isolated worktree and return code with executed task checks. Loaded by the dev router for the router-selected two-task isolated Build; never edits shared feature records or integrates a peer's changes.
 ---
 
 # Isolated Build worker
@@ -24,7 +24,9 @@ Stop if it fails. Preflight precedes reading run.json, task evidence or code. Sc
 
 ## Return
 
-Once the code is ready, invoke the helper exactly once:
+Finish all edit/write operations and wait for their tool results. After they succeed, read the actual diff in a separate tool call and confirm the assigned scope and intended change. If an edit failed or its result is uncertain, resolve that before requesting `ready`.
+
+Only after the diff inspection returns, invoke the helper exactly once in a separate tool call. Do not put edits, diff inspection and `finish` in the same assistant message/tool batch, run them concurrently, or launch `finish` while any writer is pending. Keep the worktree unchanged until `finish` returns. These are dependent steps within one worker; the two independent workers may still run concurrently:
 
 ```text
 python3 <SKILL>/core/scripts/parallel-build.py finish <RUN> <TASK-ID> --status ready --summary <honest-implementation-summary>

@@ -1,0 +1,20 @@
+{
+  "forced_serial/case.json": "2804699dc3e27a08132582b7c7e7aa8930753d9b10319a8a75777bdac4710368",
+  "forced_serial/catalog_consumer.py": "022fe8dc53684149c944caf1dc83efcafcac772dd0e2a42a25479dab4d2b78c1",
+  "forced_serial/catalog_import.py": "8728a37e702c95d92f71544bacdbf9c82ab2f355612a12979bab4d5a9dd54818",
+  "forced_serial/event_consumer.py": "51210c9e25b311df0c4e2845608d8f8999fd0d5fcfa781da4998c2a7fc6c51bc",
+  "forced_serial/event_import.py": "8c6c67122c7500d49c4bfadf3bcb950c5d6f3b346ccf4c5756c9c40cd98b5a1e",
+  "results.json": "c6f4ed5768076ebe91371c913b06add21dab809c42d79c0196b37c34b8de0eb8",
+  "shared/case.json": "574d85976e5b3fc1a9e89400500e68aa684a4a699946db0cb6d452679411772c",
+  "shared/reader.py": "046be86cbce1e0ad5458cd0fe053d60a8ccb23053de3b1c04baec53eef2615b2",
+  "shared/state.py": "48b69e6da7e194fcf9f7074f4f1d13c4d887d52dc670b59b73b4fa809c41b44e",
+  "shared/writer.py": "e34026df5b2a69ce820a4c46307a6bb8d67633eb5fbca794b15192948fdc9b7c",
+  "small/case.json": "b2bfd3708e4ce661b3db7b7c61e85018b9dc2226aa8cfa17152ac1f26ce62978",
+  "small/label.py": "35dbb318f9a8558af5adce2926b8e8e5ff523940faa5a81b9b638cec4fcfcd6b",
+  "small/title.py": "91b455bda056710f45611ca799baba53a4276d00bce7531adb4c12fc390b5305",
+  "substantial/case.json": "911a5bbb7f6d2a3e3e5960197deb5937c8ccf67474432a2e8c19805480f68591",
+  "substantial/catalog_consumer.py": "022fe8dc53684149c944caf1dc83efcafcac772dd0e2a42a25479dab4d2b78c1",
+  "substantial/catalog_import.py": "8728a37e702c95d92f71544bacdbf9c82ab2f355612a12979bab4d5a9dd54818",
+  "substantial/event_consumer.py": "51210c9e25b311df0c4e2845608d8f8999fd0d5fcfa781da4998c2a7fc6c51bc",
+  "substantial/event_import.py": "8c6c67122c7500d49c4bfadf3bcb950c5d6f3b346ccf4c5756c9c40cd98b5a1e"
+}

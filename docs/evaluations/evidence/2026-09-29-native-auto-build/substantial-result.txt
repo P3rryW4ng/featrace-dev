@@ -1,0 +1,37 @@
+Both importers are implemented in a separate integration copy, and the full test suite (16 tests) passes there. Per your instructions, I stopped before applying anything to the primary project.
+
+**Skill loaded:** the native plugin Skill `featrace-eval:dev` from `/private/tmp/native28-zudltuv7/plugin/skills/dev`, version **0.5.28**. The personal 0.5.26 copy at `~/.claude/skills/dev` wasn't loaded, and a re-hash of its 74 files matches the "before" snapshot.
+
+**Prerequisites:** the approved records were already current, so I reused them without writing or refreshing anything:
+- R-1 is confirmed.
+- The task review is current.
+- The historical regression review has no candidates.
+- The impact review allows only `upper.py` and `lower.py`.
+- `validate-feature.py --stage develop` returned `FEATURE_VALID` before and after the run.
+
+**Strategy: two workers, chosen by the Skill's own rules.**
+- **Independent:** `upper.py` and `lower.py` are separate functions with no shared state, and each test file imports only its own module.
+- **No overlap:** each task owns exactly one file.
+- **Worth splitting:** each task has substantial validation logic and its own tests.
+- **Capacity:** the host allowed two agents, the working tree was clean, and there was no competing work.
+
+**What ran** (under `/private/tmp/native28-zudltuv7/substantial-attempt/run`):
+
+| Step | Result |
+|---|---|
+| prepare / preflight | both succeeded; inputs current |
+| T-UP (CSV) | `upper.py` only, +72/−1; its 7 tests passed |
+| T-LOW (JSONL) | `lower.py` only, +69/−1; its tests passed |
+| My patch review | each patch stays in its file; no cross-imports or shared state |
+| integrate | `candidate_checks_passed`; full `unittest discover -s tests` (16 tests, including integration) passed, return code 0 |
+
+**Primary project unchanged:** HEAD is still 27f7294, the git index matches the snapshot, and all 19 baseline files are unchanged. Progress records stay pending. The worker copies, their results and the integration copy are all kept.
+
+**Limits:**
+- The rule that each worker edits only its own file was given as an instruction and checked afterwards by the helper's hash and ownership checks. The host didn't enforce it.
+- A candidate whose checks passed isn't a verified delivery. The code hasn't been applied to the primary project or checked there.
+- The workers made some choices where the spec says nothing; these need your confirmation:
+  - **CSV:** blank rows are skipped but still counted in line numbers. `-0` becomes `0.00`. Exponent prices are accepted (`1e2` becomes `100.00`). `1.100` is rejected for having three decimal places. A parse error from Python's `csv` module is reported as `invalid_row`.
+  - **JSONL:** fractional seconds are accepted and dropped from the output. `NaN`/`Infinity` count as invalid JSON. A missing `payload` counts as an invalid event.
+
+No commit, push, install, network or MCP was used. The summary is in `/private/tmp/native28-zudltuv7/substantial-summary.md`.

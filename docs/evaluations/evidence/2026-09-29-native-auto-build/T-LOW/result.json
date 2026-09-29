@@ -1,0 +1,69 @@
+{
+  "run_digest": "a8eb9b1a8c193af3b9e5254f70f61a33e91f1f4d6bfeb8262a67b190f7830843",
+  "task_id": "T-LOW",
+  "status": "ready",
+  "summary": "Implemented lower.convert JSONL event importer in lower.py (stdlib json/re/datetime only, no upper/CSV import, no global mutable state). Splits on physical newlines (strips trailing CR), skips blank lines while keeping one-based physical line numbers; invalid JSON (incl. NaN/Infinity constants) -> invalid_json; non-object, missing/non-string/empty id or timestamp, or missing payload -> invalid_event; timestamp must match YYYY-MM-DDTHH:MM:SS[.frac](Z|+-HH:MM|+-HHMM) and be a valid date/offset, else invalid_timestamp (naive rejected); normalized to UTC YYYY-MM-DDTHH:MM:SSZ (fractions truncated, fixtures have none); first valid id accepted, later duplicate_id; invalid events do not reserve ids; order preserved; empty input gives empty lists. Local test_lower.py run: 7 tests OK.",
+  "checks": [
+    {
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-p",
+        "test_lower.py"
+      ],
+      "status": "passed",
+      "returncode": 0,
+      "log": "check-0.log",
+      "log_sha256": "fe836cbecd3b6b4f70bec51b58d30c3e45ad72ae7fb3cb63421a0f7337e651ae"
+    }
+  ],
+  "worker_state": {
+    "files": {
+      ".gitignore": {
+        "state": "file",
+        "sha256": "086f660840b53b942b214433f54396586954bdcd26fd3662b44f38ae20877f89",
+        "size": 39
+      },
+      "lower.py": {
+        "state": "file",
+        "sha256": "159aa5871dd3fbd6e15640b5f13b4cc5568bac905f213cab0be68d66905592e6",
+        "size": 2476
+      },
+      "tests/test_integration.py": {
+        "state": "file",
+        "sha256": "a1a02cb722638f1c08ea271093588fa42a7d035f6179e6827cc4a2fc89b6c9c6",
+        "size": 496
+      },
+      "tests/test_lower.py": {
+        "state": "file",
+        "sha256": "5e1123a2da2388b5eb19a16f4ce876696a7ddfdee955baca9b7ecdcdef873e64",
+        "size": 1651
+      },
+      "tests/test_upper.py": {
+        "state": "file",
+        "sha256": "768d2442e957337e9d28e633326260b49027a48591979787126d8cf3b941419e",
+        "size": 1327
+      },
+      "upper.py": {
+        "state": "file",
+        "sha256": "09241dc10125a8b5d65493f582a7e936cbbb301bd0986919c66048af61cacd39",
+        "size": 49
+      }
+    },
+    "workflow": {
+      ".agent-workflow": {
+        "state": "missing"
+      }
+    },
+    "index": "79002b7c223a8c075ce3005d89426f6b587e3514d392e24c17c676ebc9501172"
+  },
+  "changed_paths": [
+    "lower.py"
+  ],
+  "patch_sha256": "64c6cb236b17ad68d866349783a9281e4a5e7d9bce5c2bf4a9a6e45c5deac8a8",
+  "record_digest": "bae97834508737b50a9b798af096fbba1dea43dd5f3ffbe76713cadbf51e907f"
+}

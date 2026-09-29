@@ -29,8 +29,8 @@ For material requirement questions/proposals, use `clarify` and read `clarify-wo
 
 An explicit `check --independent` or request for independent review takes the read-only pilot in `independent-verify.md` before the ordinary check execution steps. It does not run builds, update project records or mark delivery complete. Default check behavior is unchanged.
 
-## Optional isolated parallel Build
+## Build execution strategy
 
-For an explicit `develop --parallel` or concurrent two-task implementation request, load `parallel-build.md` after ordinary Scope/develop prerequisites. It returns an external integration candidate, not a primary feature completion. Ordinary develop stays serial.
+After ordinary Scope/develop prerequisites, use `build-strategy.md` to choose serial or an eligible pair automatically. --serial/no-subagents forces serial; uncertainty or insufficient benefit favors serial. An eligible pair loads `parallel-build.md` and returns an external integration candidate, not a primary feature completion.
 
 Parallel execution does not skip the develop Scope steps above. Before prepare, read `impact-review.md`, `task-semantic-review.md` and `historical-regression.md`, reuse current evidence or complete the authorized existing review flows. The pilot requires both review records even for legacy features; if writing them is outside this request, stop with Scope blocked, without worktrees or workers.

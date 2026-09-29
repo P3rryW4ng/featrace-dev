@@ -1,0 +1,17 @@
+{
+  "READY-worker-timeline.json": "72a95123140034b5fd879dbc57eaa0ef245588a61e95e75e98ac0c2b13e55ad5",
+  "READY-measurements.json": "3e25de0a480bcdb157720bda529629dbef568d8534bd5f0dad975ebc15cf616f",
+  "BLOCKED-assessment.md": "87b4937b193d07a961214cb65ab7b3b0fa945430f30d7c8bf5e8d3fe90749277",
+  "READY-assessment.md": "8dfb57acb6f076cdddc45a9ae273cd18381300247e032eff76e273127324f043",
+  "READY-before-validation.txt": "7cdb7fb123e0456e7e0716373a538facc249be83ac1561091470df37396a9885",
+  "BLOCKED-measurements.json": "1b6b388d7692b71de5edbe0f9bf1f23a644e54d605a290c90aeac37f3f5e0b32",
+  "BLOCKED-before-validation.txt": "a00bc6515de5285bbe1e94c18a079e3427404f2e00274e3b6e2e16e337caaec3",
+  "READY/check-0.log": "e6ec182765cd965f2837d8eeaef5a64af48a104f245cd1a0b7281559194c57c1",
+  "READY/integration-report.json": "df8b9a6095961c9260e5c30b62074176b84ffe22ec041ebc3761b83eea35750d",
+  "READY/returns/T-UP/patch.diff": "20cc901335ef7b39fc2bf1785e48aad2e435fea68f3c6355946b526aa7af7fd8",
+  "READY/returns/T-UP/result.json": "30ec932f206b46ceb00945590282d7d3abb1b9db7bc78c2e957968496395527f",
+  "READY/returns/T-UP/check-0.log": "fb184ea57734512b1f088f9181209901b9cd46df3eb7eaa2500ea9e48dde20b5",
+  "READY/returns/T-LOW/patch.diff": "5d29991ac4218cfc88428b6443a70f30d981180eb9d8a6676ea4c573143d7708",
+  "READY/returns/T-LOW/result.json": "9981aee1e56e7ee9b4da2e983ae5dd6d9b0bc844586a20889eecc912b98c1101",
+  "READY/returns/T-LOW/check-0.log": "fb184ea57734512b1f088f9181209901b9cd46df3eb7eaa2500ea9e48dde20b5"
+}

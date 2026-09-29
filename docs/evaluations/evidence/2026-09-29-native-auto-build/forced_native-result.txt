@@ -1,0 +1,17 @@
+Scope for FEAT-001 checks out, and the proposed build strategy is **serial**. I stopped at that planning point: no code was edited, no tests were run and no worker was dispatched.
+
+**Skill loaded:** the `/featrace-eval:dev` Skill came from `/private/tmp/native28-zudltuv7/plugin/skills/dev`. Its `plugin.json` says version 0.5.28, so it is the temporary plugin copy. I didn't load any rules by hand, and I didn't read or change the personal 0.5.26 install.
+
+**Route:** `next --feature FEAT-001` → Scope validation → build strategy proposal.
+
+**Scope checks I actually ran (both read-only):**
+- **`feature-status.py`:** exit code 0. PRD present; API and Figma not applicable; 1 confirmed requirement, none blocked; 0 of 2 tasks done; 0 fixes; 0 historical regression candidates; task review current.
+- **`validate-feature.py --stage develop`:** exit code 0, `FEATURE_VALID`.
+- **Records:** the impact record allows only `upper.py` and `lower.py`, based on HEAD `27f7294`. The task review matches both current tasks, and the regression review has no candidates.
+- **Nothing changed:** checksums of every file under `.agent-workflow` and the git status output were identical before and after the checks. HEAD is still `27f7294`.
+
+**Strategy: serial.** Your `--serial` and "no subagents" instruction forces it; `build-strategy.md` puts that ahead of any parallel choice. Without it, a two-worker pair would have been worth considering. Each importer owns its own file (`upper.py`, `lower.py`), both are pure functions with no shared state, and each has its own tests. The planned order is T-UP (CSV importer), then T-LOW (JSONL importer), then the integration tests.
+
+**Limits:** the validators check structure, not whether the content is true. The task review was recorded by "fixture-author" in the fixture itself; I didn't refresh it. Nothing was created under `forced-native-attempt`. There was no commit, push, network, MCP use or cleanup.
+
+The summary is in `/private/tmp/native28-zudltuv7/forced-native-summary.md`.

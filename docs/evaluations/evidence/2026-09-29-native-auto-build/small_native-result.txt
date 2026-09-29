@@ -1,0 +1,33 @@
+I implemented FEAT-001's two case-conversion functions serially, and all 4 existing tests pass. The feature is not delivered: the `check` stage still fails because no verification evidence was recorded, as the rehearsal intended.
+
+**Skill used:** the loaded Skill is `featrace-eval:dev` from `/private/tmp/native28-zudltuv7/plugin/skills/dev`, and the plugin manifest says version 0.5.28. So it is the temporary copy, not a manually loaded replacement.
+
+**Scope:** before any edit, the Skill's status helper showed R-1 confirmed, no blockers, task reviews current and no past-fix candidates to retest. Develop validation returned `FEATURE_VALID`. I didn't write or refresh any review records.
+
+**Strategy: serial.** The Skill's strategy file (`build-strategy.md`) chose this without being told. The two tasks are independent (separate pure functions, no shared state) and the host could run two workers. But the Skill only uses two workers when both tasks have substantial work. Each task here is a one-line change, and both rely on the shared integration test, so worktrees and integration would cost more than the work. I made the edits in the primary project and never created `/private/tmp/native28-zudltuv7/small-native-attempt`.
+
+**Changes:**
+- `upper.py`: `return value.upper()`
+- `lower.py`: `return value.lower()`
+
+No test files were touched.
+
+**Checks run:**
+- **Tests before edits:** 3 of 4 failed.
+- **Tests after edits:** `python3 -B -m unittest discover -s tests -v` passed 4/4 (upper, lower, composition, empty inputs).
+- **Scope check (`impact.py`):** it reports only `lower.py` and `upper.py`, both allowed. The fingerprint was the same before and after the test run.
+- **Develop validation:** `FEATURE_VALID`.
+- **Check validation:** fails. The two impact behaviors (B-1, B-PRESERVE) have no recorded test evidence or waiver.
+
+**Unchanged:**
+- **Project:** checksums taken before and after show git HEAD `d7e071f`, the index and every `.agent-workflow` record unchanged.
+- **Skills:** the plugin files and the personal Skill files are unchanged too. I didn't open the personal Skill to confirm it says 0.5.26.
+- **Nothing external:** no commit, push, install, network, MCP or cleanup.
+
+**Limits:**
+- Tasks are still `planned`.
+- The tests only cover the acceptance examples, composition and empty input.
+- The validators check structure and scope, not whether the behavior is correct.
+- To compare the before/after state I wrote checksum snapshots to `/tmp/n28snap/`, a second location beyond the summary file. I left them in place because cleanup was excluded.
+
+The summary is at `/private/tmp/native28-zudltuv7/small-native-summary.md`.

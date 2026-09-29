@@ -1,0 +1,25 @@
+{
+  "run_digest": "2b48e8e7ce465a1873db3bee1f08c2550baf17833486baae1b35aa27581fee00",
+  "candidate": "/private/tmp/featrace-native-0526-6ockj9og/READY/attempt/integration",
+  "status": "candidate_checks_passed",
+  "base_revision": "d7e071ff9f856106835b4e2bf9d0aad66c259c80",
+  "checks": [
+    {
+      "command": [
+        "/Library/Developer/CommandLineTools/usr/bin/python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests"
+      ],
+      "status": "passed",
+      "returncode": 0,
+      "log": "check-0.log",
+      "log_sha256": "e6ec182765cd965f2837d8eeaef5a64af48a104f245cd1a0b7281559194c57c1"
+    }
+  ],
+  "note": "Candidate only; no primary writes or delivery approval.",
+  "candidate_tree": "fb2809f218165b11dbf641f15f8f5350d192948c",
+  "record_digest": "3c2a98428b282ad93f36a87f6230561d36f1535459a8a779568cf6d705675c8b"
+}

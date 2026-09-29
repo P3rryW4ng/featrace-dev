@@ -1,6 +1,6 @@
-# Opt-in two-task parallel Build pilot (0.5.26)
+# Two-task isolated Build execution (0.5.28)
 
-Load for explicit `develop --parallel` or a request to implement two tasks concurrently. Default develop remains serial. This pilot creates two detached Git worktrees and a third integration candidate outside the primary project. It does not launch processes by itself, apply changes to the primary checkout, commit/push, update task status or approve delivery. If the host cannot provide two independent execution contexts, report unavailable and offer ordinary serial Build.
+Load after `build-strategy.md` selects two workers, including a compatible explicit parallel request. Ordinary develop/next chooses automatically; `--serial` forces serial. This pilot creates two detached Git worktrees and a third integration candidate outside the primary project. It does not launch processes by itself, apply changes to the primary checkout, commit/push, update task status or approve delivery. If the host cannot provide two independent execution contexts, report unavailable and offer ordinary serial Build.
 
 ## Router eligibility and plan
 
@@ -8,7 +8,7 @@ Parallel Build replaces only the execution of an eligible Build slice; it is not
 
 Use those ordinary Scope rules to inspect current authority, task meaning, change/preserve boundary and historical protection. Existing current reviews may be checked and reused; do not manufacture new reviews or refresh timestamps merely for dispatch. If review records are absent, the router completes their existing sync/review flow **before** prepare, only when record writes and any required decisions are authorized. If the user restricts the run to read-only, sync-only or disallows choices, report Scope blocked and stop; do not use compatibility warnings as permission, silently switch to serial, or ask a worker to fill records.
 
-For this opt-in mode, both `task-review.json` and `regression-review.json` must exist and pass the existing develop validator, even for legacy features where missing records would ordinarily warn. A missing record stops prepare before creating scratch/worktrees; stale/pending/invalid records also stop. A zero-candidate history sync is a valid record, not permission to invent a retest. This additional eligibility rule does not retroactively change ordinary serial develop or historical delivery validation.
+For this two-worker mode, both `task-review.json` and `regression-review.json` must exist and pass the existing develop validator, even for legacy features where missing records would ordinarily warn. A missing record stops prepare before creating scratch/worktrees; stale/pending/invalid records also stop. A zero-candidate history sync is a valid record, not permission to invent a retest. This additional eligibility rule does not retroactively change ordinary serial develop or historical delivery validation.
 
 The router's Scope exit must identify the selected tasks, requirement/source basis, current review evidence, impact paths/preserved behavior, applicable module/profile constraints and actual develop result. Then move to Build → prepare → preflight → dispatch. After prepare, no canonical writes are allowed until workers stop; a necessary Scope correction requires a new attempt. Hash/structure checks cannot prove that the Agent loaded instructions or understood their meaning.
 
@@ -48,6 +48,8 @@ python3 core/scripts/parallel-build.py preflight <RUN>
 Prepare captures current primary inputs with the existing Verify helper, freezes canonical evidence under inputs/, checks develop eligibility and path ownership, and creates two detached workers from current HEAD. It writes only external scratch and Git worktree metadata. Existing output directories are refused. Failure may leave worktree registration and partial scratch; preserve and inspect them. The input manifest is disposable attempt data, never another authoritative project state.
 
 ## Dispatch two workers
+
+Include the worker sequencing constraint in dispatch: wait for edit/write success, then inspect the actual diff and wait for that result, then invoke `finish` separately. Never batch these dependent steps or leave a writer running during checks. This ordering is required inside each worker, not between independent workers.
 
 After successful router preflight, use the host's native independent Agent mechanism. Give each worker only its task ID, its worktree, RUN, frozen input path, Skill root, `specialists/featrace-build/SKILL.md` and side-effect restrictions. They use the same specialist with separate contexts/code directories. Do not pass a guessed implementation answer or give either worker write access to the primary/shared records. State whether permissions enforce the split or it remains an instruction plus post-run checks.
 

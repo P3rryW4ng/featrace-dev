@@ -1,0 +1,76 @@
+diff --git a/lower.py b/lower.py
+index fa04402..b46ca79 100644
+--- a/lower.py
++++ b/lower.py
+@@ -1,2 +1,70 @@
++import json
++import re
++from datetime import datetime, timedelta, timezone
++
++_TIMESTAMP = re.compile(
++    r'(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.\d+)?'
++    r'(?:(Z)|([+-])(\d{2}):?(\d{2}))'
++)
++
++
++def _reject_constant(name):
++    raise ValueError('non-standard JSON constant: ' + name)
++
++
++def _normalize_timestamp(value):
++    match = _TIMESTAMP.fullmatch(value)
++    if match is None:
++        return None
++    year, month, day, hour, minute, second = (int(g) for g in match.group(1, 2, 3, 4, 5, 6))
++    if match.group(7):
++        offset = timedelta(0)
++    else:
++        off_hours, off_minutes = int(match.group(9)), int(match.group(10))
++        if off_hours > 23 or off_minutes > 59:
++            return None
++        offset = timedelta(hours=off_hours, minutes=off_minutes)
++        if match.group(8) == '-':
++            offset = -offset
++    try:
++        moment = datetime(year, month, day, hour, minute, second, tzinfo=timezone(offset))
++        utc = moment.astimezone(timezone.utc)
++    except (ValueError, OverflowError):
++        return None
++    return '%04d-%02d-%02dT%02d:%02d:%02dZ' % (
++        utc.year, utc.month, utc.day, utc.hour, utc.minute, utc.second)
++
++
++def _is_nonempty_str(value):
++    return isinstance(value, str) and value != ''
++
++
+ def convert(text):
+-    raise NotImplementedError
++    records = []
++    errors = []
++    seen_ids = set()
++    for number, raw in enumerate(text.split('\n'), start=1):
++        line = raw[:-1] if raw.endswith('\r') else raw
++        if line.strip() == '':
++            continue
++        try:
++            event = json.loads(line, parse_constant=_reject_constant)
++        except ValueError:
++            errors.append({'line': number, 'code': 'invalid_json'})
++            continue
++        if (not isinstance(event, dict)
++                or not _is_nonempty_str(event.get('id'))
++                or not _is_nonempty_str(event.get('timestamp'))
++                or 'payload' not in event):
++            errors.append({'line': number, 'code': 'invalid_event'})
++            continue
++        timestamp = _normalize_timestamp(event['timestamp'])
++        if timestamp is None:
++            errors.append({'line': number, 'code': 'invalid_timestamp'})
++            continue
++        if event['id'] in seen_ids:
++            errors.append({'line': number, 'code': 'duplicate_id'})
++            continue
++        seen_ids.add(event['id'])
++        records.append({'id': event['id'], 'timestamp': timestamp, 'payload': event['payload']})
++    return {'records': records, 'errors': errors}

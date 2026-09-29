@@ -1,0 +1,23 @@
+{
+  "T-LOW/check-0.log": "fe836cbecd3b6b4f70bec51b58d30c3e45ad72ae7fb3cb63421a0f7337e651ae",
+  "T-LOW/patch.diff": "64c6cb236b17ad68d866349783a9281e4a5e7d9bce5c2bf4a9a6e45c5deac8a8",
+  "T-LOW/result.json": "3b1d332ed5fbc2c88a2e7bb207f17c7668ab35f7b817188c32df44dfd72fa639",
+  "T-UP/check-0.log": "fe836cbecd3b6b4f70bec51b58d30c3e45ad72ae7fb3cb63421a0f7337e651ae",
+  "T-UP/patch.diff": "22b9f63d82e151ab73cbac06dfb6fe3ff7a9b18b8a85c9d9e9fb26041760943b",
+  "T-UP/result.json": "287666a12f9152a1aec931974cf8a226a8d925f6761ff6659574611528e308ec",
+  "assessment.json": "87d52b475dc813cde8b1ae7c8592dbd326d3c3d8bbb60bb798012b972d9496fe",
+  "check-0.log": "4b28e869d14d819488ca086813c445b7316884e933bf3c70f63b2aa4b5c4a424",
+  "forced_native-result.txt": "f8cd29ece4bc5bb80dc06894b97dd24a09f23b902a02627e6359f2029148a5e3",
+  "integration-report.json": "bceefc54bde2145e68400365183d115daf6e346b1adfaf2562dd959555cbfde0",
+  "shared_native-result.txt": "d8d23771fc98e1e502aa46995775014ae12b57b109ebdf04c1fc1ebe75b38992",
+  "small-result.txt": "a39bc61f7d0431f0d829d9a91aaa8a3facc888560b1dbe0327d3600e40b9a704",
+  "small_native-result.txt": "20f5646a68bdf512820c5abee937ed15280aab037104a984eef13d77ec242dfc",
+  "substantial-result.txt": "6b099c5e9e777e11814f78427a99809fe715ee7d96d62253e62d37ddd43ca1c8",
+  "synthetic-inputs/approved-contract.txt": "2d00bc9642c845782a28369dc79baa26d5cdd5aa018b0df9046fe746561ae2e3",
+  "synthetic-inputs/lower.py": "09241dc10125a8b5d65493f582a7e936cbbb301bd0986919c66048af61cacd39",
+  "synthetic-inputs/tests/test_integration.py": "a1a02cb722638f1c08ea271093588fa42a7d035f6179e6827cc4a2fc89b6c9c6",
+  "synthetic-inputs/tests/test_lower.py": "5e1123a2da2388b5eb19a16f4ce876696a7ddfdee955baca9b7ecdcdef873e64",
+  "synthetic-inputs/tests/test_upper.py": "768d2442e957337e9d28e633326260b49027a48591979787126d8cf3b941419e",
+  "synthetic-inputs/upper.py": "09241dc10125a8b5d65493f582a7e936cbbb301bd0986919c66048af61cacd39",
+  "worker-tool-order.json": "b90792168cf4f7cf784cb1eaa226553da4772eedac211e93dde839e6afdc9db6"
+}

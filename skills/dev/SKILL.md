@@ -12,7 +12,7 @@ Use the user's project root or the established workspace. Paths below are relati
 - `help [command]`: read `core/references/command-help.md` and answer without project setup, selection, execution or writes. Return after help.
 - Empty `/dev`, `dev off`, and continued messages in delivery mode: read `core/references/session-mode.md`. Activation alone starts no work; mode lasts only for this conversation and project.
 - `list`, `use`, new-feature creation and feature-scoped actions: read `core/references/feature-selection.md`. Confirm the project, feature ID and title before mutation. Never guess the selected feature in a new or uncertain context.
-- Feature mutation or `next`: read `core/references/orchestration.md` and `core/references/workflow.md`. Route through Requirement, Scope, Build, Verify, Repair or Deliver. Load only the chosen stage's references and direct prerequisites. Save handoff facts in existing canonical records; no second state machine or generic handoff file. Default execution uses one Agent. For an explicit independent review request or `check --independent`, load `core/references/independent-verify.md` and dispatch the bundled Verify specialist in a fresh context when the host supports it.
+- Feature mutation or `next`: read `core/references/orchestration.md` and `core/references/workflow.md`. Route through Requirement, Scope, Build, Verify, Repair or Deliver. Load only the chosen stage's references and direct prerequisites. Save handoff facts in existing canonical records; no second state machine or generic handoff file. The router normally uses one Agent; eligible Build selects serial or a two-worker pair using `core/references/build-strategy.md`. For an explicit independent review request or `check --independent`, load `core/references/independent-verify.md` and dispatch the bundled Verify specialist in a fresh context when the host supports it.
 - `next [description] [--feature ID]`: also read `core/references/next-workflow.md`. Inspect current status, announce the route and execute its eligible steps. Progress questions stay read-only unless fresh verification is requested. A failure screenshot enters Repair; a replacement or expected visual enters Requirement. Do not bypass any review, impact, module, restore or verification gate.
 
 | Action | Stage or reference |
@@ -22,7 +22,7 @@ Use the user's project root or the established workspace. Paths below are relati
 | `api FILE-OR-LINK`, `figma FILE-OR-LINK` | Requirement evidence; `prd-analysis.md` |
 | `clarify [ID] QUESTION`, `revise [ID] CHANGE` | Requirement; `clarify-workflow.md` or `revision-workflow.md` |
 | `classify [ID]` | Scope; `module-context.md`; legacy labels also use `feature-archive.md` |
-| `develop [ID]` | Scope → Build; `impact-review.md`, `task-semantic-review.md`, `historical-regression.md`, project profile; explicit `--parallel` uses `parallel-build.md` after the same Scope prerequisites |
+| `develop [ID]` | Scope → Build; `impact-review.md`, `task-semantic-review.md`, `historical-regression.md`, project profile; `build-strategy.md` chooses serial or two workers after Scope; `--serial` forces serial |
 | `fix [ID] PROBLEM` | Repair → Verify; `fix-workflow.md` |
 | `check [ID]` | Verify → eligible Deliver; `verification-workflow.md`; explicit `--independent` uses the read-only pilot in `independent-verify.md` |
 | `archive [ID]`, `restore [ID]` | History; `feature-archive.md` (archive requires delivery evidence; restore does not rerun check) |
@@ -32,7 +32,7 @@ Read `core/references/requirement-schema.md` when editing feature records, `core
 
 ## Boundaries that apply across stages
 
-For `develop --parallel`, first load `orchestration.md` and complete the normal Scope route using `workflow.md`, `impact-review.md`, `task-semantic-review.md` and `historical-regression.md`. Then use `parallel-build.md`; a supplied plan or green legacy validator does not replace current Scope reviews. Missing reviews with writes disallowed mean stop before prepare/dispatch.
+Before any parallel Build, first load `orchestration.md` and complete the normal Scope route using `workflow.md`, `impact-review.md`, `task-semantic-review.md` and `historical-regression.md`. Then use `parallel-build.md`; a supplied plan or green legacy validator does not replace current Scope reviews. Missing reviews with writes disallowed mean stop before prepare/dispatch.
 
 - Original evidence remains unchanged. Requirements, tasks, decisions, traceability and fixes use their canonical JSON; Markdown views are generated. Newer text alone does not override an approved requirement. Missing evidence, unresolved product choices and actual failures remain visible.
 - After source or requirement meaning changes, renew the PRD review. After task meaning changes, review changed tasks against only their linked requirements and evidence. Task progress alone does not trigger semantic review. Run `validate-feature.py --stage draft|develop|check` at the relevant boundary; it checks structure, not truth.

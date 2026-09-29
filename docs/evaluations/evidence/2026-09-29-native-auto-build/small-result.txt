@@ -1,0 +1,20 @@
+I stopped without doing any work on FEAT-001, because `/dev` loaded your personal 0.5.26 Skill instead of the project's 0.5.28 copy.
+
+**Which Skill loaded:**
+- **Loaded:** `/Users/mac/.claude/skills/dev`, version 0.5.26. The version comes from its `.feature-delivery-install.json`, and its `parallel-build.md` is headed "(0.5.26)".
+- **Expected:** `/private/tmp/native28-zudltuv7/small/.claude/skills/dev`, version 0.5.28. It has a `core/references/build-strategy.md` headed "(0.5.28)", and its `parallel-build.md` is also marked 0.5.28.
+- **Difference:** the two copies differ in `SKILL.md`, `command-help.md`, `next-workflow.md`, `orchestration.md`, `parallel-build.md`, `workflow.md` and `specialists/featrace-build/SKILL.md`. `build-strategy.md` exists only in the project copy.
+
+**Why I stopped:** you said to stop if the loaded Skill wasn't the local copy. Carrying on would have meant following the 0.5.26 rules, which don't have the build-strategy selection you wanted tested, or loading the 0.5.28 files by hand, which you ruled out.
+
+**What I checked:** I listed both Skill directories, searched them for version markers and compared them file by file. Git is clean and HEAD is still `d7e071f`.
+
+**Not done:**
+- Serial vs. parallel was never chosen.
+- I didn't read the FEAT-001 records or evaluate its reviews.
+- No code was edited, no tests were run, and nothing was created under `small-attempt`.
+- Nothing was changed in the project, either Skill copy, config or git.
+
+The only file I wrote is `/private/tmp/native28-zudltuv7/small-summary.md`.
+
+To try again, make sure `/dev` picks up the project copy over the personal one, then start a fresh session.

@@ -1,0 +1,25 @@
+{
+  "run_digest": "a8eb9b1a8c193af3b9e5254f70f61a33e91f1f4d6bfeb8262a67b190f7830843",
+  "candidate": "/private/tmp/native28-zudltuv7/substantial-attempt/run/integration",
+  "status": "candidate_checks_passed",
+  "base_revision": "27f72944625342209d310f299ee4555848b1b86f",
+  "checks": [
+    {
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests"
+      ],
+      "status": "passed",
+      "returncode": 0,
+      "log": "check-0.log",
+      "log_sha256": "4b28e869d14d819488ca086813c445b7316884e933bf3c70f63b2aa4b5c4a424"
+    }
+  ],
+  "note": "Candidate only; no primary writes or delivery approval.",
+  "candidate_tree": "9a185cc91c1acb814a3bc37508ef2336ad3af4d1",
+  "record_digest": "fbe35d7ba6d628685cd4d64d57b770073f7c91856aab46563764c12d05f9bcac"
+}

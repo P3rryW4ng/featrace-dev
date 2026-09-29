@@ -1,0 +1,25 @@
+{
+  "tasks": [
+    {
+      "id": "T-A",
+      "path": "title.py",
+      "work": "Change title string from Draft to Saved"
+    },
+    {
+      "id": "T-B",
+      "path": "label.py",
+      "work": "Change label string from Back to Return"
+    }
+  ],
+  "request": "Implement the two approved label changes.",
+  "scope_fixture": {
+    "status": "ready",
+    "source_task_impact_history_reviews": "current, supplied fixture precondition; not a real feature validation claim",
+    "product_contracts": "approved with no pending choices",
+    "worktree": "clean",
+    "host": "two fresh contexts and isolated Git worktrees are available",
+    "resource_budget": "maximum 2 concurrent workers, enough budget for this authorized development",
+    "checks": "per-task local unittest commands, separate test files and outputs; no global mutable services",
+    "ownership": "each task owns its implementation and separate test file; inspect supplied imports to assess shared dependencies"
+  }
+}

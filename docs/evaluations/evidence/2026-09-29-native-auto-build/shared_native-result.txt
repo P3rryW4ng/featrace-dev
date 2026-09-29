@@ -1,0 +1,30 @@
+I've chosen **serial** execution for FEAT-001 and stopped before any code edits, tests, prepare or dispatch, as the planning-only instruction required. Nothing is blocking the serial build.
+
+**Skill loaded:** the temporary plugin copy. It loaded natively from `/private/tmp/native28-zudltuv7/plugin/skills/dev`, and the plugin manifest says `featrace-eval` 0.5.28. I didn't read, load or change the personal 0.5.26 install.
+
+**Route:** develop → Scope (validated) → Build strategy chosen → stopped. I loaded the orchestration, workflow, build-strategy, impact-review, task-semantic-review and historical-regression references. I didn't load `parallel-build.md` because two workers weren't selected.
+
+**Scope checks (read-only):**
+- The develop-stage validator returned `FEATURE_VALID` (exit 0).
+- The feature status report shows:
+  - the one requirement, R-1, is confirmed;
+  - 0 of 2 tasks are done;
+  - the task review is current;
+  - there are 0 past-fix candidates, 0 fixes and 0 open clarifications;
+  - the PRD is present, and API and Figma are marked not applicable with reasons.
+- The impact record's base revision is the current HEAD (`0698118`). Its allowed paths are `upper.py` and `lower.py`, and all six checks it covers are reviewed.
+- A checksum of every file outside `.git` was the same before and after these checks. `git status` is clean and HEAD hasn't moved.
+
+**Why serial:** the Skill's rule for using two workers requires the tasks to be independent, and these aren't:
+- `tasks.json` says T-LOW depends on T-UP and runs "after T-UP finishes its records/errors contract".
+- The source PRD says "T-LOW depends on the completed output shape and error behavior of T-UP."
+- In the impact record, `lower.py:1` imports `upper.convert` and says "tasks must run sequentially".
+- R-1's acceptance criteria say "Derived stage calls completed importer".
+
+Having two tasks and two agent contexts available isn't enough when one task needs the other's output. The planned order, all in the primary workspace:
+1. T-UP in `upper.py`, then `tests/test_upper.py`.
+2. T-LOW in `lower.py`, then `tests/test_lower.py` and `tests/test_integration.py`.
+
+**Limit:** I didn't run the past-fix sync script (`regression_review.py sync`) because it writes to the feature records. The existing record (0 candidates) passed the develop validator, but the implementation run should run the sync again before the first code edit.
+
+**Not done:** no code edits, tests, prepare, workers or integration. I didn't create the `shared-native-attempt` directory, write any records, commit, push, install anything, use the network or MCP, or clean up. The only file I wrote is the summary at `/private/tmp/native28-zudltuv7/shared-native-summary.md`.

@@ -1,0 +1,25 @@
+{
+  "tasks": [
+    {
+      "id": "T-A",
+      "path": "catalog_import.py",
+      "work": "Implement independent CSV catalog ingestion: BOM handling, quoted delimiters, multiline quoted fields, required SKU/name/price validation, decimal price rules, duplicate SKU conflict reporting, per-row errors, atomic per-row acceptance, and a complete fixture matrix. Uses only local strings; no files or database writes."
+    },
+    {
+      "id": "T-B",
+      "path": "event_import.py",
+      "work": "Implement independent JSONL event ingestion: object/schema validation, timestamp-offset normalization, missing-field diagnostics, event-ID duplicate policy, stable ordering, bounded batch rejection reporting and a complete fixture matrix. Uses only local strings; no files or database writes."
+    }
+  ],
+  "request": "Implement these approved importers with --serial. Do not use subagents.",
+  "scope_fixture": {
+    "status": "ready",
+    "source_task_impact_history_reviews": "current, supplied fixture precondition; not a real feature validation claim",
+    "product_contracts": "approved with no pending choices",
+    "worktree": "clean",
+    "host": "two fresh contexts and isolated Git worktrees are available",
+    "resource_budget": "maximum 2 concurrent workers, enough budget for this authorized development",
+    "checks": "per-task local unittest commands, separate test files and outputs; no global mutable services",
+    "ownership": "each task owns its implementation and separate test file; inspect supplied imports to assess shared dependencies"
+  }
+}

@@ -1,0 +1,81 @@
+{
+  "case": "BLOCKED",
+  "execution": {
+    "started_at_epoch": 1790647294.700686,
+    "case": "BLOCKED",
+    "exit_code": 0,
+    "elapsed_seconds": 72.885
+  },
+  "cost_usd_list": 0.42461879999999996,
+  "model_usage": {
+    "claude-opus-5-5": {
+      "inputTokens": 18,
+      "outputTokens": 5129,
+      "cacheReadInputTokens": 265634,
+      "cacheCreationInputTokens": 33605,
+      "webSearchRequests": 0,
+      "costUSD": 0.42461879999999996,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 427,
+      "canonicalModel": "claude-opus-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "primary_unchanged": true,
+  "head_unchanged": true,
+  "status_unchanged": true,
+  "reference_read_commands": {
+    "orchestration.md": [
+      {
+        "tool": "Read",
+        "description": "",
+        "input": "/Users/mac/.claude/skills/dev/core/references/orchestration.md"
+      }
+    ],
+    "workflow.md": [
+      {
+        "tool": "Bash",
+        "description": "Scan Scope references and validator for review record rules",
+        "input": "cd /Users/mac/.claude/skills/dev/core && grep -n -i -E \"task-review\\.json|regression-review\\.json|read-only|sync\" references/task-semantic-review.md references/historical-regression.md | head -40; echo ---; grep -n -i -A12 \"^## .*develop\" references/workflow.md | head -50; echo ---; ls scripts; grep -n -E \"open\\(.*['\\\"]w|write_text|\\.write\\(\" scripts/validate-feature.py | head"
+      }
+    ],
+    "impact-review.md": [],
+    "task-semantic-review.md": [
+      {
+        "tool": "Bash",
+        "description": "Scan Scope references and validator for review record rules",
+        "input": "cd /Users/mac/.claude/skills/dev/core && grep -n -i -E \"task-review\\.json|regression-review\\.json|read-only|sync\" references/task-semantic-review.md references/historical-regression.md | head -40; echo ---; grep -n -i -A12 \"^## .*develop\" references/workflow.md | head -50; echo ---; ls scripts; grep -n -E \"open\\(.*['\\\"]w|write_text|\\.write\\(\" scripts/validate-feature.py | head"
+      }
+    ],
+    "historical-regression.md": [
+      {
+        "tool": "Bash",
+        "description": "Scan Scope references and validator for review record rules",
+        "input": "cd /Users/mac/.claude/skills/dev/core && grep -n -i -E \"task-review\\.json|regression-review\\.json|read-only|sync\" references/task-semantic-review.md references/historical-regression.md | head -40; echo ---; grep -n -i -A12 \"^## .*develop\" references/workflow.md | head -50; echo ---; ls scripts; grep -n -E \"open\\(.*['\\\"]w|write_text|\\.write\\(\" scripts/validate-feature.py | head"
+      }
+    ],
+    "parallel-build.md": [
+      {
+        "tool": "Read",
+        "description": "",
+        "input": "/Users/mac/.claude/skills/dev/core/references/parallel-build.md"
+      }
+    ],
+    "PROFILE.md": []
+  },
+  "prepare_calls": [],
+  "integration": null,
+  "returns": {},
+  "personal_install_version": "0.5.26",
+  "personal_install_matches_marker": true,
+  "installed_version": "0.5.26",
+  "native_dev_in_init_list": true,
+  "actual_model": "claude-opus-5-5",
+  "raw_primary_index_sha256_unchanged": true,
+  "source_head_and_status_unchanged_before_documentation": true,
+  "source_install_marker_hashes_equal": true,
+  "runtime_file_count": 73,
+  "agent_dispatch_summary": []
+}
