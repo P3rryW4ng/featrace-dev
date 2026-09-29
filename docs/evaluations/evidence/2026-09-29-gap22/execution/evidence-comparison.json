@@ -1,0 +1,44 @@
+{
+  "report_hashes_match_actual_files": {
+    "src/catalog/query.py": true,
+    "src/audit/summary.py": true,
+    "tests/test_product_snapshot.py": true,
+    "tests/test_event_snapshot.py": true
+  },
+  "quality_tested_at": "2026-09-29T09:04:57.457079+00:00",
+  "quality_commands": [
+    {
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-v"
+      ],
+      "status": "passed",
+      "returncode": 0,
+      "test_summary": "test_product_snapshot.ProductSnapshotTests) ... ok\n\n----------------------------------------------------------------------\nRan 20 tests in 0.001s\n\nOK\n"
+    }
+  ],
+  "quality_snapshot_evidence_files": {
+    ".gitignore": "6264be86b388fd9112acbc53b3a871c8faad0d865e16cd15282bf141dc7854a2",
+    "AGENTS.md": null,
+    "CLAUDE.md": null,
+    "README.md": "b4eee21ad1d56fec3479c8dbdcb3ad1e4f10b8757fbabd1f3eca324540875f1c",
+    "src/audit/summary.py": "91e86c0eecda9bf5374039b341e6c804b8c31cd92b939d7a9ee7cccfcf01074b",
+    "src/catalog/query.py": "e812ffe1e59509695478da3e23a0fd9f8b8b86dfee17b3b6e5c0f3bc053ad232",
+    "src/shared/formatting.py": "7187d9a43067940964b815fe786408b7e7c20a275abf3ffc8fd80c27fe1cdef9",
+    "tests/test_event_snapshot.py": "7d53a409cd557e5555ce404a56e374ef64a3d731eb42fc366adb4a94bae1867d",
+    "tests/test_legacy.py": "76490a70ca4126fef12c0d1d2b55e7ecb38859fe949e623c4e9fe7b7a2cb8b0c",
+    "tests/test_product_snapshot.py": "8eaf7e9efb89b690091efc923c66c13215d3b749a4e6fb3008a9652a816fcaaf"
+  },
+  "confirmed_requirement_count": 12,
+  "done_task_count": 3,
+  "verification_rows": 35,
+  "manual_row_sources": [
+    "requirement:R-10:2",
+    "requirement:R-11:3"
+  ]
+}

@@ -21,7 +21,7 @@ Use the user's meaning and current records, not isolated keywords:
 | Confirmed correction/addition changes requirement meaning | `revise`; a newer message alone is not approval |
 | Requirements are eligible and the user asks to implement or continue | `develop` |
 | User asks to validate/accept the implementation | `check` |
-| User authorizes delivery/closure | Deliver under `verification-workflow.md`: save and reread the feature-local report before complete; continue Verify first if applicable evidence is not current |
+| User authorizes delivery/closure | Deliver under `verification-workflow.md`: save the feature-local report, wait for a separate full read to return, then compare evidence before a separate complete mutation; continue Verify first if applicable evidence is not current |
 | User asks what remains or whether it is done | Read `status` and existing evidence only; do not run check, builds, validation or audit unless fresh verification was explicitly requested. If complete, report that no required delivery step remains and offer archive as optional history management |
 | User gives no description or explicitly says continue | Inspect `status`; execute the single required next workflow step only when it is unambiguous and already authorized. Otherwise report the blocker or focused choice |
 

@@ -1,0 +1,378 @@
+[
+  {
+    "order": 1,
+    "event": 1,
+    "name": "Skill",
+    "file_path": null,
+    "description": null,
+    "command_prefix": ""
+  },
+  {
+    "order": 2,
+    "event": 3,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Explore plugin, PRD and project",
+    "command_prefix": "cd /private/tmp/featrace-gap22-0532-ufoi27bt; ls -R plugin | head -100; cat plugin/.claude-plugin/plugin.json 2>/dev/null; cat inputs/prd.md; cd project; git status; find . -path ./.git -prune -o -type f -print | head -80; cat README* "
+  },
+  {
+    "order": 3,
+    "event": 5,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Read source files and reference sizes",
+    "command_prefix": "cd /private/tmp/featrace-gap22-0532-ufoi27bt/project; cat src/catalog/query.py src/shared/formatting.py src/audit/summary.py tests/test_legacy.py .gitignore src/*/__init__.py; cd ../plugin/skills/dev/core/references; wc -l *.md"
+  },
+  {
+    "order": 4,
+    "event": 7,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Read core workflow references",
+    "command_prefix": "cd /private/tmp/featrace-gap22-0532-ufoi27bt/plugin/skills/dev/core/references; cat feature-selection.md orchestration.md workflow.md prd-analysis.md git-sharing.md"
+  },
+  {
+    "order": 5,
+    "event": 9,
+    "name": "Read",
+    "file_path": "/Users/mac/.claude/projects/-private-tmp-featrace-gap22-0532-ufoi27bt-project/161633b1-b8ae-4186-9856-623674a7a907/tool-results/b76k7pljf.txt",
+    "description": null,
+    "command_prefix": ""
+  },
+  {
+    "order": 6,
+    "event": 11,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Read schema, baseline and init script",
+    "command_prefix": "cd /private/tmp/featrace-gap22-0532-ufoi27bt/plugin/skills/dev/core; cat references/requirement-schema.md references/project-baseline.md; cat scripts/init-feature.sh; cat assets/config.yaml | head -50"
+  },
+  {
+    "order": 7,
+    "event": 13,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Check existing features and initialize E2E-0531",
+    "command_prefix": "cd /private/tmp/featrace-gap22-0532-ufoi27bt/plugin/skills/dev; P=/private/tmp/featrace-gap22-0532-ufoi27bt/project; ls -a $P; python3 core/scripts/feature-context.py list $P; bash core/scripts/init-feature.sh E2E-0531 /private/tmp/featrace-gap22-0532-ufoi27bt/inputs/prd.md $P; find $P/.agent-workflow -type f; cat $P/."
+  },
+  {
+    "order": 8,
+    "event": 15,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Inspect intake validator rules",
+    "command_prefix": "cd /private/tmp/featrace-gap22-0532-ufoi27bt/plugin/skills/dev/core/scripts; wc -l *.py | sort -n | tail -15; grep -n \"aspect\\|unit\\b\\|interaction_scope\\|\\\"kind\\\"\" prd_intake.py | head -60"
+  },
+  {
+    "order": 9,
+    "event": 17,
+    "name": "Read",
+    "file_path": "/private/tmp/featrace-gap22-0532-ufoi27bt/plugin/skills/dev/core/scripts/prd_intake.py",
+    "description": null,
+    "command_prefix": ""
+  },
+  {
+    "order": 10,
+    "event": 19,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Generate requirements, intake and tasks; validate draft",
+    "command_prefix": "mkdir -p /private/tmp/featrace-gap22-0532-ufoi27bt/execution/scratch && cat > /private/tmp/featrace-gap22-0532-ufoi27bt/execution/scratch/gen_req.py <<'EOF'\nimport json\nF='/private/tmp/featrace-gap22-0532-ufoi27bt/project/.agent-workflow/features/E2E-0531/'\nP='sources/prd-original.md'\ndef src(ref): return [{\"type\":\"prd"
+  },
+  {
+    "order": 11,
+    "event": 21,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Fix reverse link and re-validate draft",
+    "command_prefix": "cd /private/tmp/featrace-gap22-0532-ufoi27bt/execution/scratch && sed -i '' 's/source_item_ids=\\[\"S-12\"\\]/source_item_ids=[\"S-12\",\"S-1\"]/' gen_req.py && python3 gen_req.py && cd /private/tmp/featrace-gap22-0532-ufoi27bt/plugin/skills/dev && P=/private/tmp/featrace-gap22-0532-ufoi27bt/project && python3 core/scripts/ren"
+  },
+  {
+    "order": 12,
+    "event": 23,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Record PRD review, select feature, read Scope refs",
+    "command_prefix": "P=/private/tmp/featrace-gap22-0532-ufoi27bt/project && python3 core/scripts/review-prd.py $P E2E-0531 --reviewer agent --notes \"Re-read original PRD sections (intro, catalog, audit, constraints) against S-1..S-16 and R-1..R-12. Checked validation order/first-error, missing-field=invalid, empty-string allowances, bool-v"
+  },
+  {
+    "order": 13,
+    "event": 25,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Read Scope stage references",
+    "command_prefix": "cd /private/tmp/featrace-gap22-0532-ufoi27bt/plugin/skills/dev/core/references && cat module-context.md impact-review.md task-semantic-review.md historical-regression.md build-strategy.md"
+  },
+  {
+    "order": 14,
+    "event": 27,
+    "name": "Read",
+    "file_path": "/Users/mac/.claude/projects/-private-tmp-featrace-gap22-0532-ufoi27bt-project/161633b1-b8ae-4186-9856-623674a7a907/tool-results/bre89f3p0.txt",
+    "description": null,
+    "command_prefix": ""
+  },
+  {
+    "order": 15,
+    "event": 29,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Read generic profile and validator gates",
+    "command_prefix": "cd /private/tmp/featrace-gap22-0532-ufoi27bt/plugin/skills/dev; ls profiles/generic; sed -n 1,80p profiles/generic/*.md | head -80; grep -n \"baseline\\|module\" core/scripts/validate-feature.py | head -30"
+  },
+  {
+    "order": 16,
+    "event": 31,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Set up workflow git ignore and prepare baseline scan",
+    "command_prefix": "cd /private/tmp/featrace-gap22-0532-ufoi27bt/plugin/skills/dev; P=/private/tmp/featrace-gap22-0532-ufoi27bt/project; python3 core/scripts/setup-workflow-git.py $P; python3 core/scripts/project.py scan-prepare $P; find $P/.agent-workflow/baseline-draft -type f | xargs -I{} sh -c 'echo \"== {}\"; cat \"{}\"'"
+  },
+  {
+    "order": 17,
+    "event": 33,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Fill baseline notes and publish scan",
+    "command_prefix": "B=/private/tmp/featrace-gap22-0532-ufoi27bt/project/.agent-workflow/baseline-draft/baseline; cd $B\ncat > architecture.md <<'EOF'\n# Architecture\n\nSource-reviewed (not runtime-verified) at commit d94ea6f.\n\n- Pure Python 3.9+ standard library package; no build manifest (no pyproject/setup.py/requirements). Evidence: `READ"
+  },
+  {
+    "order": 18,
+    "event": 35,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Create module index and plan module scopes",
+    "command_prefix": "P=/private/tmp/featrace-gap22-0532-ufoi27bt/project; mkdir -p $P/.agent-workflow/modules; cat > $P/.agent-workflow/modules/index.json <<'EOF'\n{\n  \"schema_version\": 1,\n  \"shared_stack\": \"Python 3.9+ standard library only; unittest run from repository root (README.md)\",\n  \"global_files\": [\"README.md\"],\n  \"modules\": [\n   "
+  },
+  {
+    "order": 19,
+    "event": 37,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Review module dossiers and confirm feature scope",
+    "command_prefix": "P=/private/tmp/featrace-gap22-0532-ufoi27bt/project; D=$P/.agent-workflow/modules/drafts; mkdir -p $D\ncat > $D/catalog.json <<'EOF'\n{\"module_id\":\"catalog\",\n \"technology\":[{\"detail\":\"Plain Python module, standard library only; imports shared.formatting.receipt_code\",\"evidence_files\":[\"src/catalog/query.py\",\"README.md\"]}"
+  },
+  {
+    "order": 20,
+    "event": 39,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Write impact, sync regression and task reviews",
+    "command_prefix": "P=/private/tmp/featrace-gap22-0532-ufoi27bt/project; F=$P/.agent-workflow/features/E2E-0531; cat > $F/impact.json <<'EOF'\n{\n  \"schema_version\": 1,\n  \"feature_id\": \"E2E-0531\",\n  \"base_revision\": \"d94ea6f0400e33e2f79159520e0d65508841f8b0\",\n  \"inspected_paths\": [\"README.md\", \"src/catalog/query.py\", \"src/catalog/__init__.p"
+  },
+  {
+    "order": 21,
+    "event": 41,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Record task review and validate develop stage",
+    "command_prefix": "P=/private/tmp/featrace-gap22-0532-ufoi27bt/project; cd /private/tmp/featrace-gap22-0532-ufoi27bt/plugin/skills/dev; python3 core/scripts/task_review.py review $P E2E-0531 --reviewer agent --notes \"Compared T-1 against R-1..R-5,R-11 (S-2..S-6,S-12,S-15): covers function placement, validation order, price/decimal, filte"
+  },
+  {
+    "order": 22,
+    "event": 43,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Implement product_snapshot and event_snapshot",
+    "command_prefix": "cd /private/tmp/featrace-gap22-0532-ufoi27bt/project && cat >> src/catalog/query.py <<'EOF'\n\n_LABEL_LENGTH = 8\n_PRICE_PATTERN = re.compile(r\"[0-9]+(?:\\.[0-9]{1,2})?\")\n\ndef _product_error(item):\n    item_id = item.get(\"id\")\n    if not isinstance(item_id, str) or item_id == \"\":\n        return \"invalid_id\"\n    if not isin"
+  },
+  {
+    "order": 23,
+    "event": 45,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Use explicit datetime construction for validity",
+    "command_prefix": "python3 - <<'EOF'\np='src/audit/summary.py'; s=open(p).read()\ns=s.replace('''_TIMESTAMP_PATTERN = re.compile(r\"[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z\")''','''_TIMESTAMP_PATTERN = re.compile(r\"([0-9]{4})-([0-9]{2})-([0-9]{2})T([0-9]{2}):([0-9]{2}):([0-9]{2})Z\")''')\ns=s.replace('''    if not isinstance(val"
+  },
+  {
+    "order": 24,
+    "event": 47,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Write tests and run README test command",
+    "command_prefix": "cat > tests/test_product_snapshot.py <<'EOF'\nimport copy\nimport decimal\nimport unittest\nfrom src.catalog.query import product_snapshot, receipt_for\n\ndef item(**overrides):\n    base = {\"id\": \"p1\", \"name\": \"Widget\", \"active\": True, \"category\": \"tools\", \"price\": \"1.50\"}\n    base.update(overrides)\n    return base\n\nclass Pr"
+  },
+  {
+    "order": 25,
+    "event": 49,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Read verification workflow and show diff",
+    "command_prefix": "cat /private/tmp/featrace-gap22-0532-ufoi27bt/plugin/skills/dev/core/references/verification-workflow.md; cd /private/tmp/featrace-gap22-0532-ufoi27bt/project; git status --short; git diff --stat"
+  },
+  {
+    "order": 26,
+    "event": 51,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Plan changed module scopes",
+    "command_prefix": "P=/private/tmp/featrace-gap22-0532-ufoi27bt/project; cd /private/tmp/featrace-gap22-0532-ufoi27bt/plugin/skills/dev; for m in catalog audit; do python3 core/scripts/module_context.py plan $P --module $m | python3 -c \"import json,sys; [print(r['module'],r['status'],r['digest'],r['changed_paths']) for r in json.load(sys."
+  },
+  {
+    "order": 27,
+    "event": 53,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Update module catalog evidence and re-review dossiers",
+    "command_prefix": "P=/private/tmp/featrace-gap22-0532-ufoi27bt/project; D=$P/.agent-workflow/modules/drafts; cd /private/tmp/featrace-gap22-0532-ufoi27bt/plugin/skills/dev\npython3 - <<EOF\nimport json\np='$P/.agent-workflow/modules/index.json'; d=json.load(open(p))\nfor m in d['modules']:\n    if m['id']=='catalog': m['evidence_files']=['tes"
+  },
+  {
+    "order": 28,
+    "event": 55,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Select gate, write traceability, sync verification list",
+    "command_prefix": "P=/private/tmp/featrace-gap22-0532-ufoi27bt/project; F=$P/.agent-workflow/features/E2E-0531; cd /private/tmp/featrace-gap22-0532-ufoi27bt/plugin/skills/dev\ncat > $P/.agent-workflow/project-baseline/quality-gates.json <<'EOF'\n{\"selection_reason\": \"README-evidenced full unittest suite covers legacy tests and new E2E-0531"
+  },
+  {
+    "order": 29,
+    "event": 57,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Map verification rows and run checks",
+    "command_prefix": "P=/private/tmp/featrace-gap22-0532-ufoi27bt/project; F=$P/.agent-workflow/features/E2E-0531; cd /private/tmp/featrace-gap22-0532-ufoi27bt/plugin/skills/dev\npython3 - <<EOF\nimport json\np='$F/verification.json'; d=json.load(open(p))\ncov={\n'R-1:1':'TEST-P1 asserts empty-input result equals the two-key dict and key set for"
+  },
+  {
+    "order": 30,
+    "event": 59,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Resync regression review and run verification",
+    "command_prefix": "P=/private/tmp/featrace-gap22-0532-ufoi27bt/project; F=$P/.agent-workflow/features/E2E-0531; cd /private/tmp/featrace-gap22-0532-ufoi27bt/plugin/skills/dev; python3 core/scripts/regression_review.py sync $P E2E-0531 && python3 core/scripts/verification.py run $P E2E-0531 | tail -15; python3 -c \"\nimport json;d=json.load"
+  },
+  {
+    "order": 31,
+    "event": 61,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Inspect unchanged legacy files and absence of I/O",
+    "command_prefix": "cd /private/tmp/featrace-gap22-0532-ufoi27bt/project; git diff --exit-code HEAD -- tests/test_legacy.py src/shared && echo LEGACY_AND_SHARED_UNCHANGED; git hash-object tests/test_legacy.py src/shared/formatting.py src/catalog/query.py src/audit/summary.py tests/test_product_snapshot.py tests/test_event_snapshot.py; gre"
+  },
+  {
+    "order": 32,
+    "event": 63,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Record Agent inspection results for manual rows",
+    "command_prefix": "P=/private/tmp/featrace-gap22-0532-ufoi27bt/project; cd /private/tmp/featrace-gap22-0532-ufoi27bt/plugin/skills/dev; DG=191d54b3ee096535e3d40b1f29115f11578f3a8337ca2f004c8628dcd15b472b; REV=d94ea6f0400e33e2f79159520e0d65508841f8b0; WT=\"uncommitted worktree on HEAD d94ea6f; blobs query.py=b6a6ce6d summary.py=62119391 te"
+  },
+  {
+    "order": 33,
+    "event": 65,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Mark tasks done and run check-stage validators",
+    "command_prefix": "P=/private/tmp/featrace-gap22-0532-ufoi27bt/project; F=$P/.agent-workflow/features/E2E-0531; cd /private/tmp/featrace-gap22-0532-ufoi27bt/plugin/skills/dev\nTS=$(python3 -c \"import json;d=json.load(open('$F/verification.json'));h=[x for i in d['items'] if i['id'].startswith('gate:') for x in i.get('history',[])];print(h"
+  },
+  {
+    "order": 34,
+    "event": 67,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Inspect decision record format and PRD hash",
+    "command_prefix": "P=/private/tmp/featrace-gap22-0532-ufoi27bt/project; F=$P/.agent-workflow/features/E2E-0531; cat $F/decisions.json; cat /private/tmp/featrace-gap22-0532-ufoi27bt/plugin/skills/dev/core/schemas/decision-schema.json | head -40; shasum -a 256 /private/tmp/featrace-gap22-0532-ufoi27bt/inputs/prd.md"
+  },
+  {
+    "order": 35,
+    "event": 69,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Record D-1 and confirm R-12",
+    "command_prefix": "P=/private/tmp/featrace-gap22-0532-ufoi27bt/project; F=$P/.agent-workflow/features/E2E-0531; cd /private/tmp/featrace-gap22-0532-ufoi27bt/plugin/skills/dev\npython3 - <<EOF\nimport json\nF='$F/'\njson.dump({\"feature_id\":\"E2E-0531\",\"decisions\":[{\"id\":\"D-1\",\"title\":\"有效日历时刻的技术口径\",\"status\":\"approved\",\"kind\":\"technical_interpre"
+  },
+  {
+    "order": 36,
+    "event": 71,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Renew PRD review and resync verification",
+    "command_prefix": "P=/private/tmp/featrace-gap22-0532-ufoi27bt/project; F=$P/.agent-workflow/features/E2E-0531; cd /private/tmp/featrace-gap22-0532-ufoi27bt/plugin/skills/dev\npython3 core/scripts/review-prd.py $P E2E-0531 --reviewer agent --notes \"Renewed review after R-12 changed inferred->confirmed under D-1. Re-read PRD §事件快照 验证次序 3 ("
+  },
+  {
+    "order": 37,
+    "event": 73,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Rerun verification and re-inspect manual rows",
+    "command_prefix": "P=/private/tmp/featrace-gap22-0532-ufoi27bt/project; F=$P/.agent-workflow/features/E2E-0531; cd /private/tmp/featrace-gap22-0532-ufoi27bt/plugin/skills/dev\npython3 core/scripts/verification.py run $P E2E-0531 > /tmp/../private/tmp/featrace-gap22-0532-ufoi27bt/execution/scratch/run2.json; echo run=$?\ncd $P; git diff --e"
+  },
+  {
+    "order": 38,
+    "event": 75,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Rerun verification checks",
+    "command_prefix": "P=/private/tmp/featrace-gap22-0532-ufoi27bt/project; cd /private/tmp/featrace-gap22-0532-ufoi27bt/plugin/skills/dev\npython3 core/scripts/verification.py run $P E2E-0531 > /private/tmp/featrace-gap22-0532-ufoi27bt/execution/scratch/run2.json; echo run=$?\npython3 core/scripts/verification.py status $P E2E-0531 | python3 "
+  },
+  {
+    "order": 39,
+    "event": 77,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Record manual rows and run check gates again",
+    "command_prefix": "P=/private/tmp/featrace-gap22-0532-ufoi27bt/project; cd /private/tmp/featrace-gap22-0532-ufoi27bt/plugin/skills/dev; DG=c378f31a8e6eb087e30f3008c3dbc5f45b2985a1c8c0788b0822a137fee666f6; REV=d94ea6f0400e33e2f79159520e0d65508841f8b0; WT=\"uncommitted worktree on HEAD d94ea6f; blobs query.py=b6a6ce6d summary.py=62119391 te"
+  },
+  {
+    "order": 40,
+    "event": 79,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Refresh baseline for feature changes and recheck",
+    "command_prefix": "P=/private/tmp/featrace-gap22-0532-ufoi27bt/project; cd /private/tmp/featrace-gap22-0532-ufoi27bt/plugin/skills/dev; python3 core/scripts/project.py scan-prepare $P && B=$P/.agent-workflow/baseline-draft/baseline && python3 - <<EOF\np='$B/architecture.md'; s=open(p).read()\ns=s.replace(\"- `src/catalog/query.py`: product "
+  },
+  {
+    "order": 41,
+    "event": 81,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Inspect and republish corrected baseline architecture",
+    "command_prefix": "P=/private/tmp/featrace-gap22-0532-ufoi27bt/project; cd /private/tmp/featrace-gap22-0532-ufoi27bt/plugin/skills/dev; cat $P/.agent-workflow/project-baseline/architecture.md $P/.agent-workflow/project-baseline/coverage.md; python3 core/scripts/project.py scan-prepare $P && cat > $P/.agent-workflow/baseline-draft/baselin"
+  },
+  {
+    "order": 42,
+    "event": 83,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Rerun verification and delivery audit",
+    "command_prefix": "P=/private/tmp/featrace-gap22-0532-ufoi27bt/project; cd /private/tmp/featrace-gap22-0532-ufoi27bt/plugin/skills/dev\npython3 core/scripts/verification.py run $P E2E-0531 > /private/tmp/featrace-gap22-0532-ufoi27bt/execution/scratch/run3.json; echo run=$?\npython3 core/scripts/verification.py status $P E2E-0531 | python3 "
+  },
+  {
+    "order": 43,
+    "event": 85,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Extract gate run evidence and file hashes",
+    "command_prefix": "python3 -c \"\nimport json;d=json.load(open('/private/tmp/featrace-gap22-0532-ufoi27bt/execution/scratch/run3.json'))\nprint(list(d.keys()))\ng=[i for i in d['items'] if i['id'].startswith('gate:')][0]; print(json.dumps(g)[:300])\"; python3 -c \"\nimport json;d=json.load(open('/private/tmp/featrace-gap22-0532-ufoi27bt/project"
+  },
+  {
+    "order": 44,
+    "event": 87,
+    "name": "Write",
+    "file_path": "/private/tmp/featrace-gap22-0532-ufoi27bt/project/.agent-workflow/features/E2E-0531/delivery-report.md",
+    "description": null,
+    "command_prefix": ""
+  },
+  {
+    "order": 45,
+    "event": 89,
+    "name": "Read",
+    "file_path": "/private/tmp/featrace-gap22-0532-ufoi27bt/project/.agent-workflow/features/E2E-0531/delivery-report.md",
+    "description": null,
+    "command_prefix": ""
+  },
+  {
+    "order": 46,
+    "event": 91,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Mark feature complete and revalidate",
+    "command_prefix": "P=/private/tmp/featrace-gap22-0532-ufoi27bt/project; F=$P/.agent-workflow/features/E2E-0531; cd /private/tmp/featrace-gap22-0532-ufoi27bt/plugin/skills/dev\npython3 - <<EOF\nimport json\np='$F/spec/requirements.json'; d=json.load(open(p)); d['feature']['status']='complete'; json.dump(d,open(p,'w'),ensure_ascii=False,inden"
+  },
+  {
+    "order": 47,
+    "event": 93,
+    "name": "Write",
+    "file_path": "/private/tmp/featrace-gap22-0532-ufoi27bt/execution/assessment.md",
+    "description": null,
+    "command_prefix": ""
+  }
+]

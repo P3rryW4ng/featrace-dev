@@ -1,0 +1,138 @@
+[
+  {
+    "order": 1,
+    "event": 1,
+    "name": "Skill",
+    "file_path": null,
+    "description": null,
+    "command_prefix": ""
+  },
+  {
+    "order": 2,
+    "event": 3,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Read next workflow references",
+    "command_prefix": "cd /private/tmp/featrace-gap22-0532-ufoi27bt/plugin/skills/dev/core/references && cat next-workflow.md orchestration.md workflow.md; ls"
+  },
+  {
+    "order": 3,
+    "event": 5,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Read verification and selection references",
+    "command_prefix": "cat verification-workflow.md feature-selection.md; ls ../../ ../../*/ 2>/dev/null | head -50"
+  },
+  {
+    "order": 4,
+    "event": 7,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Inspect project layout and git state",
+    "command_prefix": "cd /private/tmp/featrace-gap22-0532-ufoi27bt/narrow/project && ls -la; find . -path ./.git -prune -o -type f -print | head -80; git status --short; git diff --stat"
+  },
+  {
+    "order": 5,
+    "event": 9,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Resolve feature, status, and verify inputs",
+    "command_prefix": "S=/private/tmp/featrace-gap22-0532-ufoi27bt/plugin/skills/dev/core/scripts; P=/private/tmp/featrace-gap22-0532-ufoi27bt/narrow/project; ls $S; python3 $S/feature-context.py resolve $P --feature E2E-0531; echo \"== status\"; python3 $S/feature-status.py $P E2E-0531; echo \"== inputs\"; python3 $S/verify-inputs.py $P E2E-053"
+  },
+  {
+    "order": 6,
+    "event": 11,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Run check validator, delivery audit, verification status",
+    "command_prefix": "S=/private/tmp/featrace-gap22-0532-ufoi27bt/plugin/skills/dev/core/scripts; P=/private/tmp/featrace-gap22-0532-ufoi27bt/narrow/project; python3 $S/validate-feature.py $P E2E-0531 --stage check; echo \"exit=$?\"; echo \"== audit\"; python3 $S/audit-delivery.py $P E2E-0531; echo \"exit=$?\"; echo \"== vstatus\"; python3 $S/verif"
+  },
+  {
+    "order": 7,
+    "event": 13,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Inspect quality report, verification history, file times",
+    "command_prefix": "P=/private/tmp/featrace-gap22-0532-ufoi27bt/narrow/project; cd $P; cat .agent-workflow/project-baseline/quality-report.json; echo; cat .agent-workflow/project-baseline/quality-gates.json; echo; python3 -c \"\nimport json;d=json.load(open('.agent-workflow/features/E2E-0531/verification.json'))\nprint(json.dumps({k:v for k,"
+  },
+  {
+    "order": 8,
+    "event": 15,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Read PRD and feature records",
+    "command_prefix": "P=/private/tmp/featrace-gap22-0532-ufoi27bt/narrow/project; cd $P/.agent-workflow/features/E2E-0531; cat sources/prd-original.md; echo ====; cat spec/spec.md tasks.md decisions.md fixes.md; python3 -c \"\nimport json;d=json.load(open('spec/requirements.json'));f=d.get('feature',{});print(json.dumps(f,indent=1,ensure_asci"
+  },
+  {
+    "order": 9,
+    "event": 17,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Read tasks, decisions, fixes, feature header",
+    "command_prefix": "P=/private/tmp/featrace-gap22-0532-ufoi27bt/narrow/project; cd $P/.agent-workflow/features/E2E-0531; cat tasks.md decisions.md fixes.md traceability.md | head -120; python3 -c \"\nimport json;d=json.load(open('spec/requirements.json'));print(json.dumps(d.get('feature'),indent=1,ensure_ascii=False)[:2500])\"; ls; git -C $P"
+  },
+  {
+    "order": 10,
+    "event": 19,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Read traceability, code diff, and new tests",
+    "command_prefix": "P=/private/tmp/featrace-gap22-0532-ufoi27bt/narrow/project; cd $P; cat .agent-workflow/features/E2E-0531/traceability.json | head -40; git diff; cat tests/test_product_snapshot.py tests/test_event_snapshot.py tests/test_preserved_behaviour.py"
+  },
+  {
+    "order": 11,
+    "event": 21,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Capture worktree identity and review records",
+    "command_prefix": "cd /private/tmp/featrace-gap22-0532-ufoi27bt/narrow/project; git rev-parse HEAD; git diff | shasum -a 256; git diff --exit-code --quiet -- src/shared tests/test_legacy.py README.md && echo \"shared/legacy/README unchanged\"; python3 -c \"\nimport json;d=json.load(open('.agent-workflow/features/E2E-0531/regression-review.js"
+  },
+  {
+    "order": 12,
+    "event": 23,
+    "name": "Write",
+    "file_path": "/private/tmp/featrace-gap22-0532-ufoi27bt/narrow/project/.agent-workflow/features/E2E-0531/delivery-report.md",
+    "description": null,
+    "command_prefix": ""
+  },
+  {
+    "order": 13,
+    "event": 25,
+    "name": "Edit",
+    "file_path": "/private/tmp/featrace-gap22-0532-ufoi27bt/narrow/project/.agent-workflow/features/E2E-0531/delivery-report.md",
+    "description": null,
+    "command_prefix": ""
+  },
+  {
+    "order": 14,
+    "event": 27,
+    "name": "Read",
+    "file_path": "/private/tmp/featrace-gap22-0532-ufoi27bt/narrow/project/.agent-workflow/features/E2E-0531/delivery-report.md",
+    "description": null,
+    "command_prefix": ""
+  },
+  {
+    "order": 15,
+    "event": 29,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Recheck hashes and locate status update method",
+    "command_prefix": "cd /private/tmp/featrace-gap22-0532-ufoi27bt/narrow/project; shasum -a 256 src/*/*.py tests/test_*.py | grep -v __init__; git diff | shasum -a 256; S=/private/tmp/featrace-gap22-0532-ufoi27bt/plugin/skills/dev; grep -n -i \"complete\" $S/core/references/requirement-schema.md | head; grep -n \"argv\\|add_argument\\|def main\""
+  },
+  {
+    "order": 16,
+    "event": 31,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Set feature complete, render views, revalidate",
+    "command_prefix": "cd /private/tmp/featrace-gap22-0532-ufoi27bt/narrow/project; S=/private/tmp/featrace-gap22-0532-ufoi27bt/plugin/skills/dev/core/scripts; python3 - <<'EOF'\nimport json,pathlib\np=pathlib.Path('.agent-workflow/features/E2E-0531/spec/requirements.json')\nd=json.loads(p.read_text())\nassert d['feature']['status']=='provisiona"
+  },
+  {
+    "order": 17,
+    "event": 33,
+    "name": "Write",
+    "file_path": "/private/tmp/featrace-gap22-0532-ufoi27bt/narrow/assessment.md",
+    "description": null,
+    "command_prefix": ""
+  }
+]

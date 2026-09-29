@@ -1,0 +1,14 @@
+{
+  "last_report_write_order": 44,
+  "last_report_write_return_event": 88,
+  "full_read_order": 45,
+  "full_read_call_event": 89,
+  "full_read_return_event": 90,
+  "full_read_succeeded": true,
+  "read_output_equals_saved_report": true,
+  "read_has_no_offset_or_limit": true,
+  "returned_line_count": 59,
+  "status_mutation_order": 46,
+  "status_mutation_event": 91,
+  "distinct_successful_write_read_mutation_order": true
+}

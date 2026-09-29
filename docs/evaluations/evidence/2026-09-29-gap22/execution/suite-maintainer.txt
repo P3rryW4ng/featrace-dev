@@ -1,0 +1,25 @@
+test_dedupe_after_validation_and_window (test_event_snapshot.EventSnapshotTests) ... ok
+test_does_not_mutate_and_is_repeatable (test_event_snapshot.EventSnapshotTests) ... ok
+test_field_reasons_in_order (test_event_snapshot.EventSnapshotTests) ... ok
+test_inclusive_window_skips_outside_without_error (test_event_snapshot.EventSnapshotTests) ... ok
+test_shape_order_and_counts (test_event_snapshot.EventSnapshotTests) ... ok
+test_timestamp_format_and_calendar (test_event_snapshot.EventSnapshotTests) ... ok
+test_all_ids_keeps_order_and_duplicates (test_legacy.LegacyTests) ... ok
+test_legacy_summary_counts_duplicates (test_legacy.LegacyTests) ... ok
+test_receipt_keeps_twelve_characters (test_legacy.LegacyTests) ... ok
+test_short_receipt_keeps_content (test_legacy.LegacyTests) ... ok
+test_decimal_context_unchanged (test_product_snapshot.ProductSnapshotTests) ... ok
+test_does_not_mutate_and_is_repeatable (test_product_snapshot.ProductSnapshotTests) ... ok
+test_field_reasons_in_order (test_product_snapshot.ProductSnapshotTests) ... ok
+test_keeps_input_order_and_duplicates (test_product_snapshot.ProductSnapshotTests) ... ok
+test_label_length_does_not_change_receipt (test_product_snapshot.ProductSnapshotTests) ... ok
+test_only_first_error_and_untrimmed_id (test_product_snapshot.ProductSnapshotTests) ... ok
+test_output_shape_and_example (test_product_snapshot.ProductSnapshotTests) ... ok
+test_price_format (test_product_snapshot.ProductSnapshotTests) ... ok
+test_returns_products_and_errors_only (test_product_snapshot.ProductSnapshotTests) ... ok
+test_validate_before_filter (test_product_snapshot.ProductSnapshotTests) ... ok
+
+----------------------------------------------------------------------
+Ran 20 tests in 0.001s
+
+OK

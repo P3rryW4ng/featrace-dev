@@ -1,0 +1,140 @@
+{
+  "execution": {
+    "exit_code": 0,
+    "elapsed_seconds": 537.731
+  },
+  "cli_result": {
+    "subtype": "success",
+    "is_error": false,
+    "duration_ms": 536270,
+    "total_cost_usd": 3.0565915999999995,
+    "num_turns": 49,
+    "usage": {
+      "input_tokens": 96,
+      "cache_creation_input_tokens": 140522,
+      "cache_read_input_tokens": 4384358,
+      "output_tokens": 52758,
+      "output_tokens_details": {
+        "thinking_tokens": 6790
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 140522,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "not_available",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 923,
+          "cache_read_input_tokens": 144493,
+          "cache_creation_input_tokens": 2390,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 2390
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard"
+    }
+  },
+  "tool_calls": 47,
+  "Agent_calls": 0,
+  "changed_files": [
+    ".agent-workflow/.baseline.lock",
+    ".agent-workflow/.gitignore",
+    ".agent-workflow/baseline-backups/managed-v1/20260929T090439591427Z/baseline/architecture.md",
+    ".agent-workflow/baseline-backups/managed-v1/20260929T090439591427Z/baseline/conventions.md",
+    ".agent-workflow/baseline-backups/managed-v1/20260929T090439591427Z/baseline/coverage.md",
+    ".agent-workflow/baseline-backups/managed-v1/20260929T090439591427Z/baseline/evidence-files.json",
+    ".agent-workflow/baseline-backups/managed-v1/20260929T090439591427Z/baseline/examples.md",
+    ".agent-workflow/baseline-backups/managed-v1/20260929T090439591427Z/baseline/fingerprint.json",
+    ".agent-workflow/baseline-backups/managed-v1/20260929T090439591427Z/baseline/inventory.md",
+    ".agent-workflow/baseline-backups/managed-v1/20260929T090439591427Z/baseline/quality-gates.json",
+    ".agent-workflow/baseline-backups/managed-v1/20260929T090439591427Z/baseline/quality-report.json",
+    ".agent-workflow/baseline-backups/managed-v1/20260929T090439591427Z/managed.json",
+    ".agent-workflow/baseline-backups/managed-v1/20260929T090451127886Z/baseline/architecture.md",
+    ".agent-workflow/baseline-backups/managed-v1/20260929T090451127886Z/baseline/conventions.md",
+    ".agent-workflow/baseline-backups/managed-v1/20260929T090451127886Z/baseline/coverage.md",
+    ".agent-workflow/baseline-backups/managed-v1/20260929T090451127886Z/baseline/evidence-files.json",
+    ".agent-workflow/baseline-backups/managed-v1/20260929T090451127886Z/baseline/examples.md",
+    ".agent-workflow/baseline-backups/managed-v1/20260929T090451127886Z/baseline/fingerprint.json",
+    ".agent-workflow/baseline-backups/managed-v1/20260929T090451127886Z/baseline/inventory.md",
+    ".agent-workflow/baseline-backups/managed-v1/20260929T090451127886Z/baseline/quality-gates.json",
+    ".agent-workflow/baseline-backups/managed-v1/20260929T090451127886Z/baseline/quality-report.json",
+    ".agent-workflow/baseline-backups/managed-v1/20260929T090451127886Z/managed.json",
+    ".agent-workflow/features/E2E-0531/decisions.json",
+    ".agent-workflow/features/E2E-0531/decisions.md",
+    ".agent-workflow/features/E2E-0531/delivery-report.md",
+    ".agent-workflow/features/E2E-0531/fixes.json",
+    ".agent-workflow/features/E2E-0531/fixes.md",
+    ".agent-workflow/features/E2E-0531/impact.json",
+    ".agent-workflow/features/E2E-0531/impact.md",
+    ".agent-workflow/features/E2E-0531/regression-review.json",
+    ".agent-workflow/features/E2E-0531/regression-review.md",
+    ".agent-workflow/features/E2E-0531/sources/prd-original.md",
+    ".agent-workflow/features/E2E-0531/spec/prd-analysis.md",
+    ".agent-workflow/features/E2E-0531/spec/prd-intake.json",
+    ".agent-workflow/features/E2E-0531/spec/requirements.json",
+    ".agent-workflow/features/E2E-0531/spec/spec.md",
+    ".agent-workflow/features/E2E-0531/task-review.json",
+    ".agent-workflow/features/E2E-0531/task-review.md",
+    ".agent-workflow/features/E2E-0531/tasks.json",
+    ".agent-workflow/features/E2E-0531/tasks.md",
+    ".agent-workflow/features/E2E-0531/traceability.json",
+    ".agent-workflow/features/E2E-0531/traceability.md",
+    ".agent-workflow/features/E2E-0531/verification.json",
+    ".agent-workflow/features/E2E-0531/verification.md",
+    ".agent-workflow/modules/audit.json",
+    ".agent-workflow/modules/audit.md",
+    ".agent-workflow/modules/catalog.json",
+    ".agent-workflow/modules/catalog.md",
+    ".agent-workflow/modules/drafts/audit.json",
+    ".agent-workflow/modules/drafts/catalog.json",
+    ".agent-workflow/modules/drafts/scope.json",
+    ".agent-workflow/modules/drafts/shared.json",
+    ".agent-workflow/modules/graph.json",
+    ".agent-workflow/modules/graph.md",
+    ".agent-workflow/modules/index.json",
+    ".agent-workflow/modules/index.md",
+    ".agent-workflow/modules/shared.json",
+    ".agent-workflow/modules/shared.md",
+    ".agent-workflow/project-baseline/architecture.md",
+    ".agent-workflow/project-baseline/conventions.md",
+    ".agent-workflow/project-baseline/coverage.md",
+    ".agent-workflow/project-baseline/evidence-files.json",
+    ".agent-workflow/project-baseline/examples.md",
+    ".agent-workflow/project-baseline/fingerprint.json",
+    ".agent-workflow/project-baseline/inventory.md",
+    ".agent-workflow/project-baseline/quality-gates.json",
+    ".agent-workflow/project-baseline/quality-report.json",
+    "src/audit/summary.py",
+    "src/catalog/query.py",
+    "tests/test_event_snapshot.py",
+    "tests/test_product_snapshot.py"
+  ],
+  "head_unchanged": true,
+  "staged_empty": true,
+  "feature_status": "complete",
+  "installed_unchanged": true,
+  "runtime_frozen": true,
+  "runtime_matches_source": true,
+  "runtime_files": 74,
+  "source_prd_unchanged": true,
+  "legacy_bytes_unchanged": true,
+  "legacy_ast_unchanged": {
+    "receipt_for": true,
+    "all_product_ids": true,
+    "legacy_summary": true
+  },
+  "readonly_exit_codes": [
+    0,
+    0,
+    0
+  ]
+}

@@ -1,0 +1,66 @@
+{
+  "execution": {
+    "exit_code": 0,
+    "elapsed_seconds": 160.026
+  },
+  "cli_result": {
+    "subtype": "success",
+    "is_error": false,
+    "duration_ms": 158830,
+    "total_cost_usd": 0.9512564,
+    "num_turns": 19,
+    "usage": {
+      "input_tokens": 36,
+      "cache_creation_input_tokens": 69165,
+      "cache_read_input_tokens": 924662,
+      "output_tokens": 10643,
+      "output_tokens_details": {
+        "thinking_tokens": 1452
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 69165,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "not_available",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 913,
+          "cache_read_input_tokens": 75526,
+          "cache_creation_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard"
+    }
+  },
+  "tool_calls": 17,
+  "Agent_calls": 0,
+  "changed_files": [
+    ".agent-workflow/features/E2E-0531/delivery-report.md",
+    ".agent-workflow/features/E2E-0531/spec/requirements.json"
+  ],
+  "head_unchanged": true,
+  "staged_empty": true,
+  "feature_status": "complete",
+  "installed_unchanged": true,
+  "runtime_frozen": true,
+  "runtime_matches_source": true,
+  "runtime_files": 74,
+  "business_diff_unchanged": true,
+  "quality_unchanged": true,
+  "readonly_exit_codes": [
+    0,
+    0,
+    0
+  ]
+}

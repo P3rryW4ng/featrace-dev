@@ -1,0 +1,28 @@
+test_event_empty (__main__.Contract) ... ok
+test_event_exact_output (__main__.Contract) ... ok
+test_event_first_eligible_id_wins (__main__.Contract) ... ok
+test_event_invalid_and_outside_do_not_reserve (__main__.Contract) ... ok
+test_event_legacy (__main__.Contract) ... ok
+test_event_no_mutation_or_state (__main__.Contract) ... ok
+test_event_one_sided_windows (__main__.Contract) ... ok
+test_event_timestamp_strict (__main__.Contract) ... ok
+test_event_validation_order (__main__.Contract) ... ok
+test_event_window_inclusive (__main__.Contract) ... ok
+test_product_context_unchanged (__main__.Contract) ... ok
+test_product_empty_category_is_exact_filter (__main__.Contract) ... ok
+test_product_empty_name_zero_and_whitespace_id (__main__.Contract) ... ok
+test_product_exact_output (__main__.Contract) ... ok
+test_product_filter_after_validation (__main__.Contract) ... ok
+test_product_legacy (__main__.Contract) ... ok
+test_product_long_price_exact (__main__.Contract) ... ok
+test_product_missing_fields (__main__.Contract) ... ok
+test_product_no_mutation_or_state (__main__.Contract) ... ok
+test_product_order_duplicates (__main__.Contract) ... ok
+test_product_price_boundaries (__main__.Contract) ... ok
+test_product_unicode_character_limit (__main__.Contract) ... ok
+test_product_validation_order (__main__.Contract) ... ok
+
+----------------------------------------------------------------------
+Ran 23 tests in 0.001s
+
+OK
