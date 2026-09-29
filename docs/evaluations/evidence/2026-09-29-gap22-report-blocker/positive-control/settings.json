@@ -1,0 +1,29 @@
+{
+  "disableAllHooks": false,
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Read|Bash|Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 /private/tmp/featrace-gap22-report-0533-lmsqfuea/hook.py /private/tmp/featrace-gap22-report-0533-lmsqfuea/positive-control",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Read|Bash|Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 /private/tmp/featrace-gap22-report-0533-lmsqfuea/hook.py /private/tmp/featrace-gap22-report-0533-lmsqfuea/positive-control",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,154 @@
+[
+  {
+    "order": 1,
+    "event": 1,
+    "name": "Skill",
+    "file_path": null,
+    "description": null,
+    "command_prefix": ""
+  },
+  {
+    "order": 2,
+    "event": 3,
+    "name": "Bash",
+    "file_path": null,
+    "description": "List skill files and read next/orchestration references",
+    "command_prefix": "S=/private/tmp/featrace-gap22-report-0533-lmsqfuea/plugin/skills/dev; ls -R $S | head -80; cat $S/core/references/next-workflow.md $S/core/references/orchestration.md"
+  },
+  {
+    "order": 3,
+    "event": 5,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Read verification and selection references",
+    "command_prefix": "S=/private/tmp/featrace-gap22-report-0533-lmsqfuea/plugin/skills/dev; cat $S/core/references/verification-workflow.md; sed -n 1,80p $S/core/references/feature-selection.md"
+  },
+  {
+    "order": 4,
+    "event": 7,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Resolve feature, show status, run input inventory",
+    "command_prefix": "S=/private/tmp/featrace-gap22-report-0533-lmsqfuea/plugin/skills/dev; P=/private/tmp/featrace-gap22-report-0533-lmsqfuea/positive-control/project; cd $S; python3 core/scripts/feature-context.py resolve $P --feature E2E-0531; echo \"---\"; pyt"
+  },
+  {
+    "order": 5,
+    "event": 9,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Run check validator, delivery audit, verification status",
+    "command_prefix": "S=/private/tmp/featrace-gap22-report-0533-lmsqfuea/plugin/skills/dev; P=/private/tmp/featrace-gap22-report-0533-lmsqfuea/positive-control/project; cd $S; python3 core/scripts/validate-feature.py $P E2E-0531 --stage check; echo \"rc=$?---\"; p"
+  },
+  {
+    "order": 6,
+    "event": 11,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Locate quality report and hash changed files",
+    "command_prefix": "P=/private/tmp/featrace-gap22-report-0533-lmsqfuea/positive-control/project; cd $P; find . -name 'quality*' -not -path './.git/*'; ls -la --time-style=full-iso src/audit src/catalog tests 2>/dev/null || stat -f '%Sm %N' src/*/*.py tests/*.p"
+  },
+  {
+    "order": 7,
+    "event": 13,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Inspect quality report and manual row evidence",
+    "command_prefix": "P=/private/tmp/featrace-gap22-report-0533-lmsqfuea/positive-control/project; cd $P; date +%z; python3 -c \"\nimport json;q=json.load(open('.agent-workflow/project-baseline/quality-report.json'));print(json.dumps({k:v for k,v in q.items() if k"
+  },
+  {
+    "order": 8,
+    "event": 15,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Verify blob IDs and read diff and tests",
+    "command_prefix": "P=/private/tmp/featrace-gap22-report-0533-lmsqfuea/positive-control/project; cd $P; git hash-object src/catalog/query.py src/audit/summary.py tests/test_product_snapshot.py tests/test_event_snapshot.py; git diff; cat tests/test_product_snap"
+  },
+  {
+    "order": 9,
+    "event": 17,
+    "name": "Read",
+    "file_path": "/private/tmp/featrace-gap22-report-0533-lmsqfuea/positive-control/project/.agent-workflow/features/E2E-0531/sources/prd-original.md",
+    "description": null,
+    "command_prefix": ""
+  },
+  {
+    "order": 10,
+    "event": 19,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Inspect feature record and schema status rules",
+    "command_prefix": "P=/private/tmp/featrace-gap22-report-0533-lmsqfuea/positive-control/project; S=/private/tmp/featrace-gap22-report-0533-lmsqfuea/plugin/skills/dev; ls $P/.agent-workflow/features/E2E-0531/spec; python3 -c \"\nimport json;f=json.load(open('$P/."
+  },
+  {
+    "order": 11,
+    "event": 21,
+    "name": "Write",
+    "file_path": "/private/tmp/featrace-gap22-report-0533-lmsqfuea/positive-control/project/.agent-workflow/features/E2E-0531/delivery-report.md",
+    "description": null,
+    "command_prefix": ""
+  },
+  {
+    "order": 12,
+    "event": 22,
+    "name": "Read",
+    "file_path": "/private/tmp/featrace-gap22-report-0533-lmsqfuea/positive-control/project/.agent-workflow/features/E2E-0531/delivery-report.md",
+    "description": null,
+    "command_prefix": ""
+  },
+  {
+    "order": 13,
+    "event": 25,
+    "name": "Read",
+    "file_path": "/private/tmp/featrace-gap22-report-0533-lmsqfuea/positive-control/project/.agent-workflow/features/E2E-0531/delivery-report.md",
+    "description": null,
+    "command_prefix": ""
+  },
+  {
+    "order": 14,
+    "event": 27,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Read the full saved delivery report",
+    "command_prefix": "cat /private/tmp/featrace-gap22-report-0533-lmsqfuea/positive-control/project/.agent-workflow/features/E2E-0531/delivery-report.md"
+  },
+  {
+    "order": 15,
+    "event": 29,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Re-check HEAD, worktree and hashes against report",
+    "command_prefix": "P=/private/tmp/featrace-gap22-report-0533-lmsqfuea/positive-control/project; cd $P; git rev-parse HEAD; git status --porcelain; shasum -a 256 src/audit/summary.py src/catalog/query.py tests/test_event_snapshot.py tests/test_product_snapshot"
+  },
+  {
+    "order": 16,
+    "event": 31,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Set feature complete, render views, revalidate",
+    "command_prefix": "S=/private/tmp/featrace-gap22-report-0533-lmsqfuea/plugin/skills/dev; P=/private/tmp/featrace-gap22-report-0533-lmsqfuea/positive-control/project; F=$P/.agent-workflow/features/E2E-0531/spec/requirements.json; python3 - \"$F\" <<'EOF'\nimport "
+  },
+  {
+    "order": 17,
+    "event": 33,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Check file modes and git status after mutation",
+    "command_prefix": "cd /private/tmp/featrace-gap22-report-0533-lmsqfuea/positive-control/project/.agent-workflow/features/E2E-0531/spec; ls -l; git -C ../../../.. status --porcelain"
+  },
+  {
+    "order": 18,
+    "event": 35,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Restore requirements.json file mode to 644",
+    "command_prefix": "chmod 644 /private/tmp/featrace-gap22-report-0533-lmsqfuea/positive-control/project/.agent-workflow/features/E2E-0531/spec/requirements.json"
+  },
+  {
+    "order": 19,
+    "event": 37,
+    "name": "Write",
+    "file_path": "/private/tmp/featrace-gap22-report-0533-lmsqfuea/positive-control/assessment.md",
+    "description": null,
+    "command_prefix": ""
+  }
+]

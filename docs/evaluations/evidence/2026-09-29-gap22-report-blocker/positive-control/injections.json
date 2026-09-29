@@ -1,0 +1,11 @@
+[
+  {
+    "time_ns": 1790675985110279000,
+    "kind": "report_saved",
+    "event": "PostToolUse",
+    "tool_name": "Write",
+    "tool_use_id": "toolu_01BScgZ8abt75phf8A7easEG",
+    "path": "/private/tmp/featrace-gap22-report-0533-lmsqfuea/positive-control/project/.agent-workflow/features/E2E-0531/delivery-report.md",
+    "report_sha256": "4ef15678348727458c87aefec7a2f6d70d9eafdb194a7fb599dbb16b1a4d5efe"
+  }
+]

@@ -1,0 +1,23 @@
+[
+  {
+    "time_ns": 1790674582103980000,
+    "kind": "report_saved",
+    "event": "PostToolUse",
+    "tool_name": "Write",
+    "tool_use_id": "toolu_014dASEwNYU4jk1pJx26pPPt",
+    "path": "/private/tmp/featrace-gap22-boundaries-xwf4psrt/source-drift/project/.agent-workflow/features/E2E-0531/delivery-report.md",
+    "report_sha256": "3042874b1d1876fa221c550e98814690070ae890554f25bbc64dc10f369c2288"
+  },
+  {
+    "time_ns": 1790674585905167000,
+    "kind": "source_changed_after_report_read",
+    "event": "PostToolUse",
+    "tool_name": "Read",
+    "tool_use_id": "toolu_01Chap8TXXG8rLFHF3h9F8uN",
+    "path": "/private/tmp/featrace-gap22-boundaries-xwf4psrt/source-drift/project/.agent-workflow/features/E2E-0531/delivery-report.md",
+    "before_sha256": "321e42726e3dfdfe440cdadfa30b3c290259475a4589e0b6d313bdab00c98d45",
+    "after_sha256": "bea8e277efe2420008f63634ac68b94d874a8c521f7ea8dc708fd3cf8aef687c",
+    "source_path": "/private/tmp/featrace-gap22-boundaries-xwf4psrt/source-drift/project/.agent-workflow/features/E2E-0531/sources/prd-original.md",
+    "report_sha256": "3042874b1d1876fa221c550e98814690070ae890554f25bbc64dc10f369c2288"
+  }
+]

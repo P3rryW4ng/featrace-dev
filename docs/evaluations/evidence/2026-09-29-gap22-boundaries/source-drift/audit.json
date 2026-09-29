@@ -1,0 +1,136 @@
+{
+  "case": "source-drift",
+  "execution": {
+    "exit_code": 0,
+    "elapsed_seconds": 165.241
+  },
+  "cli_result": {
+    "subtype": "success",
+    "is_error": false,
+    "total_cost_usd": 1.033055,
+    "duration_ms": 163933,
+    "num_turns": 24,
+    "usage": {
+      "input_tokens": 46,
+      "cache_creation_input_tokens": 73331,
+      "cache_read_input_tokens": 1145815,
+      "output_tokens": 10853,
+      "output_tokens_details": {
+        "thinking_tokens": 1925
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 73331,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "not_available",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 874,
+          "cache_read_input_tokens": 77373,
+          "cache_creation_input_tokens": 1247,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 1247
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard"
+    }
+  },
+  "actual_skill_calls": [
+    {
+      "skill": "dev",
+      "args": "next --feature E2E-0531"
+    }
+  ],
+  "feature_status": "provisional",
+  "status_mutation_calls": [],
+  "changed_project_files": [
+    ".agent-workflow/features/E2E-0531/delivery-report.md",
+    ".agent-workflow/features/E2E-0531/sources/prd-original.md"
+  ],
+  "business_diff_unchanged": true,
+  "head_unchanged": true,
+  "staged_unchanged": true,
+  "quality_report_unchanged": true,
+  "verification_history_unchanged": true,
+  "installed_unchanged": true,
+  "source_unchanged": false,
+  "source_sha256_before": "321e42726e3dfdfe440cdadfa30b3c290259475a4589e0b6d313bdab00c98d45",
+  "source_sha256_after": "bea8e277efe2420008f63634ac68b94d874a8c521f7ea8dc708fd3cf8aef687c",
+  "read_calls": [
+    {
+      "call_order": 19,
+      "call_event": 37,
+      "return_event": 38,
+      "is_error": false,
+      "offset": 1,
+      "line_numbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50
+      ]
+    }
+  ],
+  "received_complete_saved_report": true,
+  "report_unchanged_since_save": false,
+  "report_explicit_blocker": true,
+  "read_only_check_exit_codes": [
+    1,
+    0
+  ]
+}

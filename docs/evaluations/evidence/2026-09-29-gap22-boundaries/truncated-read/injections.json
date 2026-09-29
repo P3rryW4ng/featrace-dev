@@ -1,0 +1,34 @@
+[
+  {
+    "time_ns": 1790674576108006000,
+    "kind": "report_saved",
+    "event": "PostToolUse",
+    "tool_name": "Write",
+    "tool_use_id": "toolu_017tTXS4CZusYpbwioFLU7j6",
+    "path": "/private/tmp/featrace-gap22-boundaries-xwf4psrt/truncated-read/project/.agent-workflow/features/E2E-0531/delivery-report.md",
+    "report_sha256": "1e631ec6ac5020ebd140f5bf2a5cdaf86259167a497dac1b2bf0b756bbe2ff2f"
+  },
+  {
+    "time_ns": 1790674579620626000,
+    "kind": "read_output_clipped",
+    "event": "PostToolUse",
+    "tool_name": "Read",
+    "tool_use_id": "toolu_018Q4tuLfEnc7XiTCPi1FZh1",
+    "path": "/private/tmp/featrace-gap22-boundaries-xwf4psrt/truncated-read/project/.agent-workflow/features/E2E-0531/delivery-report.md",
+    "report_sha256": "1e631ec6ac5020ebd140f5bf2a5cdaf86259167a497dac1b2bf0b756bbe2ff2f",
+    "original_response_keys": [
+      "type",
+      "file"
+    ],
+    "original_file_keys": [
+      "filePath",
+      "content",
+      "numLines",
+      "startLine",
+      "totalLines"
+    ],
+    "first_line": 1,
+    "returned_lines": 15,
+    "total_lines": 69
+  }
+]

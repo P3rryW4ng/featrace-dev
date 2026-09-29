@@ -1,0 +1,130 @@
+[
+  {
+    "order": 1,
+    "event": 1,
+    "name": "Skill",
+    "file_path": null,
+    "description": null,
+    "command_prefix": ""
+  },
+  {
+    "order": 2,
+    "event": 3,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Inspect skill references and project layout",
+    "command_prefix": "cd /Users/mac/.claude/skills/dev/core/references && wc -l orchestration.md workflow.md next-workflow.md feature-selection.md verification-workflow.md; ls /private/tmp/featrace-gap22-boundaries-xwf4psrt/read-failure-current-views/project; ls"
+  },
+  {
+    "order": 3,
+    "event": 5,
+    "name": "Bash",
+    "file_path": null,
+    "description": "List all project files including hidden",
+    "command_prefix": "ls -la; find . -path ./.git -prune -o -type f -print | grep -v '/.git/'; cat README.md; git status --short; ls -la .."
+  },
+  {
+    "order": 4,
+    "event": 6,
+    "name": "Read",
+    "file_path": "/Users/mac/.claude/skills/dev/core/references/next-workflow.md",
+    "description": null,
+    "command_prefix": ""
+  },
+  {
+    "order": 5,
+    "event": 7,
+    "name": "Read",
+    "file_path": "/Users/mac/.claude/skills/dev/core/references/feature-selection.md",
+    "description": null,
+    "command_prefix": ""
+  },
+  {
+    "order": 6,
+    "event": 11,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Resolve feature and read orchestration refs",
+    "command_prefix": "cd /Users/mac/.claude/skills/dev && P=/private/tmp/featrace-gap22-boundaries-xwf4psrt/read-failure-current-views/project; python3 core/scripts/feature-context.py resolve $P --feature E2E-0531; echo ---; ls core/scripts; echo ---; cat core/r"
+  },
+  {
+    "order": 7,
+    "event": 13,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Run read-only feature status and read verification rules",
+    "command_prefix": "cd /Users/mac/.claude/skills/dev && P=/private/tmp/featrace-gap22-boundaries-xwf4psrt/read-failure-current-views/project; python3 core/scripts/feature-status.py --help 2>&1 | head -20; echo ---; python3 core/scripts/feature-status.py $P --f"
+  },
+  {
+    "order": 8,
+    "event": 15,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Run read-only verify input inventory",
+    "command_prefix": "cd /Users/mac/.claude/skills/dev && P=/private/tmp/featrace-gap22-boundaries-xwf4psrt/read-failure-current-views/project; python3 core/scripts/verify-inputs.py $P E2E-0531; echo \"EXIT=$?\""
+  },
+  {
+    "order": 9,
+    "event": 17,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Run check-stage validator and delivery audit",
+    "command_prefix": "cd /Users/mac/.claude/skills/dev && P=/private/tmp/featrace-gap22-boundaries-xwf4psrt/read-failure-current-views/project; python3 core/scripts/validate-feature.py $P E2E-0531 --stage check; echo \"VALIDATE_EXIT=$?\"; echo ---; python3 core/sc"
+  },
+  {
+    "order": 10,
+    "event": 19,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Inspect quality report, gates, file hashes and mtimes",
+    "command_prefix": "cd /private/tmp/featrace-gap22-boundaries-xwf4psrt/read-failure-current-views/project; cat .agent-workflow/project-baseline/quality-report.json; echo; echo ---; cat .agent-workflow/project-baseline/quality-gates.json; echo ---; shasum -a 25"
+  },
+  {
+    "order": 11,
+    "event": 21,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Check verification row status and render helper usage",
+    "command_prefix": "cd /Users/mac/.claude/skills/dev && P=/private/tmp/featrace-gap22-boundaries-xwf4psrt/read-failure-current-views/project; python3 core/scripts/verification.py status $P E2E-0531; echo \"EXIT=$?\"; echo ---; python3 core/scripts/render-workspa"
+  },
+  {
+    "order": 12,
+    "event": 23,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Read canonical tasks, decisions, fixes, requirements",
+    "command_prefix": "cd /private/tmp/featrace-gap22-boundaries-xwf4psrt/read-failure-current-views/project/.agent-workflow/features/E2E-0531; cat tasks.json; echo; cat decisions.json; echo; cat fixes.json; echo; cat regression-review.json; echo; python3 -c \"\nim"
+  },
+  {
+    "order": 13,
+    "event": 25,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Show implementation diff and new tests",
+    "command_prefix": "cd /private/tmp/featrace-gap22-boundaries-xwf4psrt/read-failure-current-views/project; git diff; cat tests/test_product_snapshot.py tests/test_event_snapshot.py"
+  },
+  {
+    "order": 14,
+    "event": 27,
+    "name": "Write",
+    "file_path": "/private/tmp/featrace-gap22-boundaries-xwf4psrt/read-failure-current-views/project/.agent-workflow/features/E2E-0531/delivery-report.md",
+    "description": null,
+    "command_prefix": ""
+  },
+  {
+    "order": 15,
+    "event": 29,
+    "name": "Read",
+    "file_path": "/private/tmp/featrace-gap22-boundaries-xwf4psrt/read-failure-current-views/project/.agent-workflow/features/E2E-0531/delivery-report.md",
+    "description": null,
+    "command_prefix": ""
+  },
+  {
+    "order": 16,
+    "event": 31,
+    "name": "Write",
+    "file_path": "/private/tmp/featrace-gap22-boundaries-xwf4psrt/read-failure-current-views/assessment.md",
+    "description": null,
+    "command_prefix": ""
+  }
+]

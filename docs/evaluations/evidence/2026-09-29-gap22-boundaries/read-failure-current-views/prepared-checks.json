@@ -1,0 +1,12 @@
+[
+  {
+    "script": "validate-feature.py",
+    "exit": 0,
+    "stdout": "FEATURE_VALID\n"
+  },
+  {
+    "script": "audit-delivery.py",
+    "exit": 0,
+    "stdout": "DELIVERY_EVIDENCE_CURRENT: selected checks passed and verified-fix test IDs were selected\nScope: manifests, tracked content outside .agent-workflow and registered evidence only; check task meaning, test assertions, uncommitted code and delivery report manually\n"
+  }
+]

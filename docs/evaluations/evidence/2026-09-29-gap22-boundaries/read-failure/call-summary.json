@@ -1,0 +1,122 @@
+[
+  {
+    "order": 1,
+    "event": 1,
+    "name": "Skill",
+    "file_path": null,
+    "description": null,
+    "command_prefix": ""
+  },
+  {
+    "order": 2,
+    "event": 3,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Read skill routing references",
+    "command_prefix": "cd /Users/mac/.claude/skills/dev && cat core/references/next-workflow.md core/references/orchestration.md core/references/workflow.md | head -400; ls core/references core/scripts 2>/dev/null"
+  },
+  {
+    "order": 3,
+    "event": 5,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Read verification and selection references",
+    "command_prefix": "cd /Users/mac/.claude/skills/dev && cat core/references/verification-workflow.md core/references/feature-selection.md"
+  },
+  {
+    "order": 4,
+    "event": 7,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Resolve feature, status and verify inputs",
+    "command_prefix": "S=/Users/mac/.claude/skills/dev/core/scripts; P=$PWD; python3 $S/feature-context.py resolve $P --feature E2E-0531; echo \"--- rc $?\"; python3 $S/feature-status.py $P E2E-0531; echo \"--- rc $?\"; python3 $S/verify-inputs.py $P E2E-0531; echo \""
+  },
+  {
+    "order": 5,
+    "event": 9,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Run check validation, audit and verification status",
+    "command_prefix": "S=/Users/mac/.claude/skills/dev/core/scripts; P=$PWD; python3 $S/validate-feature.py $P E2E-0531 --stage check; echo \"--- rc $?\"; python3 $S/audit-delivery.py $P E2E-0531; echo \"--- rc $?\"; python3 $S/verification.py status $P E2E-0531 | ta"
+  },
+  {
+    "order": 6,
+    "event": 11,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Check file mtimes, hashes and diff stat",
+    "command_prefix": "P=$PWD; stat -f '%Sm %N' -t '%H:%M:%S' src/audit/summary.py src/catalog/query.py tests/*.py; find .agent-workflow -maxdepth 2 -not -path '*/features/*' -type f | xargs stat -f '%Sm %N' -t '%H:%M:%S'; shasum -a 256 src/audit/summary.py src/c"
+  },
+  {
+    "order": 7,
+    "event": 13,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Inspect requirements, quality report, tasks, decisions",
+    "command_prefix": "P=$PWD; F=.agent-workflow/features/E2E-0531; python3 -c \"\nimport json;d=json.load(open('$F/spec/requirements.json'))\nprint(json.dumps({k:v for k,v in d.items() if k!='requirements'},ensure_ascii=False,indent=1))\nfor r in d.get('requirements"
+  },
+  {
+    "order": 8,
+    "event": 15,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Show code diff and new tests",
+    "command_prefix": "git diff; cat tests/test_product_snapshot.py tests/test_event_snapshot.py"
+  },
+  {
+    "order": 9,
+    "event": 17,
+    "name": "Grep",
+    "file_path": null,
+    "description": null,
+    "command_prefix": ""
+  },
+  {
+    "order": 10,
+    "event": 19,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Summarize verification rows modes and evidence",
+    "command_prefix": "python3 -c \"\nimport json,collections;d=json.load(open('.agent-workflow/features/E2E-0531/verification.json'))\nc=collections.Counter();ev=collections.Counter()\nfor i in d['items']:\n  a=(i.get('attempts') or i.get('history') or [{}])[-1]\n  c["
+  },
+  {
+    "order": 11,
+    "event": 21,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Show manual verification row evidence",
+    "command_prefix": "python3 -c \"\nimport json;d=json.load(open('.agent-workflow/features/E2E-0531/verification.json'))\nfor i in d['items']:\n  if i['mode']=='manual':\n    a=i['history'][-1];print(i['id'],'|',i['expected'],'\\n ',a['method'],a['at'],a['tested_revi"
+  },
+  {
+    "order": 12,
+    "event": 23,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Compare git blob IDs and legacy file state",
+    "command_prefix": "git hash-object src/catalog/query.py src/audit/summary.py tests/test_product_snapshot.py tests/test_event_snapshot.py; git diff --exit-code HEAD -- tests/test_legacy.py src/shared >/dev/null; echo legacy_unchanged_rc=$?"
+  },
+  {
+    "order": 13,
+    "event": 25,
+    "name": "Write",
+    "file_path": "/private/tmp/featrace-gap22-boundaries-xwf4psrt/read-failure/project/.agent-workflow/features/E2E-0531/delivery-report.md",
+    "description": null,
+    "command_prefix": ""
+  },
+  {
+    "order": 14,
+    "event": 27,
+    "name": "Read",
+    "file_path": "/private/tmp/featrace-gap22-boundaries-xwf4psrt/read-failure/project/.agent-workflow/features/E2E-0531/delivery-report.md",
+    "description": null,
+    "command_prefix": ""
+  },
+  {
+    "order": 15,
+    "event": 29,
+    "name": "Write",
+    "file_path": "/private/tmp/featrace-gap22-boundaries-xwf4psrt/read-failure/assessment.md",
+    "description": null,
+    "command_prefix": ""
+  }
+]

@@ -1,0 +1,226 @@
+[
+  {
+    "order": 1,
+    "event": 1,
+    "name": "Skill",
+    "file_path": null,
+    "description": null,
+    "command_prefix": ""
+  },
+  {
+    "order": 2,
+    "event": 3,
+    "name": "Bash",
+    "file_path": null,
+    "description": "List skill reference files and sizes",
+    "command_prefix": "cd /Users/mac/.claude/skills/dev/core/references && wc -l feature-selection.md orchestration.md workflow.md next-workflow.md verification-workflow.md; ls"
+  },
+  {
+    "order": 3,
+    "event": 5,
+    "name": "Read",
+    "file_path": "/Users/mac/.claude/skills/dev/core/references/feature-selection.md",
+    "description": null,
+    "command_prefix": ""
+  },
+  {
+    "order": 4,
+    "event": 7,
+    "name": "Read",
+    "file_path": "/Users/mac/.claude/skills/dev/core/references/orchestration.md",
+    "description": null,
+    "command_prefix": ""
+  },
+  {
+    "order": 5,
+    "event": 9,
+    "name": "Read",
+    "file_path": "/Users/mac/.claude/skills/dev/core/references/workflow.md",
+    "description": null,
+    "command_prefix": ""
+  },
+  {
+    "order": 6,
+    "event": 10,
+    "name": "Read",
+    "file_path": "/Users/mac/.claude/skills/dev/core/references/next-workflow.md",
+    "description": null,
+    "command_prefix": ""
+  },
+  {
+    "order": 7,
+    "event": 11,
+    "name": "Read",
+    "file_path": "/Users/mac/.claude/skills/dev/core/references/verification-workflow.md",
+    "description": null,
+    "command_prefix": ""
+  },
+  {
+    "order": 8,
+    "event": 15,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Resolve feature, show status and git state",
+    "command_prefix": "S=/Users/mac/.claude/skills/dev; P=$PWD; python3 $S/core/scripts/feature-context.py resolve $P --feature E2E-0531; echo \"== status\"; python3 $S/core/scripts/feature-status.py $P E2E-0531 2>&1 | head -80; echo \"== git\"; git status --short; g"
+  },
+  {
+    "order": 9,
+    "event": 17,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Run read-only verification input inventory",
+    "command_prefix": "S=/Users/mac/.claude/skills/dev; P=$PWD; python3 $S/core/scripts/verify-inputs.py $P E2E-0531; echo \"exit=$?\""
+  },
+  {
+    "order": 10,
+    "event": 19,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Run check-stage validation and delivery audit",
+    "command_prefix": "S=/Users/mac/.claude/skills/dev; P=$PWD; python3 $S/core/scripts/validate-feature.py $P E2E-0531 --stage check; echo \"exit=$?\"; echo ===; python3 $S/core/scripts/audit-delivery.py $P E2E-0531; echo \"exit=$?\""
+  },
+  {
+    "order": 11,
+    "event": 21,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Run delivery audit",
+    "command_prefix": "S=/Users/mac/.claude/skills/dev; P=$PWD; python3 $S/core/scripts/audit-delivery.py $P E2E-0531; echo \"exit=$?\""
+  },
+  {
+    "order": 12,
+    "event": 23,
+    "name": "Bash",
+    "file_path": null,
+    "description": "List workflow record files",
+    "command_prefix": "cd .agent-workflow && find . -type f | sort; echo; ls -la features/E2E-0531"
+  },
+  {
+    "order": 13,
+    "event": 25,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Compare code mtimes/hashes with quality report",
+    "command_prefix": "cd /private/tmp/featrace-gap22-boundaries-xwf4psrt/truncated-read/project; stat -f '%Sm %N' -t '%Y-%m-%dT%H:%M:%S%z' src/audit/summary.py src/catalog/query.py tests/*.py; shasum -a 256 src/audit/summary.py src/catalog/query.py tests/test_ev"
+  },
+  {
+    "order": 14,
+    "event": 27,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Check remaining hashes, test output, verification status",
+    "command_prefix": "S=/Users/mac/.claude/skills/dev; shasum -a 256 src/shared/formatting.py tests/test_legacy.py README.md .gitignore; python3 -c \"\nimport json;d=json.load(open('.agent-workflow/project-baseline/quality-report.json'))\nfor r in d['results']: pri"
+  },
+  {
+    "order": 15,
+    "event": 29,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Show verification row status",
+    "command_prefix": "S=/Users/mac/.claude/skills/dev; python3 $S/core/scripts/verification.py status $PWD E2E-0531 | cut -c1-240; echo \"exit=$?\""
+  },
+  {
+    "order": 16,
+    "event": 31,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Read decisions, tasks, fixes, manual row evidence",
+    "command_prefix": "cd .agent-workflow/features/E2E-0531; cat decisions.json tasks.json fixes.json; echo; python3 -c \"\nimport json;d=json.load(open('verification.json'))\nfor i in d['items']:\n  if i.get('mode')=='manual' or i['id'].startswith('requirement:R-12'"
+  },
+  {
+    "order": 17,
+    "event": 33,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Check blob IDs, read diff and new tests",
+    "command_prefix": "cd /private/tmp/featrace-gap22-boundaries-xwf4psrt/truncated-read/project; for f in src/catalog/query.py src/audit/summary.py tests/test_product_snapshot.py tests/test_event_snapshot.py; do echo \"$(git hash-object $f | cut -c1-8) $f\"; done;"
+  },
+  {
+    "order": 18,
+    "event": 35,
+    "name": "Read",
+    "file_path": "/private/tmp/featrace-gap22-boundaries-xwf4psrt/truncated-read/project/.agent-workflow/features/E2E-0531/sources/prd-original.md",
+    "description": null,
+    "command_prefix": ""
+  },
+  {
+    "order": 19,
+    "event": 37,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Find status-mutation helper and schema rules",
+    "command_prefix": "S=/Users/mac/.claude/skills/dev/core; ls $S/scripts; grep -n '\"status\"' .agent-workflow/features/E2E-0531/spec/requirements.json | head -3; grep -rn -i 'complete' $S/references/requirement-schema.md | head -15"
+  },
+  {
+    "order": 20,
+    "event": 39,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Show feature block of requirements record",
+    "command_prefix": "python3 -c \"\nimport json;d=json.load(open('.agent-workflow/features/E2E-0531/spec/requirements.json'));print(json.dumps(d['feature'],ensure_ascii=False,indent=1)); print([k for k in d])\"; sed -n 1,12p .agent-workflow/features/E2E-0531/spec/"
+  },
+  {
+    "order": 21,
+    "event": 41,
+    "name": "Write",
+    "file_path": "/private/tmp/featrace-gap22-boundaries-xwf4psrt/truncated-read/project/.agent-workflow/features/E2E-0531/delivery-report.md",
+    "description": null,
+    "command_prefix": ""
+  },
+  {
+    "order": 22,
+    "event": 43,
+    "name": "Read",
+    "file_path": "/private/tmp/featrace-gap22-boundaries-xwf4psrt/truncated-read/project/.agent-workflow/features/E2E-0531/delivery-report.md",
+    "description": null,
+    "command_prefix": ""
+  },
+  {
+    "order": 23,
+    "event": 45,
+    "name": "Read",
+    "file_path": "/private/tmp/featrace-gap22-boundaries-xwf4psrt/truncated-read/project/.agent-workflow/features/E2E-0531/delivery-report.md",
+    "description": null,
+    "command_prefix": ""
+  },
+  {
+    "order": 24,
+    "event": 47,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Re-confirm inputs unchanged before status mutation",
+    "command_prefix": "S=/Users/mac/.claude/skills/dev/core/scripts; shasum -a 256 src/catalog/query.py src/audit/summary.py tests/test_product_snapshot.py tests/test_event_snapshot.py src/shared/formatting.py tests/test_legacy.py | cut -c1-16; git rev-parse HEAD"
+  },
+  {
+    "order": 25,
+    "event": 49,
+    "name": "Edit",
+    "file_path": "/private/tmp/featrace-gap22-boundaries-xwf4psrt/truncated-read/project/.agent-workflow/features/E2E-0531/spec/requirements.json",
+    "description": null,
+    "command_prefix": ""
+  },
+  {
+    "order": 26,
+    "event": 50,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Show render-workspace usage",
+    "command_prefix": "python3 /Users/mac/.claude/skills/dev/core/scripts/render-workspace.py --help 2>&1 | head -15"
+  },
+  {
+    "order": 27,
+    "event": 53,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Render views and re-validate after completion",
+    "command_prefix": "S=/Users/mac/.claude/skills/dev/core/scripts; P=$PWD; python3 $S/render-workspace.py $P E2E-0531; echo \"render=$?\"; python3 $S/validate-feature.py $P E2E-0531 --stage check; echo \"validate=$?\"; python3 $S/audit-delivery.py $P E2E-0531; echo"
+  },
+  {
+    "order": 28,
+    "event": 55,
+    "name": "Write",
+    "file_path": "/private/tmp/featrace-gap22-boundaries-xwf4psrt/truncated-read/assessment.md",
+    "description": null,
+    "command_prefix": ""
+  }
+]

@@ -1,0 +1,178 @@
+[
+  {
+    "order": 1,
+    "event": 1,
+    "name": "Skill",
+    "file_path": null,
+    "description": null,
+    "command_prefix": ""
+  },
+  {
+    "order": 2,
+    "event": 3,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Read next-workflow reference",
+    "command_prefix": "cd /Users/mac/.claude/skills/dev/core/references && wc -l orchestration.md workflow.md next-workflow.md feature-selection.md verification-workflow.md; cat next-workflow.md"
+  },
+  {
+    "order": 3,
+    "event": 5,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Read orchestration, workflow, selection, verification refs",
+    "command_prefix": "cd /Users/mac/.claude/skills/dev/core/references && cat orchestration.md workflow.md feature-selection.md verification-workflow.md; ls ../scripts ../../ 2>/dev/null"
+  },
+  {
+    "order": 4,
+    "event": 7,
+    "name": "Read",
+    "file_path": "/Users/mac/.claude/projects/-private-tmp-featrace-gap22-boundaries-xwf4psrt-source-drift-project/6d5b591f-e771-4d78-a565-c11d86c11bb6/tool-results/bbms7eh80.txt",
+    "description": null,
+    "command_prefix": ""
+  },
+  {
+    "order": 5,
+    "event": 9,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Resolve feature, status, verify inputs",
+    "command_prefix": "S=/Users/mac/.claude/skills/dev/core/scripts; P=/private/tmp/featrace-gap22-boundaries-xwf4psrt/source-drift/project; python3 $S/feature-context.py resolve $P --feature E2E-0531; echo \"== status\"; python3 $S/feature-status.py $P E2E-0531 2>"
+  },
+  {
+    "order": 6,
+    "event": 11,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Run check validation and delivery audit",
+    "command_prefix": "S=/Users/mac/.claude/skills/dev/core/scripts; P=/private/tmp/featrace-gap22-boundaries-xwf4psrt/source-drift/project; F=$P/.agent-workflow/features/E2E-0531; python3 $S/validate-feature.py $P E2E-0531 --stage check; echo \"rc=$?\"; echo \"== a"
+  },
+  {
+    "order": 7,
+    "event": 13,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Check verification status and file timestamps",
+    "command_prefix": "S=/Users/mac/.claude/skills/dev/core/scripts; P=/private/tmp/featrace-gap22-boundaries-xwf4psrt/source-drift/project; F=$P/.agent-workflow/features/E2E-0531; python3 $S/verification.py status $P E2E-0531 2>&1 | head -20; echo \"rc=$?\"; stat "
+  },
+  {
+    "order": 8,
+    "event": 15,
+    "name": "Read",
+    "file_path": "/private/tmp/featrace-gap22-boundaries-xwf4psrt/source-drift/project/.agent-workflow/features/E2E-0531/spec/requirements.json",
+    "description": null,
+    "command_prefix": ""
+  },
+  {
+    "order": 9,
+    "event": 17,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Read PRD source and rendered spec",
+    "command_prefix": "P=/private/tmp/featrace-gap22-boundaries-xwf4psrt/source-drift/project; F=$P/.agent-workflow/features/E2E-0531; cat $F/sources/prd-original.md; echo ======; cat $F/spec/spec.md"
+  },
+  {
+    "order": 10,
+    "event": 19,
+    "name": "Read",
+    "file_path": "/private/tmp/featrace-gap22-boundaries-xwf4psrt/source-drift/project/.agent-workflow/features/E2E-0531/spec/spec.md",
+    "description": null,
+    "command_prefix": ""
+  },
+  {
+    "order": 11,
+    "event": 21,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Inspect baseline dir and verification history",
+    "command_prefix": "P=/private/tmp/featrace-gap22-boundaries-xwf4psrt/source-drift/project; cd $P; ls -la .agent-workflow/project-baseline; python3 - <<'EOF'\nimport json\nv=json.load(open('.agent-workflow/features/E2E-0531/verification.json'))\nprint(v.keys())\nf"
+  },
+  {
+    "order": 12,
+    "event": 23,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Compare quality report hashes with worktree",
+    "command_prefix": "P=/private/tmp/featrace-gap22-boundaries-xwf4psrt/source-drift/project; cd $P; python3 -c \"\nimport json;q=json.load(open('.agent-workflow/project-baseline/quality-report.json'))\nfor r in q.get('results',[]): r.pop('stdout',None); r.pop('std"
+  },
+  {
+    "order": 13,
+    "event": 25,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Find recorded source hashes in records",
+    "command_prefix": "P=/private/tmp/featrace-gap22-boundaries-xwf4psrt/source-drift/project; cd $P/.agent-workflow; grep -rn -o '\"[a-z_]*\\(sha\\|digest\\|hash\\)[a-z_]*\": *\"[0-9a-f]\\{12\\}' features/E2E-0531 --include=*.json | grep -v verification.json | head -30; "
+  },
+  {
+    "order": 14,
+    "event": 27,
+    "name": "Grep",
+    "file_path": null,
+    "description": null,
+    "command_prefix": ""
+  },
+  {
+    "order": 15,
+    "event": 29,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Compare upstream PRD input with registered source",
+    "command_prefix": "D=/private/tmp/featrace-gap22-boundaries-xwf4psrt/source-drift; ls -la $D $D/inputs 2>&1; shasum -a 256 $D/inputs/* 2>/dev/null; diff $D/project/.agent-workflow/features/E2E-0531/sources/prd-original.md $D/inputs/prd.md && echo SAME"
+  },
+  {
+    "order": 16,
+    "event": 31,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Show code diff and new tests",
+    "command_prefix": "cd /private/tmp/featrace-gap22-boundaries-xwf4psrt/source-drift/project; git diff; cat tests/test_product_snapshot.py tests/test_event_snapshot.py"
+  },
+  {
+    "order": 17,
+    "event": 33,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Check render usage, decisions, current time",
+    "command_prefix": "S=/Users/mac/.claude/skills/dev/core/scripts; python3 $S/render-workspace.py --help 2>&1 | head -15; cat /private/tmp/featrace-gap22-boundaries-xwf4psrt/source-drift/project/.agent-workflow/features/E2E-0531/decisions.json | head -40; date "
+  },
+  {
+    "order": 18,
+    "event": 35,
+    "name": "Write",
+    "file_path": "/private/tmp/featrace-gap22-boundaries-xwf4psrt/source-drift/project/.agent-workflow/features/E2E-0531/delivery-report.md",
+    "description": null,
+    "command_prefix": ""
+  },
+  {
+    "order": 19,
+    "event": 37,
+    "name": "Read",
+    "file_path": "/private/tmp/featrace-gap22-boundaries-xwf4psrt/source-drift/project/.agent-workflow/features/E2E-0531/delivery-report.md",
+    "description": null,
+    "command_prefix": ""
+  },
+  {
+    "order": 20,
+    "event": 39,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Verify PRD hash and show appended text",
+    "command_prefix": "cd /private/tmp/featrace-gap22-boundaries-xwf4psrt/source-drift/project/.agent-workflow/features/E2E-0531; shasum -a 256 sources/prd-original.md; wc -c sources/prd-original.md; tail -c +3684 sources/prd-original.md; echo; grep -n '\"status\"'"
+  },
+  {
+    "order": 21,
+    "event": 41,
+    "name": "Edit",
+    "file_path": "/private/tmp/featrace-gap22-boundaries-xwf4psrt/source-drift/project/.agent-workflow/features/E2E-0531/delivery-report.md",
+    "description": null,
+    "command_prefix": ""
+  },
+  {
+    "order": 22,
+    "event": 43,
+    "name": "Write",
+    "file_path": "/private/tmp/featrace-gap22-boundaries-xwf4psrt/source-drift/assessment.md",
+    "description": null,
+    "command_prefix": ""
+  }
+]

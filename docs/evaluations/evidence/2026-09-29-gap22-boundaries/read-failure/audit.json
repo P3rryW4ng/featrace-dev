@@ -1,0 +1,84 @@
+{
+  "case": "read-failure",
+  "execution": {
+    "exit_code": 0,
+    "elapsed_seconds": 110.939
+  },
+  "cli_result": {
+    "subtype": "success",
+    "is_error": false,
+    "total_cost_usd": 0.7072046000000001,
+    "duration_ms": 109157,
+    "num_turns": 17,
+    "usage": {
+      "input_tokens": 32,
+      "cache_creation_input_tokens": 53303,
+      "cache_read_input_tokens": 648963,
+      "output_tokens": 7543,
+      "output_tokens_details": {
+        "thinking_tokens": 973
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 53303,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "not_available",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 834,
+          "cache_read_input_tokens": 56965,
+          "cache_creation_input_tokens": 1627,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 1627
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard"
+    }
+  },
+  "actual_skill_calls": [
+    {
+      "skill": "dev",
+      "args": "next --feature E2E-0531"
+    }
+  ],
+  "feature_status": "provisional",
+  "status_mutation_calls": [],
+  "changed_project_files": [
+    ".agent-workflow/features/E2E-0531/delivery-report.md"
+  ],
+  "business_diff_unchanged": true,
+  "head_unchanged": true,
+  "staged_unchanged": true,
+  "quality_report_unchanged": true,
+  "verification_history_unchanged": true,
+  "installed_unchanged": true,
+  "source_unchanged": true,
+  "source_sha256_before": "321e42726e3dfdfe440cdadfa30b3c290259475a4589e0b6d313bdab00c98d45",
+  "source_sha256_after": "321e42726e3dfdfe440cdadfa30b3c290259475a4589e0b6d313bdab00c98d45",
+  "read_calls": [
+    {
+      "call_order": 14,
+      "call_event": 27,
+      "return_event": 28,
+      "is_error": true,
+      "offset": 1,
+      "line_numbers": []
+    }
+  ],
+  "received_complete_saved_report": false,
+  "report_unchanged_since_save": true,
+  "report_explicit_blocker": false,
+  "read_only_check_exit_codes": [
+    0,
+    0
+  ]
+}

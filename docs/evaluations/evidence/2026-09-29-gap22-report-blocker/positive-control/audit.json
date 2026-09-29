@@ -1,0 +1,152 @@
+{
+  "case": "positive-control",
+  "execution": {
+    "exit_code": 0,
+    "elapsed_seconds": 157.406
+  },
+  "cli_result": {
+    "subtype": "success",
+    "is_error": false,
+    "total_cost_usd": 0.9056362000000001,
+    "duration_ms": 155973,
+    "num_turns": 21,
+    "usage": {
+      "input_tokens": 38,
+      "cache_creation_input_tokens": 64348,
+      "cache_read_input_tokens": 887801,
+      "output_tokens": 10657,
+      "output_tokens_details": {
+        "thinking_tokens": 1452
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 64348,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "not_available",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 835,
+          "cache_read_input_tokens": 67803,
+          "cache_creation_input_tokens": 1834,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 1834
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard"
+    }
+  },
+  "actual_skill_calls": [
+    {
+      "skill": "featrace-gap22-report:dev",
+      "args": "next --feature E2E-0531"
+    }
+  ],
+  "feature_status": "complete",
+  "status_mutation_calls": [
+    16
+  ],
+  "changed_project_files": [
+    ".agent-workflow/features/E2E-0531/delivery-report.md",
+    ".agent-workflow/features/E2E-0531/spec/requirements.json",
+    ".agent-workflow/features/E2E-0531/spec/spec.md"
+  ],
+  "business_diff_unchanged": true,
+  "head_unchanged": true,
+  "staged_unchanged": true,
+  "quality_report_unchanged": true,
+  "verification_history_unchanged": true,
+  "installed_unchanged": true,
+  "source_unchanged": true,
+  "source_sha256_before": "321e42726e3dfdfe440cdadfa30b3c290259475a4589e0b6d313bdab00c98d45",
+  "source_sha256_after": "321e42726e3dfdfe440cdadfa30b3c290259475a4589e0b6d313bdab00c98d45",
+  "read_calls": [
+    {
+      "call_order": 12,
+      "call_event": 22,
+      "return_event": 24,
+      "is_error": false,
+      "offset": 1,
+      "line_numbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55
+      ]
+    },
+    {
+      "call_order": 13,
+      "call_event": 25,
+      "return_event": 26,
+      "is_error": false,
+      "offset": 1,
+      "line_numbers": []
+    }
+  ],
+  "received_complete_saved_report": true,
+  "report_unchanged_since_save": true,
+  "report_explicit_blocker": false,
+  "read_only_check_exit_codes": [
+    0,
+    0
+  ]
+}

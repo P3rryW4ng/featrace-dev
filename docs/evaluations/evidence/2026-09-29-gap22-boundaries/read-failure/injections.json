@@ -1,0 +1,21 @@
+[
+  {
+    "time_ns": 1790674541209352000,
+    "kind": "report_saved",
+    "event": "PostToolUse",
+    "tool_name": "Write",
+    "tool_use_id": "toolu_01Ws5DZeLkRXKCSLhMLGXc8Y",
+    "path": "/private/tmp/featrace-gap22-boundaries-xwf4psrt/read-failure/project/.agent-workflow/features/E2E-0531/delivery-report.md",
+    "report_sha256": "059ee125616610b954660376b5cc51068bae2e0deb677ee45c5467f0736237c5"
+  },
+  {
+    "time_ns": 1790674544430046000,
+    "kind": "read_denied",
+    "event": "PreToolUse",
+    "tool_name": "Read",
+    "tool_use_id": "toolu_016kJZba3iuMzH9PdM7r5kS7",
+    "path": "/private/tmp/featrace-gap22-boundaries-xwf4psrt/read-failure/project/.agent-workflow/features/E2E-0531/delivery-report.md",
+    "report_sha256": "059ee125616610b954660376b5cc51068bae2e0deb677ee45c5467f0736237c5",
+    "command_prefix": ""
+  }
+]

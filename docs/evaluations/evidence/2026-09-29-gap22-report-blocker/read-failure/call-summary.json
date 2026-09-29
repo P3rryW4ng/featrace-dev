@@ -1,0 +1,114 @@
+[
+  {
+    "order": 1,
+    "event": 1,
+    "name": "Skill",
+    "file_path": null,
+    "description": null,
+    "command_prefix": ""
+  },
+  {
+    "order": 2,
+    "event": 3,
+    "name": "Bash",
+    "file_path": null,
+    "description": "List skill references and project files",
+    "command_prefix": "cd /private/tmp/featrace-gap22-report-0533-lmsqfuea/plugin/skills/dev/core/references && wc -l next-workflow.md orchestration.md workflow.md feature-selection.md verification-workflow.md; ls; cd /private/tmp/featrace-gap22-report-0533-lmsqf"
+  },
+  {
+    "order": 3,
+    "event": 5,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Read routing and verification references",
+    "command_prefix": "cd /private/tmp/featrace-gap22-report-0533-lmsqfuea/plugin/skills/dev/core/references && cat next-workflow.md orchestration.md workflow.md feature-selection.md verification-workflow.md"
+  },
+  {
+    "order": 4,
+    "event": 7,
+    "name": "Read",
+    "file_path": "/Users/mac/.claude/projects/-private-tmp-featrace-gap22-report-0533-lmsqfuea-read-failure-project/76920977-8d60-4182-9045-4967c644f3e1/tool-results/bjdiu4ptg.txt",
+    "description": null,
+    "command_prefix": ""
+  },
+  {
+    "order": 5,
+    "event": 9,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Resolve feature and read status",
+    "command_prefix": "S=/private/tmp/featrace-gap22-report-0533-lmsqfuea/plugin/skills/dev/core/scripts; P=/private/tmp/featrace-gap22-report-0533-lmsqfuea/read-failure/project; ls $S; python3 $S/feature-context.py resolve $P --feature E2E-0531; echo \"rc=$?\"; py"
+  },
+  {
+    "order": 6,
+    "event": 11,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Run read-only verify inventory, validation and audit",
+    "command_prefix": "S=/private/tmp/featrace-gap22-report-0533-lmsqfuea/plugin/skills/dev/core/scripts; P=/private/tmp/featrace-gap22-report-0533-lmsqfuea/read-failure/project; python3 $S/verify-inputs.py $P E2E-0531; echo \"rc=$?\"; python3 $S/validate-feature.p"
+  },
+  {
+    "order": 7,
+    "event": 13,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Inspect quality report and current file hashes",
+    "command_prefix": "P=/private/tmp/featrace-gap22-report-0533-lmsqfuea/read-failure/project; cd $P; cat .agent-workflow/project-baseline/quality-report.json | head -80; echo ---; shasum -a 256 src/audit/summary.py src/catalog/query.py tests/test_event_snapshot"
+  },
+  {
+    "order": 8,
+    "event": 15,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Read spec, tasks, decisions and verification rows",
+    "command_prefix": "P=/private/tmp/featrace-gap22-report-0533-lmsqfuea/read-failure/project; cd $P/.agent-workflow/features/E2E-0531; cat spec/spec.md tasks.md decisions.md fixes.md; python3 -c \"\nimport json;v=json.load(open('verification.json'))\nfor i in v['i"
+  },
+  {
+    "order": 9,
+    "event": 17,
+    "name": "Bash",
+    "file_path": null,
+    "description": "Show code diff and sample tests",
+    "command_prefix": "cd /private/tmp/featrace-gap22-report-0533-lmsqfuea/read-failure/project; git diff --stat; git diff -- src/; cat tests/test_event_snapshot.py | head -60; grep -nE \"import|open\\(|os\\.|socket|global\" src/catalog/query.py src/audit/summary.py"
+  },
+  {
+    "order": 10,
+    "event": 19,
+    "name": "Write",
+    "file_path": "/private/tmp/featrace-gap22-report-0533-lmsqfuea/read-failure/project/.agent-workflow/features/E2E-0531/delivery-report.md",
+    "description": null,
+    "command_prefix": ""
+  },
+  {
+    "order": 11,
+    "event": 21,
+    "name": "Read",
+    "file_path": "/private/tmp/featrace-gap22-report-0533-lmsqfuea/read-failure/project/.agent-workflow/features/E2E-0531/delivery-report.md",
+    "description": null,
+    "command_prefix": ""
+  },
+  {
+    "order": 12,
+    "event": 23,
+    "name": "Edit",
+    "file_path": "/private/tmp/featrace-gap22-report-0533-lmsqfuea/read-failure/project/.agent-workflow/features/E2E-0531/delivery-report.md",
+    "description": null,
+    "command_prefix": ""
+  },
+  {
+    "order": 13,
+    "event": 25,
+    "name": "Edit",
+    "file_path": "/private/tmp/featrace-gap22-report-0533-lmsqfuea/read-failure/project/.agent-workflow/features/E2E-0531/delivery-report.md",
+    "description": null,
+    "command_prefix": ""
+  },
+  {
+    "order": 14,
+    "event": 27,
+    "name": "Write",
+    "file_path": "/private/tmp/featrace-gap22-report-0533-lmsqfuea/read-failure/assessment.md",
+    "description": null,
+    "command_prefix": ""
+  }
+]
