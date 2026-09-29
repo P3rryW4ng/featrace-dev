@@ -1,0 +1,17 @@
+{
+  "skill_format_checks": {
+    "dev": "passed",
+    "featrace-build": "passed",
+    "featrace-verify": "passed"
+  },
+  "relative_links_checked": 164,
+  "broken_links": [],
+  "git_diff_check": "passed",
+  "source_version": "0.5.31",
+  "personal_version": "0.5.29",
+  "final_runtime_files": 74,
+  "final_runtime_matches_source": true,
+  "runtime_python_scripts_changed": false,
+  "full_267_test_suite_rerun": false,
+  "business_tests_rerun_during_deliver": false
+}

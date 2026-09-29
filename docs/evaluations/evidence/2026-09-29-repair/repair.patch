@@ -1,0 +1,82 @@
+--- before/upper.py
++++ after/upper.py
+@@ -1,20 +1,22 @@
+ import csv
+ import io
+-from decimal import Decimal, InvalidOperation
++from decimal import Context, Decimal, InvalidOperation, localcontext
+ 
+ _HEADER = ['sku', 'name', 'price']
+ 
+ 
+ def _parse_price(value):
+-    try:
+-        price = Decimal(value)
+-    except (InvalidOperation, ValueError):
+-        return None
+-    if not price.is_finite() or price < 0 or price.as_tuple().exponent < -2:
+-        return None
+-    if price == 0:
+-        price = Decimal(0)
+-    return '{:.2f}'.format(price)
++    # A private context keeps signal flags out of the caller's decimal context.
++    with localcontext(Context()):
++        try:
++            price = Decimal(value)
++        except (InvalidOperation, ValueError):
++            return None
++        if not price.is_finite() or price < 0 or price.as_tuple().exponent < -2:
++            return None
++        if price == 0:
++            price = Decimal(0)
++        return '{:.2f}'.format(price)
+ 
+ 
+ def convert(text):
+--- before/lower.py
++++ after/lower.py
+@@ -4,8 +4,13 @@
+ 
+ _TIMESTAMP = re.compile(
+     r'(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.(\d+))?'
+-    r'(?:(Z)|([+-])(\d{2}):?(\d{2}))'
++    r'(?:(Z)|([+-])(\d{2}):?(\d{2}))',
++    re.ASCII,
+ )
++
++
++def _reject_constant(name):
++    raise ValueError('non-JSON constant ' + name)
+ 
+ 
+ def _normalize_timestamp(value):
+@@ -39,7 +44,7 @@
+         if not raw.strip():
+             continue
+         try:
+-            event = json.loads(raw)
++            event = json.loads(raw, parse_constant=_reject_constant)
+         except ValueError:
+             errors.append({'line': line_number, 'code': 'invalid_json'})
+             continue
+--- before/tests/test_contract.py
++++ after/tests/test_contract.py
+@@ -45,3 +45,18 @@
+    self.assertEqual(len(events('{"id":"a","timestamp":"2026-01-01T00:00:00Z","payload":null}')['records']),1)
+    self.assertEqual(catalog('sku,name,price\na,A,bad')['errors'][0]['code'],'invalid_price')
+    self.assertEqual(events('bad')['errors'][0]['code'],'invalid_json')
++ def test_json_non_standard_constants_are_invalid_json_and_do_not_reserve(self):
++  lines=['{"id":"a","timestamp":"2026-01-01T00:00:00Z","payload":%s}'%v for v in ['NaN','Infinity','-Infinity','[1,{"x":NaN}]']]
++  lines.append('{"id":"a","timestamp":"2026-01-01T00:00:00Z","payload":1.5}')
++  self.assertEqual(events('\n'.join(lines)),{'records':[{'id':'a','timestamp':'2026-01-01T00:00:00Z','payload':1.5}],'errors':[{'line':i,'code':'invalid_json'} for i in range(1,5)]})
++ def test_json_timestamp_requires_ascii_digits(self):
++  for value in ['٢٠٢٦-01-01T00:00:00Z','2026-01-01T00:00:00+０２:00','2026-01-01T0০:00:00Z']:
++   with self.subTest(value=value):self.assertEqual(events(json.dumps({'id':'a','timestamp':value,'payload':0})),{'records':[],'errors':[{'line':1,'code':'invalid_timestamp'}]})
++ def test_csv_leaves_caller_decimal_context_untouched(self):
++  import decimal
++  with decimal.localcontext() as ctx:
++   ctx.clear_flags();ctx.traps[decimal.InvalidOperation]=False;ctx.prec=1
++   x=catalog('sku,name,price\na,A,bad\nb,B,NaN\nc,C,sNaN\nd,D,-1\ne,E,0.001\nf,F,12.34\n')
++   self.assertEqual(x,{'records':[{'sku':'f','name':'F','price':'12.34'}],'errors':[{'line':i,'code':'invalid_price'} for i in range(2,7)]})
++   self.assertIs(decimal.getcontext(),ctx);self.assertEqual([s for s,v in ctx.flags.items() if v],[])
++   self.assertFalse(ctx.traps[decimal.InvalidOperation]);self.assertEqual(ctx.prec,1)

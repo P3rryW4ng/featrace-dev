@@ -1,0 +1,267 @@
+{
+  "personal_unchanged": true,
+  "source_unchanged": true,
+  "marker_unchanged": true,
+  "attempt_unchanged": true,
+  "head_unchanged": true,
+  "staged_unchanged": true,
+  "changed_project_paths": [
+    ".agent-workflow/features/FEAT-001/decisions.md",
+    ".agent-workflow/features/FEAT-001/fixes.md",
+    ".agent-workflow/features/FEAT-001/spec/requirements.json",
+    ".agent-workflow/features/FEAT-001/spec/spec.md",
+    ".agent-workflow/features/FEAT-001/tasks.json",
+    ".agent-workflow/features/FEAT-001/tasks.md",
+    ".agent-workflow/features/FEAT-001/traceability.md",
+    ".agent-workflow/features/FEAT-001/verification.json",
+    ".agent-workflow/features/FEAT-001/verification.md",
+    ".agent-workflow/project-baseline/quality-report.json",
+    "lower.py",
+    "upper.py"
+  ],
+  "business_paths": [
+    "lower.py",
+    "upper.py"
+  ],
+  "primary_matches_candidate": true,
+  "sources_preserved": true,
+  "feature_status": "provisional",
+  "current_checks": {
+    "validate": {
+      "exit": 1,
+      "output": "ERROR: behavior needs actual regression evidence or explicit waiver: B-1\nERROR: behavior needs actual regression evidence or explicit waiver: B-PRESERVE\nERROR: verification incomplete: requirement:R-1:1:ae0e453b6e4d (not_run)\nERROR: verification incomplete: requirement:R-1:2:268e8b047d1a (not_run)\nERROR: verification incomplete: requirement:R-1:3:2b20db89764a (not_run)\nERROR: verification incomplete: impact:B-1:f253d4f8080f (not_run)\nERROR: verification incomplete: impact:B-PRESERVE:60b9e052b905 (not_run)\n"
+    },
+    "audit": {
+      "exit": 1,
+      "output": "ERROR: verification incomplete: requirement:R-1:1:ae0e453b6e4d (not_run)\nERROR: verification incomplete: requirement:R-1:2:268e8b047d1a (not_run)\nERROR: verification incomplete: requirement:R-1:3:2b20db89764a (not_run)\nERROR: verification incomplete: impact:B-1:f253d4f8080f (not_run)\nERROR: verification incomplete: impact:B-PRESERVE:60b9e052b905 (not_run)\n"
+    },
+    "verification": {
+      "exit": 2,
+      "output": "{\n  \"digest\": \"382b1507001b9cf8422235da2167fd3fb9761f81728bf01e322aa722f0ae6880\",\n  \"tested_revision\": \"27f72944625342209d310f299ee4555848b1b86f\",\n  \"items\": [\n    {\n      \"id\": \"requirement:R-1:1:ae0e453b6e4d\",\n      \"mode\": \"manual\",\n      \"status\": \"not_run\",\n      \"expected\": \"All CSV validation, quoting, duplicate and row atomicity rules in source are implemented\"\n    },\n    {\n      \"id\": \"requirement:R-1:2:268e8b047d1a\",\n      \"mode\": \"manual\",\n      \"status\": \"not_run\",\n      \"expected\": \"All JSONL schema, timezone, duplicate and physical line rules in source are implemented\"\n    },\n    {\n      \"id\": \"requirement:R-1:3:2b20db89764a\",\n      \"mode\": \"manual\",\n      \"status\": \"not_run\",\n      \"expected\": \"Importers preserve order, have no external effects and do not share mutable state\"\n    },\n    {\n      \"id\": \"impact:B-1:f253d4f8080f\",\n      \"mode\": \"manual\",\n      \"status\": \"not_run\",\n      \"expected\": \"Implement independent CSV catalog and JSONL event imports according to the approved source contract\"\n    },\n    {\n      \"id\": \"impact:B-PRESERVE:60b9e052b905\",\n      \"mode\": \"manual\",\n      \"status\": \"not_run\",\n      \"expected\": \"Keep independent pure local parser interfaces and no external effects.\"\n    },\n    {\n      \"id\": \"gate:parser-all:16c49ba5b631\",\n      \"mode\": \"automatic\",\n      \"status\": \"passed\",\n      \"expected\": \"Real parser and cross-importer assertions\"\n    }\n  ]\n}\n"
+    }
+  },
+  "tool_calls": [
+    {
+      "event": 1,
+      "tool": "Skill",
+      "input": {
+        "skill": "dev",
+        "args": "next --feature FEAT-001"
+      }
+    },
+    {
+      "event": 6,
+      "tool": "Bash",
+      "input": {
+        "command": "cd <PERSONAL-SKILL> && ls; cat VERSION* version* 2>/dev/null; grep -rn \"0\\.5\\.29\\|\\\"version\\\"\" --include=*.json --include=*.md --include=VERSION . 2>/dev/null | head; ls core/references core/scripts 2>/dev/null",
+        "description": "Confirm installed skill root and version"
+      }
+    },
+    {
+      "event": 8,
+      "tool": "Bash",
+      "input": {
+        "command": "grep -rn \"0\\.5\\.[0-9]*\" . | head -20; ls -la; ls agents specialists profiles",
+        "description": "Search for version string in skill"
+      }
+    },
+    {
+      "event": 11,
+      "tool": "Bash",
+      "input": {
+        "command": "cd <PERSONAL-SKILL>/core/references && head -12 ../../.feature-delivery-install.json; cat orchestration.md next-workflow.md",
+        "description": "Read orchestration and next workflow"
+      }
+    },
+    {
+      "event": 13,
+      "tool": "Bash",
+      "input": {
+        "command": "cd <RUN> && ls -la; ls -la attempt project; cd project && git status --short; git log --oneline; find .agent-workflow -maxdepth 4 | head -80",
+        "description": "Inspect project and attempt layout"
+      }
+    },
+    {
+      "event": 18,
+      "tool": "Bash",
+      "input": {
+        "command": "python3 <PERSONAL-SKILL>/core/scripts/feature-status.py --help 2>&1 | head -20; python3 <PERSONAL-SKILL>/core/scripts/feature-status.py . FEAT-001 2>&1 | head -80",
+        "description": "Run read-only feature status"
+      }
+    },
+    {
+      "event": 20,
+      "tool": "Bash",
+      "input": {
+        "command": "cd <PERSONAL-SKILL>/core/references && cat parallel-build.md build-strategy.md",
+        "description": "Read parallel build and strategy references"
+      }
+    },
+    {
+      "event": 22,
+      "tool": "Bash",
+      "input": {
+        "command": "cat workflow.md verification-workflow.md",
+        "description": "Read workflow and verification references"
+      }
+    },
+    {
+      "event": 25,
+      "tool": "Bash",
+      "input": {
+        "command": "cd <RUN>/attempt && cat integration-report.json check-0.log; echo; cat run.json; echo; cat snapshot.json; find returns workers integration inputs -maxdepth 3 | head -60",
+        "description": "Read attempt run, snapshot and integration report"
+      }
+    },
+    {
+      "event": 30,
+      "tool": "Bash",
+      "input": {
+        "command": "for t in T-UP T-LOW; do echo \"== $t\"; cat returns/$t/result.json; echo; cat returns/$t/check-0.log; cat returns/$t/patch.diff; done",
+        "description": "Inspect worker returns, logs and patches"
+      }
+    },
+    {
+      "event": 33,
+      "tool": "Bash",
+      "input": {
+        "command": "cd <RUN>/project && git rev-parse HEAD; git status --porcelain --ignored; git ls-files -s | shasum -a 256; echo \"index file:\"; shasum -a 256 .git/index; cd .agent-workflow && find . -type f | sort | xargs shasum -a 256; cd ../..; echo \"== frozen inputs\"; cd attempt/inputs && find . -type f | sort | xargs shasum -a 256",
+        "description": "Recheck primary HEAD, index, record hashes vs frozen"
+      }
+    },
+    {
+      "event": 38,
+      "tool": "Bash",
+      "input": {
+        "command": "cd <PERSONAL-SKILL>/core/scripts && python3 parallel-build.py --help 2>&1 | head; grep -n \"def \\|index_sha256\\|skill_sha256\\|add_parser\\|argv\\[1\\]\" parallel-build.py verify-handoff.py | head -80",
+        "description": "Inspect parallel-build helper interface"
+      }
+    },
+    {
+      "event": 40,
+      "tool": "Bash",
+      "input": {
+        "command": "sed -n 1,125p verify-handoff.py; sed -n 181,230p verify-handoff.py",
+        "description": "Read verify-handoff capture logic"
+      }
+    },
+    {
+      "event": 43,
+      "tool": "Bash",
+      "input": {
+        "command": "cd <RUN> && python3 <PERSONAL-SKILL>/core/scripts/verify-handoff.py capture project FEAT-001 --base 27f72944625342209d310f299ee4555848b1b86f > /tmp/featrace-cap-now.json && python3 -c \"\nimport json;a=json.load(open('/tmp/featrace-cap-now.json'));b=json.load(open('attempt/snapshot.json'))\nprint('now',a['input_digest']);print('snap',b['input_digest']);print('equal',a==b)\"",
+        "description": "Recapture primary inputs read-only and compare to frozen snapshot"
+      }
+    },
+    {
+      "event": 46,
+      "tool": "Bash",
+      "input": {
+        "command": "cd <RUN>/attempt && shasum -a 256 returns/*/patch.diff returns/*/check-0.log check-0.log; cd integration && git rev-parse HEAD; git status --porcelain --ignored; git add -N . 2>/dev/null; echo; git -c core.hooksPath=/dev/null write-tree 2>&1 | head -1; git diff --stat HEAD; shasum -a 256 upper.py lower.py; git diff HEAD -- upper.py | diff - ../returns/T-UP/patch.diff && echo UP_PATCH_MATCH; git diff HEAD -- lower.py | diff - ../returns/T-LOW/patch.diff && echo LOW_PATCH_MATCH",
+        "description": "Verify candidate tree and patches match returns"
+      }
+    },
+    {
+      "event": 74,
+      "tool": "Bash",
+      "input": {
+        "command": "cd <RUN>/project/.agent-workflow && cat features/FEAT-001/sources/prd-original.txt; echo; cat features/FEAT-001/spec/requirements.json features/FEAT-001/tasks.json features/FEAT-001/traceability.json features/FEAT-001/decisions.json features/FEAT-001/impact.json project-baseline/quality-gates.json features/FEAT-001/regression-review.json",
+        "description": "Read PRD and canonical feature records"
+      }
+    },
+    {
+      "event": 76,
+      "tool": "Bash",
+      "input": {
+        "command": "cd <RUN>/project && cat tests/test_upper.py tests/test_lower.py tests/test_integration.py; cat .gitignore",
+        "description": "Read actual test assertions"
+      }
+    },
+    {
+      "event": 101,
+      "tool": "Bash",
+      "input": {
+        "command": "cd <RUN> && S=<PERSONAL-SKILL>/core/scripts; python3 $S/validate-feature.py --help 2>&1 | head -5; python3 $S/validate-feature.py project FEAT-001 --stage develop; echo rc=$?; grep -n \"status\" <PERSONAL-SKILL>/core/references/requirement-schema.md | head -20",
+        "description": "Run develop validation and check task status schema"
+      }
+    },
+    {
+      "event": 106,
+      "tool": "Bash",
+      "input": {
+        "command": "python3 <PERSONAL-SKILL>/core/scripts/verify-handoff.py capture project FEAT-001 --base 27f72944625342209d310f299ee4555848b1b86f | python3 -c \"import json,sys;print(json.load(sys.stdin)['input_digest']=='c62d0dadfbad5a41d13f4bf8d30908ead690ff4159d54e4fe718153e87ab063c')\" && cd project && git apply --check ../attempt/returns/T-UP/patch.diff ../attempt/returns/T-LOW/patch.diff && git apply ../attempt/returns/T-UP/patch.diff ../attempt/returns/T-LOW/patch.diff && git status --porcelain && shasum -a 256 upper.py lower.py tests/* .gitignore && git diff --cached --quiet && echo INDEX_UNCHANGED && git rev-parse HEAD",
+        "description": "Recheck freshness then apply both candidate patches unstaged"
+      }
+    },
+    {
+      "event": 127,
+      "tool": "Bash",
+      "input": {
+        "command": "T=$(mktemp -u /tmp/featrace-idx.XXXX) && cp .git/index $T && GIT_INDEX_FILE=$T git add -u && GIT_INDEX_FILE=$T git write-tree; rm -f $T; P=python3; $P -m unittest discover -s tests -p test_upper.py 2>&1 | tail -3; $P -m unittest discover -s tests -p test_lower.py 2>&1 | tail -3; find . -name __pycache__ -path './tests/*' -o -name __pycache__ -maxdepth 1 | head",
+        "description": "Confirm primary tree identity and run task tests in primary"
+      }
+    },
+    {
+      "event": 133,
+      "tool": "Bash",
+      "input": {
+        "command": "python3 - <<'EOF'\nimport json\np='.agent-workflow/features/FEAT-001/tasks.json'\nd=json.load(open(p))\nev={'T-UP':'Primary checkout 2026-09-29: python3 -m unittest discover -s tests -p test_upper.py -> Ran 7 tests OK; HEAD 27f72944625342209d310f299ee4555848b1b86f with unstaged adopted upper.py sha256 7a1cea57c73f4b4940c6d32e05d1138d383c661833bee09733d31510bf43a6e7 (worktree tree aae02019e775953f2cd0f3f73bd0048cb5fac7ba, from parallel attempt candidate). Task-level only; feature acceptance rows tracked in verification.json.',\n    'T-LOW':'Primary checkout 2026-09-29: python3 -m unittest discover -s tests -p test_lower.py -> Ran 7 tests OK; HEAD 27f72944625342209d310f299ee4555848b1b86f with unstaged adopted lower.py sha256 e4e9aa7f600c6f4147a04e9b819a1b6138da46987a5582c7f82bd40a18e3120f (worktree tree aae02019e775953f2cd0f3f73bd0048cb5fac7ba, from parallel attempt candidate). Task-level only; feature acceptance rows tracked in verification.json.'}\nfor t in d['tasks']:\n    t['status']='done'; t['test_evidence']=ev[t['id']]\njson.dump(d,open(p,'w'),indent=2,ensure_ascii=False); open(p,'a').write('\\n')\nEOF\nS=<PERSONAL-SKILL>/core/scripts; python3 $S/render-workspace.py --help 2>&1|head -3; python3 $S/task_review.py --help 2>&1 | head -5",
+        "description": "Mark tasks done with primary evidence; inspect helpers"
+      }
+    },
+    {
+      "event": 136,
+      "tool": "Bash",
+      "input": {
+        "command": "cd <RUN> && S=<PERSONAL-SKILL>/core/scripts; python3 $S/task_review.py show project FEAT-001 2>&1 | head -15; python3 $S/render-workspace.py project FEAT-001; echo rc=$?; python3 $S/validate-feature.py project FEAT-001 --stage develop; python3 $S/verify-inputs.py project FEAT-001 2>&1 | head -40",
+        "description": "Check task review currency, render views, verify inputs"
+      }
+    },
+    {
+      "event": 141,
+      "tool": "Bash",
+      "input": {
+        "command": "S=<PERSONAL-SKILL>/core/scripts; ls -la project/.agent-workflow/features/FEAT-001; python3 $S/feature-status.py project FEAT-001 | grep -E \"TASK|HIST\"; python3 $S/verification.py sync project FEAT-001; echo rc=$?; cat project/.agent-workflow/features/FEAT-001/verification.json",
+        "description": "Sync verification checklist and show it"
+      }
+    },
+    {
+      "event": 161,
+      "tool": "Bash",
+      "input": {
+        "command": "S=<PERSONAL-SKILL>/core/scripts; python3 $S/verification.py run project FEAT-001; echo rc=$?; ls project/.agent-workflow project/.agent-workflow/project-baseline",
+        "description": "Run verification gate against primary worktree"
+      }
+    },
+    {
+      "event": 163,
+      "tool": "Bash",
+      "input": {
+        "command": "S=<PERSONAL-SKILL>/core/scripts; cat project/.agent-workflow/project-baseline/quality-report.json | head -40; python3 $S/validate-feature.py project FEAT-001 --stage check; echo rc=$?; python3 $S/audit-delivery.py project FEAT-001; echo rc=$?",
+        "description": "Show quality report; run check validation and delivery audit"
+      }
+    },
+    {
+      "event": 171,
+      "tool": "Bash",
+      "input": {
+        "command": "S=<PERSONAL-SKILL>/core/scripts; rm -f /tmp/featrace-cap-now.json; python3 $S/render-workspace.py project FEAT-001; python3 $S/feature-status.py project FEAT-001; python3 -c \"import json;print(json.load(open('project/.agent-workflow/features/FEAT-001/spec/requirements.json'))['feature']['status'])\"; cd project && git status --porcelain && git diff --cached --stat && git rev-parse HEAD; cd ../attempt && git -C integration status --porcelain; shasum -a 256 run.json snapshot.json integration-report.json returns/*/*",
+        "description": "Render views, final status and integrity checks"
+      }
+    },
+    {
+      "event": 173,
+      "tool": "Write",
+      "input": {
+        "file_path": "<RUN>/assessment.md",
+        "content": "# FEAT-001 adoption / Verify / Deliver assessment\n\nDate: 2026-09-29. Skill: native `Skill` call `dev` with args `next --feature FEAT-001`. Installed root `<PERSONAL-SKILL>`, `.feature-delivery-install.json` version **0.5.29** (confirmed). No source/temp plugin copy was used.\n\n**Final status: `provisional`, not complete.** Code adopted, gate green, five acceptance/behavior rows unproved.\n\n## Route\nBuild (primary adoption of the existing integrated candidate) \u2192 Verify \u2192 Deliver judgment. Deliver stopped: check gate is blocked.\n\n## Evidence inspected (no before.json / prepare / finish / integrate transcripts read)\n- `attempt/run.json`, `snapshot.json`: base `27f72944625342209d310f299ee4555848b1b86f`, input digest `c62d0dad\u2026063c`, plan T-UP\u2192`upper.py`, T-LOW\u2192`lower.py`, integration gate `unittest discover -s tests`.\n- Returns: both `ready`, `changed_paths` limited to the assigned file. The patch and log sha256 match what each result records. Worker states show tests, `.gitignore` and the peer file unchanged.\n- `integration-report.json`: `candidate_checks_passed`, candidate tree `aae02019e775953f2cd0f3f73bd0048cb5fac7ba`, log sha matches `check-0.log` (16 tests OK). Candidate `git diff HEAD` for each file is byte-identical to the matching return patch. Candidate `upper.py`/`lower.py` hashes match the worker states.\n\n## Freshness checks (current state)\n- I ran `verify-handoff.py capture` (read-only) on primary twice: once during inspection and again right before applying. Both gave input digest `c62d0dad\u2026063c`, identical to the frozen snapshot. That covers HEAD, index, tracked paths, all FEAT-001 records, quality-gates and skill hash.\n- Primary record hashes match `attempt/inputs/` file for file.\n- `validate-feature.py --stage develop` \u2192 `FEATURE_VALID`. Task review is current. Regression review is valid with zero candidates.\n- Reused existing reviews as-is. I did not refresh or recreate task-review, regression-review or impact.\n\n## What changed\nPrimary checkout `<RUN>/project`:\n- I applied `returns/T-UP/patch.diff` and `returns/T-LOW/patch.diff` with `git apply`. The changes are unstaged and the index is unchanged (`git diff --cached` is empty). HEAD is still `27f7294\u2026`.\n- `upper.py` sha256 `7a1cea57\u2026a6e7`, `lower.py` sha256 `e4e9aa7f\u2026120f`. Tests and `.gitignore` bytes are unchanged.\n- **Delivered worktree identity:** HEAD `27f72944625342209d310f299ee4555848b1b86f` plus unstaged diff. Tree computed through a temporary index = `aae02019e775953f2cd0f3f73bd0048cb5fac7ba`, which equals the candidate tree.\n\nRecords in `.agent-workflow`, written one at a time:\n- `tasks.json`: T-UP and T-LOW set to `done`, with `test_evidence` from runs in the primary checkout (see below).\n- `verification.json` / `verification.md` created by `verification.py sync`, and a result recorded by `verification.py run`.\n- `project-baseline/quality-report.json` newly generated by that run.\n- Markdown views regenerated with `render-workspace.py`.\n- `requirements.json` `feature.status` left as `provisional`.\n\n## Tests actually run in primary\n1. `python3 -m unittest discover -s tests -p test_upper.py` \u2192 7 OK.\n2. `python3 -m unittest discover -s tests -p test_lower.py` \u2192 7 OK.\n3. `verification.py run` \u2192 gate `parser-all` (`unittest discover -s tests`) **passed**, 16 tests, `tested_at 2026-09-29T07:17:45Z`, revision `27f7294\u2026`.\n4. `validate-feature.py --stage check` \u2192 **rc=1**. `audit-delivery.py` \u2192 **rc=1**. Errors: 5 verification rows `not_run`, and behaviors B-1 and B-PRESERVE have no regression evidence or waiver.\n\n## Why the behavior rows stay unresolved\nI read the actual assertions. None of them prove a whole criterion, so every row stays `manual`/`not_run`. I did not map a row to the gate and did not record a manual pass:\n- **R-1:1 (CSV):**\n  - line numbers after a multiline quoted row are never asserted;\n  - the missing-field/extra-field/empty-sku/empty-name test checks only `len(errors)==3`, not the codes or line numbers;\n  - header whitespace stripping is not asserted;\n  - \"header mismatch gives one error\" is not tested with data rows after the header.\n- **R-1:2 (JSONL):**\n  - missing payload alone, empty or non-string timestamp alone, and non-object scalars (only `[]` is tested) are not isolated;\n  - negative offsets and `Z` normalisation are not asserted separately.\n- **R-1:3:** \"no external effects\" is not asserted at all. Shared state is only checked in one direction (catalog \u2192 events \u2192 catalog).\n- **B-1:** same scope as R-1, so also partial. **B-PRESERVE:** the interface is exercised, but no-external-effects is unasserted.\n\nCode inspection found no conflict with the PRD. Both modules are pure, with immutable module constants and no I/O. That inspection is not recorded as acceptance.\n\n## Blockers\nDelivery needs one of these for each of the 5 rows (R-1:1, R-1:2, R-1:3, B-1, B-PRESERVE):\n- (a) additional real assertions, as a separately authorised test change, then map the rows to `parser-all` with a coverage explanation and rerun; or\n- (b) a real observation or a waiver from someone with acceptance authority, recorded with `verification.py record`.\n\nNeither was authorised or available here.\n\n## Limits and disclosures\n- `quality-report.json` `project_snapshot` binds only the git HEAD. The tested content is the unstaged worktree (tree `aae020\u2026`) listed above. Adopted code is uncommitted.\n- Candidate logs were not reused as primary evidence. All primary results come from fresh runs.\n- During inspection I ran `git add -N .` and `git write-tree` inside the candidate worktree (`attempt/integration`). This was unnecessary. There were no untracked files, so index entries are unchanged: `write-tree` still yields the reported `aae020\u2026`. It may have refreshed index stat data and written tree objects into the shared object store. No candidate file content, returns, run/snapshot/report or frozen inputs were modified (hashes above re-verified).\n- I did not integrate or prepare a new attempt, dispatch agents, commit, push, archive, clean up, or change the Skill or settings.\n"
+      }
+    }
+  ],
+  "cost_usd": 1.2213580000000002,
+  "execution": {
+    "exit_code": 0,
+    "elapsed_seconds": 217.877
+  },
+  "agent_calls": []
+}

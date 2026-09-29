@@ -1,0 +1,59 @@
+{
+  "changed_project_files": [
+    ".agent-workflow/features/FEAT-001/delivery-report.md",
+    ".agent-workflow/features/FEAT-001/spec/requirements.json"
+  ],
+  "head_unchanged": true,
+  "staged_unchanged": true,
+  "business_diff_unchanged": true,
+  "installed_unchanged": true,
+  "runtime_copy_matches_test_snapshot": true,
+  "runtime_copy_matches_final_source": false,
+  "feature_status": "complete",
+  "execution": {
+    "exit_code": 0,
+    "elapsed_seconds": 113.287
+  },
+  "cli_result": {
+    "subtype": "success",
+    "is_error": false,
+    "duration_ms": 111860,
+    "duration_api_ms": 108770,
+    "total_cost_usd": 0.752944,
+    "num_turns": 17,
+    "usage": {
+      "input_tokens": 32,
+      "cache_creation_input_tokens": 57012,
+      "cache_read_input_tokens": 680200,
+      "output_tokens": 8034,
+      "output_tokens_details": {
+        "thinking_tokens": 708
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 57012,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "not_available",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 704,
+          "cache_read_input_tokens": 61149,
+          "cache_creation_input_tokens": 1152,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 1152
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard"
+    },
+    "result": "FEAT-001 is now marked **complete**. The existing evidence was current for the delivered code, so no new test run was needed and none was done.\n\n**Why it could close:**\n- The only warning from the input check was that the code changes aren't committed. The current hashes of `upper.py`, `lower.py` and `tests/test_contract.py` exactly match the hashes recorded with the passing evidence and with FIX-001..003.\n- The last full test run (07:47:32Z, 28 tests OK) came after the last file change (07:45:16Z).\n- All 6 verification rows passed at the current record version. There are no decisions, no unresolved fixes, and no open historical-regression candidates. Both tasks are done and the requirement is confirmed.\n- The record validation reported `FEATURE_VALID` and the delivery audit reported `DELIVERY_EVIDENCE_CURRENT`, both before and after the status change.\n- I read the code against the PRD and found no rule it misses.\n\n**What changed:**\n- **New:** `.agent-workflow/features/FEAT-001/delivery-report.md`. I reread it and rechecked it against the current code before changing the status. It keeps the earlier failed results that led to FIX-001..003.\n- **Updated:** the feature status in `spec/requirements.json` went from `provisional` to `complete`, and the generated views were rebuilt (`spec.md` now shows `Status: complete`).\n- I changed no code or tests, recorded no new results, and made no commit, push or archive.\n\n**Limits (also in the report):**\n- The results not covered by automatic tests come from an earlier Agent's code inspection, not from a user or observer signing off.\n- The test-run report stores only the commit, not the file hashes. So the claim that the tests ran on exactly this code rests on the matching hashes in the other records plus the timestamps.\n- The delivered code is uncommitted: commit 69a66ba plus the working-tree changes.\n- Three edge areas were never tested: very large CSV fields, JSON numbers too large to store, and date/time formats beyond the PRD examples.\n\nMy separate account of what I did is in `run/assessment.md`."
+  }
+}

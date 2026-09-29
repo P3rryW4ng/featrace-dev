@@ -1,0 +1,81 @@
+.:
+.
+..
+.agent-workflow
+.git
+.gitignore
+lower.py
+tests
+upper.py
+
+tests:
+.
+..
+test_contract.py
+test_integration.py
+test_lower.py
+test_upper.py
+{
+ "python": "3.9.6",
+ "executable": "/Library/Developer/CommandLineTools/usr/bin/python3",
+ "resolved_modules": {
+  "csv": "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/csv.py",
+  "_csv": "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/lib-dynload/_csv.cpython-39-darwin.so",
+  "io": "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/io.py",
+  "decimal": "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/decimal.py",
+  "_decimal": "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/lib-dynload/_decimal.cpython-39-darwin.so",
+  "json": "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/json/__init__.py",
+  "json.decoder": "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/json/decoder.py",
+  "_json": "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/lib-dynload/_json.cpython-39-darwin.so",
+  "re": "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/re.py",
+  "datetime": "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/datetime.py"
+ },
+ "audit_events_during_convert": [],
+ "audit_event_count": 0,
+ "stdout": "",
+ "stderr": "",
+ "module_state_unchanged": true,
+ "decimal_context_unchanged": false,
+ "cwd_listing_unchanged": true,
+ "repeat_pass_identical": true,
+ "csv_result_not_aliased": true,
+ "jsonl_result_not_aliased": true,
+ "csv_independent_of_decimal_context": true,
+ "upper_imports_lower": false,
+ "lower_imports_upper": false,
+ "upper_globals": [
+  "Decimal",
+  "InvalidOperation",
+  "_HEADER",
+  "_parse_price",
+  "convert",
+  "csv",
+  "io"
+ ],
+ "lower_globals": [
+  "_TIMESTAMP",
+  "_normalize_timestamp",
+  "convert",
+  "datetime",
+  "json",
+  "re",
+  "timedelta",
+  "timezone"
+ ]
+}
+rc=0
+ M lower.py
+ M upper.py
+
+start []
+'1' []
+'2.50' []
+'0' []
+'-0' []
+'bad' ['InvalidOperation']
+'NaN' []
+'sNaN' []
+'-1' []
+'0.001' []
+'Infinity' []
+lower []

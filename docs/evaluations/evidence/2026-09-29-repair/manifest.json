@@ -1,0 +1,21 @@
+{
+  "assessment.md": "46e98b19bb28bae04caad7e9458803bf04613e682a3d58d95e7ae98a514dd0a7",
+  "audit-maintainer.txt": "c8dcd2d850fd993043e9f3d2025a7dba973eea11d3617e1e6e13d4c9b90c3fa5",
+  "audit.json": "1134029c3754fee0947991f69f213acdb19bd44ccb858ef81e3b2f4b828b892b",
+  "current-quality.json": "e8c373169509ac1e7e49c5c190181239c742428294225ae36edd930c8737db3b",
+  "deliver-assessment.md": "ef95fd9a6ffff2a8cbcdbe6bdbe6640ab22214134f132321bbece457d463838c",
+  "deliver-audit-maintainer.txt": "c8dcd2d850fd993043e9f3d2025a7dba973eea11d3617e1e6e13d4c9b90c3fa5",
+  "deliver-audit.json": "663af0f9418f258a339d2488b2a76e4204b5f173a2ae711cad996c5347c45228",
+  "deliver-execution.json": "91f2fb84e1e3afe60b8ba3704784769bb29e6d1705a28caab3dd86d6b7c4566e",
+  "deliver-validate-maintainer.txt": "7cdb7fb123e0456e7e0716373a538facc249be83ac1561091470df37396a9885",
+  "deliver-verification-maintainer.txt": "8cf04aed07783a415c0ef4d7333e4052ea8b8c7f0c1fb57a59aee65f94b44549",
+  "delivery-report.md": "d889b147cdca4d1e0aefd8a60b9268fbc9841b01edcf6e4c75dffe4a97121cd3",
+  "evaluated-skill-hashes.json": "3022071e244472303a9610505ad977de385d2ae7989609e86e03bc45e577343f",
+  "execution.json": "db84271593fa590d8fe6978ff3ffb6bd5dea11ce0058b9406f868df42482f720",
+  "fix-results.json": "134cb655d4cb59d67c048036e77e02c7a41cf373383289f2f673d450836f54a0",
+  "old-code-new-tests.txt": "ce169b7904a4970b66b41ff3a7e6330577a5f11d8c80f6a86a30f3ca7fe2bf41",
+  "repair.patch": "6775c5818176cd3c0ef9c2bb3d2ab9246156774dce97549c80e0fbfa425cea41",
+  "suite-maintainer.txt": "e01669fe16e063b769a723ce040ec4bc09d67f9a724cabcd9ce020a629554678",
+  "validate-maintainer.txt": "7cdb7fb123e0456e7e0716373a538facc249be83ac1561091470df37396a9885",
+  "verification-maintainer.txt": "8cf04aed07783a415c0ef4d7333e4052ea8b8c7f0c1fb57a59aee65f94b44549"
+}

@@ -1,0 +1,159 @@
+{
+  "personal_unchanged": true,
+  "source_unchanged": true,
+  "marker_unchanged": true,
+  "attempt_unchanged": true,
+  "head_unchanged": true,
+  "staged_unchanged": true,
+  "changed_project_paths": [
+    ".agent-workflow/features/FEAT-001/verification.json",
+    ".agent-workflow/features/FEAT-001/verification.md",
+    ".agent-workflow/project-baseline/quality-report.json"
+  ],
+  "business_paths": [],
+  "primary_matches_candidate": true,
+  "sources_preserved": true,
+  "feature_status": "provisional",
+  "current_checks": {
+    "validate": {
+      "exit": 1,
+      "output": "ERROR: behavior needs actual regression evidence or explicit waiver: B-1\nERROR: behavior needs actual regression evidence or explicit waiver: B-PRESERVE\nERROR: verification incomplete: requirement:R-1:3:2b20db89764a (not_run)\nERROR: verification incomplete: impact:B-1:f253d4f8080f (not_run)\nERROR: verification incomplete: impact:B-PRESERVE:60b9e052b905 (not_run)\n"
+    },
+    "audit": {
+      "exit": 1,
+      "output": "ERROR: verification incomplete: requirement:R-1:3:2b20db89764a (not_run)\nERROR: verification incomplete: impact:B-1:f253d4f8080f (not_run)\nERROR: verification incomplete: impact:B-PRESERVE:60b9e052b905 (not_run)\n"
+    },
+    "verification": {
+      "exit": 2,
+      "output": "{\n  \"digest\": \"7cd1cc4e093bcf953c8f41a91c03bee2e243a0b301d6fdc15e13360ba12ca6a0\",\n  \"tested_revision\": \"69a66badf72164c34bf2a9e49e5cf050cb11d288\",\n  \"items\": [\n    {\n      \"id\": \"requirement:R-1:1:ae0e453b6e4d\",\n      \"mode\": \"automatic\",\n      \"status\": \"passed\",\n      \"expected\": \"All CSV validation, quoting, duplicate and row atomicity rules in source are implemented\"\n    },\n    {\n      \"id\": \"requirement:R-1:2:268e8b047d1a\",\n      \"mode\": \"automatic\",\n      \"status\": \"passed\",\n      \"expected\": \"All JSONL schema, timezone, duplicate and physical line rules in source are implemented\"\n    },\n    {\n      \"id\": \"requirement:R-1:3:2b20db89764a\",\n      \"mode\": \"manual\",\n      \"status\": \"not_run\",\n      \"expected\": \"Importers preserve order, have no external effects and do not share mutable state\"\n    },\n    {\n      \"id\": \"impact:B-1:f253d4f8080f\",\n      \"mode\": \"manual\",\n      \"status\": \"not_run\",\n      \"expected\": \"Implement independent CSV catalog and JSONL event imports according to the approved source contract\"\n    },\n    {\n      \"id\": \"impact:B-PRESERVE:60b9e052b905\",\n      \"mode\": \"manual\",\n      \"status\": \"not_run\",\n      \"expected\": \"Keep independent pure local parser interfaces and no external effects.\"\n    },\n    {\n      \"id\": \"gate:parser-all:a286a9ed7b2d\",\n      \"mode\": \"automatic\",\n      \"status\": \"passed\",\n      \"expected\": \"Actual synthetic parser contract and preserved behavior tests\"\n    }\n  ]\n}\n"
+    }
+  },
+  "tool_calls": [
+    {
+      "event": 1,
+      "tool": "Skill",
+      "input": {
+        "skill": "featrace-adoption:dev",
+        "args": "check FEAT-001"
+      }
+    },
+    {
+      "event": 5,
+      "tool": "Bash",
+      "input": {
+        "command": "S=<RUN>/plugin/skills/dev; cat $S/core/references/verification-workflow.md; ls $S/core/references $S/core/scripts 2>/dev/null; ls $S",
+        "description": "Read verification workflow and list skill files"
+      }
+    },
+    {
+      "event": 8,
+      "tool": "Bash",
+      "input": {
+        "command": "cd /private/tmp/featrace-adoption-0530-saggdung/project; git status --short; git diff --stat; git diff --cached --stat; git rev-parse HEAD; ls -la; find . -path ./.git -prune -o -type f -print | head -80",
+        "description": "Inspect project state and files"
+      }
+    },
+    {
+      "event": 10,
+      "tool": "Bash",
+      "input": {
+        "command": "cd /private/tmp/featrace-adoption-0530-saggdung/project; F=.agent-workflow/features/FEAT-001; cat $F/sources/prd-original.txt; cat $F/spec/requirements.json; cat $F/verification.md; cat .agent-workflow/project-baseline/quality-gates.json; cat upper.py lower.py; cat tests/*.py",
+        "description": "Read requirements, verification, code, tests"
+      }
+    },
+    {
+      "event": 15,
+      "tool": "Bash",
+      "input": {
+        "command": "cd /private/tmp/featrace-adoption-0530-saggdung/project; S=<RUN>/plugin/skills/dev/core/scripts; git diff; echo ===; python3 $S/verify-inputs.py . FEAT-001; echo \"rc=$?\"; echo ===; python3 $S/verification.py status . FEAT-001; echo \"rc=$?\"",
+        "description": "Show diff, run input inventory and verification status"
+      }
+    },
+    {
+      "event": 19,
+      "tool": "Bash",
+      "input": {
+        "command": "cd /private/tmp/featrace-adoption-0530-saggdung/project; S=<RUN>/plugin/skills/dev/core/scripts; python3 $S/verify-inputs.py . FEAT-001; echo \"rc=$?\"; echo \"-----\"; python3 $S/verification.py status . FEAT-001; echo \"rc=$?\"",
+        "description": "Run input inventory and verification status"
+      }
+    },
+    {
+      "event": 25,
+      "tool": "Bash",
+      "input": {
+        "command": "cd /private/tmp/featrace-adoption-0530-saggdung/project; S=<RUN>/plugin/skills/dev/core/scripts; cat .agent-workflow/project-baseline/quality-report.json; echo \"-----\"; python3 -c \"import json;d=json.load(open('.agent-workflow/features/FEAT-001/verification.json'));print(json.dumps({k:v for k,v in d.items() if k!='items'},indent=1)); [print(json.dumps({k:v for k,v in i.items() if k!='history'}, indent=1), len(i.get('history',[]))) for i in d['items']]\"; echo \"-----\"; grep -n \"dirty\\|worktree\\|porcelain\\|diff\" $S/verification.py | head -40; cat .agent-workflow/features/FEAT-001/impact.md .agent-workflow/features/FEAT-001/tasks.md",
+        "description": "Inspect quality report, verification rows, runner worktree handling"
+      }
+    },
+    {
+      "event": 70,
+      "tool": "Bash",
+      "input": {
+        "command": "cd /private/tmp/featrace-adoption-0530-saggdung/project; python3 - <<'EOF'\nimport sys, json\nprint(sys.version)\nfrom upper import convert as c\nfrom lower import convert as e\ndef t(f,x):\n    try: return f(x)\n    except BaseException as ex: return 'EXC %s: %s'%(type(ex).__name__, str(ex)[:80])\nH='sku,name,price\\n'\nfor x in [H+'a,A,1\\x00', H+'a,\"A,1', H+'a,A,1e3', H+'a,A,1_000', H+'a,A,', H+'\\n', H+'a,A,1e999999999', 'sku,name,price', '\ufeff', H+'a,A,1.2e1']:\n    print(repr(x[-25:]), t(c,x))\nfor ts in ['0005-01-01T00:00:00Z','0001-01-01T00:30:00+01:00','9999-12-31T23:30:00-01:00','\u0662\u0660\u0662\u0666-01-01T00:00:00Z','2026-01-01T00:00:00+0200','2026-01-01T00:00:00.5Z','2026-01-01 00:00:00Z','2026-01-01T24:00:00Z']:\n    print(ts, t(e, json.dumps({'id':'a','timestamp':ts,'payload':0})))\nprint(t(e,'{\"id\":\"a\",\"timestamp\":\"2026-01-01T00:00:00Z\",\"payload\":NaN}'))\nprint(t(e,'['*100000+']'*100000))\nprint(t(e,'{\"id\":\"a\",\"timestamp\":\"2026-01-01T00:00:00Z\",\"payload\":1}\\r\\n\\r\\n{\"id\":\"b\",\"timestamp\":\"2026-01-01T00:00:00Z\",\"payload\":1}'))\nEOF",
+        "description": "Probe adopted parsers with edge-case inputs"
+      }
+    },
+    {
+      "event": 75,
+      "tool": "Bash",
+      "input": {
+        "command": "rm -f <HOST-TOOL-CACHE>; cd /private/tmp/featrace-adoption-0530-saggdung/project; python3 - <<'EOF'\nimport json\nfrom upper import convert as c\nfrom lower import convert as e\ndef t(f,x):\n    try: r=f(x); s=repr(r); return s if len(s)<200 else 'len=%d'%len(s)\n    except BaseException as ex: return 'EXC %s: %s'%(type(ex).__name__, str(ex)[:80])\nH='sku,name,price\\n'\nfor x in [H+'a,A,1e999999999', 'sku,name,price', '\ufeff', H+'a,A,1.2e1', H+'a,A,1\\x00']:\n    print(repr(x[-20:]), t(c,x))\nfor ts in ['0005-01-01T00:00:00Z','0001-01-01T00:30:00+01:00','9999-12-31T23:30:00-01:00','\u0662\u0660\u0662\u0666-01-01T00:00:00Z','2026-01-01T00:00:00+0200','2026-01-01T00:00:00.5Z','2026-01-01 00:00:00Z','2026-01-01T24:00:00Z']:\n    print(ts, t(e, json.dumps({'id':'a','timestamp':ts,'payload':0})))\nprint(t(e,'{\"id\":\"a\",\"timestamp\":\"2026-01-01T00:00:00Z\",\"payload\":NaN}'))\nprint(t(e,'['*100000+']'*100000))\nprint(t(e,'{\"id\":\"a\",\"timestamp\":\"2026-01-01T00:00:00Z\",\"payload\":1}\\r\\n\\r\\n{\"id\":\"b\",\"timestamp\":\"2026-01-01T00:00:00Z\",\"payload\":1}'))\nEOF",
+        "description": "Re-probe edge cases with truncated output"
+      }
+    },
+    {
+      "event": 122,
+      "tool": "Write",
+      "input": {
+        "file_path": "<RUN>/effects_probe.py",
+        "content": "\"\"\"Agent technical probe: observe runtime effects of upper/lower convert() in-process.\n\nRead-only against the project; run with cwd = project root.\n\"\"\"\nimport copy, decimal, io, json, os, sys, threading, warnings, contextlib\n\nsys.dont_write_bytecode = True\nsys.path.insert(0, os.getcwd())\nimport upper, lower  # noqa: E402\n\nmods = {m: getattr(sys.modules.get(m), '__file__', 'builtin') for m in\n        ['csv', '_csv', 'io', 'decimal', '_decimal', 'json', 'json.decoder', '_json', 're', 'datetime']}\nH = 'sku,name,price\\n'\ncsv_inputs = ['', '\ufeff', 'wrong\\n', H, H + 'a,A,1\\nb,B,2.50\\n', '\ufeffsku,name,price\\na,\"A, B\\nC\",0\\n',\n              H + ',A,1\\na,,1\\na,A\\na,A,1,extra\\na,A,1\\n', H + 'a,A,bad\\na,A,NaN\\na,A,sNaN\\na,A,-1\\na,A,0.001\\na,A,1\\na,B,2\\n',\n              H + 'a,\"A\\nB\",1\\nb,B,wrong\\nc,C,2\\na,A,3\\n', ' sku , name , price \\n b , B , 1.20 \\n', H + '\\n\\n', H + 'a,\"A,1']\njsonl_inputs = ['', ' \\n', '\\nnope\\n[]', 'null\\n1\\n\"x\"\\ntrue',\n                '\\n'.join(json.dumps({'id': str(i), 'timestamp': t, 'payload': p}) for i, (t, p) in enumerate(\n                    [('2026-01-01T00:00:00Z', None), ('2025-12-31T22:00:00-02:00', 0), ('2026-01-01T02:00:00+02:00', {}),\n                     ('2026-02-30T00:00:00Z', []), ('2026-01-01T00:00:00', 'x'), ('bad', True),\n                     ('2026-01-01T00:00:00+24:00', 1), ('0001-01-01T00:30:00+01:00', 2)])),\n                '{\"id\":\"a\",\"timestamp\":\"x\"}\\n{\"id\":1,\"timestamp\":\"2026-01-01T00:00:00Z\",\"payload\":1}\\n'\n                '{\"id\":\"a\",\"timestamp\":\"2026-01-01T00:00:00Z\",\"payload\":1}\\n{\"id\":\"a\",\"timestamp\":\"2026-01-01T00:00:00Z\",\"payload\":2}']\n\nsnap_before = (copy.deepcopy(upper._HEADER), lower._TIMESTAMP.pattern, sorted(vars(upper)), sorted(vars(lower)))\nctx_before = repr(decimal.getcontext())\ncwd_before = sorted(os.listdir('.'))\nevents = []\nactive = [False]\n\n\ndef hook(name, args):\n    if active[0] and threading.current_thread() is threading.main_thread():\n        events.append(name)\n\n\nsys.addaudithook(hook)\nout, err = io.StringIO(), io.StringIO()\nresults = []\nwith warnings.catch_warnings():\n    warnings.simplefilter('error')\n    with contextlib.redirect_stdout(out), contextlib.redirect_stderr(err):\n        active[0] = True\n        for _ in range(2):  # interleave both importers twice\n            for c, j in zip(csv_inputs, jsonl_inputs + jsonl_inputs):\n                results.append((upper.convert(c), lower.convert(j)))\n        active[0] = False\n\n# independence of repeated results and aliasing\nactive[0] = True\nr1 = upper.convert(csv_inputs[4]); r1['records'].clear(); r2 = upper.convert(csv_inputs[4])\ne1 = lower.convert(jsonl_inputs[4]); e1['records'][0]['payload'] = 'mutated'; e2 = lower.convert(jsonl_inputs[4])\nactive[0] = False\nhalf = len(results) // 2\n# alter ambient decimal context and confirm identical CSV output\nwith decimal.localcontext() as ctx:\n    ctx.prec = 1; ctx.rounding = decimal.ROUND_UP; ctx.traps[decimal.InvalidOperation] = False\n    alt = [upper.convert(c) for c in csv_inputs]\n\nreport = {\n    'python': sys.version.split()[0], 'executable': sys.executable, 'resolved_modules': mods,\n    'audit_events_during_convert': sorted(set(events)), 'audit_event_count': len(events),\n    'stdout': out.getvalue(), 'stderr': err.getvalue(),\n    'module_state_unchanged': snap_before == (upper._HEADER, lower._TIMESTAMP.pattern, sorted(vars(upper)), sorted(vars(lower))),\n    'decimal_context_unchanged': ctx_before == repr(decimal.getcontext()),\n    'cwd_listing_unchanged': cwd_before == sorted(os.listdir('.')),\n    'repeat_pass_identical': results[:half] == results[half:],\n    'csv_result_not_aliased': len(r2['records']) == 2,\n    'jsonl_result_not_aliased': e2['records'][0]['payload'] is None,\n    'csv_independent_of_decimal_context': alt == [r[0] for r in results[:len(csv_inputs)]],\n    'upper_imports_lower': 'lower' in vars(upper), 'lower_imports_upper': 'upper' in vars(lower),\n    'upper_globals': sorted(k for k in vars(upper) if not k.startswith('__')),\n    'lower_globals': sorted(k for k in vars(lower) if not k.startswith('__')),\n}\nprint(json.dumps(report, indent=1))\n"
+      }
+    },
+    {
+      "event": 127,
+      "tool": "Bash",
+      "input": {
+        "command": "cd /private/tmp/featrace-adoption-0530-saggdung/project; ls -a . tests; python3 <RUN>/effects_probe.py; echo \"rc=$?\"; git status --short",
+        "description": "Run runtime effects probe against project code"
+      }
+    },
+    {
+      "event": 134,
+      "tool": "Bash",
+      "input": {
+        "command": "cd /private/tmp/featrace-adoption-0530-saggdung/project; python3 -B - <<'EOF'\nimport decimal, sys\nsys.path.insert(0,'.')\nimport upper, lower\nctx=decimal.getcontext()\ndef flags(): return sorted(k.__name__ for k,v in ctx.flags.items() if v)\nprint('start', flags())\nfor v in ['1','2.50','0','-0','bad','NaN','sNaN','-1','0.001','Infinity']:\n    ctx.clear_flags(); upper.convert('sku,name,price\\na,A,'+v); print(repr(v), flags())\nctx.clear_flags(); lower.convert('{\"id\":\"a\",\"timestamp\":\"2026-01-01T00:00:00Z\",\"payload\":1.5}'); print('lower', flags())\nEOF",
+        "description": "Identify decimal context flags set by convert"
+      }
+    },
+    {
+      "event": 167,
+      "tool": "Bash",
+      "input": {
+        "command": "cd /private/tmp/featrace-adoption-0530-saggdung/project; S=<RUN>/plugin/skills/dev/core/scripts; git diff --cached --stat; git rev-parse HEAD; shasum -a 256 upper.py lower.py tests/*.py; echo \"-- run\"; python3 $S/verification.py run . FEAT-001; echo \"rc=$?\"; echo \"-- validate\"; python3 $S/validate-feature.py . FEAT-001 --stage check; echo \"rc=$?\"; echo \"-- audit\"; python3 $S/audit-delivery.py . FEAT-001; echo \"rc=$?\"",
+        "description": "Run selected checks, validation and delivery audit"
+      }
+    },
+    {
+      "event": 172,
+      "tool": "Bash",
+      "input": {
+        "command": "cd /private/tmp/featrace-adoption-0530-saggdung/project; python3 -c \"\nimport json;q=json.load(open('.agent-workflow/project-baseline/quality-report.json'));print(q['tested_at'],q['project_snapshot']['git_head'],q['results'][0]['status'],q['results'][0]['stderr'].splitlines()[-3:])\nd=json.load(open('.agent-workflow/features/FEAT-001/verification.json'))\nfor i in d['items']:\n  h=i.get('history',[]);print(i['id'],len(h),[x.get('at') for x in h])\"; git status --short; git diff --cached --stat; git rev-parse HEAD; python3 -c \"import json;print(json.load(open('.agent-workflow/features/FEAT-001/spec/requirements.json'))['feature']['status'])\"",
+        "description": "Confirm fresh run evidence and unchanged git state"
+      }
+    },
+    {
+      "event": 175,
+      "tool": "Write",
+      "input": {
+        "file_path": "<RUN>/assessment.md",
+        "content": "# FEAT-001 ordinary check \u2014 technical follow-up assessment\n\nSkill: native `featrace-adoption:dev` (`check FEAT-001`), loaded from\n`<RUN>/plugin/skills/dev` (0.5.30, includes the revised\ntechnical-observation rule in `core/references/verification-workflow.md`).\nThis was an ordinary authorized check, not an independent review. I did not read evaluator audit, before or preparation\ntranscripts, or any earlier native assessment.\n\n**Final judgment: FEAT-001 stays `provisional`.** I wrote no `delivery-report.md`. Three rows are still unresolved, and\nmy investigation turned up behaviors that need a maintainer or a fix before delivery.\n\n## Worktree identity used\n\n- Primary HEAD: `69a66badf72164c34bf2a9e49e5cf050cb11d288` (unchanged). Nothing is staged, before or after.\n- Uncommitted adopted code (`git status`: ` M lower.py`, ` M upper.py`). sha256 values:\n  - `upper.py` 7a1cea57c73f4b4940c6d32e05d1138d383c661833bee09733d31510bf43a6e7\n  - `lower.py` e4e9aa7f600c6f4147a04e9b819a1b6138da46987a5582c7f82bd40a18e3120f\n  - `tests/test_contract.py` d970dac9\u2026, `test_integration.py` a1a02cb7\u2026, `test_lower.py` 5e1123a2\u2026, `test_upper.py` 768d2442\u2026\n- Interpreter: `python3` (3.9.6), the same one the selected gate uses.\n- Limit: the recorded `tested_revision` is only the HEAD commit. The worktree contents are identified by the hashes above,\n  not by the commit.\n\n## Actual calls made\n\n1. `Skill featrace-adoption:dev check FEAT-001`. I read `SKILL.md` and `core/references/verification-workflow.md`.\n2. Read: PRD source `sources/prd-original.txt`, `spec/requirements.json`, `verification.md/json`, `impact.md`,\n   `tasks.md`, `quality-gates.json`, `quality-report.json`, `upper.py`, `lower.py`, `tests/*.py`, and `git diff`.\n3. `verify-inputs.py . FEAT-001` \u2192 rc 0, `status: review_required`. PRD is readable and indexed\n   (sha256 2d00bc96\u2026). Issue: `worktree_changed_paths_require_review` for lower.py and upper.py. I reviewed both by\n   reading the code and probing it (see below).\n4. `verification.py status . FEAT-001` \u2192 rc 2 (three manual rows `not_run`).\n5. Agent edge-case probes: ad-hoc inline Python, run against the project modules, read-only.\n6. Agent effects probe: `technical-followup/effects_probe.py` (outside the project, bytecode writing disabled). Plus an\n   inline probe of decimal-context flags.\n7. `verification.py run . FEAT-001` \u2192 gate `parser-all` passed. Fresh quality report at 2026-09-29T07:33:34Z:\n   \"Ran 25 tests \u2026 OK\". rc 2 because manual rows are still unfinished. The earlier 07:27:09 attempt is kept in history.\n8. `validate-feature.py . FEAT-001 --stage check` \u2192 rc 1. Errors: B-1 and B-PRESERVE need regression evidence or a\n   waiver, and R-1:3, B-1 and B-PRESERVE are `not_run`.\n9. `audit-delivery.py . FEAT-001` \u2192 rc 1 (the same three incomplete rows).\n\nThe only project writes were the ones `verification.py run` makes itself: the quality report and appended result\nhistory. I made no `record` calls, changed no mapping, and did not edit sources, tests, code, requirements, git state\nor feature status.\n\n## Evidence by type\n\n- **Automatic assertion evidence:** the `parser-all` gate (`python3 -m unittest discover -s tests`, 25 tests) passed\n  fresh on the worktree above. Rows R-1:1, R-1:2 and gate:parser-all are automatic, and this is their evidence.\n- **Agent technical investigation (mine):** reading the code paths and running local probes, described below. This is\n  not user confirmation, device observation or automatic-test coverage.\n- **User/device evidence:** none exists, and none is needed for this headless feature.\n\n## Agent technical investigation results\n\nCode paths (`upper.py`): `convert` \u2192 `csv.reader(io.StringIO(...))`, `_parse_price` \u2192 `decimal.Decimal`, then\nformatting. (`lower.py`): `convert` \u2192 `str.split('\\n')`, `json.loads`, and `_normalize_timestamp` \u2192 a compiled regex,\n`datetime`/`timezone`/`astimezone`/`strftime`. Neither module imports the other. Module globals: `_HEADER` (a list,\nonly read) and `_TIMESTAMP` (a compiled pattern). All stdlib modules resolved to the CommandLineTools Python 3.9\nstdlib, and none is shadowed in the project.\n\nEffects probe (sys.audit hook, active only during `convert` calls; 12 CSV and 12 JSONL inputs covering the test\nscenarios, interleaved and repeated twice; warnings raised as errors):\n- 0 audit events (no open, socket, subprocess, os.* or import events), stdout and stderr empty, cwd listing\n  unchanged.\n- Module state unchanged. Repeated passes gave identical results. Returned records are not aliased between calls\n  (clearing or mutating a result did not affect the next call).\n- CSV output was the same under an altered decimal context (prec=1, ROUND_UP, InvalidOperation not trapped).\n- **Counter-observation:** `upper.convert` sets the caller's thread-local `decimal` context flag `InvalidOperation`\n  on a malformed price such as `bad`. Other price values set no flags, and `lower.convert` sets none. This is a write\n  to ambient mutable process state that the caller shares.\n\nEdge-case probes (behaviors the tests don't assert):\n- JSONL accepts `NaN` as a payload. `json.loads` allows it, but it isn't valid JSON under RFC 8259. The source says\n  \"Invalid JSON -> invalid_json\".\n- JSONL accepts timestamps written with non-ASCII digits (for example Arabic-Indic `\u0662\u0660\u0662\u0666-01-01T00:00:00Z` \u2192 normalized\n  to `2026-01-01T00:00:00Z`), because regex `\\d` matches Unicode digits. That isn't an ISO 8601 timestamp.\n- JSONL accepts `+0200` offsets without a colon, and accepts fractional seconds but drops them (the source notes the\n  fixtures have no fractions). Both are lenient and may be acceptable; the maintainer should decide.\n- JSONL raises `RecursionError` on very deeply nested (valid) JSON instead of returning an error entry.\n- CSV raises `csv.Error` on a NUL byte. The source only forbids exceptions for malformed prices, so this is outside it.\n- CSV accepts `1e999999999` as a price, producing a 1,000,000,070-character result (literally a finite Decimal \u22650\n  with \u22642 fractional digits). It also accepts `1_000` and `1e3`. This is consistent with \"parse as a finite Decimal\",\n  but it's a resource risk.\n- Aware times that fall outside the datetime range after the UTC shift (for example `0001-01-01T00:30:00+01:00`) come\n  back as `invalid_timestamp`.\n\n## Coverage judgments per row\n\n| Row | Current status | Judgment |\n|---|---|---|\n| requirement:R-1:1 (CSV rules) | automatic passed (fresh) | Assertions cover each named CSV rule with exact equality. My probes found nothing that contradicts the literal CSV contract, though there are edge limits (NUL exception, huge-exponent resource use). I left it as is. |\n| requirement:R-1:2 (JSONL rules) | automatic passed (fresh) | **I dispute this row, but left it unchanged.** The tests pass, but the coverage text claims it covers \"each JSONL source rule\". The implementation accepts `NaN` (not JSON) and non-ASCII-digit timestamps (not ISO 8601), and no assertion covers either. Under the Skill rule (\"leave partial coverage manual\") this mapping should not count as whole coverage. I didn't remap it, because that changes the verification digest and the call belongs to a maintainer or fix owner. It must be resolved before anyone uses it for delivery. |\n| requirement:R-1:3 (order, no external effects, no shared mutable state) | manual **not_run (unresolved)** | Order: supported. No I/O effects: supported within the probe's scope. No state shared between the importers: supported. But the decimal-context flag write is an effect on shared ambient state, so a whole-row pass isn't supported. Whether that counts as an \"external effect\" is a maintainer or product decision, and I didn't make it. |\n| impact:B-1 (implement per approved contract) | manual **not_run (unresolved)** | This is the whole contract, which includes R-1:2. The JSONL deviations above mean I can't support it. |\n| impact:B-PRESERVE (independent pure local interfaces, no external effects) | manual **not_run (unresolved)** | Interfaces `convert(text)->dict` are kept in both files, and the importers are independent: supported. \"Pure\" is contradicted by the decimal flag write, so the whole row isn't supported. |\n| gate:parser-all | automatic passed (fresh) | Shows only that the command result is current. |\n\n## Method limits\n\n- The audit hook covers only CPython-audited operations. C extensions (`_csv`, `_decimal`, `_json`) are standard\n  stdlib and do no I/O, but I relied on knowing that rather than tracing them. The probe inputs are representative,\n  not exhaustive. The results apply to this interpreter and host only. This is not a security sandbox.\n- The edge-case findings are my reading of JSON/ISO 8601 against the source's wording. I didn't turn them into fixes\n  or failed records. They need a maintainer: either a fix through `fix FEAT-001 \u2026`, or a clarification or revision of\n  the source.\n\n## What would be needed for delivery\n\n1. Resolve the JSONL `NaN` and non-ASCII-digit behavior, either with a fix plus assertions or with a source\n   clarification, then re-map or re-verify R-1:2.\n2. Decide whether the decimal `InvalidOperation` flag write is allowed under \"no external effects / pure\". Then R-1:3\n   and B-PRESERVE can be recorded with Agent technical-inspection evidence, or the code can be fixed (for example by\n   parsing inside `decimal.localcontext()`).\n3. Record B-1 after item 1 is done, then rerun `validate-feature --stage check` and `audit-delivery`.\n"
+      }
+    }
+  ],
+  "cost_usd": 1.0441406000000002,
+  "execution": {
+    "exit_code": 0,
+    "elapsed_seconds": 287.986
+  },
+  "agent_calls": []
+}

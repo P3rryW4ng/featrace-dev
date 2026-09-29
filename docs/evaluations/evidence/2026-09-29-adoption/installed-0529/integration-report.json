@@ -1,0 +1,25 @@
+{
+  "run_digest": "1cdbee96433e7444d6a8f2f058f9ebd6e9d478e93932c3a4e58bd9af55425b7a",
+  "candidate": "<RUN>/attempt/integration",
+  "status": "candidate_checks_passed",
+  "base_revision": "27f72944625342209d310f299ee4555848b1b86f",
+  "checks": [
+    {
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests"
+      ],
+      "status": "passed",
+      "returncode": 0,
+      "log": "check-0.log",
+      "log_sha256": "bf1d8186df2d63ab6beb6c5dbd7841764bfe6ec831b9b94b3acbe5cbc71d83a5"
+    }
+  ],
+  "note": "Candidate only; no primary writes or delivery approval.",
+  "candidate_tree": "aae02019e775953f2cd0f3f73bd0048cb5fac7ba",
+  "record_digest": "293cf9d43dea1d6d19338bc9c73e3935636c55bcfe60a9b5fa7ce8c6eb7455c3"
+}

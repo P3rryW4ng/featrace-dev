@@ -1,0 +1,3 @@
+ERROR: PRD review missing or stale: reread sources and reconcile before recording review
+ERROR: behavior needs actual regression evidence or explicit waiver: B-1
+ERROR: behavior needs actual regression evidence or explicit waiver: B-PRESERVE

@@ -1,0 +1,151 @@
+{
+  "personal_unchanged": true,
+  "source_unchanged": true,
+  "marker_unchanged": true,
+  "attempt_unchanged": true,
+  "head_unchanged": true,
+  "staged_unchanged": true,
+  "changed_project_paths": [
+    ".agent-workflow/features/FEAT-001/verification.json",
+    ".agent-workflow/features/FEAT-001/verification.md",
+    ".agent-workflow/project-baseline/quality-report.json"
+  ],
+  "business_paths": [],
+  "primary_matches_candidate": true,
+  "sources_preserved": true,
+  "feature_status": "provisional",
+  "current_checks": {
+    "validate": {
+      "exit": 1,
+      "output": "ERROR: behavior needs actual regression evidence or explicit waiver: B-1\nERROR: behavior needs actual regression evidence or explicit waiver: B-PRESERVE\nERROR: verification incomplete: requirement:R-1:2:268e8b047d1a (failed)\nERROR: verification incomplete: requirement:R-1:3:2b20db89764a (failed)\nERROR: verification incomplete: impact:B-1:f253d4f8080f (failed)\nERROR: verification incomplete: impact:B-PRESERVE:60b9e052b905 (failed)\n"
+    },
+    "audit": {
+      "exit": 1,
+      "output": "ERROR: verification incomplete: requirement:R-1:2:268e8b047d1a (failed)\nERROR: verification incomplete: requirement:R-1:3:2b20db89764a (failed)\nERROR: verification incomplete: impact:B-1:f253d4f8080f (failed)\nERROR: verification incomplete: impact:B-PRESERVE:60b9e052b905 (failed)\n"
+    },
+    "verification": {
+      "exit": 2,
+      "output": "{\n  \"digest\": \"4b89d049502b85c13122c3df237f2cd5e3a51351048c1da8097aa507e4a82ed9\",\n  \"tested_revision\": \"69a66badf72164c34bf2a9e49e5cf050cb11d288\",\n  \"items\": [\n    {\n      \"id\": \"requirement:R-1:1:ae0e453b6e4d\",\n      \"mode\": \"automatic\",\n      \"status\": \"passed\",\n      \"expected\": \"All CSV validation, quoting, duplicate and row atomicity rules in source are implemented\"\n    },\n    {\n      \"id\": \"requirement:R-1:2:268e8b047d1a\",\n      \"mode\": \"manual\",\n      \"status\": \"failed\",\n      \"expected\": \"All JSONL schema, timezone, duplicate and physical line rules in source are implemented\"\n    },\n    {\n      \"id\": \"requirement:R-1:3:2b20db89764a\",\n      \"mode\": \"manual\",\n      \"status\": \"failed\",\n      \"expected\": \"Importers preserve order, have no external effects and do not share mutable state\"\n    },\n    {\n      \"id\": \"impact:B-1:f253d4f8080f\",\n      \"mode\": \"manual\",\n      \"status\": \"failed\",\n      \"expected\": \"Implement independent CSV catalog and JSONL event imports according to the approved source contract\"\n    },\n    {\n      \"id\": \"impact:B-PRESERVE:60b9e052b905\",\n      \"mode\": \"manual\",\n      \"status\": \"failed\",\n      \"expected\": \"Keep independent pure local parser interfaces and no external effects.\"\n    },\n    {\n      \"id\": \"gate:parser-all:a286a9ed7b2d\",\n      \"mode\": \"automatic\",\n      \"status\": \"passed\",\n      \"expected\": \"Actual synthetic parser contract and preserved behavior tests\"\n    }\n  ]\n}\n"
+    }
+  },
+  "tool_calls": [
+    {
+      "event": 1,
+      "tool": "Skill",
+      "input": {
+        "skill": "featrace-adoption:dev",
+        "args": "check FEAT-001"
+      }
+    },
+    {
+      "event": 6,
+      "tool": "Bash",
+      "input": {
+        "command": "S=<RUN>/plugin/skills/dev; ls $S/core/references $S/core/scripts 2>/dev/null; cd /private/tmp/featrace-adoption-0530-saggdung/project && git status --short && ls -a && find . -path ./.git -prune -o -type f -print | head -50; ls /private/tmp/featrace-adoption-0530-saggdung/technical-followup <RUN>",
+        "description": "List skill references, project files, and followup dirs"
+      }
+    },
+    {
+      "event": 11,
+      "tool": "Bash",
+      "input": {
+        "command": "S=<RUN>/plugin/skills/dev; cat $S/core/references/verification-workflow.md",
+        "description": "Read verification workflow reference"
+      }
+    },
+    {
+      "event": 13,
+      "tool": "Bash",
+      "input": {
+        "command": "cd /private/tmp/featrace-adoption-0530-saggdung; cat technical-followup/assessment.md; echo ----; cat technical-followup/effects_probe.py",
+        "description": "Read prior technical assessment and probe"
+      }
+    },
+    {
+      "event": 16,
+      "tool": "Bash",
+      "input": {
+        "command": "cd /private/tmp/featrace-adoption-0530-saggdung/project; F=.agent-workflow/features/FEAT-001; cat $F/sources/prd-original.txt; echo ----; cat upper.py lower.py; echo ----; cat $F/verification.json",
+        "description": "Read PRD source, code, and verification record"
+      }
+    },
+    {
+      "event": 27,
+      "tool": "Bash",
+      "input": {
+        "command": "cd <RUN>/plugin/skills/dev; python3 core/scripts/verification.py --help 2>&1 | head -30; grep -n \"add_parser\\|def cmd_\\|argv\\[\" core/scripts/verification.py | head -40",
+        "description": "Inspect verification helper subcommands"
+      }
+    },
+    {
+      "event": 33,
+      "tool": "Bash",
+      "input": {
+        "command": "cd <RUN>/plugin/skills/dev; wc -l core/scripts/verification.py; grep -n \"mode\\|history\\|def \" core/scripts/verification.py | head -120",
+        "description": "Inspect mode/history handling in helper"
+      }
+    },
+    {
+      "event": 35,
+      "tool": "Bash",
+      "input": {
+        "command": "cd <RUN>/plugin/skills/dev; sed -n 60,200p core/scripts/verification.py",
+        "description": "Read load/sync/run/record logic"
+      }
+    },
+    {
+      "event": 41,
+      "tool": "Bash",
+      "input": {
+        "command": "cd /private/tmp/featrace-adoption-0530-saggdung/project; S=<RUN>/plugin/skills/dev; git rev-parse HEAD; git diff --cached --stat; shasum -a 256 upper.py lower.py tests/*.py; python3 $S/core/scripts/verify-inputs.py . FEAT-001 | head -40; echo rc=$?\nPYTHONDONTWRITEBYTECODE=1 python3 - <<'EOF'\nimport sys, decimal; sys.path.insert(0,'.')\nimport upper, lower\nprint('NaN payload:', lower.convert('{\"id\":\"a\",\"timestamp\":\"2026-01-01T00:00:00Z\",\"payload\":NaN}'))\nprint('Infinity payload:', lower.convert('{\"id\":\"a\",\"timestamp\":\"2026-01-01T00:00:00Z\",\"payload\":Infinity}'))\nprint('arabic-indic digits:', lower.convert('{\"id\":\"a\",\"timestamp\":\"\u0662\u0660\u0662\u0666-01-01T00:00:00Z\",\"payload\":1}'))\ndecimal.getcontext().clear_flags()\nbefore=dict(decimal.getcontext().flags)\nr=upper.convert('sku,name,price\\na,A,bad\\n')\nafter={k.__name__:v for k,v in decimal.getcontext().flags.items() if v}\nprint('csv bad price:', r, 'flags before set:', [k.__name__ for k,v in before.items() if v], 'after set:', after)\ndecimal.getcontext().clear_flags()\nupper.convert('sku,name,price\\na,A,1.20\\n'); print('valid price flags:', [k.__name__ for k,v in decimal.getcontext().flags.items() if v])\nlower.convert('{\"id\":\"a\",\"timestamp\":\"2026-01-01T00:00:00Z\",\"payload\":1}'); print('lower flags:', [k.__name__ for k,v in decimal.getcontext().flags.items() if v])\nEOF",
+        "description": "Confirm identity and reproduce counterexamples"
+      }
+    },
+    {
+      "event": 52,
+      "tool": "Bash",
+      "input": {
+        "command": "cd /private/tmp/featrace-adoption-0530-saggdung/project; grep -n -i \"nan\\|infinity\\|\\\\\\\\u06\\|\\\\\\\\u066\\|localcontext\\|getcontext\\|flags\" tests/*.py",
+        "description": "Search tests for NaN, unicode digit, decimal-context assertions"
+      }
+    },
+    {
+      "event": 71,
+      "tool": "Bash",
+      "input": {
+        "command": "cd /private/tmp/featrace-adoption-0530-saggdung/project; S=<RUN>/plugin/skills/dev; F=.agent-workflow/features/FEAT-001\npython3 - <<'EOF'\nimport json, os\np='.agent-workflow/features/FEAT-001/verification.json'\nd=json.load(open(p))\nr=next(i for i in d['items'] if i['id']=='requirement:R-1:2:268e8b047d1a')\nn=len(r['history'])\nr['mode']='manual'; r['gates']=[]; r['coverage']=''\nassert len(r['history'])==n==2\ntmp=p+'.tmp'; open(tmp,'w').write(json.dumps(d,indent=2,ensure_ascii=False)+'\\n'); os.replace(tmp,p)\nprint('remapped; history kept', n)\nEOF\npython3 $S/core/scripts/verification.py run . FEAT-001; echo run_rc=$?\npython3 $S/core/scripts/verification.py status . FEAT-001; echo status_rc=$?",
+        "description": "Remap R-1:2 to manual, rerun selected gate, show status"
+      }
+    },
+    {
+      "event": 74,
+      "tool": "Bash",
+      "input": {
+        "command": "cd /private/tmp/featrace-adoption-0530-saggdung/project; S=<RUN>/plugin/skills/dev\nD=4b89d049502b85c13122c3df237f2cd5e3a51351048c1da8097aa507e4a82ed9; H=69a66badf72164c34bf2a9e49e5cf050cb11d288\nID=\"Worktree HEAD $H plus uncommitted upper.py sha256 7a1cea57c73f4b4940c6d32e05d1138d383c661833bee09733d31510bf43a6e7 and lower.py sha256 e4e9aa7f600c6f4147a04e9b819a1b6138da46987a5582c7f82bd40a18e3120f; python3 3.9.6\"\nM=\"Method: Agent technical inspection (read upper.py/lower.py call paths) plus bounded in-process repro run from project root with PYTHONDONTWRITEBYTECODE=1; not user confirmation, not device observation, not automatic-test coverage. parser-all rerun passed but has no assertion for these inputs (tests/*.py grep: no JSONL NaN/Infinity, non-ASCII digit or decimal-context assertion). Lead from technical-followup/assessment.md, re-confirmed on current code. Limits: single interpreter/host, representative inputs only.\"\nrec(){ python3 $S/core/scripts/verification.py record . FEAT-001 --item \"$1\" --status failed --digest $D --tested-revision $H --actual \"$2\" --evidence \"$ID. $M $3\"; echo \"$1 rc=$?\"; }\nrec requirement:R-1:2:268e8b047d1a \"Counterexamples: (1) lower.convert('{\\\"id\\\":\\\"a\\\",\\\"timestamp\\\":\\\"2026-01-01T00:00:00Z\\\",\\\"payload\\\":NaN}') returned records=[{id:a,payload:nan}], errors=[]; likewise payload Infinity -> inf. Expected invalid_json: NaN/Infinity are not JSON values (RFC 8259); source says 'Invalid JSON -> invalid_json'. Cause: json.loads default accepts NaN/Infinity. (2) timestamp with Arabic-Indic digits '\u0662\u0660\u0662\u0666-01-01T00:00:00Z' was accepted and normalized to 2026-01-01T00:00:00Z; expected invalid_timestamp (ISO 8601 uses ASCII digits). Cause: _TIMESTAMP regex \\\\d matches Unicode digits. Automatic mapping withdrawn to manual because coverage text claimed every JSONL rule.\" \"\"\nrec requirement:R-1:3:2b20db89764a \"Order preserved and no importer-to-importer shared state observed. Counterexample to 'no external effects': with decimal.getcontext().clear_flags() beforehand, upper.convert('sku,name,price\\\\na,A,bad\\\\n') returned the expected invalid_price error but left the caller's thread-local decimal context flag InvalidOperation=True (before: no flags set). Valid prices and lower.convert set no flags.\" \"Interpretation basis: a write to caller-visible, process/thread-shared mutable state is an external side effect in the ordinary technical sense. If the owner considers decimal flags out of scope, that is a clarify question; the observed write itself is recorded here.\"\nrec impact:B-1:f253d4f8080f \"Not implemented according to the full approved source contract: JSONL accepts NaN/Infinity payloads (expected invalid_json) and non-ASCII-digit timestamps (expected invalid_timestamp); see requirement:R-1:2 record. CSV contract rows (R-1:1) passed via parser-all.\" \"\"\nrec impact:B-PRESERVE:60b9e052b905 \"convert(text)->dict interfaces kept in both files; upper does not import lower and vice versa; local only. Not pure: upper.convert on malformed price 'bad' sets InvalidOperation in the caller's thread-local decimal context flags (observed False -> True); see requirement:R-1:3 record.\" \"\"\npython3 $S/core/scripts/verification.py status . FEAT-001 | python3 -c \"import json,sys;d=json.load(sys.stdin);print(d['digest']);[print(i['id'],i['mode'],i['status']) for i in d['items']]\"\npython3 $S/core/scripts/validate-feature.py . FEAT-001 --stage check; echo validate_rc=$?\npython3 $S/core/scripts/audit-delivery.py . FEAT-001; echo audit_rc=$?\ngit status --short; git diff --cached --stat; git rev-parse HEAD; shasum -a 256 upper.py lower.py tests/*.py | cut -c1-12",
+        "description": "Record failures, then status, validate, audit, identity"
+      }
+    },
+    {
+      "event": 77,
+      "tool": "Bash",
+      "input": {
+        "command": "cd /private/tmp/featrace-adoption-0530-saggdung/project; python3 -c \"import json;f=json.load(open('.agent-workflow/features/FEAT-001/spec/requirements.json'))['feature'];print({k:f.get(k) for k in ('status','verification_required')})\"; python3 -c \"import json;d=json.load(open('.agent-workflow/features/FEAT-001/verification.json'));[print(i['id'],len(i['history'])) for i in d['items']];print('retired',len(d['retired']))\"; ls .agent-workflow/features/FEAT-001/ | grep -i delivery",
+        "description": "Confirm feature status and history counts"
+      }
+    },
+    {
+      "event": 79,
+      "tool": "Write",
+      "input": {
+        "file_path": "<RUN>/assessment.md",
+        "content": "# FEAT-001 \u2014 failure-record follow-up (verification-record continuation)\n\nSkill: native `featrace-adoption:dev` `check FEAT-001`, loaded from\n`<RUN>/plugin/skills/dev` (0.5.30). I read `SKILL.md`\nand `core/references/verification-workflow.md`, and followed its technical-observation and failure rules.\nThis continues ordinary verification-record maintenance. It is not an independent review.\nInputs I used: `technical-followup/assessment.md` and `effects_probe.py`, treated only as leads. I re-confirmed every\nfact I relied on against the current code with small repros. I did not read evaluator before, audit or preparation\ntranscripts (`before.json`, `stream.jsonl`, `*-maintainer.txt`, `audited.json`).\n\n**Final judgment: FEAT-001 remains `provisional`.** Four verification rows are now recorded as actual technical\nfailures. Delivery is blocked, and no delivery report was written.\n\n## Worktree identity\n\n- HEAD `69a66badf72164c34bf2a9e49e5cf050cb11d288`, unchanged. Nothing is staged, before or after.\n- Uncommitted changes: ` M lower.py`, ` M upper.py`. The sha256 values match the prior assessment and were the same\n  before and after this session:\n  upper.py `7a1cea57\u2026a6e7`, lower.py `e4e9aa7f\u2026120f`, test_contract `d970dac9\u2026`, test_integration `a1a02cb7\u2026`,\n  test_lower `5e1123a2\u2026`, test_upper `768d2442\u2026`.\n- Interpreter: `python3` 3.9.6.\n- PRD `sources/prd-original.txt` sha256 `2d00bc96\u2026`, indexed and readable.\n- Limit: `tested_revision` records only the commit. The worktree contents are identified by the hashes above.\n\n## Actions, in order (serialized, one mutation at a time)\n\n1. Read: PRD, `upper.py`, `lower.py`, `verification.json`, `verification.py` (to see how it treats mapping and history).\n2. `verify-inputs.py . FEAT-001` \u2192 rc 0, `review_required` (`worktree_changed_paths_require_review`: lower.py,\n   upper.py). Both files were reviewed through code reading and the repros below.\n3. Bounded repro (inline Python, project root, `PYTHONDONTWRITEBYTECODE=1`, read-only):\n   - `lower.convert('{\"id\":\"a\",\"timestamp\":\"2026-01-01T00:00:00Z\",\"payload\":NaN}')` \u2192 record with payload `nan`, no\n     error. `Infinity` behaves the same way (\u2192 `inf`).\n   - A timestamp with Arabic-Indic digits, `\u0662\u0660\u0662\u0666-01-01T00:00:00Z`, is accepted and normalized to `2026-01-01T00:00:00Z`.\n   - After `decimal.getcontext().clear_flags()`, `upper.convert('sku,name,price\\na,A,bad\\n')` returns the correct\n     `invalid_price` error, but it leaves `InvalidOperation=True` in the caller's decimal context flags. A valid price\n     sets no flags, and `lower.convert` sets none.\n4. `grep` of tests: no JSONL NaN/Infinity, non-ASCII-digit or decimal-context assertion exists. The NaN and Infinity\n   tests found are CSV-price tests only.\n5. **Coverage correction:** `requirement:R-1:2` changed from automatic (`parser-all`) to manual, with gates=[] and\n   coverage=\"\". I edited the row's editable mapping fields with one atomic file replacement. Its 2 prior automatic\n   pass results are kept in history. Reason: the coverage text claimed \"each JSONL source rule\", but step 3 shows\n   JSONL rule violations that no test asserts. Partial coverage must stay manual.\n6. Fresh selected check: `verification.py run . FEAT-001` \u2192 `parser-all: passed` (25 tests, fresh quality report).\n   rc 2 because manual rows were unfinished. New digest: `4b89d049502b85c13122c3df237f2cd5e3a51351048c1da8097aa507e4a82ed9`.\n7. `verification.py record \u2026 --status failed` against that digest and full HEAD, one row at a time:\n   R-1:2, R-1:3, B-1, B-PRESERVE. Each call returned rc 0.\n8. `verification.py status` \u2192 rc 2. `validate-feature.py --stage check` \u2192 rc 1. `audit-delivery.py` \u2192 rc 1.\n\nThe only project writes were `verification.json`, and these via helpers: the regenerated `verification.md`, the\nquality report written by `run`, and the appended histories. No code, tests, sources, requirements, decisions,\nimpact, feature status, git index or HEAD changed. No waivers, passes, user observations or product decisions were\nrecorded.\n\n## Resulting row states (digest 4b89d049\u2026)\n\n| Row | Mode | State | History entries | Basis |\n|---|---|---|---|---|\n| requirement:R-1:1 (CSV) | automatic | passed | 3 | Fresh `parser-all`. Coverage left as is: the prior CSV findings (NUL \u2192 `csv.Error`, huge exponent) are outside or consistent with the literal source, and I did not investigate further. |\n| requirement:R-1:2 (JSONL) | manual (withdrawn from automatic) | **failed** | 3 (2 old automatic passes + 1 failed) | Accepts NaN/Infinity (expected `invalid_json`, since these aren't JSON under RFC 8259), and accepts non-ASCII-digit timestamps (expected `invalid_timestamp`). Causes: `json.loads` defaults, and regex `\\d` matching Unicode digits. |\n| requirement:R-1:3 (order, no external effects, no shared mutable state) | manual | **failed** | 1 | Order holds and the importers share no state. `upper.convert` writes the caller's thread-local decimal `InvalidOperation` flag. |\n| impact:B-1 (full approved contract) | manual | **failed** | 1 | Follows from the R-1:2 counterexamples. The CSV part passes. |\n| impact:B-PRESERVE (independent pure local interfaces, no external effects) | manual | **failed** | 1 | The interfaces and independence hold. \"Pure\" is contradicted by the decimal flag write. |\n| gate:parser-all | automatic | passed | 3 | Current command result only. |\n\n`retired`: 0. Every earlier attempt is still in history.\n\n## Evidence method and limits\n\n- Method: Agent technical inspection (reading the call paths in `upper.py` and `lower.py`) plus small in-process\n  repros on the identified worktree, with the fresh `parser-all` gate as supporting context. This is not user\n  confirmation, device observation or automatic-test coverage, and each record's evidence says so.\n- Limits: one interpreter and host, and a handful of representative inputs. I ran no edge-case sweep, huge inputs,\n  stdlib/C-extension tracing, workers or builds.\n- Interpretation disclosed in the R-1:3 record: I treated a write to caller-visible, thread-shared mutable state as an\n  external side effect in the ordinary technical sense. If the owner considers decimal flags out of scope, that is a\n  clarify/revise question. The observed write itself is a fact.\n- The NaN and Unicode-digit failures rest on the standard meanings of \"JSON\" and \"ISO 8601\" as the source uses them.\n\n## Concrete blockers to delivery (not repaired here)\n\n1. JSONL: reject NaN/Infinity as `invalid_json` and require ASCII digits in timestamps, add assertions, then re-verify\n   R-1:2 and B-1. This needs `fix FEAT-001 \u2026`, or a source clarification if the owner intends otherwise.\n2. CSV: stop the decimal context flag leaking (for example by parsing inside `decimal.localcontext()`), or get an\n   owner clarification. Then re-verify R-1:3 and B-PRESERVE.\n3. `validate-feature --stage check` also still reports that B-1 and B-PRESERVE need regression evidence or a waiver.\n4. After any fix: `verification.py run`, re-record the manual rows at the new digest, then `validate-feature --stage\n   check` and `audit-delivery`.\n"
+      }
+    }
+  ],
+  "cost_usd": 0.7208554,
+  "execution": {
+    "exit_code": 0,
+    "elapsed_seconds": 147.183
+  },
+  "agent_calls": []
+}

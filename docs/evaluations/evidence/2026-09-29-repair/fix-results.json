@@ -1,0 +1,72 @@
+[
+  {
+    "id": "FIX-001",
+    "kind": "implementation_defect",
+    "status": "verified",
+    "requirement_ids": [
+      "R-1"
+    ],
+    "task_ids": [
+      "T-LOW"
+    ],
+    "code_refs": [
+      "lower.py:_reject_constant",
+      "lower.py:convert json.loads"
+    ],
+    "regression_test_ids": [
+      "TEST-LOW"
+    ],
+    "tested_revision": "69a66badf72164c34bf2a9e49e5cf050cb11d288 + uncommitted working tree (hashes in verification)",
+    "verification": [
+      "2026-09-29 verification.py run digest d1de4584...108a: parser-all `python3 -m unittest discover -s tests` returncode 0, Ran 28 tests OK; includes new regression test_contract.ContractTest.test_json_non_standard_constants_are_invalid_json_and_do_not_reserve. Working tree on HEAD 69a66badf72164c34bf2a9e49e5cf050cb11d288 (uncommitted): upper.py sha256 04cc7c9b...e7c2, lower.py sha256 168cad22...aa26, tests/test_contract.py sha256 3dbad9b9...2755.",
+      "Regression test_contract.ContractTest.test_json_non_standard_constants_are_invalid_json_and_do_not_reserve failed against the pre-repair adopted code reconstructed in a disposable scratch copy outside the project (5 subtest/test failures across the 3 new tests), and passes on the repaired code.",
+      "Agent technical inspection repro on repaired code: recorded counterexample no longer reproduces; verification.json manual row recorded passed for the linked requirement/impact rows."
+    ]
+  },
+  {
+    "id": "FIX-002",
+    "kind": "implementation_defect",
+    "status": "verified",
+    "requirement_ids": [
+      "R-1"
+    ],
+    "task_ids": [
+      "T-LOW"
+    ],
+    "code_refs": [
+      "lower.py:_TIMESTAMP"
+    ],
+    "regression_test_ids": [
+      "TEST-LOW"
+    ],
+    "tested_revision": "69a66badf72164c34bf2a9e49e5cf050cb11d288 + uncommitted working tree (hashes in verification)",
+    "verification": [
+      "2026-09-29 verification.py run digest d1de4584...108a: parser-all `python3 -m unittest discover -s tests` returncode 0, Ran 28 tests OK; includes new regression test_contract.ContractTest.test_json_timestamp_requires_ascii_digits. Working tree on HEAD 69a66badf72164c34bf2a9e49e5cf050cb11d288 (uncommitted): upper.py sha256 04cc7c9b...e7c2, lower.py sha256 168cad22...aa26, tests/test_contract.py sha256 3dbad9b9...2755.",
+      "Regression test_contract.ContractTest.test_json_timestamp_requires_ascii_digits failed against the pre-repair adopted code reconstructed in a disposable scratch copy outside the project (5 subtest/test failures across the 3 new tests), and passes on the repaired code.",
+      "Agent technical inspection repro on repaired code: recorded counterexample no longer reproduces; verification.json manual row recorded passed for the linked requirement/impact rows."
+    ]
+  },
+  {
+    "id": "FIX-003",
+    "kind": "implementation_defect",
+    "status": "verified",
+    "requirement_ids": [
+      "R-1"
+    ],
+    "task_ids": [
+      "T-UP"
+    ],
+    "code_refs": [
+      "upper.py:_parse_price"
+    ],
+    "regression_test_ids": [
+      "TEST-UP"
+    ],
+    "tested_revision": "69a66badf72164c34bf2a9e49e5cf050cb11d288 + uncommitted working tree (hashes in verification)",
+    "verification": [
+      "2026-09-29 verification.py run digest d1de4584...108a: parser-all `python3 -m unittest discover -s tests` returncode 0, Ran 28 tests OK; includes new regression test_contract.ContractTest.test_csv_leaves_caller_decimal_context_untouched. Working tree on HEAD 69a66badf72164c34bf2a9e49e5cf050cb11d288 (uncommitted): upper.py sha256 04cc7c9b...e7c2, lower.py sha256 168cad22...aa26, tests/test_contract.py sha256 3dbad9b9...2755.",
+      "Regression test_contract.ContractTest.test_csv_leaves_caller_decimal_context_untouched failed against the pre-repair adopted code reconstructed in a disposable scratch copy outside the project (5 subtest/test failures across the 3 new tests), and passes on the repaired code.",
+      "Agent technical inspection repro on repaired code: recorded counterexample no longer reproduces; verification.json manual row recorded passed for the linked requirement/impact rows."
+    ]
+  }
+]

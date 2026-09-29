@@ -1,0 +1,71 @@
+diff --git a/lower.py b/lower.py
+index fa04402..e2fa9fb 100644
+--- a/lower.py
++++ b/lower.py
+@@ -1,2 +1,65 @@
++import json
++import re
++from datetime import datetime, timedelta, timezone
++
++_TIMESTAMP = re.compile(
++    r'(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.(\d+))?'
++    r'(?:(Z)|([+-])(\d{2}):?(\d{2}))'
++)
++
++
++def _normalize_timestamp(value):
++    match = _TIMESTAMP.fullmatch(value)
++    if match is None:
++        return None
++    year, month, day, hour, minute, second, _fraction, zulu, sign, off_h, off_m = match.groups()
++    if zulu:
++        offset = timedelta(0)
++    else:
++        off_h, off_m = int(off_h), int(off_m)
++        if off_h > 23 or off_m > 59:
++            return None
++        offset = timedelta(hours=off_h, minutes=off_m)
++        if sign == '-':
++            offset = -offset
++    try:
++        moment = datetime(int(year), int(month), int(day), int(hour), int(minute), int(second),
++                          tzinfo=timezone(offset))
++        moment = moment.astimezone(timezone.utc)
++    except (ValueError, OverflowError):
++        return None
++    return moment.strftime('%Y-%m-%dT%H:%M:%SZ')
++
++
+ def convert(text):
+-    raise NotImplementedError
++    records = []
++    errors = []
++    seen_ids = set()
++    for line_number, raw in enumerate(text.split('\n'), start=1):
++        if not raw.strip():
++            continue
++        try:
++            event = json.loads(raw)
++        except ValueError:
++            errors.append({'line': line_number, 'code': 'invalid_json'})
++            continue
++        if (
++            not isinstance(event, dict)
++            or not isinstance(event.get('id'), str)
++            or not event['id']
++            or not isinstance(event.get('timestamp'), str)
++            or not event['timestamp']
++            or 'payload' not in event
++        ):
++            errors.append({'line': line_number, 'code': 'invalid_event'})
++            continue
++        timestamp = _normalize_timestamp(event['timestamp'])
++        if timestamp is None:
++            errors.append({'line': line_number, 'code': 'invalid_timestamp'})
++            continue
++        if event['id'] in seen_ids:
++            errors.append({'line': line_number, 'code': 'duplicate_id'})
++            continue
++        seen_ids.add(event['id'])
++        records.append({'id': event['id'], 'timestamp': timestamp, 'payload': event['payload']})
++    return {'records': records, 'errors': errors}

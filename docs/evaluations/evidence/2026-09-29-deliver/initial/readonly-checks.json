@@ -1,0 +1,20 @@
+[
+  {
+    "script": "validate-feature.py",
+    "exit_code": 0,
+    "stdout": "FEATURE_VALID\n",
+    "stderr": ""
+  },
+  {
+    "script": "audit-delivery.py",
+    "exit_code": 0,
+    "stdout": "DELIVERY_EVIDENCE_CURRENT: selected checks passed and verified-fix test IDs were selected\nScope: manifests, tracked content outside .agent-workflow and registered evidence only; check task meaning, test assertions, uncommitted code and delivery report manually\n",
+    "stderr": ""
+  },
+  {
+    "script": "verification.py",
+    "exit_code": 0,
+    "stdout": "{\n  \"digest\": \"d1de458427f53b5c25fff4a4377d11b762dcf2a0970ae5691abd03031a20108a\",\n  \"tested_revision\": \"69a66badf72164c34bf2a9e49e5cf050cb11d288\",\n  \"items\": [\n    {\n      \"id\": \"requirement:R-1:1:ae0e453b6e4d\",\n      \"mode\": \"automatic\",\n      \"status\": \"passed\",\n      \"expected\": \"All CSV validation, quoting, duplicate and row atomicity rules in source are implemented\"\n    },\n    {\n      \"id\": \"requirement:R-1:2:268e8b047d1a\",\n      \"mode\": \"manual\",\n      \"status\": \"passed\",\n      \"expected\": \"All JSONL schema, timezone, duplicate and physical line rules in source are implemented\"\n    },\n    {\n      \"id\": \"requirement:R-1:3:2b20db89764a\",\n      \"mode\": \"manual\",\n      \"status\": \"passed\",\n      \"expected\": \"Importers preserve order, have no external effects and do not share mutable state\"\n    },\n    {\n      \"id\": \"impact:B-1:f253d4f8080f\",\n      \"mode\": \"manual\",\n      \"status\": \"passed\",\n      \"expected\": \"Implement independent CSV catalog and JSONL event imports according to the approved source contract\"\n    },\n    {\n      \"id\": \"impact:B-PRESERVE:60b9e052b905\",\n      \"mode\": \"manual\",\n      \"status\": \"passed\",\n      \"expected\": \"Keep independent pure local parser interfaces and no external effects.\"\n    },\n    {\n      \"id\": \"gate:parser-all:a286a9ed7b2d\",\n      \"mode\": \"automatic\",\n      \"status\": \"passed\",\n      \"expected\": \"Actual synthetic parser contract and preserved behavior tests\"\n    }\n  ]\n}\n",
+    "stderr": ""
+  }
+]

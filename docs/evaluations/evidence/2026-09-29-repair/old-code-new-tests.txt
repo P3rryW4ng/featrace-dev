@@ -1,0 +1,89 @@
+test_both_directions_no_shared_mutable_results (test_contract.ContractTest) ... ok
+test_csv_finite_decimal_formats (test_contract.ContractTest) ... ok
+test_csv_header_trim_and_stop (test_contract.ContractTest) ... ok
+test_csv_leaves_caller_decimal_context_untouched (test_contract.ContractTest) ... FAIL
+test_csv_logical_lines_after_multiline (test_contract.ContractTest) ... ok
+test_csv_row_errors_exact_and_atomic (test_contract.ContractTest) ... ok
+test_json_non_standard_constants_are_invalid_json_and_do_not_reserve (test_contract.ContractTest) ... FAIL
+test_json_payload_types_and_physical_order (test_contract.ContractTest) ... ok
+test_json_schema_fields_individually (test_contract.ContractTest) ... ok
+test_json_timestamp_requires_ascii_digits (test_contract.ContractTest) ... test_json_z_negative_offsets_and_calendar (test_contract.ContractTest) ... ok
+test_no_external_io_on_representative_paths (test_contract.ContractTest) ... ok
+test_independent_empty_contracts (test_integration.IntegrationTest) ... ok
+test_no_state_between_calls (test_integration.IntegrationTest) ... ok
+test_bad_json_and_line_numbers (test_lower.EventTest) ... ok
+test_bad_timestamps (test_lower.EventTest) ... ok
+test_duplicate_and_invalid_does_not_reserve (test_lower.EventTest) ... ok
+test_empty (test_lower.EventTest) ... ok
+test_invalid_schema (test_lower.EventTest) ... ok
+test_offsets (test_lower.EventTest) ... ok
+test_order (test_lower.EventTest) ... ok
+test_duplicate_and_invalid_does_not_reserve (test_upper.CatalogTest) ... ok
+test_empty (test_upper.CatalogTest) ... ok
+test_header (test_upper.CatalogTest) ... ok
+test_invalid_prices (test_upper.CatalogTest) ... ok
+test_missing_extra_and_trim (test_upper.CatalogTest) ... ok
+test_prices (test_upper.CatalogTest) ... ok
+test_quoted_multiline_bom (test_upper.CatalogTest) ... ok
+
+======================================================================
+FAIL: test_csv_leaves_caller_decimal_context_untouched (test_contract.ContractTest)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/featrace-repair-old-code-r2i26i8b/tests/test_contract.py", line 61, in test_csv_leaves_caller_decimal_context_untouched
+    self.assertIs(decimal.getcontext(),ctx);self.assertEqual([s for s,v in ctx.flags.items() if v],[])
+AssertionError: Lists differ: [<class 'decimal.InvalidOperation'>] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+<class 'decimal.InvalidOperation'>
+
+- [<class 'decimal.InvalidOperation'>]
++ []
+
+======================================================================
+FAIL: test_json_non_standard_constants_are_invalid_json_and_do_not_reserve (test_contract.ContractTest)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/featrace-repair-old-code-r2i26i8b/tests/test_contract.py", line 51, in test_json_non_standard_constants_are_invalid_json_and_do_not_reserve
+    self.assertEqual(events('\n'.join(lines)),{'records':[{'id':'a','timestamp':'2026-01-01T00:00:00Z','payload':1.5}],'errors':[{'line':i,'code':'invalid_json'} for i in range(1,5)]})
+AssertionError: {'rec[63 chars]ad': nan}], 'errors': [{'line': 2, 'code': 'du[120 chars]d'}]} != {'rec[63 chars]ad': 1.5}], 'errors': [{'line': 1, 'code': 'in[120 chars]n'}]}
+Diff is 926 characters long. Set self.maxDiff to None to see it.
+
+======================================================================
+FAIL: test_json_timestamp_requires_ascii_digits (test_contract.ContractTest) (value='٢٠٢٦-01-01T00:00:00Z')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/featrace-repair-old-code-r2i26i8b/tests/test_contract.py", line 54, in test_json_timestamp_requires_ascii_digits
+    with self.subTest(value=value):self.assertEqual(events(json.dumps({'id':'a','timestamp':value,'payload':0})),{'records':[],'errors':[{'line':1,'code':'invalid_timestamp'}]})
+AssertionError: {'records': [{'id': 'a', 'timestamp': '2026-01-01T00:0[32 chars]: []} != {'records': [], 'errors': [{'line': 1, 'code': 'invalid_timestamp'}]}
++ {'errors': [{'code': 'invalid_timestamp', 'line': 1}], 'records': []}
+- {'errors': [],
+-  'records': [{'id': 'a', 'payload': 0, 'timestamp': '2026-01-01T00:00:00Z'}]}
+
+======================================================================
+FAIL: test_json_timestamp_requires_ascii_digits (test_contract.ContractTest) (value='2026-01-01T00:00:00+０２:00')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/featrace-repair-old-code-r2i26i8b/tests/test_contract.py", line 54, in test_json_timestamp_requires_ascii_digits
+    with self.subTest(value=value):self.assertEqual(events(json.dumps({'id':'a','timestamp':value,'payload':0})),{'records':[],'errors':[{'line':1,'code':'invalid_timestamp'}]})
+AssertionError: {'records': [{'id': 'a', 'timestamp': '2025-12-31T22:0[32 chars]: []} != {'records': [], 'errors': [{'line': 1, 'code': 'invalid_timestamp'}]}
++ {'errors': [{'code': 'invalid_timestamp', 'line': 1}], 'records': []}
+- {'errors': [],
+-  'records': [{'id': 'a', 'payload': 0, 'timestamp': '2025-12-31T22:00:00Z'}]}
+
+======================================================================
+FAIL: test_json_timestamp_requires_ascii_digits (test_contract.ContractTest) (value='2026-01-01T0০:00:00Z')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/featrace-repair-old-code-r2i26i8b/tests/test_contract.py", line 54, in test_json_timestamp_requires_ascii_digits
+    with self.subTest(value=value):self.assertEqual(events(json.dumps({'id':'a','timestamp':value,'payload':0})),{'records':[],'errors':[{'line':1,'code':'invalid_timestamp'}]})
+AssertionError: {'records': [{'id': 'a', 'timestamp': '2026-01-01T00:0[32 chars]: []} != {'records': [], 'errors': [{'line': 1, 'code': 'invalid_timestamp'}]}
++ {'errors': [{'code': 'invalid_timestamp', 'line': 1}], 'records': []}
+- {'errors': [],
+-  'records': [{'id': 'a', 'payload': 0, 'timestamp': '2026-01-01T00:00:00Z'}]}
+
+----------------------------------------------------------------------
+Ran 28 tests in 0.005s
+
+FAILED (failures=5)

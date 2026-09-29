@@ -1,0 +1,228 @@
+{
+  "personal_unchanged": true,
+  "source_unchanged": true,
+  "marker_unchanged": true,
+  "attempt_unchanged": true,
+  "head_unchanged": true,
+  "staged_unchanged": true,
+  "changed_project_paths": [
+    ".agent-workflow/features/FEAT-001/decisions.md",
+    ".agent-workflow/features/FEAT-001/fixes.md",
+    ".agent-workflow/features/FEAT-001/impact.md",
+    ".agent-workflow/features/FEAT-001/spec/requirements.json",
+    ".agent-workflow/features/FEAT-001/spec/spec.md",
+    ".agent-workflow/features/FEAT-001/tasks.json",
+    ".agent-workflow/features/FEAT-001/tasks.md",
+    ".agent-workflow/features/FEAT-001/traceability.md",
+    ".agent-workflow/features/FEAT-001/verification.json",
+    ".agent-workflow/features/FEAT-001/verification.md",
+    ".agent-workflow/project-baseline/quality-report.json",
+    "lower.py",
+    "upper.py"
+  ],
+  "business_paths": [
+    "lower.py",
+    "upper.py"
+  ],
+  "primary_matches_candidate": true,
+  "sources_preserved": true,
+  "feature_status": "provisional",
+  "current_checks": {
+    "validate": {
+      "exit": 1,
+      "output": "ERROR: behavior needs actual regression evidence or explicit waiver: B-1\nERROR: behavior needs actual regression evidence or explicit waiver: B-PRESERVE\nERROR: verification incomplete: requirement:R-1:3:2b20db89764a (not_run)\nERROR: verification incomplete: impact:B-1:f253d4f8080f (not_run)\nERROR: verification incomplete: impact:B-PRESERVE:60b9e052b905 (not_run)\n"
+    },
+    "audit": {
+      "exit": 1,
+      "output": "ERROR: verification incomplete: requirement:R-1:3:2b20db89764a (not_run)\nERROR: verification incomplete: impact:B-1:f253d4f8080f (not_run)\nERROR: verification incomplete: impact:B-PRESERVE:60b9e052b905 (not_run)\n"
+    },
+    "verification": {
+      "exit": 2,
+      "output": "{\n  \"digest\": \"7cd1cc4e093bcf953c8f41a91c03bee2e243a0b301d6fdc15e13360ba12ca6a0\",\n  \"tested_revision\": \"69a66badf72164c34bf2a9e49e5cf050cb11d288\",\n  \"items\": [\n    {\n      \"id\": \"requirement:R-1:1:ae0e453b6e4d\",\n      \"mode\": \"automatic\",\n      \"status\": \"passed\",\n      \"expected\": \"All CSV validation, quoting, duplicate and row atomicity rules in source are implemented\"\n    },\n    {\n      \"id\": \"requirement:R-1:2:268e8b047d1a\",\n      \"mode\": \"automatic\",\n      \"status\": \"passed\",\n      \"expected\": \"All JSONL schema, timezone, duplicate and physical line rules in source are implemented\"\n    },\n    {\n      \"id\": \"requirement:R-1:3:2b20db89764a\",\n      \"mode\": \"manual\",\n      \"status\": \"not_run\",\n      \"expected\": \"Importers preserve order, have no external effects and do not share mutable state\"\n    },\n    {\n      \"id\": \"impact:B-1:f253d4f8080f\",\n      \"mode\": \"manual\",\n      \"status\": \"not_run\",\n      \"expected\": \"Implement independent CSV catalog and JSONL event imports according to the approved source contract\"\n    },\n    {\n      \"id\": \"impact:B-PRESERVE:60b9e052b905\",\n      \"mode\": \"manual\",\n      \"status\": \"not_run\",\n      \"expected\": \"Keep independent pure local parser interfaces and no external effects.\"\n    },\n    {\n      \"id\": \"gate:parser-all:a286a9ed7b2d\",\n      \"mode\": \"automatic\",\n      \"status\": \"passed\",\n      \"expected\": \"Actual synthetic parser contract and preserved behavior tests\"\n    }\n  ]\n}\n"
+    }
+  },
+  "tool_calls": [
+    {
+      "event": 1,
+      "tool": "Skill",
+      "input": {
+        "skill": "featrace-adoption:dev",
+        "args": "next --feature FEAT-001"
+      }
+    },
+    {
+      "event": 6,
+      "tool": "Bash",
+      "input": {
+        "command": "cd <RUN>; ls; ls plugin plugin/skills/dev plugin/skills/dev/core/references plugin/skills/dev/core/scripts 2>/dev/null; cat plugin/.claude-plugin/plugin.json 2>/dev/null; grep -rn \"0\\.5\\.[0-9]*\" plugin --include=*.json --include=*.md | head; ls attempt; ls -la project; git -C project status --short; git -C project diff --cached --stat",
+        "description": "Inspect workspace layout and skill version"
+      }
+    },
+    {
+      "event": 11,
+      "tool": "Bash",
+      "input": {
+        "command": "cd <RUN>/plugin/skills/dev/core/references; cat next-workflow.md orchestration.md workflow.md",
+        "description": "Read next, orchestration, workflow references"
+      }
+    },
+    {
+      "event": 13,
+      "tool": "Bash",
+      "input": {
+        "command": "cd <RUN>/plugin/skills/dev/core/references; cat parallel-build.md build-strategy.md",
+        "description": "Read parallel build and build strategy references"
+      }
+    },
+    {
+      "event": 18,
+      "tool": "Bash",
+      "input": {
+        "command": "cd <RUN>/attempt; find . -maxdepth 3 | grep -v '/\\.git/' | head -80; echo ---; cat run.json; echo; cat integration-report.json; echo; cat check-0.log",
+        "description": "List attempt contents and read run/integration reports"
+      }
+    },
+    {
+      "event": 21,
+      "tool": "Bash",
+      "input": {
+        "command": "cd <RUN>/attempt; for t in T-UP T-LOW; do echo \"== $t\"; cat returns/$t/result.json; echo; cat returns/$t/patch.diff; cat returns/$t/check-0.log; done; shasum -a 256 check-0.log returns/*/patch.diff returns/*/check-0.log",
+        "description": "Read worker return records, patches and logs"
+      }
+    },
+    {
+      "event": 26,
+      "tool": "Bash",
+      "input": {
+        "command": "cd <RUN>/attempt/integration; git rev-parse HEAD; git status --short; git diff --stat HEAD; tmp=$(mktemp -u /tmp/idx.XXXX); GIT_INDEX_FILE=$tmp git read-tree HEAD && GIT_INDEX_FILE=$tmp git add -A && GIT_INDEX_FILE=$tmp git write-tree; rm -f $tmp; git diff HEAD -- upper.py | tail -n +3 | shasum -a 256; cat ../returns/T-UP/patch.diff | tail -n +3 | shasum -a 256; git diff HEAD -- lower.py | tail -n +3 | shasum -a 256; tail -n +3 ../returns/T-LOW/patch.diff | shasum -a 256; git diff HEAD -- upper.py | shasum -a 256; git diff HEAD -- lower.py | shasum -a 256; cd ..; for w in workers/T-UP workers/T-LOW; do echo $w; git -C $w status --short; done; git -C ../project worktree list",
+        "description": "Verify candidate tree and diff match returns"
+      }
+    },
+    {
+      "event": 32,
+      "tool": "Bash",
+      "input": {
+        "command": "cd <RUN>/project; F=.agent-workflow/features/FEAT-001; ls -la $F $F/* .agent-workflow/project-baseline; cat .gitignore; git status --short --ignored; for f in sources/prd-original.txt spec/requirements.json tasks.json traceability.json decisions.json impact.json regression-review.json task-review.json; do echo \"=== $f\"; cat $F/$f; echo; done; cat .agent-workflow/project-baseline/quality-gates.json",
+        "description": "Read primary feature records and baseline"
+      }
+    },
+    {
+      "event": 33,
+      "tool": "Bash",
+      "input": {
+        "command": "cd <RUN>/project; for f in tests/*.py upper.py lower.py; do echo \"=== $f\"; cat $f; done",
+        "description": "Read primary tests and source stubs"
+      }
+    },
+    {
+      "event": 39,
+      "tool": "Bash",
+      "input": {
+        "command": "cd <RUN>/plugin/skills/dev/core/references; cat verification-workflow.md; grep -n \"traceab\\|tests\\b\\|status\" requirement-schema.md | head -60",
+        "description": "Read verification workflow and schema notes"
+      }
+    },
+    {
+      "event": 45,
+      "tool": "Bash",
+      "input": {
+        "command": "cd <RUN>/project; git rev-parse HEAD; shasum -a 256 .git/index; git diff --cached --stat; shasum -a 256 tests/*.py upper.py lower.py .agent-workflow/features/FEAT-001/sources/prd-original.txt; python3 ../plugin/skills/dev/core/scripts/feature-status.py . FEAT-001 2>&1 | head -40",
+        "description": "Record primary baseline hashes and feature status"
+      }
+    },
+    {
+      "event": 49,
+      "tool": "Bash",
+      "input": {
+        "command": "cd <RUN>/plugin/skills/dev; python3 core/scripts/parallel-build.py preflight <RUN>/attempt; echo \"EXIT=$?\"",
+        "description": "Run attempt preflight freshness guard"
+      }
+    },
+    {
+      "event": 53,
+      "tool": "Bash",
+      "input": {
+        "command": "cd <RUN>/project; A=../attempt/returns; git apply --check $A/T-UP/patch.diff $A/T-LOW/patch.diff && git apply $A/T-UP/patch.diff $A/T-LOW/patch.diff; echo EXIT=$?; git status --short; shasum -a 256 .git/index upper.py lower.py tests/*.py; diff upper.py ../attempt/integration/upper.py && diff lower.py ../attempt/integration/lower.py && echo SAME_AS_CANDIDATE; git diff --cached --stat",
+        "description": "Apply validated patches unstaged and compare"
+      }
+    },
+    {
+      "event": 57,
+      "tool": "Bash",
+      "input": {
+        "command": "cd <RUN>/project; python3 -m unittest discover -s tests -v 2>&1 | tail -40; echo EXIT=$?; git status --short --ignored",
+        "description": "Run full test suite on primary worktree"
+      }
+    },
+    {
+      "event": 62,
+      "tool": "Bash",
+      "input": {
+        "command": "cd <RUN>/project; git diff | shasum -a 256; git diff upper.py | shasum -a 256; git diff lower.py | shasum -a 256; S=../plugin/skills/dev/core/scripts; python3 $S/render-workspace.py --help 2>&1 | head; python3 $S/verification.py --help 2>&1 | head; python3 $S/audit-delivery.py --help 2>&1 | head",
+        "description": "Compute adopted diff digests and helper usage"
+      }
+    },
+    {
+      "event": 65,
+      "tool": "Bash",
+      "input": {
+        "command": "cd <RUN>/project; python3 - <<'EOF'\nimport json\np='.agent-workflow/features/FEAT-001/tasks.json'\nd=json.load(open(p))\nev={\n 'T-UP':\"Adopted validated candidate patch (sha256 0be8ec88...ae58d, upper.py only) from attempt run 521b9cf4 into primary worktree, uncommitted on HEAD 69a66badf72164c34bf2a9e49e5cf050cb11d288 (worktree diff sha256 e7fd580a...5330). Primary run 2026-09-29: python3 -m unittest discover -s tests -> Ran 25 tests OK (test_upper 7, test_contract CSV rows, test_integration). Acceptance still subject to verification.json.\",\n 'T-LOW':\"Adopted validated candidate patch (sha256 0183b192...e9a7, lower.py only) from attempt run 521b9cf4 into primary worktree, uncommitted on HEAD 69a66badf72164c34bf2a9e49e5cf050cb11d288 (worktree diff sha256 e7fd580a...5330). Primary run 2026-09-29: python3 -m unittest discover -s tests -> Ran 25 tests OK (test_lower 7, test_contract JSONL rows, test_integration). Acceptance still subject to verification.json.\"}\nfor t in d['tasks']:\n    t['status']='done'; t['test_evidence']=ev[t['id']]\njson.dump(d,open(p,'w'),indent=2); open(p,'a').write('\\n')\nEOF\nS=../plugin/skills/dev/core/scripts; python3 $S/render-workspace.py . FEAT-001; echo EXIT=$?; python3 $S/task_review.py --help 2>&1 | head -5",
+        "description": "Mark tasks done with actual evidence and render views"
+      }
+    },
+    {
+      "event": 71,
+      "tool": "Bash",
+      "input": {
+        "command": "cd <RUN>/project; S=../plugin/skills/dev/core/scripts; python3 $S/verify-inputs.py . FEAT-001; echo EXIT=$?; python3 $S/task_review.py show . FEAT-001 2>&1 | head -5; python3 $S/validate-feature.py --help 2>&1 | head -3",
+        "description": "Run verify input inventory and task review status"
+      }
+    },
+    {
+      "event": 75,
+      "tool": "Bash",
+      "input": {
+        "command": "cd <RUN>/project; S=../plugin/skills/dev/core/scripts; python3 $S/validate-feature.py --stage develop . FEAT-001; echo EXIT=$?; python3 $S/verification.py sync . FEAT-001; echo EXIT=$?; cat .agent-workflow/features/FEAT-001/verification.json",
+        "description": "Validate develop stage and sync verification list"
+      }
+    },
+    {
+      "event": 118,
+      "tool": "Bash",
+      "input": {
+        "command": "cd <RUN>/project; python3 - <<'EOF'\nimport json\np='.agent-workflow/features/FEAT-001/verification.json'\nd=json.load(open(p))\ncov={\n 'requirement:R-1:1:ae0e453b6e4d':\"parser-all exact-equality assertions cover each CSV source rule: optional BOM + quoted comma/multiline (test_upper.test_quoted_multiline_bom), empty input (test_upper.test_empty, test_integration), header mismatch single line-1 error and stop (test_upper.test_header, test_contract.test_csv_header_trim_and_stop), header/field trim (test_contract header trim, test_upper.test_missing_extra_and_trim), logical row numbering after multiline (test_contract.test_csv_logical_lines_after_multiline), missing sku/name and missing/extra fields as invalid_row with exact lines (test_contract.test_csv_row_errors_exact_and_atomic), finite Decimal >=0 with <=2 fractional digits incl. NaN/sNaN/+-Infinity/-1/0.001/0.000/oops without exceptions and exact 2-dp formatting incl. -0 (test_upper.test_invalid_prices/test_prices, test_contract.test_csv_finite_decimal_formats), first-SKU acceptance with invalid rows not reserving and duplicate_sku lines (test_upper/test_contract duplicate tests), record/error order and exact {sku,name,price}/{line,code} shapes via whole-dict equality.\",\n 'requirement:R-1:2:268e8b047d1a':\"parser-all exact-equality assertions cover each JSONL source rule: blank lines ignored with physical one-based line numbers (test_lower.test_bad_json_and_line_numbers, test_contract.test_json_payload_types_and_physical_order), empty input (test_lower.test_empty, test_integration), invalid_json, non-object and each missing/wrong-type/empty id/timestamp/missing payload as invalid_event (test_contract.test_json_schema_fields_individually, test_lower.test_invalid_schema), payload any JSON value (null/0/text/[]/{}/true), naive/unparseable/impossible-date/out-of-range-offset timestamps as invalid_timestamp and Z/+/- offsets normalized to UTC YYYY-MM-DDTHH:MM:SSZ (test_lower.test_offsets/test_bad_timestamps, test_contract.test_json_z_negative_offsets_and_calendar), first valid id accepted with invalid events not reserving and duplicate_id (test_lower.test_duplicate_and_invalid_does_not_reserve), order and exact {id,timestamp,payload}/{line,code} shapes (test_lower.test_offsets/test_order).\"}\nfor it in d['items']:\n    if it['id'] in cov:\n        it['mode']='automatic'; it['gates']=['parser-all']; it['coverage']=cov[it['id']]\njson.dump(d,open(p,'w'),indent=2); open(p,'a').write('\\n')\nEOF\nS=../plugin/skills/dev/core/scripts; python3 $S/verification.py run . FEAT-001; echo EXIT=$?",
+        "description": "Map covered rows to gate and run verification"
+      }
+    },
+    {
+      "event": 121,
+      "tool": "Bash",
+      "input": {
+        "command": "cd <RUN>/project; S=../plugin/skills/dev/core/scripts; python3 $S/validate-feature.py --stage check . FEAT-001; echo EXIT=$?; python3 $S/audit-delivery.py . FEAT-001; echo EXIT=$?; python3 $S/render-workspace.py . FEAT-001; python3 $S/feature-status.py . FEAT-001; ls .agent-workflow .agent-workflow/features/FEAT-001; git status --short --ignored; git rev-parse HEAD; shasum -a 256 .git/index tests/*.py .agent-workflow/features/FEAT-001/sources/prd-original.txt",
+        "description": "Run check validation, delivery audit and final status"
+      }
+    },
+    {
+      "event": 127,
+      "tool": "Bash",
+      "input": {
+        "command": "cd <RUN>/attempt; shasum -a 256 returns/*/patch.diff returns/*/check-0.log check-0.log | awk '{print $1}' | tr '\\n' ' '; echo; cd integration; git status --short; t=$(mktemp -u /tmp/i.XXXX); GIT_INDEX_FILE=$t git read-tree HEAD; GIT_INDEX_FILE=$t git add -A; GIT_INDEX_FILE=$t git write-tree; rm -f $t; git -C ../../project worktree list | wc -l",
+        "description": "Confirm attempt artifacts remain unchanged"
+      }
+    },
+    {
+      "event": 129,
+      "tool": "Write",
+      "input": {
+        "file_path": "<RUN>/assessment.md",
+        "content": "# FEAT-001 candidate adoption assessment\n\nSkill: native `featrace-adoption:dev` (plugin.json version 0.5.30, root `<RUN>/plugin/skills/dev`), invoked with `next --feature FEAT-001`.\nRoute: Build (adopt the validated parallel candidate) \u2192 Verify \u2192 Deliver (report only).\n\n## Delivery status: NOT COMPLETE (blocked on 3 manual verification rows)\n\nCode is adopted and every automated gate passes on the actual primary worktree. However, `validate-feature.py --stage check` and `audit-delivery.py` both exit 1 because three verification rows have no evidence. I did not invent a pass or a waiver for them.\n\n## Worktree identity\n\n- Primary: `<RUN>/project`, branch `main`, HEAD `69a66badf72164c34bf2a9e49e5cf050cb11d288` (unchanged).\n- Adopted changes are **uncommitted and unstaged**: ` M upper.py`, ` M lower.py`. Full worktree diff sha256 `e7fd580a5ed7f58052a379e65b2190d5a52a43a10758aad6f90d9d87c6e85330`.\n- Per-file primary diffs are byte-identical to the approved return patches: upper.py `0be8ec88\u2026ae58d` (T-UP), lower.py `0183b192\u2026e9a7` (T-LOW). File contents equal the candidate.\n- Index: `.git/index` sha256 `263bc7d5\u202679b1`, the same before and after. Nothing is staged.\n- Tests (`tests/test_{contract,integration,lower,upper}.py`) and `sources/prd-original.txt` are byte-identical to the frozen hashes.\n- `.agent-workflow/` is git-ignored, so record updates appear only on disk.\n\n## Candidate eligibility (inspected read-only before adoption)\n\n- Attempt `<RUN>/attempt`, run digest `521b9cf4\u20263ca56`, base `69a66ba`.\n- Both returns have `status: ready`. Each changed only its assigned path (T-UP\u2192upper.py, T-LOW\u2192lower.py). The patch and check-log sha256 values match `result.json` (task logs: 7 tests OK each).\n- Integration report: `candidate_checks_passed`, candidate tree `d528278c\u2026a0226d405db0da74`. I recomputed this with a private index and it matches. The candidate diff vs HEAD is exactly the two return patches. The integration log sha matches `eea909e8\u2026`: 25 tests OK.\n- Semantics: the two pure functions have no cross imports and no shared/global mutable state, which is consistent with impact.json B-1/B-PRESERVE and the plan's independence rationale.\n- Blocking guard: `parallel-build.py preflight <RUN>` was run as a separate call. It exited 0 with `PARALLEL_BUILD_INPUTS_CURRENT`, and adoption went ahead only after that.\n\n## Actions taken\n\n1. Ran `git apply --check` and then `git apply` (no `--index`) for both return patches into the primary worktree.\n2. Ran the actual primary suite: `python3 -m unittest discover -s tests -v` gave **25 tests OK, exit 0**.\n3. Serial record updates:\n   - `tasks.json`: T-UP and T-LOW set to `done`, with `test_evidence` giving patch hashes, HEAD plus uncommitted-diff identity and the actual primary run result.\n   - `traceability.json`: unchanged. It already links R-1 \u2192 T-UP/T-LOW \u2192 upper.py/lower.py \u2192 TEST-UP/TEST-LOW.\n   - Ran `render-workspace.py`, which regenerated the views.\n4. Verify:\n   - `verify-inputs.py`: the only changed paths are the adopted ones.\n   - `validate-feature.py --stage develop`: `FEATURE_VALID`.\n   - `verification.py sync`, then row mapping (see below), then `verification.py run`: gate `parser-all` **passed** on revision 69a66ba plus the uncommitted diff. Checklist digest `7cd1cc4e\u2026a6a0`. Exit 2 because rows remain unfinished.\n   - `validate-feature.py --stage check`: exit 1.\n   - `audit-delivery.py`: exit 1.\n   - `feature-status`: tasks 2/2 done, verification passed=3, not_run=3.\n5. Reused the existing reviews without changing them: task-review (current digest `ff8a0284\u2026`), regression-review (0 candidates) and impact.json. Task progress does not change the task-review digest.\n\n## Assertion coverage mapping (verification.json)\n\n| Row | Mode | Result | Basis |\n|---|---|---|---|\n| requirement:R-1:1 CSV rules | automatic \u2192 parser-all | passed | Each listed CSV rule has an exact-equality assertion. |\n| requirement:R-1:2 JSONL rules | automatic \u2192 parser-all | passed | Each listed JSONL rule has an exact-equality assertion. |\n| gate:parser-all | automatic | passed | Actual run on the primary worktree. |\n| requirement:R-1:3 order / no external effects / no shared mutable state | manual | not_run | Order and state are asserted. \"No external effects\" is only asserted on representative paths, by patching open/io.open/socket/Popen. The gate's known_gap says so. Partial, so left manual. |\n| impact:B-1 full source contract | manual | not_run | Includes the source's \"without external effects / no global state / no CSV dependency\" clauses, which have the same partial assertion coverage. |\n| impact:B-PRESERVE pure interfaces, no external effects | manual | not_run | Same external-effects gap. |\n\nMy source inspection found that upper.py imports only csv, io and decimal, and lower.py imports only json, re and datetime. Neither has global mutable state or I/O calls. This is Agent inspection, not an assertion or a user observation, so I did not record it as a manual pass. The CSV row also has an untested interpretation: scientific-notation prices (for example `1e2`) are accepted as a finite Decimal. The source does not forbid them, so this is not recorded as a gap in the row.\n\n## Remaining gaps and blockers\n\n- Three manual rows (R-1:3, B-1, B-PRESERVE) need either an actual reviewer observation recorded through `verification.py record` for this uncommitted build, or an authorized waiver with reason, risk and follow-up. Another option is an authorized refinement of the acceptance criteria and impact behaviors into independently assertable parts, which needs its own review. None of these was authorized here, so none was done.\n- The `check` validator additionally reports that B-1 and B-PRESERVE \"need actual regression evidence or explicit waiver\". The same rows resolve this.\n- There is no UI or manual-device evidence, and none applies to this headless fixture.\n- The adopted code is uncommitted, so the tested revision is HEAD plus the working diff. A future commit would need the checks to be re-established for that commit.\n\n## Not done (by instruction)\n\nNo new tests or implementation. No additional prepare/finish/integrate, Agents, retries or scan. No settings or installation writes. No commit, push, archive or cleanup. The attempt, candidate, returns and frozen inputs are unchanged (hashes and candidate tree re-verified), and all four worktrees are still registered. I did not read `before.json` or the preparation transcripts.\n\nRecommended next action: a human reviewer confirms or rejects the external-effects/pure-interface rows (R-1:3, B-1, B-PRESERVE) and records the result with `verification.py record` against digest `7cd1cc4e\u2026` and HEAD `69a66ba` plus the uncommitted diff. Then rerun check and audit.\n"
+      }
+    }
+  ],
+  "cost_usd": 1.0916389999999998,
+  "execution": {
+    "exit_code": 0,
+    "elapsed_seconds": 199.667
+  },
+  "agent_calls": []
+}

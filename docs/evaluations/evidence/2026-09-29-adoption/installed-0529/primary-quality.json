@@ -1,0 +1,39 @@
+{
+  "tested_at": "2026-09-29T07:17:45.911926+00:00",
+  "project_snapshot": {
+    "version": 2,
+    "evidence": {
+      "AGENTS.md": null,
+      "CLAUDE.md": null
+    },
+    "profile": "generic",
+    "git_head": "27f72944625342209d310f299ee4555848b1b86f",
+    "files": {}
+  },
+  "results": [
+    {
+      "name": "parser-all",
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests"
+      ],
+      "test_ids": [
+        "TEST-UP",
+        "TEST-LOW"
+      ],
+      "returncode": 0,
+      "status": "passed",
+      "stdout": "",
+      "stderr": "................\n----------------------------------------------------------------------\nRan 16 tests in 0.000s\n\nOK\n"
+    }
+  ],
+  "feature_baseline": {
+    "feature_id": "FEAT-001",
+    "version": null,
+    "digest": null
+  }
+}

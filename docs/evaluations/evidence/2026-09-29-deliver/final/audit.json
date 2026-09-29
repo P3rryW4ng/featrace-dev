@@ -1,0 +1,59 @@
+{
+  "changed_project_files": [
+    ".agent-workflow/features/FEAT-001/delivery-report.md",
+    ".agent-workflow/features/FEAT-001/spec/requirements.json"
+  ],
+  "head_unchanged": true,
+  "staged_unchanged": true,
+  "business_diff_unchanged": true,
+  "installed_unchanged": true,
+  "runtime_copy_matches_test_snapshot": true,
+  "runtime_copy_matches_final_source": true,
+  "feature_status": "complete",
+  "execution": {
+    "exit_code": 0,
+    "elapsed_seconds": 174.447
+  },
+  "cli_result": {
+    "subtype": "success",
+    "is_error": false,
+    "duration_ms": 173245,
+    "duration_api_ms": 169945,
+    "total_cost_usd": 0.9391822,
+    "num_turns": 20,
+    "usage": {
+      "input_tokens": 36,
+      "cache_creation_input_tokens": 67867,
+      "cache_read_input_tokens": 812911,
+      "output_tokens": 11676,
+      "output_tokens_details": {
+        "thinking_tokens": 3610
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 67867,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "not_available",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 880,
+          "cache_read_input_tokens": 71834,
+          "cache_creation_input_tokens": 1322,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 1322
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard"
+    },
+    "result": "FEAT-001 is now marked **complete**. The existing evidence still matched the code, so I didn't run any tests or builds.\n\n**Why it could close:**\n- **Code unchanged since the last passing run:** the implementation is uncommitted on HEAD `69a66ba`. The current hashes of `upper.py`, `lower.py` and `tests/test_contract.py` exactly match those recorded with the last passing run (2026-09-29 07:47:32Z, 28 tests OK). The files were last modified before that run, and the source file's hash matches its record.\n- **Records support completion:**\n  - R-1 is confirmed and both tasks are done.\n  - There are no decisions and no unresolved clarifications.\n  - The three fixes (FIX-001 to FIX-003) are verified, each with a regression test.\n  - The three historical-regression candidates were retested and passed.\n  - All 6 verification rows passed.\n- **Checks:** the skill's structural check (`validate-feature.py --stage check`) and delivery audit (`audit-delivery.py`) both passed before and after the status change.\n\n**What I changed:**\n- Created `.agent-workflow/features/FEAT-001/delivery-report.md`, then reread it in full and rechecked the hashes before closing.\n- Changed `feature.status` from `provisional` to `complete` in `spec/requirements.json` (a one-line change).\n- Regenerated the feature views with the skill's render script; `spec.md` now shows `Status: complete`.\n- Wrote the separate account to `/private/tmp/featrace-deliver-0531-kxklk6ok/run/assessment.md`.\n\nI didn't touch the product code or tests, and didn't commit, push, archive or dispatch anything. Earlier evidence, including the failed rows from before the fixes, is kept as it was.\n\n**Limits, also listed in the report:**\n- **Code identity:** because the code is uncommitted, the file hashes are what identify it.\n- **No human acceptance:** the manual rows came from an earlier agent reading the code. No person or product owner has signed off.\n- **Cases the source doesn't decide:** reading the code, I found several:\n  - Prices can contain underscores or non-ASCII digits and are still accepted.\n  - CSV input containing a NUL character may raise an error on Python 3.9.\n  - A number like `1e400` becomes an infinite payload.\n  - Some other ISO 8601 timestamp forms are accepted.\n\n  I treated these as open questions, not failures, so they don't block completion. Another reviewer could reasonably send them for clarification instead."
+  }
+}
