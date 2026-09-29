@@ -72,7 +72,7 @@ HEAD `69a66badf72164c34bf2a9e49e5cf050cb11d288` + uncommitted:
   - CSV fields larger than `csv.field_size_limit()` (by stdlib behaviour this likely raises `_csv.Error`).
   - JSON numbers that overflow float (e.g. `1e400` decodes to `inf`).
   - ISO 8601 variants beyond the source examples: basic `+HHMM` offsets and fractional seconds are accepted, and fractions are truncated (source: "fixtures have no fractions").
-  
+
   If the owner cares about any of these, they belong in a new fix/clarify, not this delivery.
 - Delivery identity is an uncommitted working tree. A commit will change the revision string, and the verification rows are bound to HEAD + file hashes.
 - The decimal flag interpretation (caller-visible context write = external effect) follows the prior recorded basis. The repair removes the effect without changing any output, so no product choice was needed.

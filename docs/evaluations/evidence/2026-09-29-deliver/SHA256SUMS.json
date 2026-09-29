@@ -14,7 +14,7 @@
   "initial/execution.json": "c7f0ef859561fa55ed4797500ff272e793b377ed258e72f7388e78d9ae3d8d1e",
   "initial/prompt.txt": "447599986413cf92258e4b8edfdd259540e4548ea87e65942982bff3442aba20",
   "initial/readonly-checks.json": "8dbc91391f0ee03e283ed9f93bb83368b667cd23e9ecbb255d7af16d579f4e36",
-  "initial/runtime-difference.patch": "dc998f52eeb16b1a2fd5ad17f120fa0355ecf4726e8b9ba5ce6c55b9b1c415e6",
+  "initial/runtime-difference.json": "6a9a3e9623b82216f155a3da94b454a214d5f409e60baba5b8876df431489939",
   "initial/tool-calls.json": "97acf9dedb887f9c3aa346a9b9a114f01a3ea9fe56c214e32395d55a9ed35759",
   "stale-source/assessment.md": "712fee4f4a479ba4e77f8ab0ab30aefca35b120c432f75b47bb90640c30c9fdc",
   "stale-source/audit.json": "44a680ed721fd69685d0c08cd7c1f846266b33f5ec092f9f61d1970eb3f90fd9",
@@ -22,7 +22,7 @@
   "stale-source/execution.json": "3d4832f3dcf4235527e5fdafcb5f491fe2c42fb82aae18608bf9af5faaa3db23",
   "stale-source/prompt.txt": "1b2fa6437e2c23d04425b089550c6ac16621b7a3cb5294f603360adcc0433ad1",
   "stale-source/readonly-checks.json": "7b0bc92a0c5940b8572e5419a0927b59d12ca2d29263953b09a24104f7009ec6",
-  "stale-source/runtime-difference.patch": "dc998f52eeb16b1a2fd5ad17f120fa0355ecf4726e8b9ba5ce6c55b9b1c415e6",
+  "stale-source/runtime-difference.json": "6a9a3e9623b82216f155a3da94b454a214d5f409e60baba5b8876df431489939",
   "stale-source/tool-calls.json": "02eddb1ae72047f57c4e0fbd9a46706d18290ea518dd84af64dadb4daff15f17",
   "static-checks.json": "f458865e19798b56bbc46e4058c538291b084e230664dc18e562c72db2b7b6c3"
 }
