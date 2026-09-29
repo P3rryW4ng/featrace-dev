@@ -1,0 +1,9 @@
+test_all_ids_keeps_order_and_duplicates (test_legacy.LegacyTests) ... ok
+test_legacy_summary_counts_duplicates (test_legacy.LegacyTests) ... ok
+test_receipt_keeps_twelve_characters (test_legacy.LegacyTests) ... ok
+test_short_receipt_keeps_content (test_legacy.LegacyTests) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.000s
+
+OK

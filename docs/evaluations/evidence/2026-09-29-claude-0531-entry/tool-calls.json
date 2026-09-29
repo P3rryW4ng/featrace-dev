@@ -1,0 +1,40 @@
+[
+  {
+    "name": "Skill",
+    "input": {
+      "skill": "dev",
+      "args": "help check"
+    }
+  },
+  {
+    "name": "Bash",
+    "input": {
+      "command": "cd /Users/mac/.claude/skills/dev && ls -a; ls core/references | head -50; ls -a core",
+      "description": "List installed skill files"
+    }
+  },
+  {
+    "name": "Read",
+    "input": {
+      "file_path": "/Users/mac/.claude/skills/dev/.feature-delivery-install.json"
+    }
+  },
+  {
+    "name": "Read",
+    "input": {
+      "file_path": "/Users/mac/.claude/skills/dev/core/references/command-help.md"
+    }
+  },
+  {
+    "name": "Read",
+    "input": {
+      "file_path": "/Users/mac/.claude/skills/dev/core/references/verification-workflow.md"
+    }
+  },
+  {
+    "name": "Read",
+    "input": {
+      "file_path": "/Users/mac/.claude/skills/dev/core/references/parallel-build.md"
+    }
+  }
+]

@@ -1,0 +1,26 @@
+{
+  "version": "0.5.31",
+  "runtime_files": 74,
+  "source_install_marker_match": true,
+  "install_unchanged_during_entry": true,
+  "project_files": [],
+  "tools": [
+    "Skill",
+    "Bash",
+    "Read",
+    "Read",
+    "Read",
+    "Read"
+  ],
+  "execution": {
+    "exit_code": 0,
+    "elapsed_seconds": 25.963
+  },
+  "result": {
+    "is_error": false,
+    "subtype": "success",
+    "total_cost_usd": 0.2999266,
+    "num_turns": 8,
+    "result": "The installed `dev` skill is **featrace-dev 0.5.31**. I only read files; I didn't write anything, set up a feature, run tests or builds, start workers, or change settings.\n\n## Files I loaded\n- `/Users/mac/.claude/skills/dev/SKILL.md` (loaded by the Skill tool)\n- `/Users/mac/.claude/skills/dev/.feature-delivery-install.json`: the installation marker, which says `\"package\": \"featrace-dev\"`, `\"version\": \"0.5.31\"`\n- `/Users/mac/.claude/skills/dev/core/references/command-help.md`\n- `/Users/mac/.claude/skills/dev/core/references/verification-workflow.md`: its header says \"(0.5.31)\"\n- `/Users/mac/.claude/skills/dev/core/references/parallel-build.md`: its header says \"(0.5.30)\", but the marker's hash list shows it's part of the 0.5.31 install\n\n## `/dev help check`\n- **Syntax:** `/dev check [ID]`. You can leave out the ID once a feature is selected. Add `--independent` to ask for a separate, read-only second review of the evidence that already exists. That needs host support, runs no builds and never marks a feature complete.\n- **Stage:** Verify, then Deliver if the feature qualifies.\n- **What it does:** refreshes the list of past fixes that might need retesting, and requires results for any it selects. It also builds the acceptance checklist, runs the mapped automatic checks and lists the manual checks still to do. It may run builds and tests. A passing build doesn't count as UI acceptance, and a passing structural check doesn't mean the feature is delivered. `status` only reports existing state.\n- **Example:** `/dev check FEAT-001`\n\n## Delivery report path\n`<PROJECT>/.agent-workflow/features/<ID>/delivery-report.md`\n\n## Order before setting a feature to `complete`\n1. **Check the evidence.** Review the current requirements, tasks, decisions, fixes, source reconciliation, traceability and verification results. Run `validate-feature.py <PROJECT> <ID> --stage check` and `audit-delivery.py <PROJECT> <ID>`, and look at what they cover, not just whether they pass. Failed, missing or stale evidence blocks completion.\n2. **Write the report, then reread all of it.** Write or update the local report from that evidence and reread the whole saved file. A preview of the header isn't enough.\n3. **Compare again, then update status.** Compare the saved report with the current inputs and results. If anything changed, go back to the affected stage. Only if the report is consistent and every completion condition holds, set the status to complete, regenerate the views and tell the user the path and any remaining limits.\n\n## Guard right before adopting parallel-build output\nThis comes after the read-only check of the combined result and before any patches go into the main project. Run `parallel-build.py preflight <RUN>` as a **separate call that has to finish first**. It must exit 0 and print `PARALLEL_BUILD_INPUTS_CURRENT`. Any error or nonzero exit stops adoption before anything is written to the main project's code or records.\n\nPrinting a digest comparison or recapturing inputs doesn't count as this guard. Neither does patching up the old snapshot or refreshing records to make them look current."
+  }
+}

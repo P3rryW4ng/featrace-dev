@@ -1,0 +1,40 @@
+test_first_error_only (test_event_snapshot.EventSnapshotTests) ... ok
+test_invalid_id (test_event_snapshot.EventSnapshotTests) ... ok
+test_invalid_kind (test_event_snapshot.EventSnapshotTests) ... ok
+test_invalid_or_out_of_window_does_not_claim_id (test_event_snapshot.EventSnapshotTests) ... ok
+test_invalid_timestamp_forms (test_event_snapshot.EventSnapshotTests) ... ok
+test_later_duplicate_ignored_even_other_kind (test_event_snapshot.EventSnapshotTests) ... ok
+test_missing_fields_and_extras (test_event_snapshot.EventSnapshotTests) ... ok
+test_no_mutation_and_repeatable (test_event_snapshot.EventSnapshotTests) ... ok
+test_out_of_window_not_errors (test_event_snapshot.EventSnapshotTests) ... ok
+test_result_shape_order_and_counts (test_event_snapshot.EventSnapshotTests) ... ok
+test_single_sided_bounds (test_event_snapshot.EventSnapshotTests) ... ok
+test_window_inclusive_bounds (test_event_snapshot.EventSnapshotTests) ... ok
+test_all_ids_keeps_order_and_duplicates (test_legacy.LegacyTests) ... ok
+test_legacy_summary_counts_duplicates (test_legacy.LegacyTests) ... ok
+test_receipt_keeps_twelve_characters (test_legacy.LegacyTests) ... ok
+test_short_receipt_keeps_content (test_legacy.LegacyTests) ... ok
+test_legacy_functions_unchanged_alongside_snapshots (test_preserved_behaviour.PreservedBehaviourTests) ... ok
+test_receipt_not_shortened_by_label (test_preserved_behaviour.PreservedBehaviourTests) ... ok
+test_category_exact_filter (test_product_snapshot.ProductSnapshotTests) ... ok
+test_decimal_context_unchanged (test_product_snapshot.ProductSnapshotTests) ... ok
+test_duplicate_ids_are_kept (test_product_snapshot.ProductSnapshotTests) ... ok
+test_empty_name_and_zero_price (test_product_snapshot.ProductSnapshotTests) ... ok
+test_first_error_only (test_product_snapshot.ProductSnapshotTests) ... ok
+test_inactive_valid_item_skipped (test_product_snapshot.ProductSnapshotTests) ... ok
+test_invalid_active_rejects_int (test_product_snapshot.ProductSnapshotTests) ... ok
+test_invalid_category (test_product_snapshot.ProductSnapshotTests) ... ok
+test_invalid_id (test_product_snapshot.ProductSnapshotTests) ... ok
+test_invalid_items_reported_despite_filters (test_product_snapshot.ProductSnapshotTests) ... ok
+test_invalid_name (test_product_snapshot.ProductSnapshotTests) ... ok
+test_invalid_price_forms (test_product_snapshot.ProductSnapshotTests) ... ok
+test_label_and_price_example (test_product_snapshot.ProductSnapshotTests) ... ok
+test_missing_fields_and_extras (test_product_snapshot.ProductSnapshotTests) ... ok
+test_no_mutation_and_repeatable (test_product_snapshot.ProductSnapshotTests) ... ok
+test_output_keys_exact (test_product_snapshot.ProductSnapshotTests) ... ok
+test_result_shape_and_input_order (test_product_snapshot.ProductSnapshotTests) ... ok
+
+----------------------------------------------------------------------
+Ran 35 tests in 0.001s
+
+OK

@@ -1,0 +1,423 @@
+[
+  {
+    "order": 1,
+    "name": "Skill",
+    "description": null,
+    "file_path": null,
+    "skill": "dev",
+    "args": "prd /private/tmp/featrace-e2e-0531-flibetsn/inputs/prd.md --feature E2E-0531",
+    "command_first_line": null,
+    "command_chars": 0
+  },
+  {
+    "order": 2,
+    "name": "Bash",
+    "description": "Survey skill, PRD, and project files",
+    "file_path": null,
+    "skill": null,
+    "args": null,
+    "command_first_line": "cd /Users/mac/.claude/skills/dev && ls -R | head -100 && cat VERSION* version* 2>/dev/null; grep -ri version SKILL.md | head; cat /private/tmp/featrace-e2e-0531-flibetsn/inputs/prd.md; cd /private/tmp/featrace-e2e-0531-flibetsn/project && git ls-files && cat README*",
+    "command_chars": 266
+  },
+  {
+    "order": 3,
+    "name": "Bash",
+    "description": "Read core workflow references",
+    "file_path": null,
+    "skill": null,
+    "args": null,
+    "command_first_line": "cd /Users/mac/.claude/skills/dev/core/references && cat orchestration.md workflow.md feature-selection.md prd-analysis.md; grep -rn -i \"version\" /Users/mac/.claude/skills/dev/SKILL.md /Users/mac/.claude/skills/dev/agents/openai.yaml /Users/mac/.claude/skills/dev/core/assets/config.yaml | head",
+    "command_chars": 293
+  },
+  {
+    "order": 4,
+    "name": "Bash",
+    "description": "Read schema, sharing, profile references",
+    "file_path": null,
+    "skill": null,
+    "args": null,
+    "command_first_line": "cd /Users/mac/.claude/skills/dev && grep -rhoE \"(release|version)[^\\n]{0,40}[0-9]+\\.[0-9]+\\.[0-9]+\" SKILL.md core/references/command-help.md core/scripts/project.py core/assets/config.yaml agents/openai.yaml 2>/dev/null | sort | uniq | head; cat core/references/requirement-schema.md core/references/git-sharing.md profiles/generic/PROFILE.md core/assets/config.yaml",
+    "command_chars": 366
+  },
+  {
+    "order": 5,
+    "name": "Bash",
+    "description": "Find skill version and read project code",
+    "file_path": null,
+    "skill": null,
+    "args": null,
+    "command_first_line": "cd /Users/mac/.claude/skills/dev && grep -rn \"0\\.[5-9]\\.[0-9]*\" core/scripts/*.py | grep -i -E \"version|release\" | head -5; grep -rn \"__version__\\|SKILL_VERSION\\|VERSION =\" core/scripts | head; cd /private/tmp/featrace-e2e-0531-flibetsn/project && cat src/*/*.py tests/test_legacy.py .gitignore; ls -la",
+    "command_chars": 302
+  },
+  {
+    "order": 6,
+    "name": "Bash",
+    "description": "Locate skill version markers",
+    "file_path": null,
+    "skill": null,
+    "args": null,
+    "command_first_line": "cd /Users/mac/.claude/skills/dev && ls -a; grep -rln \"0\\.5\\.[0-9][0-9]\" . | head; grep -rhoE \"\\b0\\.[5-9]\\.[0-9]+\\b\" core/references/*.md | sort -V | tail -3; cat core/references/command-help.md | head -30",
+    "command_chars": 204
+  },
+  {
+    "order": 7,
+    "name": "Bash",
+    "description": "Read install manifest and list features",
+    "file_path": null,
+    "skill": null,
+    "args": null,
+    "command_first_line": "cd /Users/mac/.claude/skills/dev && cat .feature-delivery-install.json; cd /private/tmp/featrace-e2e-0531-flibetsn/project && python3 /Users/mac/.claude/skills/dev/core/scripts/feature-context.py list . ; python3 --version",
+    "command_chars": 222
+  },
+  {
+    "order": 8,
+    "name": "Bash",
+    "description": "Initialize feature E2E-0531 from PRD",
+    "file_path": null,
+    "skill": null,
+    "args": null,
+    "command_first_line": "shasum -a 256 ../inputs/prd.md && bash /Users/mac/.claude/skills/dev/core/scripts/init-feature.sh E2E-0531 /private/tmp/featrace-e2e-0531-flibetsn/inputs/prd.md . && find .agent-workflow -type f && cat .agent-workflow/features/E2E-0531/spec/requirements.json .agent-workflow/features/E2E-0531/spec/prd-intake.json; ls .agent-workflow/features/E2E-0531",
+    "command_chars": 351
+  },
+  {
+    "order": 9,
+    "name": "Bash",
+    "description": "Write requirements and intake, render and validate draft",
+    "file_path": null,
+    "skill": null,
+    "args": null,
+    "command_first_line": "mkdir -p /private/tmp/featrace-e2e-0531-flibetsn/execution && cat > /private/tmp/featrace-e2e-0531-flibetsn/execution/build_spec.py <<'EOF'",
+    "command_chars": 16732
+  },
+  {
+    "order": 10,
+    "name": "Bash",
+    "description": "Fix reverse link and revalidate draft",
+    "file_path": null,
+    "skill": null,
+    "args": null,
+    "command_first_line": "sed -i '' 's/items=\\[\"S-12\",\"S-13\"\\]/items=[\"S-1\",\"S-12\",\"S-13\"]/' ../execution/build_spec.py && git checkout -- . 2>/dev/null; python3 - <<'EOF'",
+    "command_chars": 471
+  },
+  {
+    "order": 11,
+    "name": "Bash",
+    "description": "Record PRD review and validate develop",
+    "file_path": null,
+    "skill": null,
+    "args": null,
+    "command_first_line": "S=/Users/mac/.claude/skills/dev/core/scripts && python3 $S/review-prd.py . E2E-0531 --reviewer agent --notes \"Reread sources/prd-original.md end to end. Forward: all 8 units (intro, catalog ¶1/list/filter+output, audit ¶1/list/window+dedup, constraints) mapped to S-1..S-13; S-14 (acceptance-method statement) excluded as non-behavioural. Reverse: R-1..R-11 each grounded in quoted items; no invented behaviour. Checked precedence (first error only, validate-before-filter, dedup after validation+window, invalid/out-of-window do not claim id), negations (no trim, 0/1 not bool, no sign/space/exponent, no dedup in products, out-of-window not errors), limits (8-char label vs 12-char receipt, two-dec",
+    "command_chars": 1096
+  },
+  {
+    "order": 12,
+    "name": "Bash",
+    "description": "Read module-context and impact-review references",
+    "file_path": null,
+    "skill": null,
+    "args": null,
+    "command_first_line": "cd /Users/mac/.claude/skills/dev/core/references && cat module-context.md impact-review.md",
+    "command_chars": 90
+  },
+  {
+    "order": 13,
+    "name": "Bash",
+    "description": "Read baseline, task review, regression references",
+    "file_path": null,
+    "skill": null,
+    "args": null,
+    "command_first_line": "cd /Users/mac/.claude/skills/dev/core/references && cat project-baseline.md task-semantic-review.md historical-regression.md",
+    "command_chars": 124
+  },
+  {
+    "order": 14,
+    "name": "Bash",
+    "description": "Setup workflow git and prepare baseline scan",
+    "file_path": null,
+    "skill": null,
+    "args": null,
+    "command_first_line": "S=/Users/mac/.claude/skills/dev/core/scripts && python3 $S/setup-workflow-git.py . ; echo \"---\"; python3 $S/project.py --help 2>&1 | head -20; python3 $S/project.py scan-prepare . ; find .agent-workflow/baseline-draft -type f | xargs -I{} sh -c 'echo \"=== {}\"; cat \"{}\"'",
+    "command_chars": 270
+  },
+  {
+    "order": 15,
+    "name": "Bash",
+    "description": "Write baseline notes and publish scan",
+    "file_path": null,
+    "skill": null,
+    "args": null,
+    "command_first_line": "cd /private/tmp/featrace-e2e-0531-flibetsn/project/.agent-workflow/baseline-draft/baseline && cat > architecture.md <<'EOF'",
+    "command_chars": 3095
+  },
+  {
+    "order": 16,
+    "name": "Bash",
+    "description": "Create module catalog and plan modules",
+    "file_path": null,
+    "skill": null,
+    "args": null,
+    "command_first_line": "mkdir -p .agent-workflow/modules && cat > .agent-workflow/modules/index.json <<'EOF'",
+    "command_chars": 1018
+  },
+  {
+    "order": 17,
+    "name": "Bash",
+    "description": "Write and review module dossiers",
+    "file_path": null,
+    "skill": null,
+    "args": null,
+    "command_first_line": "mkdir -p .agent-workflow/modules/drafts && cd .agent-workflow/modules/drafts && cat > catalog.json <<'EOF'",
+    "command_chars": 3301
+  },
+  {
+    "order": 18,
+    "name": "Bash",
+    "description": "Set feature scope and read build strategy",
+    "file_path": null,
+    "skill": null,
+    "args": null,
+    "command_first_line": "cat > .agent-workflow/modules/drafts/scope-E2E-0531.json <<'EOF'",
+    "command_chars": 1677
+  },
+  {
+    "order": 19,
+    "name": "Bash",
+    "description": "Write tasks, traceability, impact; sync reviews",
+    "file_path": null,
+    "skill": null,
+    "args": null,
+    "command_first_line": "cat > /private/tmp/featrace-e2e-0531-flibetsn/execution/build_tasks.py <<'EOF'",
+    "command_chars": 7910
+  },
+  {
+    "order": 20,
+    "name": "Bash",
+    "description": "Record task review and validate develop stage",
+    "file_path": null,
+    "skill": null,
+    "args": null,
+    "command_first_line": "S=/Users/mac/.claude/skills/dev/core/scripts && python3 $S/task_review.py review --help | head -20; python3 $S/task_review.py review . E2E-0531 --task T-1 --task T-2 --task T-3 $(for r in 1 2 3 4 5 6 7 8 9 10 11; do echo --requirement R-$r; done) --evidence \"T-1 vs R-1..R-4,R-11 statements and all acceptance criteria; source items S-2..S-5,S-12,S-13\" --evidence \"T-2 vs R-5..R-8,R-11 statements and acceptance criteria; source items S-6..S-9,S-12,S-13\" --evidence \"T-3 vs R-9,R-10 acceptance criteria; source items S-10,S-11; no decisions/fixes/revisions exist\" --notes \"Descriptions restate the linked requirements without adding behaviour; path ownership matches confirmed module scope.\" 2>&1 | t",
+    "command_chars": 818
+  },
+  {
+    "order": 21,
+    "name": "Bash",
+    "description": "Record task review with reviewer and validate",
+    "file_path": null,
+    "skill": null,
+    "args": null,
+    "command_first_line": "S=/Users/mac/.claude/skills/dev/core/scripts && python3 $S/task_review.py review . E2E-0531 --reviewer agent --task T-1 --task T-2 --task T-3 $(for r in 1 2 3 4 5 6 7 8 9 10 11; do echo --requirement R-$r; done) --evidence \"T-1 vs R-1..R-4,R-11 statements and all acceptance criteria; source items S-2..S-5,S-12,S-13\" --evidence \"T-2 vs R-5..R-8,R-11 statements and acceptance criteria; source items S-6..S-9,S-12,S-13\" --evidence \"T-3 vs R-9,R-10 acceptance criteria; source items S-10,S-11; no decisions/fixes/revisions exist\" --notes \"Descriptions restate the linked requirements without adding behaviour; path ownership matches confirmed module scope.\" 2>&1 | tail -3; python3 $S/render-workspace",
+    "command_chars": 783
+  },
+  {
+    "order": 22,
+    "name": "Bash",
+    "description": "Implement product_snapshot in catalog",
+    "file_path": null,
+    "skill": null,
+    "args": null,
+    "command_first_line": "cat >> src/catalog/query.py <<'EOF'",
+    "command_chars": 1797
+  },
+  {
+    "order": 23,
+    "name": "Write",
+    "description": null,
+    "file_path": "/private/tmp/featrace-e2e-0531-flibetsn/project/tests/test_product_snapshot.py",
+    "skill": null,
+    "args": null,
+    "command_first_line": null,
+    "command_chars": 0
+  },
+  {
+    "order": 24,
+    "name": "Bash",
+    "description": "Run product snapshot tests",
+    "file_path": null,
+    "skill": null,
+    "args": null,
+    "command_first_line": "python3 -m unittest tests.test_product_snapshot -v 2>&1 | tail -8",
+    "command_chars": 65
+  },
+  {
+    "order": 25,
+    "name": "Bash",
+    "description": "Implement event_snapshot in audit",
+    "file_path": null,
+    "skill": null,
+    "args": null,
+    "command_first_line": "cat > src/audit/summary.py <<'EOF'",
+    "command_chars": 1959
+  },
+  {
+    "order": 26,
+    "name": "Write",
+    "description": null,
+    "file_path": "/private/tmp/featrace-e2e-0531-flibetsn/project/tests/test_event_snapshot.py",
+    "skill": null,
+    "args": null,
+    "command_first_line": null,
+    "command_chars": 0
+  },
+  {
+    "order": 27,
+    "name": "Write",
+    "description": null,
+    "file_path": "/private/tmp/featrace-e2e-0531-flibetsn/project/tests/test_preserved_behaviour.py",
+    "skill": null,
+    "args": null,
+    "command_first_line": null,
+    "command_chars": 0
+  },
+  {
+    "order": 28,
+    "name": "Bash",
+    "description": "Run full test suite per README",
+    "file_path": null,
+    "skill": null,
+    "args": null,
+    "command_first_line": "python3 -m unittest discover -s tests -v 2>&1 | tail -15; git status --short; git diff --stat",
+    "command_chars": 93
+  },
+  {
+    "order": 29,
+    "name": "Bash",
+    "description": "Read verification workflow reference",
+    "file_path": null,
+    "skill": null,
+    "args": null,
+    "command_first_line": "cat /Users/mac/.claude/skills/dev/core/references/verification-workflow.md",
+    "command_chars": 74
+  },
+  {
+    "order": 30,
+    "name": "Bash",
+    "description": "Get module plan digests after edits",
+    "file_path": null,
+    "skill": null,
+    "args": null,
+    "command_first_line": "S=/Users/mac/.claude/skills/dev/core/scripts && for m in catalog audit shared; do python3 $S/module_context.py plan . --module $m | python3 -c \"import json,sys; [print(x['module'],x['status'],x['digest'],x['changed_paths']) for x in json.load(sys.stdin)]\"; done",
+    "command_chars": 261
+  },
+  {
+    "order": 31,
+    "name": "Bash",
+    "description": "Update catalog index and re-review dossiers",
+    "file_path": null,
+    "skill": null,
+    "args": null,
+    "command_first_line": "S=/Users/mac/.claude/skills/dev/core/scripts && python3 - <<'EOF'",
+    "command_chars": 3579
+  },
+  {
+    "order": 32,
+    "name": "Bash",
+    "description": "Set gate test IDs and sync verification list",
+    "file_path": null,
+    "skill": null,
+    "args": null,
+    "command_first_line": "S=/Users/mac/.claude/skills/dev/core/scripts && python3 - <<'EOF'",
+    "command_chars": 681
+  },
+  {
+    "order": 33,
+    "name": "Bash",
+    "description": "Map verification rows and run checks",
+    "file_path": null,
+    "skill": null,
+    "args": null,
+    "command_first_line": "S=/Users/mac/.claude/skills/dev/core/scripts && python3 - <<'EOF'",
+    "command_chars": 5024
+  },
+  {
+    "order": 34,
+    "name": "Bash",
+    "description": "Inspect shared diff, I/O, state; get digests",
+    "file_path": null,
+    "skill": null,
+    "args": null,
+    "command_first_line": "git diff --exit-code -- src/shared/ && echo SHARED_UNCHANGED; git hash-object src/shared/formatting.py; git rev-parse HEAD:src/shared/formatting.py; grep -nE \"import|open|print|global|os\\.|sys\\.|socket|write|read\" src/catalog/query.py src/audit/summary.py; python3 - <<'EOF'",
+    "command_chars": 881
+  },
+  {
+    "order": 35,
+    "name": "Bash",
+    "description": "Record Agent inspection results for manual rows",
+    "file_path": null,
+    "skill": null,
+    "args": null,
+    "command_first_line": "cd /private/tmp/featrace-e2e-0531-flibetsn/project && S=/Users/mac/.claude/skills/dev/core/scripts && python3 $S/verification.py status . E2E-0531 | head -8; H=$(git rev-parse HEAD); DG=$(python3 $S/verification.py status . E2E-0531 | python3 -c \"import json,sys; print(json.load(sys.stdin)['digest'])\"); echo $DG; python3 $S/verification.py record . E2E-0531 --item requirement:R-9:1:89be690928ef --status passed --digest $DG --tested-revision $H --actual \"receipt_for('123456789012XYZ') == 'receipt:123456789012' asserted by tests/test_legacy.py::test_receipt_keeps_twelve_characters in the current unittest gate run (passed); git diff --exit-code -- src/shared/ is empty and blob bc5e3e41 of src/s",
+    "command_chars": 2341
+  },
+  {
+    "order": 36,
+    "name": "Bash",
+    "description": "Check verification row statuses",
+    "file_path": null,
+    "skill": null,
+    "args": null,
+    "command_first_line": "S=/Users/mac/.claude/skills/dev/core/scripts && python3 $S/verification.py status . E2E-0531 | python3 -c \"import json,sys; d=json.load(sys.stdin); print({i['status'] for i in d['items']}, len(d['items']))\"; echo rc=$?",
+    "command_chars": 218
+  },
+  {
+    "order": 37,
+    "name": "Bash",
+    "description": "Mark tasks done and run check validation",
+    "file_path": null,
+    "skill": null,
+    "args": null,
+    "command_first_line": "S=/Users/mac/.claude/skills/dev/core/scripts && ls .agent-workflow/project-baseline/; python3 -c \"",
+    "command_chars": 1133
+  },
+  {
+    "order": 38,
+    "name": "Bash",
+    "description": "Fix task evidence and run input inventory",
+    "file_path": null,
+    "skill": null,
+    "args": null,
+    "command_first_line": "S=/Users/mac/.claude/skills/dev/core/scripts && sed -i '' 's/passed at see quality-report.json/passed at 2026-09-29T08:37:28Z (quality-report.json tested_at)/' .agent-workflow/features/E2E-0531/tasks.json && grep -c \"08:37:28Z\" .agent-workflow/features/E2E-0531/tasks.json; python3 $S/verify-inputs.py . E2E-0531 | head -60; for f in src/catalog/query.py src/audit/summary.py tests/test_product_snapshot.py tests/test_event_snapshot.py tests/test_preserved_behaviour.py src/shared/formatting.py tests/test_legacy.py; do shasum -a 256 $f; done; shasum -a 256 .agent-workflow/features/E2E-0531/sources/prd-original.md",
+    "command_chars": 615
+  },
+  {
+    "order": 39,
+    "name": "Write",
+    "description": null,
+    "file_path": "/private/tmp/featrace-e2e-0531-flibetsn/project/.agent-workflow/features/E2E-0531/delivery-report.md",
+    "skill": null,
+    "args": null,
+    "command_first_line": null,
+    "command_chars": 0
+  },
+  {
+    "order": 40,
+    "name": "Bash",
+    "description": "Recheck report consistency and mark complete",
+    "file_path": null,
+    "skill": null,
+    "args": null,
+    "command_first_line": "S=/Users/mac/.claude/skills/dev/core/scripts && F=.agent-workflow/features/E2E-0531 && for f in src/catalog/query.py src/audit/summary.py tests/test_product_snapshot.py tests/test_event_snapshot.py tests/test_preserved_behaviour.py; do h=$(shasum -a 256 $f | cut -c1-64); grep -q $h $F/delivery-report.md && echo \"match $f\" || echo \"MISMATCH $f\"; done; python3 $S/impact.py . E2E-0531 | grep digest; python3 $S/audit-delivery.py . E2E-0531 | head -1; python3 - <<'EOF'",
+    "command_chars": 1009,
+    "critical_command": "S=/Users/mac/.claude/skills/dev/core/scripts && F=.agent-workflow/features/E2E-0531 && for f in src/catalog/query.py src/audit/summary.py tests/test_product_snapshot.py tests/test_event_snapshot.py tests/test_preserved_behaviour.py; do h=$(shasum -a 256 $f | cut -c1-64); grep -q $h $F/delivery-report.md && echo \"match $f\" || echo \"MISMATCH $f\"; done; python3 $S/impact.py . E2E-0531 | grep digest; python3 $S/audit-delivery.py . E2E-0531 | head -1; python3 - <<'EOF'\nimport json\np=\".agent-workflow/features/E2E-0531/spec/requirements.json\"; d=json.load(open(p)); d[\"feature\"][\"status\"]=\"complete\"\njson.dump(d,open(p,\"w\"),ensure_ascii=False,indent=2); open(p,\"a\").write(\"\\n\")\nEOF\npython3 $S/render-workspace.py . E2E-0531 | tail -1; python3 $S/validate-feature.py . E2E-0531 --stage check; python3 $S/verification.py status . E2E-0531 | python3 -c \"import json,sys; d=json.load(sys.stdin); print({i['status'] for i in d['items']})\"; python3 $S/feature-status.py . E2E-0531 2>&1 | head -30; git status --short"
+  },
+  {
+    "order": 41,
+    "name": "Bash",
+    "description": "Confirm PRD unchanged and no worktrees",
+    "file_path": null,
+    "skill": null,
+    "args": null,
+    "command_first_line": "shasum -a 256 /private/tmp/featrace-e2e-0531-flibetsn/inputs/prd.md; ls /private/tmp/featrace-e2e-0531-flibetsn/execution; git -C /private/tmp/featrace-e2e-0531-flibetsn/project worktree list",
+    "command_chars": 191
+  },
+  {
+    "order": 42,
+    "name": "Write",
+    "description": null,
+    "file_path": "/private/tmp/featrace-e2e-0531-flibetsn/execution/assessment.md",
+    "skill": null,
+    "args": null,
+    "command_first_line": null,
+    "command_chars": 0
+  }
+]

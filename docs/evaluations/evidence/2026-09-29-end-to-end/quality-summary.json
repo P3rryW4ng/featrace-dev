@@ -1,0 +1,76 @@
+{
+  "profile": null,
+  "tested_at": "2026-09-29T08:37:28.067005+00:00",
+  "git_head": null,
+  "project_snapshot": {
+    "version": 2,
+    "evidence": {
+      "AGENTS.md": null,
+      "CLAUDE.md": null,
+      "README.md": "b4eee21ad1d56fec3479c8dbdcb3ad1e4f10b8757fbabd1f3eca324540875f1c",
+      "src/audit/summary.py": "9f1813a930d1f1cbac23973f3a340a88c27d12945ef069069b877c2798bb85ee",
+      "src/catalog/query.py": "fc0fb11aeea028ce468c43d0dc8853c631e6452a4892b62a7632edb64bf2364a",
+      "src/shared/formatting.py": "7187d9a43067940964b815fe786408b7e7c20a275abf3ffc8fd80c27fe1cdef9",
+      "tests/test_legacy.py": "76490a70ca4126fef12c0d1d2b55e7ecb38859fe949e623c4e9fe7b7a2cb8b0c"
+    },
+    "profile": "generic",
+    "git_head": "aa4eab00f5f85fa103b7b94345a7c071a6d05a2d",
+    "files": {}
+  },
+  "passed": null,
+  "status": null,
+  "results": [
+    {
+      "name": "unittest",
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-v"
+      ],
+      "test_ids": [
+        "tests.test_product_snapshot.ProductSnapshotTests.test_result_shape_and_input_order",
+        "tests.test_product_snapshot.ProductSnapshotTests.test_duplicate_ids_are_kept",
+        "tests.test_product_snapshot.ProductSnapshotTests.test_invalid_id",
+        "tests.test_product_snapshot.ProductSnapshotTests.test_invalid_name",
+        "tests.test_product_snapshot.ProductSnapshotTests.test_invalid_active_rejects_int",
+        "tests.test_product_snapshot.ProductSnapshotTests.test_invalid_category",
+        "tests.test_product_snapshot.ProductSnapshotTests.test_invalid_price_forms",
+        "tests.test_product_snapshot.ProductSnapshotTests.test_first_error_only",
+        "tests.test_product_snapshot.ProductSnapshotTests.test_decimal_context_unchanged",
+        "tests.test_product_snapshot.ProductSnapshotTests.test_inactive_valid_item_skipped",
+        "tests.test_product_snapshot.ProductSnapshotTests.test_category_exact_filter",
+        "tests.test_product_snapshot.ProductSnapshotTests.test_invalid_items_reported_despite_filters",
+        "tests.test_product_snapshot.ProductSnapshotTests.test_label_and_price_example",
+        "tests.test_product_snapshot.ProductSnapshotTests.test_empty_name_and_zero_price",
+        "tests.test_product_snapshot.ProductSnapshotTests.test_output_keys_exact",
+        "tests.test_event_snapshot.EventSnapshotTests.test_result_shape_order_and_counts",
+        "tests.test_event_snapshot.EventSnapshotTests.test_invalid_id",
+        "tests.test_event_snapshot.EventSnapshotTests.test_invalid_kind",
+        "tests.test_event_snapshot.EventSnapshotTests.test_invalid_timestamp_forms",
+        "tests.test_event_snapshot.EventSnapshotTests.test_first_error_only",
+        "tests.test_event_snapshot.EventSnapshotTests.test_window_inclusive_bounds",
+        "tests.test_event_snapshot.EventSnapshotTests.test_out_of_window_not_errors",
+        "tests.test_event_snapshot.EventSnapshotTests.test_single_sided_bounds",
+        "tests.test_event_snapshot.EventSnapshotTests.test_invalid_or_out_of_window_does_not_claim_id",
+        "tests.test_event_snapshot.EventSnapshotTests.test_later_duplicate_ignored_even_other_kind",
+        "tests.test_legacy.LegacyTests.test_receipt_keeps_twelve_characters",
+        "tests.test_preserved_behaviour.PreservedBehaviourTests.test_receipt_not_shortened_by_label",
+        "tests.test_legacy.LegacyTests.test_all_ids_keeps_order_and_duplicates",
+        "tests.test_legacy.LegacyTests.test_legacy_summary_counts_duplicates",
+        "tests.test_preserved_behaviour.PreservedBehaviourTests.test_legacy_functions_unchanged_alongside_snapshots",
+        "tests.test_product_snapshot.ProductSnapshotTests.test_no_mutation_and_repeatable",
+        "tests.test_product_snapshot.ProductSnapshotTests.test_missing_fields_and_extras",
+        "tests.test_event_snapshot.EventSnapshotTests.test_no_mutation_and_repeatable",
+        "tests.test_event_snapshot.EventSnapshotTests.test_missing_fields_and_extras"
+      ],
+      "returncode": 0,
+      "status": "passed",
+      "stdout": "",
+      "stderr": "test_first_error_only (test_event_snapshot.EventSnapshotTests) ... ok\ntest_invalid_id (test_event_snapshot.EventSnapshotTests) ... ok\ntest_invalid_kind (test_event_snapshot.EventSnapshotTests) ... ok\ntest_invalid_or_out_of_window_does_not_claim_id (test_event_snapshot.EventSnapshotTests) ... ok\ntest_invalid_timestamp_forms (test_event_snapshot.EventSnapshotTests) ... ok\ntest_later_duplicate_ignored_even_other_kind (test_event_snapshot.EventSnapshotTests) ... ok\ntest_missing_fields_and_extras (test_event_snapshot.EventSnapshotTests) ... ok\ntest_no_mutation_and_repeatable (test_event_snapshot.EventSnapshotTests) ... ok\ntest_out_of_window_not_errors (test_event_snapshot.EventSnapshotTests) ... ok\ntest_result_shape_order_and_counts (test_event_snapshot.EventSnapshotTests) ... ok\ntest_single_sided_bounds (test_event_snapshot.EventSnapshotTests) ... ok\ntest_window_inclusive_bounds (test_event_snapshot.EventSnapshotTests) ... ok\ntest_all_ids_keeps_order_and_duplicates (test_legacy.LegacyTests) ... ok\ntest_legacy_summary_counts_duplicates (test_legacy.LegacyTests) ... ok\ntest_receipt_keeps_twelve_characters (test_legacy.LegacyTests) ... ok\ntest_short_receipt_keeps_content (test_legacy.LegacyTests) ... ok\ntest_legacy_functions_unchanged_alongside_snapshots (test_preserved_behaviour.PreservedBehaviourTests) ... ok\ntest_receipt_not_shortened_by_label (test_preserved_behaviour.PreservedBehaviourTests) ... ok\ntest_category_exact_filter (test_product_snapshot.ProductSnapshotTests) ... ok\ntest_decimal_context_unchanged (test_product_snapshot.ProductSnapshotTests) ... ok\ntest_duplicate_ids_are_kept (test_product_snapshot.ProductSnapshotTests) ... ok\ntest_empty_name_and_zero_price (test_product_snapshot.ProductSnapshotTests) ... ok\ntest_first_error_only (test_product_snapshot.ProductSnapshotTests) ... ok\ntest_inactive_valid_item_skipped (test_product_snapshot.ProductSnapshotTests) ... ok\ntest_invalid_active_rejects_int (test_product_snapshot.ProductSnapshotTests) ... ok\ntest_invalid_category (test_product_snapshot.ProductSnapshotTests) ... ok\ntest_invalid_id (test_product_snapshot.ProductSnapshotTests) ... ok\ntest_invalid_items_reported_despite_filters (test_product_snapshot.ProductSnapshotTests) ... ok\ntest_invalid_name (test_product_snapshot.ProductSnapshotTests) ... ok\ntest_invalid_price_forms (test_product_snapshot.ProductSnapshotTests) ... ok\ntest_label_and_price_example (test_product_snapshot.ProductSnapshotTests) ... ok\ntest_missing_fields_and_extras (test_product_snapshot.ProductSnapshotTests) ... ok\ntest_no_mutation_and_repeatable (test_product_snapshot.ProductSnapshotTests) ... ok\ntest_output_keys_exact (test_product_snapshot.ProductSnapshotTests) ... ok\ntest_result_shape_and_input_order (test_product_snapshot.ProductSnapshotTests) ... ok\n\n----------------------------------------------------------------------\nRan 35 tests in 0.001s\n\nOK\n"
+    }
+  ]
+}

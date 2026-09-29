@@ -1,0 +1,144 @@
+{
+  "source_version": "0.5.31",
+  "personal_native_entry": {
+    "order": 1,
+    "name": "Skill",
+    "input": {
+      "skill": "dev",
+      "args": "prd /private/tmp/featrace-e2e-0531-flibetsn/inputs/prd.md --feature E2E-0531"
+    }
+  },
+  "execution": {
+    "exit_code": 0,
+    "elapsed_seconds": 474.293
+  },
+  "cli_result": {
+    "subtype": "success",
+    "is_error": false,
+    "duration_ms": 472788,
+    "duration_api_ms": 464198,
+    "total_cost_usd": 2.637268,
+    "num_turns": 44,
+    "usage": {
+      "input_tokens": 80,
+      "cache_creation_input_tokens": 126436,
+      "cache_read_input_tokens": 3310300,
+      "output_tokens": 48170,
+      "output_tokens_details": {
+        "thinking_tokens": 5822
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 126436,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "not_available",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 917,
+          "cache_read_input_tokens": 130671,
+          "cache_creation_input_tokens": 2126,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 2126
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard"
+    },
+    "result": "E2E-0531 is delivered and the feature is marked `complete` in the project records. The code is not committed, as you asked. I used the installed personal `dev` Skill, version 0.5.31, and hit no blockers.\n\n**What was added**\n- `product_snapshot` in `src/catalog/query.py`.\n- `event_snapshot` in `src/audit/summary.py`.\n- Three new test files: product snapshot, event snapshot, and a check that the old behaviour is unchanged.\n- `src/shared/formatting.py` and `tests/test_legacy.py` were not touched.\n\n**Route taken:** Requirement → Scope → Build → Verify → Deliver.\n- **Requirement:** the PRD was copied unchanged into the project and turned into 11 requirements. No API or Figma input applies, and no product decisions were needed.\n- **Scope:** the capability `local-query-snapshot` uses your roles: catalog and audit each own their snapshot, shared provides the receipt formatter. There were no earlier recorded fixes to recheck.\n- **Build:** done in one context, no parallel workers or worktrees. The two pieces were independent, but each is one small function, so a parallel pair wasn't worth the setup.\n\n**Checks**\n- The README test command (`python3 -m unittest discover -s tests -v`) ran 35 tests and all passed, including the 4 original legacy tests.\n- The verification checklist has 35 rows, all passed. 33 are covered by the unit tests.\n- I checked the other 2 myself by reading the code: the shared formatter file is identical to the committed version, and neither new function does any I/O or keeps state between calls. They're recorded as my inspection, not as your confirmation.\n- The Skill's final validation and delivery audit both passed.\n\n**Things to know**\n- **Workflow records stay local:** the project's root `.gitignore` excludes `.agent-workflow/`, so these records won't go into Git. The Skill flagged this; I left the file as it is.\n- **Choices the PRD doesn't cover:**\n  - Year `0000` and a 60th second (leap second) count as invalid timestamps.\n  - Prices are formatted with plain string handling, so the caller's decimal settings are never touched.\n- **Test naming:** test IDs in the records carry a `tests.` prefix that the test runner's output leaves out. Both refer to the same tests.\n- **Review:** I wrote the requirements and reviews myself. The Skill's validators check structure, not meaning, and no independent review was run.\n\nFiles are in `/private/tmp/featrace-e2e-0531-flibetsn`:\n- project/.agent-workflow/features/E2E-0531/delivery-report.md — the project delivery report\n- execution/assessment.md — the evaluation summary you asked for"
+  },
+  "installed_unchanged": true,
+  "prd_unchanged": true,
+  "copied_prd_matches": true,
+  "head_unchanged": true,
+  "staged_unchanged": true,
+  "legacy_file_unchanged": true,
+  "shared_file_unchanged": true,
+  "legacy_functions_ast_preserved": {
+    "src/catalog/query.py": true,
+    "src/audit/summary.py": true
+  },
+  "changed_project_files": [
+    ".agent-workflow/.baseline.lock",
+    ".agent-workflow/.gitignore",
+    ".agent-workflow/features/E2E-0531/decisions.json",
+    ".agent-workflow/features/E2E-0531/decisions.md",
+    ".agent-workflow/features/E2E-0531/delivery-report.md",
+    ".agent-workflow/features/E2E-0531/fixes.json",
+    ".agent-workflow/features/E2E-0531/fixes.md",
+    ".agent-workflow/features/E2E-0531/impact.json",
+    ".agent-workflow/features/E2E-0531/impact.md",
+    ".agent-workflow/features/E2E-0531/regression-review.json",
+    ".agent-workflow/features/E2E-0531/regression-review.md",
+    ".agent-workflow/features/E2E-0531/sources/prd-original.md",
+    ".agent-workflow/features/E2E-0531/spec/prd-analysis.md",
+    ".agent-workflow/features/E2E-0531/spec/prd-intake.json",
+    ".agent-workflow/features/E2E-0531/spec/requirements.json",
+    ".agent-workflow/features/E2E-0531/spec/spec.md",
+    ".agent-workflow/features/E2E-0531/task-review.json",
+    ".agent-workflow/features/E2E-0531/task-review.md",
+    ".agent-workflow/features/E2E-0531/tasks.json",
+    ".agent-workflow/features/E2E-0531/tasks.md",
+    ".agent-workflow/features/E2E-0531/traceability.json",
+    ".agent-workflow/features/E2E-0531/traceability.md",
+    ".agent-workflow/features/E2E-0531/verification.json",
+    ".agent-workflow/features/E2E-0531/verification.md",
+    ".agent-workflow/modules/audit.json",
+    ".agent-workflow/modules/audit.md",
+    ".agent-workflow/modules/catalog.json",
+    ".agent-workflow/modules/catalog.md",
+    ".agent-workflow/modules/drafts/audit.json",
+    ".agent-workflow/modules/drafts/catalog.json",
+    ".agent-workflow/modules/drafts/scope-E2E-0531.json",
+    ".agent-workflow/modules/drafts/shared.json",
+    ".agent-workflow/modules/graph.json",
+    ".agent-workflow/modules/graph.md",
+    ".agent-workflow/modules/index.json",
+    ".agent-workflow/modules/index.md",
+    ".agent-workflow/modules/shared.json",
+    ".agent-workflow/modules/shared.md",
+    ".agent-workflow/project-baseline/architecture.md",
+    ".agent-workflow/project-baseline/conventions.md",
+    ".agent-workflow/project-baseline/coverage.md",
+    ".agent-workflow/project-baseline/evidence-files.json",
+    ".agent-workflow/project-baseline/examples.md",
+    ".agent-workflow/project-baseline/fingerprint.json",
+    ".agent-workflow/project-baseline/inventory.md",
+    ".agent-workflow/project-baseline/quality-gates.json",
+    ".agent-workflow/project-baseline/quality-report.json",
+    "src/audit/summary.py",
+    "src/catalog/query.py",
+    "tests/test_event_snapshot.py",
+    "tests/test_preserved_behaviour.py",
+    "tests/test_product_snapshot.py"
+  ],
+  "native_tool_calls": 42,
+  "agent_calls": 0,
+  "feature_status": "complete",
+  "requirements": 11,
+  "task_count": 3,
+  "delivery_write_calls": [
+    39
+  ],
+  "delivery_full_read_calls": [],
+  "complete_update_calls": [
+    40
+  ],
+  "build_strategy_reference_loaded": true,
+  "maintenance_suite_exit": 0,
+  "maintenance_readonly_exits": {
+    "validate-feature.py": 0,
+    "audit-delivery.py": 0,
+    "verification.py": 0,
+    "module_context.py": 0
+  },
+  "independent_contract_output": "independent-contract-check.txt",
+  "workflow_result": "incomplete_adoption: report full reread skipped; functional contract checks passed"
+}
