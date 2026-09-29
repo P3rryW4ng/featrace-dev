@@ -1,5 +1,14 @@
 # FeatraceDev 项目维护总览与交接
 
+## 0.5.29 已推送、安装与个人入口核对（2026-09-29）
+
+实现与验证提交`22de575`已推送origin/main；本机`/Users/mac/.claude/skills/dev`已更新0.5.29，74个运行文件与源码及安装标记SHA-256一致。旧0.5.28完整备份：`/Users/mac/.feature-delivery/backups/20260929T063825-claude-efc77969`。
+
+全新Claude会话实际通过原生Skill工具调用个人`dev help develop`，读取安装标记、command-help、build-strategy及parallel-build；正确说明失败/阻塞/缺失/无效/过期返回直接停止，不把普通接续当负向探针。退出0、29.541秒、CLI标价估计0.302168美元，只有Skill/读取/检索调用，零Agent、项目写入或测试，安装文件前后不变。见[个人安装与入口证据](docs/evaluations/evidence/2026-09-29-claude-0529-install.json)。
+
+GAP-20最小规则补强已发布；真正的停止采用仍以之前临时当前返回阶段演练为依据，个人帮助核对不冒充完整链重跑。三个Skill格式检查、72个归档证据哈希及差异校验通过；无运行Python脚本变化，未重复既有267项测试。下一步在自然需求中测时间、返工、人工介入和成本，暂不扩大并发/调度；下方未发布或旧安装描述保留当时快照。
+
+
 ## 2026-09-29：PRD漂移与Worker越界边界复检
 
 当前0.5.29临时原生入口两项接续通过：PRD在正式ready返回后追加规则，preflight拒绝且Claude停止；T-UP返回后修改peer-owned lower.py，主输入仍current但integrate诊断探针拒绝，Claude独立核对当前代码后停止。原ready记录保留却不再可采用，零集成/重试/单独采用/完成提升，故障现场及个人安装不变。另一个首次finish越界探针记failed、未运行测试，原改动保留。见[边界复检](docs/evaluations/2026-09-29-build-boundaries.md)。
@@ -72,9 +81,9 @@
 
 ## 当前目标与版本
 
-产品名 **FeatraceDev**，仓库名 `featrace-dev`，本地路径 `/Users/mac/Entrepôt/featrace-dev`。品牌理念为 Feature · Trace · Delivery，作者署名为 Created by Perry Wang。0.5.22 完成品牌与双语 README 迁移；运行入口仍为 dev，安装器兼容旧身份。2026-09-29 本机 Claude Code 已更新至 0.5.28，安装器保留旧版备份。
+产品名 **FeatraceDev**，仓库名 `featrace-dev`，本地路径 `/Users/mac/Entrepôt/featrace-dev`。品牌理念为 Feature · Trace · Delivery，作者署名为 Created by Perry Wang。0.5.22 完成品牌与双语 README 迁移；运行入口仍为 dev，安装器兼容旧身份。2026-09-29 本机 Claude Code 已更新至 0.5.29，安装器保留旧版备份。
 
-当前源码 [VERSION](VERSION) 为 **0.5.29（本轮未提交、推送或安装）**；此前发布0.5.28实现提交 `e85608f` 已推送。本机 Claude Code 为 **0.5.28**，74 个运行文件与0.5.28发布源码及安装标记 SHA-256 一致，个人原生 /dev 发现核对通过，包含 Build 与 Verify 专业说明。第一阶段已完成，第二阶段最小变更管理已落地，但完整来源权威、动态运行时调用图、自动影响传播与普遍可靠的自主交付尚未实现。可选独立 Verify 和两任务隔离 Build 均依赖宿主能力；0.5.28 在 Scope 后按证据自动选择串行或两个 Worker，依据不足则串行，禁止子 Agent 的用户约束优先。运行 Skill 名为 dev；唯一源码权威是 skills/dev，安装目录只是副本。
+当前发布源码 [VERSION](VERSION) 为 **0.5.29**，实现提交 `22de575` 已推送。本机 Claude Code 为 **0.5.29**，74 个运行文件与发布源码及安装标记 SHA-256 一致，个人原生dev调用与新版规则读取核对通过，包含 Build 与 Verify 专业说明。第一阶段已完成，第二阶段最小变更管理已落地，但完整来源权威、动态运行时调用图、自动影响传播与普遍可靠的自主交付尚未实现。可选独立 Verify 和两任务隔离 Build 均依赖宿主能力；0.5.28 在 Scope 后按证据自动选择串行或两个 Worker，依据不足则串行，禁止子 Agent 的用户约束优先。运行 Skill 名为 dev；唯一源码权威是 skills/dev，安装目录只是副本。
 
 0.5.18 修复追溯 Markdown 渲染：旧生成器漏读 `links[].tasks`。独立复核 OGFR-2577 确认共享切图消费者遗漏，也出现了两处与隔离副本事实不符的断言；用户后续目视查看未见异常。暂不改变该业务需求的归档/验收结论，不据此启动六 Skill 拆分。依据与局限见[本次审查](docs/reviews/2026-09-24-ogfr2577-independent-verify.md)。下一轮 Verify 对照按[试验协议](docs/evaluations/verify-comparison-protocol.md)执行。
 

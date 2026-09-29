@@ -1,5 +1,14 @@
 # 开发路线图与阶段计划
 
+## 0.5.29 已推送、安装与个人入口核对（2026-09-29）
+
+实现与验证提交`22de575`已推送origin/main；本机`/Users/mac/.claude/skills/dev`已更新0.5.29，74个运行文件与源码及安装标记SHA-256一致。旧0.5.28完整备份：`/Users/mac/.feature-delivery/backups/20260929T063825-claude-efc77969`。
+
+全新Claude会话实际通过原生Skill工具调用个人`dev help develop`，读取安装标记、command-help、build-strategy及parallel-build；正确说明失败/阻塞/缺失/无效/过期返回直接停止，不把普通接续当负向探针。退出0、29.541秒、CLI标价估计0.302168美元，只有Skill/读取/检索调用，零Agent、项目写入或测试，安装文件前后不变。见[个人安装与入口证据](docs/evaluations/evidence/2026-09-29-claude-0529-install.json)。
+
+GAP-20最小规则补强已发布；真正的停止采用仍以之前临时当前返回阶段演练为依据，个人帮助核对不冒充完整链重跑。三个Skill格式检查、72个归档证据哈希及差异校验通过；无运行Python脚本变化，未重复既有267项测试。下一步在自然需求中测时间、返工、人工介入和成本，暂不扩大并发/调度；下方未发布或旧安装描述保留当时快照。
+
+
 ## 2026-09-29：PRD漂移与Worker越界边界复检
 
 当前0.5.29临时原生入口两项接续通过：PRD在正式ready返回后追加规则，preflight拒绝且Claude停止；T-UP返回后修改peer-owned lower.py，主输入仍current但integrate诊断探针拒绝，Claude独立核对当前代码后停止。原ready记录保留却不再可采用，零集成/重试/单独采用/完成提升，故障现场及个人安装不变。另一个首次finish越界探针记failed、未运行测试，原改动保留。见[边界复检](docs/evaluations/2026-09-29-build-boundaries.md)。
@@ -139,7 +148,7 @@ PRD 表达差异样例已在 0.4.8 使用单模型独立上下文完成 8/8 语�
 | 5 | 用户已授权；0.5.25 两任务隔离 Build 原型已实现并完成合成演练 | 同一专业 Skill 由两个独立 Agent 使用；精确归属、输入绑定、两工作区与第三集成候选；不自动应用到主项目、不写共享记录。正常集成、冲突、失败和过期已获合成验证，见[原型记录](docs/evaluations/2026-09-28-parallel-build-pilot.md)；实现提交 `87214d0` 已推送，个人 Claude 安装 0.5.25、73 文件哈希一致；Claude 目标演练完成，正常原生派发/集成及内部失败停止有证据；Scope 前置规则加载不完整，先做接续补强与窄范围复检，再做真实成本对照 |
 | 6 | 0.5.26 Scope 接续已实施：23 项目标 / 267 项完整回归及临时 Claude 规则采用复检通过 | 缺 review 只读停止；齐全时两 Agent 和候选 2/2 通过，夹具缺标题也被拦住；见[接续记录](docs/evaluations/2026-09-28-parallel-scope-handoff.md)。实现提交 `c794152` 已推送，个人安装 0.5.26、73 文件一致；原生 /dev help 及2026-09-29已安装两路径隔离复检通过（缺项零派发、齐全两Agent/集成4项通过）；见[原生记录](docs/evaluations/2026-09-29-claude-0526-native-build.md)。候选不等于交付。随后自然需求测成本，不增加通用调度或全面预加载 |
 | 7 | 0.5.27 顺序提示已补强，单 Worker 窄复检通过 | 实际工具轨迹确认编辑与diff成功返回后才单独finish，任务单测1/1，证据绑定一致；见[复检](docs/evaluations/2026-09-29-worker-sequence.md)。已随0.5.28提交推送及安装，个人入口发现核对通过。下一步用自然需求测收益；不新增宿主锁或通用调度 |
-| 8 | 0.5.29停止规则及两个失效边界已完成返回阶段隔离复检；待发布 | PRD漂移和Worker越界均由实际原生Skill接续停止，旧证据/故障现场保留；首次finish越界也拒绝。见[边界证据](docs/evaluations/2026-09-29-build-boundaries.md)。未跑个人入口新版完整链；不以合成演练宣布真实收益 |
+| 8 | 0.5.29停止规则及两个失效边界已完成返回阶段隔离复检，并已发布安装 | PRD漂移和Worker越界均由实际原生Skill接续停止，旧证据/故障现场保留；首次finish越界也拒绝。见[边界证据](docs/evaluations/2026-09-29-build-boundaries.md)。未跑个人入口新版完整链；不以合成演练宣布真实收益 |
 
 没有新业务需求不阻止前三项和隔离测量；但默认启用独立 Verify、扩大拆分范围或声称收益，仍须真实需求对照。阶段推进依据是可验证交付与可接受成本，不是拆出的 Skill 数量。本次用户已授权两任务原型开发与合成演练；队列本身不授权自动提交、安装、真实项目并行或进一步扩展，具体动作按用户请求执行。
 
@@ -177,7 +186,7 @@ GAP-01/02 契约补强已完成，GAP-03 与 GAP-16/17 已发布并完成隔离�
 | GAP-17 失效回归结论未在记录内留史 | 0.5.12 已修正，目标/全量回归及端到端隔离复检通过 | changed/removed 候选将旧 disposition/result 与候选快照移入只读 history；历史项不满足当前门禁；已覆盖保留、幂等、移除、损坏历史拒绝及 Agent 同步场景 |
 | GAP-18 未知目标使候选图整批丢失 | 0.5.21 已发布并安装；待安装版 Agent 复检 | 读取器接受有来源缺口的未知目标，两个生成视图保留待审节点、虚线边和原缺口；该项最初目标回归 21/21、完整 224/224 通过，加入 GAP-19 回归后完整 227/227 通过。同一隔离 Gradle 声明副本复测 166 条候选边和 21 条缺口均入正式图。未自动确认未知模块；发布后再观察真实 Agent 阅读与目录采用。证据见[演练记录](docs/reviews/2026-09-24-natural-scope-rehearsal.md)和[验证记录](docs/validation.md) |
 | GAP-19 条件依赖被压成无条件目录边 | 0.5.21 最小修正已发布并安装；待安装版 Agent 复检 | 对可识别的 `add("${flavor}Implementation", project(...))` 保留条件候选；仅条件声明却登记无条件 `depends_on` 时，关系图/扫描发布拒绝。隔离 Gradle 声明副本已复现拒绝和修正后保留虚线条件边。动态表达式覆盖率和 Agent 实际纠正行为仍待验证；不扩展成通用 Gradle 解析器。证据见[验证记录](docs/validation.md) |
-| GAP-20 失败后仍调用集成探针 | 0.5.29规则补强；返回阶段隔离采用通过，待发布/个人入口观察 | failed/blocked/missing/invalid/stale直接停止，不调用integrate验证拒绝。新当前failed+ready夹具接续零集成，保留双方证据；无新版完整派发或个人入口重测。见[窄复检](docs/evaluations/2026-09-29-gap20-return-gate.md)，原[失败演练](docs/evaluations/2026-09-29-worker-failure.md)保留 |
+| GAP-20 失败后仍调用集成探针 | 0.5.29最小规则已发布；临时返回阶段采用与个人入口读取通过 | failed/blocked/missing/invalid/stale直接停止，不调用integrate验证拒绝。新当前failed+ready夹具接续零集成，保留双方证据；无新版完整派发或个人入口重测。见[窄复检](docs/evaluations/2026-09-29-gap20-return-gate.md)，原[失败演练](docs/evaluations/2026-09-29-worker-failure.md)保留 |
 
 库模块 Gradle 任务名推测错误归入项目门禁发现/选择摩擦，不新建通用 schema 缺陷。“一句话 + Figma”轻量 intake 作为 GAP-06 成本优化候选，先测量可安全自动生成的字段，不直接删除证据链。
 
