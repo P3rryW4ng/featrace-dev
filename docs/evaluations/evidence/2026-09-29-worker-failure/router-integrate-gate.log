@@ -1,0 +1,2 @@
+PARALLEL_BUILD_ERROR: task failed/blocked or result does not match the attempt: T-UP
+integrate exit=1

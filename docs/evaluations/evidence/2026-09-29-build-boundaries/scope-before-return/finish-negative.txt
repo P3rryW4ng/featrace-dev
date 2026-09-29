@@ -1,0 +1,8 @@
+{
+  "run_digest": "0b52b608365f69d65f27ef854ffcef0f07ff6a186801a4f8076406d02a0e3629",
+  "task_id": "T-UP",
+  "status": "failed",
+  "summary": "Maintainer negative scope probe before first return.",
+  "checks": [],
+  "error": "worker scope expansion: lower.py, upper.py"
+}

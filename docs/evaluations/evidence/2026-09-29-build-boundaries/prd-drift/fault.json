@@ -1,0 +1,6 @@
+{
+  "path": "/private/tmp/featrace-boundaries-0529-9g1bi_gu/prd-drift/project/.agent-workflow/features/FEAT-001/sources/prd-original.txt",
+  "before_sha256": "2d00bc9642c845782a28369dc79baa26d5cdd5aa018b0df9046fe746561ae2e3",
+  "after_sha256": "77ce612869d174e9329ba7b9c532e97dfc3faea93fbf9cc2940dbe415f622d70",
+  "stage": "after both genuine ready returns"
+}

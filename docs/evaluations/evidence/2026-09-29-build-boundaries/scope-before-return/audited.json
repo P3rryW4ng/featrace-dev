@@ -1,0 +1,10 @@
+{
+  "finish_exit": 1,
+  "status": "failed",
+  "error": "worker scope expansion: lower.py, upper.py",
+  "workspace_preserved": true,
+  "checks": [],
+  "result_present": true,
+  "patch_present": false,
+  "integration_present": false
+}

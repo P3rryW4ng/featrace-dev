@@ -1,0 +1,126 @@
+{
+  "project_unchanged": true,
+  "attempt_unchanged": true,
+  "original_project_unchanged": true,
+  "original_attempt_unchanged": true,
+  "personal_unchanged": true,
+  "runtime_unchanged": true,
+  "head_unchanged": true,
+  "staged_unchanged": true,
+  "preflight_current": true,
+  "returns": {
+    "T-UP": {
+      "status": "failed",
+      "checks": [
+        {
+          "command": [
+            "/Library/Developer/CommandLineTools/usr/bin/python3",
+            "/private/tmp/featrace-gap20-replay-0529-orwgp4u6/approved-check.py",
+            "--task",
+            "T-UP"
+          ],
+          "status": "failed",
+          "returncode": 1,
+          "log": "check-0.log",
+          "log_sha256": "b3960f2171b515ac614040f9363cde7e0a9a20fe246315cd67777a4f61f17d97"
+        }
+      ],
+      "logs_bound": true,
+      "patch_bound": true,
+      "worker_state_bound": true
+    },
+    "T-LOW": {
+      "status": "ready",
+      "checks": [
+        {
+          "command": [
+            "/Library/Developer/CommandLineTools/usr/bin/python3",
+            "/private/tmp/featrace-gap20-replay-0529-orwgp4u6/approved-check.py",
+            "--task",
+            "T-LOW"
+          ],
+          "status": "passed",
+          "returncode": 0,
+          "log": "check-0.log",
+          "log_sha256": "ca36062972468f10e1e9a0633d99f8d89532780f37b5844c62c8d9e108e7cb9c"
+        }
+      ],
+      "logs_bound": true,
+      "patch_bound": true,
+      "worker_state_bound": true
+    }
+  },
+  "integration_directory_exists": false,
+  "integration_report_exists": false,
+  "tool_calls": [
+    {
+      "event": 3,
+      "tool": "Bash",
+      "description": "List workspace, plugin layout and skill files",
+      "id": "toolu_01Wppfk3NiaD84G4FstTLAXZ"
+    },
+    {
+      "event": 9,
+      "tool": "Bash",
+      "description": "Show manifest and parallel-build reference",
+      "id": "toolu_01CvmVzhc56HCXFeAG2eg2ns"
+    },
+    {
+      "event": 11,
+      "tool": "Bash",
+      "description": "Show build-strategy reference",
+      "id": "toolu_013WC84eNT8wx7B5wDwFxwu7"
+    },
+    {
+      "event": 15,
+      "tool": "Bash",
+      "description": "List attempt tree and show run.json",
+      "id": "toolu_0146LwUTuHB6au99verFb7tU"
+    },
+    {
+      "event": 17,
+      "tool": "Bash",
+      "description": "Show both returns: result, check log, patch",
+      "id": "toolu_01T9hjtFYXsDhyPDqhsc5hzQ"
+    },
+    {
+      "event": 23,
+      "tool": "Bash",
+      "description": "Read-only worker/primary status and hash comparison",
+      "id": "toolu_018kdsngSWawiWGwBFBG5reJ"
+    },
+    {
+      "event": 43,
+      "tool": "Bash",
+      "description": "Compare frozen inputs to run.json and check personal install version",
+      "id": "toolu_01SQFfRKg5TiZdE1iWt4SAkT"
+    },
+    {
+      "event": 48,
+      "tool": "Bash",
+      "description": "Locate personal dev install and its version marker",
+      "id": "toolu_01EgwNeDE88qEkpB5Co51NyQ"
+    },
+    {
+      "event": 50,
+      "tool": "Write",
+      "description": "assessment write",
+      "id": "toolu_01UsABeBD5xFbAuXogaXJyFu"
+    }
+  ],
+  "cost_usd": 0.45113660000000005,
+  "execution": {
+    "exit_code": 0,
+    "elapsed_seconds": 65.001
+  },
+  "integrate_calls": [],
+  "mutating_helper_calls": [],
+  "agent_calls": [],
+  "native_plugin": {
+    "name": "featrace-gap20",
+    "path": "/private/tmp/featrace-gap20-replay-0529-orwgp4u6/plugin",
+    "source": "featrace-gap20@inline",
+    "version": "0.5.29"
+  },
+  "native_entry": "featrace-gap20:dev"
+}

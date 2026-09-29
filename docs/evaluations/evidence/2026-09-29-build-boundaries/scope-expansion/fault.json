@@ -1,0 +1,9 @@
+{
+  "path": "/private/tmp/featrace-boundaries-0529-9g1bi_gu/scope-expansion/attempt/workers/T-UP/lower.py",
+  "before_sha256": "09241dc10125a8b5d65493f582a7e936cbbb301bd0986919c66048af61cacd39",
+  "after_sha256": "465a56afe0adff418fee3f0f11b1ad5218e850b7c3b26b30a94dfdf9f314dac2",
+  "allowed_paths": [
+    "upper.py"
+  ],
+  "stage": "after both genuine ready returns"
+}

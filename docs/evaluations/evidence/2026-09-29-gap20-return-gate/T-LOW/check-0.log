@@ -1,0 +1,12 @@
+test_bad_json_and_line_numbers (test_lower.EventTest) ... ok
+test_bad_timestamps (test_lower.EventTest) ... ok
+test_duplicate_and_invalid_does_not_reserve (test_lower.EventTest) ... ok
+test_empty (test_lower.EventTest) ... ok
+test_invalid_schema (test_lower.EventTest) ... ok
+test_offsets (test_lower.EventTest) ... ok
+test_order (test_lower.EventTest) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.001s
+
+OK

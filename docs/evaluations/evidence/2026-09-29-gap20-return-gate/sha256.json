@@ -1,0 +1,18 @@
+{
+  "T-LOW/check-0.log": "ca36062972468f10e1e9a0633d99f8d89532780f37b5844c62c8d9e108e7cb9c",
+  "T-LOW/patch.diff": "0183b192dcb95370c9f537bef2b0e0ac24bbb43add341aea94c85d349a46e9a7",
+  "T-LOW/result.json": "2ff47bf4de2302cedbbfb7d6d950da71b7d9a32b2e693fa7bda54117c5930690",
+  "T-LOW-finish.txt": "ff2d4749e6f1502825a59e98aa31c4f71f1f8d09f7b4d81acdbc1e6cc7da7192",
+  "T-UP/check-0.log": "b3960f2171b515ac614040f9363cde7e0a9a20fe246315cd67777a4f61f17d97",
+  "T-UP/patch.diff": "0be8ec8808046aaa7ed32874b9ba1d049883995ab2104e31f901d888e57ae58d",
+  "T-UP/result.json": "e783566577364e1782c37a0b8375c2e6339817f64d366e6e9d52355f2ea37298",
+  "T-UP-finish.txt": "6ef3ffa18bcff8a8702f7bfd4fbd5610b735421f5b161d1efcd410a777423115",
+  "approved-check.py": "c57f3948068a354370c7a14b5a5b7cbd52d98ef34f16b5a54a3fb84ea27e67f8",
+  "approved-plan.json": "deb64e6f91f0025c0a79adfd05fe61fcaf2072c0cd004078c75f8f43d6303153",
+  "assessment.md": "179b8ab51ea31da4dcc6462f78ce6b68da49cd5e5e21cda0508de88a2810a1b4",
+  "audited.json": "ce96d964a33ac51666b560e6980c632799a9342ad35f91a376e723add5e68deb",
+  "before-preflight.txt": "594a3df8670d1ea9cc030afbf1f781befafc2fd00b1a9e48b53eb1d31008fab1",
+  "old-preflight0529.txt": "e0d370d909173543b5c914fe2bed9a12d1cd297022789d5705f638235b7f91b9",
+  "prepare.txt": "895ba66afe1edccd208ab04504cb3b32855ded56fbf4a12bda61022e76c5b48e",
+  "runtime-sha256.json": "b3fab039921fdecf7fc9463a8f2b6fd04c1c32617b7c84e6b5a64bc3523ba22d"
+}

@@ -1,0 +1,165 @@
+{
+  "original_project_unchanged": true,
+  "original_attempt_unchanged": true,
+  "personal_unchanged": true,
+  "runtime_unchanged": true,
+  "runtime_matches_source": true,
+  "project_unchanged": true,
+  "attempt_unchanged": true,
+  "head_unchanged": true,
+  "staged_unchanged": true,
+  "old_ready_returns_preserved": true,
+  "returns": {
+    "T-UP": {
+      "status": "ready",
+      "checks": [
+        {
+          "command": [
+            "/Library/Developer/CommandLineTools/usr/bin/python3",
+            "-m",
+            "unittest",
+            "discover",
+            "-s",
+            "tests",
+            "-p",
+            "test_upper.py"
+          ],
+          "status": "passed",
+          "returncode": 0,
+          "log": "check-0.log",
+          "log_sha256": "fe836cbecd3b6b4f70bec51b58d30c3e45ad72ae7fb3cb63421a0f7337e651ae"
+        }
+      ],
+      "logs_bound": true,
+      "patch_bound": true
+    },
+    "T-LOW": {
+      "status": "ready",
+      "checks": [
+        {
+          "command": [
+            "/Library/Developer/CommandLineTools/usr/bin/python3",
+            "-m",
+            "unittest",
+            "discover",
+            "-s",
+            "tests",
+            "-p",
+            "test_lower.py"
+          ],
+          "status": "passed",
+          "returncode": 0,
+          "log": "check-0.log",
+          "log_sha256": "83166b089fbcb82fac63f22522fa6ae99bb5e46368cd35d756277fd463dd6346"
+        }
+      ],
+      "logs_bound": true,
+      "patch_bound": true
+    }
+  },
+  "integration_directory_exists": false,
+  "integration_report_exists": false,
+  "preflight_after_fault": "PARALLEL_BUILD_ERROR: review inputs stale; preserve result and redispatch with current inputs\n",
+  "negative_probe": "PARALLEL_BUILD_ERROR: review inputs stale; preserve result and redispatch with current inputs\n",
+  "scope_after_fault": [
+    "upper.py"
+  ],
+  "native_plugin": {
+    "name": "featrace-boundary",
+    "path": "/private/tmp/featrace-boundaries-0529-9g1bi_gu/plugin",
+    "source": "featrace-boundary@inline",
+    "version": "0.5.29"
+  },
+  "native_skill_discovered": true,
+  "execution": {
+    "exit_code": 0,
+    "elapsed_seconds": 56.473
+  },
+  "cost_usd": 0.363101,
+  "tool_calls": [
+    {
+      "event": 1,
+      "tool": "Skill",
+      "input": {
+        "skill": "featrace-boundary:dev",
+        "args": "develop FEAT-001 --parallel"
+      },
+      "id": "toolu_018MNyzxmDjE7aT4WSH6CH3n",
+      "parent": null
+    },
+    {
+      "event": 6,
+      "tool": "Bash",
+      "input": {
+        "command": "cd /private/tmp/featrace-boundaries-0529-9g1bi_gu; cat plugin/.claude-plugin/plugin.json 2>/dev/null | head -20; ls plugin/skills/dev/core/references/; ls prd-drift prd-drift/attempt; cd prd-drift/project && git status --short && git log --oneline -3 && ls -a && find . -path ./.git -prune -o -type f -print | head -50",
+        "description": "Check plugin version and list project/attempt files"
+      },
+      "id": "toolu_01KBLCueEBztrwMenPrDSXGm",
+      "parent": null
+    },
+    {
+      "event": 8,
+      "tool": "Bash",
+      "input": {
+        "command": "cd /private/tmp/featrace-boundaries-0529-9g1bi_gu/plugin/skills/dev; cat core/references/parallel-build.md; ls scripts* core/scripts 2>/dev/null",
+        "description": "Read parallel-build reference and list scripts"
+      },
+      "id": "toolu_014xQhruyq2baY5cE7yBQTdy",
+      "parent": null
+    },
+    {
+      "event": 11,
+      "tool": "Bash",
+      "input": {
+        "command": "cd /private/tmp/featrace-boundaries-0529-9g1bi_gu/prd-drift/attempt; find . -type f | head -60; echo ---; cat run.json | head -60; for f in returns/*/*.json; do echo \"== $f\"; head -c 2500 $f; echo; done",
+        "description": "List attempt files and show run and return records"
+      },
+      "id": "toolu_01AyAytqQnse9Vkb9hxTpnPo",
+      "parent": null
+    },
+    {
+      "event": 16,
+      "tool": "Bash",
+      "input": {
+        "command": "cd /private/tmp/featrace-boundaries-0529-9g1bi_gu/prd-drift; diff -r attempt/inputs/.agent-workflow project/.agent-workflow; echo \"diff rc=$?\"; cd project; git status --short --ignored; git rev-parse HEAD; git diff --stat HEAD; git worktree list; sed -n 60,200p ../attempt/run.json | grep -v '^\\s*\"[a-f0-9]\\{64\\}\"' | head -80",
+        "description": "Compare frozen inputs with current project records and check git state"
+      },
+      "id": "toolu_01JPuVYSMnLByohibzG4N8BF",
+      "parent": null
+    },
+    {
+      "event": 23,
+      "tool": "Bash",
+      "input": {
+        "command": "cd /private/tmp/featrace-boundaries-0529-9g1bi_gu/prd-drift; grep -A3 'prd-original.txt\"' attempt/run.json | head -5; shasum -a 256 attempt/inputs/.agent-workflow/features/FEAT-001/sources/prd-original.txt project/.agent-workflow/features/FEAT-001/sources/prd-original.txt attempt/returns/*/patch.diff; stat -f '%Sm %N' project/.agent-workflow/features/FEAT-001/sources/prd-original.txt attempt/returns/*/result.json; for w in T-UP T-LOW; do echo \"== $w\"; git -C attempt/workers/$w status --short; done; tail -3 attempt/returns/*/check-0.log",
+        "description": "Verify source hashes, patch hashes, worker status and check logs"
+      },
+      "id": "toolu_018uRi68CxQA3B9Da6vEDpB2",
+      "parent": null
+    },
+    {
+      "event": 25,
+      "tool": "Write",
+      "input": {
+        "file_path": "/private/tmp/featrace-boundaries-0529-9g1bi_gu/prd-drift/assessment.md"
+      },
+      "id": "toolu_018Yzgmrpv3f2wZnyPmGVMVZ",
+      "parent": null
+    }
+  ],
+  "skill_invocations": [
+    {
+      "event": 1,
+      "tool": "Skill",
+      "input": {
+        "skill": "featrace-boundary:dev",
+        "args": "develop FEAT-001 --parallel"
+      },
+      "id": "toolu_018MNyzxmDjE7aT4WSH6CH3n",
+      "parent": null
+    }
+  ],
+  "integrate_calls": [],
+  "mutating_helper_calls": [],
+  "agent_calls": []
+}

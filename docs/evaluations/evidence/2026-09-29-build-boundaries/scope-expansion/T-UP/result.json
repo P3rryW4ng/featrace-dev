@@ -1,0 +1,69 @@
+{
+  "run_digest": "909e3df253b2ea6d3dd57163bf0d15a2bc4f5864b9bf64e5eb350b5b9f0554fd",
+  "task_id": "T-UP",
+  "status": "ready",
+  "summary": "Boundary stage fixture: maintainer reused original synthetic patch; real approved unittest executed.",
+  "checks": [
+    {
+      "command": [
+        "/Library/Developer/CommandLineTools/usr/bin/python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-p",
+        "test_upper.py"
+      ],
+      "status": "passed",
+      "returncode": 0,
+      "log": "check-0.log",
+      "log_sha256": "fe836cbecd3b6b4f70bec51b58d30c3e45ad72ae7fb3cb63421a0f7337e651ae"
+    }
+  ],
+  "worker_state": {
+    "files": {
+      ".gitignore": {
+        "state": "file",
+        "sha256": "086f660840b53b942b214433f54396586954bdcd26fd3662b44f38ae20877f89",
+        "size": 39
+      },
+      "lower.py": {
+        "state": "file",
+        "sha256": "09241dc10125a8b5d65493f582a7e936cbbb301bd0986919c66048af61cacd39",
+        "size": 49
+      },
+      "tests/test_integration.py": {
+        "state": "file",
+        "sha256": "a1a02cb722638f1c08ea271093588fa42a7d035f6179e6827cc4a2fc89b6c9c6",
+        "size": 496
+      },
+      "tests/test_lower.py": {
+        "state": "file",
+        "sha256": "5e1123a2da2388b5eb19a16f4ce876696a7ddfdee955baca9b7ecdcdef873e64",
+        "size": 1651
+      },
+      "tests/test_upper.py": {
+        "state": "file",
+        "sha256": "768d2442e957337e9d28e633326260b49027a48591979787126d8cf3b941419e",
+        "size": 1327
+      },
+      "upper.py": {
+        "state": "file",
+        "sha256": "7a1cea57c73f4b4940c6d32e05d1138d383c661833bee09733d31510bf43a6e7",
+        "size": 1632
+      }
+    },
+    "workflow": {
+      ".agent-workflow": {
+        "state": "missing"
+      }
+    },
+    "index": "79002b7c223a8c075ce3005d89426f6b587e3514d392e24c17c676ebc9501172"
+  },
+  "changed_paths": [
+    "upper.py"
+  ],
+  "patch_sha256": "0be8ec8808046aaa7ed32874b9ba1d049883995ab2104e31f901d888e57ae58d",
+  "record_digest": "c3b97fb7e5d7cdf093f479809ad6e307adea5889021c2d8d5ebd0b02df98e5d8"
+}

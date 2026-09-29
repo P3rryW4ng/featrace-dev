@@ -1,0 +1,1 @@
+PARALLEL_BUILD_ERROR: worker scope expansion: lower.py, upper.py

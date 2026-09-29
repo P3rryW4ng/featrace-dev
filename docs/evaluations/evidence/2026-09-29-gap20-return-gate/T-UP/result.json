@@ -1,0 +1,65 @@
+{
+  "run_digest": "e4faee082bcc8ba3e6113714966a763aac2f1f0f3549881f3bcd024a0bfd572d",
+  "task_id": "T-UP",
+  "status": "failed",
+  "summary": "Current fixture: maintainer reapplied prior synthetic patch; approved checks actually rerun, no new coding Agent.",
+  "checks": [
+    {
+      "command": [
+        "/Library/Developer/CommandLineTools/usr/bin/python3",
+        "/private/tmp/featrace-gap20-replay-0529-orwgp4u6/approved-check.py",
+        "--task",
+        "T-UP"
+      ],
+      "status": "failed",
+      "returncode": 1,
+      "log": "check-0.log",
+      "log_sha256": "b3960f2171b515ac614040f9363cde7e0a9a20fe246315cd67777a4f61f17d97"
+    }
+  ],
+  "worker_state": {
+    "files": {
+      ".gitignore": {
+        "state": "file",
+        "sha256": "086f660840b53b942b214433f54396586954bdcd26fd3662b44f38ae20877f89",
+        "size": 39
+      },
+      "lower.py": {
+        "state": "file",
+        "sha256": "09241dc10125a8b5d65493f582a7e936cbbb301bd0986919c66048af61cacd39",
+        "size": 49
+      },
+      "tests/test_integration.py": {
+        "state": "file",
+        "sha256": "a1a02cb722638f1c08ea271093588fa42a7d035f6179e6827cc4a2fc89b6c9c6",
+        "size": 496
+      },
+      "tests/test_lower.py": {
+        "state": "file",
+        "sha256": "5e1123a2da2388b5eb19a16f4ce876696a7ddfdee955baca9b7ecdcdef873e64",
+        "size": 1651
+      },
+      "tests/test_upper.py": {
+        "state": "file",
+        "sha256": "768d2442e957337e9d28e633326260b49027a48591979787126d8cf3b941419e",
+        "size": 1327
+      },
+      "upper.py": {
+        "state": "file",
+        "sha256": "7a1cea57c73f4b4940c6d32e05d1138d383c661833bee09733d31510bf43a6e7",
+        "size": 1632
+      }
+    },
+    "workflow": {
+      ".agent-workflow": {
+        "state": "missing"
+      }
+    },
+    "index": "79002b7c223a8c075ce3005d89426f6b587e3514d392e24c17c676ebc9501172"
+  },
+  "changed_paths": [
+    "upper.py"
+  ],
+  "patch_sha256": "0be8ec8808046aaa7ed32874b9ba1d049883995ab2104e31f901d888e57ae58d",
+  "record_digest": "d1068e98d9ab6ab7e40ea9921efa53865b0a38a5cc303f303f57a9bb001fbc8f"
+}

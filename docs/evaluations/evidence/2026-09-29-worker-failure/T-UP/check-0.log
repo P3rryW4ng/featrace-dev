@@ -1,0 +1,21 @@
+test_duplicate_and_invalid_does_not_reserve (test_upper.CatalogTest) ... ok
+test_empty (test_upper.CatalogTest) ... ok
+test_header (test_upper.CatalogTest) ... ok
+test_invalid_prices (test_upper.CatalogTest) ... ok
+test_missing_extra_and_trim (test_upper.CatalogTest) ... ok
+test_prices (test_upper.CatalogTest) ... ok
+test_quoted_multiline_bom (test_upper.CatalogTest) ... ok
+runTest (__main__.SyntheticTransportProbe) ... FAIL
+
+======================================================================
+FAIL: runTest (__main__.SyntheticTransportProbe)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/featrace-worker-failure-0528-0lru3uz5/approved-check.py", line 9, in runTest
+    self.fail('ISOLATION_INJECTED_FAILURE: simulated check dependency unavailable; fixture-only fault')
+AssertionError: ISOLATION_INJECTED_FAILURE: simulated check dependency unavailable; fixture-only fault
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.000s
+
+FAILED (failures=1)

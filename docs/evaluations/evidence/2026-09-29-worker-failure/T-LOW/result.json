@@ -1,0 +1,65 @@
+{
+  "run_digest": "cf95dc58f5a10f7d9b72ff927a3e99255950d591a91c861e2119fa53d3d4bee2",
+  "task_id": "T-LOW",
+  "status": "ready",
+  "summary": "Implemented lower.convert JSONL importer: physical 1-based line numbers with blank lines skipped; invalid_json for unparsable lines; invalid_event for non-object or missing/non-string/empty id or timestamp or missing payload; invalid_timestamp for naive/malformed ISO8601 (Z or numeric offset required); timestamps normalized to UTC YYYY-MM-DDTHH:MM:SSZ; first valid id wins, later duplicates duplicate_id, invalid events do not reserve ids; order preserved; stdlib only (json/re/datetime), no global mutable state or external effects. Only lower.py changed.",
+  "checks": [
+    {
+      "command": [
+        "/Library/Developer/CommandLineTools/usr/bin/python3",
+        "/private/tmp/featrace-worker-failure-0528-0lru3uz5/approved-check.py",
+        "--task",
+        "T-LOW"
+      ],
+      "status": "passed",
+      "returncode": 0,
+      "log": "check-0.log",
+      "log_sha256": "f02f0e4a5c92fdf5a7fd7a0d9d2196164b9b34dcf3678483806bbb3a56bf8c39"
+    }
+  ],
+  "worker_state": {
+    "files": {
+      ".gitignore": {
+        "state": "file",
+        "sha256": "086f660840b53b942b214433f54396586954bdcd26fd3662b44f38ae20877f89",
+        "size": 39
+      },
+      "lower.py": {
+        "state": "file",
+        "sha256": "e4e9aa7f600c6f4147a04e9b819a1b6138da46987a5582c7f82bd40a18e3120f",
+        "size": 2240
+      },
+      "tests/test_integration.py": {
+        "state": "file",
+        "sha256": "a1a02cb722638f1c08ea271093588fa42a7d035f6179e6827cc4a2fc89b6c9c6",
+        "size": 496
+      },
+      "tests/test_lower.py": {
+        "state": "file",
+        "sha256": "5e1123a2da2388b5eb19a16f4ce876696a7ddfdee955baca9b7ecdcdef873e64",
+        "size": 1651
+      },
+      "tests/test_upper.py": {
+        "state": "file",
+        "sha256": "768d2442e957337e9d28e633326260b49027a48591979787126d8cf3b941419e",
+        "size": 1327
+      },
+      "upper.py": {
+        "state": "file",
+        "sha256": "09241dc10125a8b5d65493f582a7e936cbbb301bd0986919c66048af61cacd39",
+        "size": 49
+      }
+    },
+    "workflow": {
+      ".agent-workflow": {
+        "state": "missing"
+      }
+    },
+    "index": "79002b7c223a8c075ce3005d89426f6b587e3514d392e24c17c676ebc9501172"
+  },
+  "changed_paths": [
+    "lower.py"
+  ],
+  "patch_sha256": "0183b192dcb95370c9f537bef2b0e0ac24bbb43add341aea94c85d349a46e9a7",
+  "record_digest": "dca7c03afecbe200639437257f5152272964420757c85ee3db1555449bc1123a"
+}

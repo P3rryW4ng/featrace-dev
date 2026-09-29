@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "independence": {
+    "reason": "Two independent pure importers: CSV catalog in upper.py and JSONL events in lower.py, each with its own approved contract (sources/prd-original.txt T-UP/T-LOW) and separate test suite; neither consumes the other's output, no shared module, state or resource. Pair is worth it: each slice carries substantive independent validation logic (CSV BOM/quoting/multiline/Decimal/duplicate atomicity vs JSONL schema/aware-timestamp UTC normalization/physical lines/duplicate atomicity) and checks.",
+    "evidence": [
+      "upper.py:1-2",
+      "lower.py:1-2",
+      "tests/test_upper.py imports only upper",
+      "tests/test_lower.py imports only lower",
+      "tests/test_integration.py:1-8 asserts independent empty contracts and no state between calls",
+      "impact.json mechanisms shared_state/callers reviewed"
+    ],
+    "interfaces": [
+      "upper.convert(text:str) -> {'records': [...], 'errors': [...]}",
+      "lower.convert(text:str) -> {'records': [...], 'errors': [...]}",
+      "No new imports between upper and lower; JSONL importer has no CSV dependency"
+    ],
+    "preserve": [
+      "Each task keeps the other module untouched",
+      "Pure local functions: no global mutable state, no external effects (B-PRESERVE)"
+    ]
+  },
+  "tasks": [
+    {
+      "task_id": "T-UP",
+      "allowed_paths": [
+        "upper.py"
+      ],
+      "depends_on": [],
+      "checks": [
+        [
+          "/Library/Developer/CommandLineTools/usr/bin/python3",
+          "/private/tmp/featrace-worker-failure-0528-0lru3uz5/approved-check.py",
+          "--task",
+          "T-UP"
+        ]
+      ]
+    },
+    {
+      "task_id": "T-LOW",
+      "allowed_paths": [
+        "lower.py"
+      ],
+      "depends_on": [],
+      "checks": [
+        [
+          "/Library/Developer/CommandLineTools/usr/bin/python3",
+          "/private/tmp/featrace-worker-failure-0528-0lru3uz5/approved-check.py",
+          "--task",
+          "T-LOW"
+        ]
+      ]
+    }
+  ],
+  "integration_checks": [
+    [
+      "python3",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "tests"
+    ]
+  ],
+  "timeout_seconds": 120
+}

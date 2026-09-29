@@ -1,0 +1,68 @@
+{
+  "run_digest": "909e3df253b2ea6d3dd57163bf0d15a2bc4f5864b9bf64e5eb350b5b9f0554fd",
+  "task_id": "T-LOW",
+  "status": "ready",
+  "summary": "Boundary stage fixture: maintainer reused original synthetic patch; real approved unittest executed.",
+  "checks": [
+    {
+      "command": [
+        "/Library/Developer/CommandLineTools/usr/bin/python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-p",
+        "test_lower.py"
+      ],
+      "status": "passed",
+      "returncode": 0,
+      "log": "check-0.log",
+      "log_sha256": "83166b089fbcb82fac63f22522fa6ae99bb5e46368cd35d756277fd463dd6346"
+    }
+  ],
+  "worker_state": {
+    "files": {
+      ".gitignore": {
+        "state": "file",
+        "sha256": "086f660840b53b942b214433f54396586954bdcd26fd3662b44f38ae20877f89",
+        "size": 39
+      },
+      "lower.py": {
+        "state": "file",
+        "sha256": "e4e9aa7f600c6f4147a04e9b819a1b6138da46987a5582c7f82bd40a18e3120f",
+        "size": 2240
+      },
+      "tests/test_integration.py": {
+        "state": "file",
+        "sha256": "a1a02cb722638f1c08ea271093588fa42a7d035f6179e6827cc4a2fc89b6c9c6",
+        "size": 496
+      },
+      "tests/test_lower.py": {
+        "state": "file",
+        "sha256": "5e1123a2da2388b5eb19a16f4ce876696a7ddfdee955baca9b7ecdcdef873e64",
+        "size": 1651
+      },
+      "tests/test_upper.py": {
+        "state": "file",
+        "sha256": "768d2442e957337e9d28e633326260b49027a48591979787126d8cf3b941419e",
+        "size": 1327
+      },
+      "upper.py": {
+        "state": "file",
+        "sha256": "09241dc10125a8b5d65493f582a7e936cbbb301bd0986919c66048af61cacd39",
+        "size": 49
+      }
+    },
+    "workflow": {
+      ".agent-workflow": {
+        "state": "missing"
+      }
+    },
+    "index": "79002b7c223a8c075ce3005d89426f6b587e3514d392e24c17c676ebc9501172"
+  },
+  "changed_paths": [
+    "lower.py"
+  ],
+  "patch_sha256": "0183b192dcb95370c9f537bef2b0e0ac24bbb43add341aea94c85d349a46e9a7"
+}

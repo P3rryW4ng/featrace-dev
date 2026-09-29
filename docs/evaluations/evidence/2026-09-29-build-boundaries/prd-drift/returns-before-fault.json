@@ -1,0 +1,8 @@
+{
+  "returns/T-UP/patch.diff": "0be8ec8808046aaa7ed32874b9ba1d049883995ab2104e31f901d888e57ae58d",
+  "returns/T-UP/result.json": "b12dcffbea45a6a321aa1b4b4b1ab272a28cb1323509034fe52f24e95bd2b34b",
+  "returns/T-UP/check-0.log": "fe836cbecd3b6b4f70bec51b58d30c3e45ad72ae7fb3cb63421a0f7337e651ae",
+  "returns/T-LOW/patch.diff": "0183b192dcb95370c9f537bef2b0e0ac24bbb43add341aea94c85d349a46e9a7",
+  "returns/T-LOW/result.json": "48665089976d1d20738dc906dcd5d21af010d121d16ead1a355922995ec31ab8",
+  "returns/T-LOW/check-0.log": "83166b089fbcb82fac63f22522fa6ae99bb5e46368cd35d756277fd463dd6346"
+}

@@ -1,4 +1,4 @@
-# Two-task isolated Build execution (0.5.28)
+# Two-task isolated Build execution (0.5.29)
 
 Load after `build-strategy.md` selects two workers, including a compatible explicit parallel request. Ordinary develop/next chooses automatically; `--serial` forces serial. This pilot creates two detached Git worktrees and a third integration candidate outside the primary project. It does not launch processes by itself, apply changes to the primary checkout, commit/push, update task status or approve delivery. If the host cannot provide two independent execution contexts, report unavailable and offer ordinary serial Build.
 
@@ -57,7 +57,13 @@ Workers return through parallel-build.py finish. Each return has its own directo
 
 ## Integrate and hand back
 
-Wait for both Agents to finish; never integrate while workers are still writing. Inspect actual patches/command logs and preservation/interface compatibility. Both ready is insufficient if a semantic conflict is visible. Only the router calls:
+Wait for both Agents to finish; never integrate while workers are still writing. Inspect the actual return records, patches/logs and preservation/interface compatibility before deciding whether to call any integration command.
+
+**Return gate:** if either return is failed, blocked, missing, invalid or stale, preserve both workers and their evidence, report the concrete blocker, and end this Build attempt **without invoking `integrate`**. Do not call it as a refusal probe, diagnostic, smoke test or “proof the guard works”; the helper's rejection is a backstop, not the next workflow step after a known failure. Read-only inspection of existing evidence is allowed. Do not overwrite a failed return, retry, adopt only the successful peer, switch to serial over the attempt or promote completion.
+
+A separately requested negative integration probe is a distinct diagnostic action with its own result; do not infer that request from “rehearsal”, “resilience” or “verify”. It never repairs or advances the failed attempt.
+
+Only two current `ready` returns with matching code/check evidence and compatible reviewed semantics permit the router to call:
 
 ```text
 python3 core/scripts/parallel-build.py integrate <RUN>
