@@ -32,9 +32,15 @@ For any temporary scripts or test copies, read `../../core/references/write-scop
 
 ## Return
 
-Finish all edit/write operations and wait for their tool results. After they succeed, read the actual diff in a separate tool call and confirm the assigned scope and intended change. If an edit failed or its result is uncertain, resolve that before requesting `ready`.
+Finish all edit/write operations and wait for their tool results. After they succeed, call the helper in a separate tool call:
 
-Only after the diff inspection returns, invoke the helper exactly once in a separate tool call. Do not put edits, diff inspection and `finish` in the same assistant message/tool batch, run them concurrently, or launch `finish` while any writer is pending. Keep the worktree unchanged until `finish` returns. These are dependent steps within one worker; the two independent workers may still run concurrently:
+```text
+python3 <SKILL>/core/scripts/parallel-build.py inspect-diff <RUN> <TASK-ID>
+```
+
+Read its complete `full_diff` content, not just paths, `--stat`, a digest or a summary. Check every changed hunk against the assigned scope, requirement, preserved behavior and interface. The helper emits the exact patch that `finish` will export and records an attempt-local inspection bound to the current patch and worker state. If output is truncated, inspect the missing portions before finishing; if you cannot see the complete patch, return blocked rather than claim `ready`. After any edit, run `inspect-diff` again. If an edit failed or its result is uncertain, resolve that before inspection.
+
+Only after the full diff output has returned and you have reviewed it, invoke `finish` exactly once in a separate tool call. `finish ready` rejects a missing or stale inspection; emitting the diff cannot prove you understood it. Do not put edits, inspection and `finish` in the same assistant message/tool batch, run them concurrently, or launch `finish` while any writer is pending. Keep the worktree unchanged until `finish` returns. These are dependent steps within one worker; the two independent workers may still run concurrently:
 
 ```text
 python3 <SKILL>/core/scripts/parallel-build.py finish <RUN> <TASK-ID> --status ready --summary <honest-implementation-summary>

@@ -88,7 +88,61 @@ class ParallelBuildTests(unittest.TestCase):
     def ready(self):
         self.prepare(); self.implement()
         for tid in ['T-UP', 'T-LOW']:
+            self.assertIn('diff --git', build.inspect_diff(self.run, tid)['full_diff'])
             self.assertEqual(build.finish(self.run, tid, 'ready', 'Implemented synthetic task')['status'], 'ready')
+
+    def test_full_diff_must_be_emitted_for_current_patch_before_ready(self):
+        self.prepare(); self.implement()
+        result = build.finish(self.run, 'T-UP', 'ready', 'Only inspected diff --stat')
+        self.assertEqual(result['status'], 'failed')
+        self.assertIn('full diff inspection missing', result['error'])
+        self.assertFalse((self.run / 'returns/T-UP/patch.diff').exists())
+        self.assertFalse((self.run / 'returns/T-UP/check-0.log').exists())
+        self.assertFalse((self.run / 'integration').exists())
+
+    def test_inspected_full_diff_is_bound_to_exact_worker_patch(self):
+        self.prepare(); self.implement()
+        review = build.inspect_diff(self.run, 'T-UP')
+        self.assertEqual(review['status'], 'PARALLEL_BUILD_FULL_DIFF_EMITTED')
+        self.assertIn('+    return value.upper()', review['full_diff'])
+        cli = subprocess.run([sys.executable, str(CORE / 'parallel-build.py'),
+                              'inspect-diff', str(self.run), 'T-LOW'], capture_output=True, text=True)
+        self.assertEqual(cli.returncode, 0, cli.stderr)
+        self.assertIn('+    return value.lower()', json.loads(cli.stdout)['full_diff'])
+        (self.worker('T-UP') / 'upper.py').write_text('def convert(value):\n    return value.upper().strip()\n')
+        result = build.finish(self.run, 'T-UP', 'ready', 'Changed after inspection')
+        self.assertEqual(result['status'], 'failed')
+        self.assertIn('full diff inspection missing or stale', result['error'])
+
+    def test_reinspection_after_edit_allows_current_patch(self):
+        self.prepare(); self.implement()
+        old = build.inspect_diff(self.run, 'T-UP')
+        (self.worker('T-UP') / 'upper.py').write_text('def convert(value):\n    return value.upper().strip()\n')
+        new = build.inspect_diff(self.run, 'T-UP')
+        self.assertNotEqual(old['inspection_id'], new['inspection_id'])
+        self.assertIn('+    return value.upper().strip()', new['full_diff'])
+        result = build.finish(self.run, 'T-UP', 'ready', 'Reinspected final patch')
+        self.assertEqual(result['status'], 'ready')
+        self.assertEqual(result['diff_inspection_id'], new['inspection_id'])
+
+    def test_failed_full_diff_output_does_not_create_receipt(self):
+        self.prepare(); self.implement()
+        with patch('builtins.print', side_effect=BrokenPipeError('output unavailable')):
+            with self.assertRaises(BrokenPipeError):
+                build.inspect_diff(self.run, 'T-UP', emit=True)
+        self.assertEqual(list((self.run / 'diff-inspections/T-UP').glob('*.json')), [])
+        result = build.finish(self.run, 'T-UP', 'ready', 'Output failed')
+        self.assertEqual(result['status'], 'failed')
+        self.assertIn('full diff inspection missing', result['error'])
+
+    def test_tampered_full_diff_receipt_is_rejected(self):
+        self.prepare(); self.implement()
+        review = build.inspect_diff(self.run, 'T-UP')
+        receipt = self.run / 'diff-inspections/T-UP' / (review['inspection_id'] + '.json')
+        data = build.load(receipt); data['changed_paths'] = ['lower.py']; receipt.write_text(json.dumps(data))
+        result = build.finish(self.run, 'T-UP', 'ready', 'Tampered inspection')
+        self.assertEqual(result['status'], 'failed')
+        self.assertIn('scratch record changed', result['error'])
 
     def test_two_isolated_workers_integrate_and_primary_records_stay_unchanged(self):
         before = build.candidate_state(self.root); self.ready()
@@ -168,7 +222,7 @@ class ParallelBuildTests(unittest.TestCase):
 
     def test_worker_index_changes_during_or_after_checks_rejected(self):
         self.plan['tasks'][0]['checks'].append(['git', 'add', 'upper.py'])
-        self.prepare(); self.implement()
+        self.prepare(); self.implement(); build.inspect_diff(self.run, 'T-UP')
         result = build.finish(self.run, 'T-UP', 'ready', 'Implementation')
         self.assertEqual(result['status'], 'failed')
         self.assertIn('checks changed', result['error'])
@@ -178,7 +232,7 @@ class ParallelBuildTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'changed after tests'): build.integrate(self.run)
 
     def test_worker_commit_and_missing_return_rejected(self):
-        self.prepare(); self.implement()
+        self.prepare(); self.implement(); build.inspect_diff(self.run, 'T-UP')
         build.finish(self.run, 'T-UP', 'ready', 'Implementation')
         with self.assertRaises(FileNotFoundError): build.integrate(self.run)
         self.assertFalse((self.run / 'integration').exists())
@@ -265,6 +319,7 @@ class ParallelBuildTests(unittest.TestCase):
 
     def test_task_check_failure_records_actual_exit(self):
         self.prepare(); self.implement(); (self.worker('T-UP') / 'upper.py').write_text('def convert(v): return v\n')
+        build.inspect_diff(self.run, 'T-UP')
         result = build.finish(self.run, 'T-UP', 'ready', 'Candidate implementation')
         self.assertEqual(result['status'], 'failed'); self.assertEqual(result['checks'][0]['returncode'], 1)
 
@@ -281,7 +336,8 @@ class ParallelBuildTests(unittest.TestCase):
 
     def test_missing_check_executable_is_failed_not_passed(self):
         self.plan['tasks'][0]['checks'] = [['missing-fixture-executable']]
-        self.prepare(); self.implement(); result = build.finish(self.run, 'T-UP', 'ready', 'Code ready')
+        self.prepare(); self.implement(); build.inspect_diff(self.run, 'T-UP')
+        result = build.finish(self.run, 'T-UP', 'ready', 'Code ready')
         self.assertEqual(result['status'], 'failed'); self.assertEqual(result['checks'][0]['status'], 'unavailable')
 
 

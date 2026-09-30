@@ -1,0 +1,39 @@
+{
+  "serial": {
+    "status": "passed",
+    "actual": {
+      "records": [
+        {
+          "sku": "a",
+          "name": "A",
+          "price": "10000000000000000000000000000.00"
+        }
+      ],
+      "errors": []
+    },
+    "expected": {
+      "records": [
+        {
+          "sku": "a",
+          "name": "A",
+          "price": "10000000000000000000000000000.00"
+        }
+      ],
+      "errors": []
+    }
+  },
+  "parallel_candidate": {
+    "status": "exception",
+    "exception_type": "InvalidOperation",
+    "expected": {
+      "records": [
+        {
+          "sku": "a",
+          "name": "A",
+          "price": "10000000000000000000000000000.00"
+        }
+      ],
+      "errors": []
+    }
+  }
+}

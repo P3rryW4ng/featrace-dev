@@ -1,0 +1,105 @@
+{
+  "parallel": {
+    "exit": 0,
+    "elapsed_seconds": 223.457,
+    "estimated_list_cost_usd": 1.8509387999999996,
+    "model_output_tokens": 22991,
+    "model_cache_read_input_tokens": 2069609,
+    "model_cache_creation_input_tokens": 150315,
+    "tools": {
+      "Bash": 35,
+      "Agent": 3,
+      "Read": 7,
+      "Write": 3
+    },
+    "agents": [
+      {
+        "description": "Build worker T-UP",
+        "type": "general-purpose"
+      },
+      {
+        "description": "Build worker T-LOW",
+        "type": "general-purpose"
+      },
+      {
+        "description": "placeholder",
+        "type": "Explore"
+      }
+    ],
+    "task_view_calls": [
+      "T-UP",
+      "T-LOW"
+    ],
+    "direct_run_json_tool_reads": 0,
+    "worker_sequences": [
+      [
+        "read_specialist",
+        "preflight",
+        "task_view",
+        "other",
+        "read:prd-original.txt",
+        "read:test_upper.py",
+        "read:upper.py",
+        "read:test_integration.py",
+        "write:upper.py",
+        "other",
+        "diff_inspection",
+        "finish"
+      ],
+      [
+        "read_specialist",
+        "preflight",
+        "task_view",
+        "other",
+        "read:prd-original.txt",
+        "write:lower.py",
+        "other",
+        "diff_inspection",
+        "finish"
+      ]
+    ],
+    "git_head": "27f72944625342209d310f299ee4555848b1b86f",
+    "business_status": []
+  },
+  "serial": {
+    "exit": 0,
+    "elapsed_seconds": 102.854,
+    "estimated_list_cost_usd": 0.7616530000000001,
+    "model_output_tokens": 9449,
+    "model_cache_read_input_tokens": 692285,
+    "model_cache_creation_input_tokens": 54261,
+    "tools": {
+      "Bash": 14,
+      "Write": 3
+    },
+    "agents": [],
+    "task_view_calls": [],
+    "direct_run_json_tool_reads": 0,
+    "worker_sequences": [],
+    "git_head": "27f72944625342209d310f299ee4555848b1b86f",
+    "business_status": [
+      " M lower.py",
+      " M upper.py"
+    ]
+  },
+  "fixture": {
+    "source": "synthetic native-auto-build CSV/JSONL contract",
+    "head": "27f72944625342209d310f299ee4555848b1b86f",
+    "input_match": true,
+    "run_json_bytes": 9804,
+    "task_view_stdout_bytes": {
+      "T-UP": 7847,
+      "T-LOW": 7862
+    },
+    "baseline_sha256": {
+      "upper.py": "09241dc10125a8b5d65493f582a7e936cbbb301bd0986919c66048af61cacd39",
+      "lower.py": "09241dc10125a8b5d65493f582a7e936cbbb301bd0986919c66048af61cacd39",
+      "tests/test_upper.py": "768d2442e957337e9d28e633326260b49027a48591979787126d8cf3b941419e",
+      "tests/test_lower.py": "5e1123a2da2388b5eb19a16f4ce876696a7ddfdee955baca9b7ecdcdef873e64",
+      "tests/test_integration.py": "a1a02cb722638f1c08ea271093588fa42a7d035f6179e6827cc4a2fc89b6c9c6",
+      ".agent-workflow/features/FEAT-001/spec/requirements.json": "9ad7c24d683f131c5798fd505673667933920c825024f4e44e26d1522f5e01aa",
+      ".agent-workflow/features/FEAT-001/tasks.json": "73e5f117103e6b701a7433da638da51089b391680f0ce300a45fe9ad5a21cf3f",
+      ".agent-workflow/features/FEAT-001/sources/prd-original.txt": "2d00bc9642c845782a28369dc79baa26d5cdd5aa018b0df9046fe746561ae2e3"
+    }
+  }
+}

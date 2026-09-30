@@ -246,6 +246,45 @@ def candidate_state(root):
             'index': hashlib.sha256(git(root, 'ls-files', '--stage', '-z')).hexdigest()}
 
 
+def diff_inspection(run, doc, task_id, worker, changed, patch):
+    body = {'run_digest': handoff.digest(doc), 'task_id': task_id,
+            'patch_sha256': hashlib.sha256(patch).hexdigest(),
+            'changed_paths': changed, 'worker_state': candidate_state(worker)}
+    return body, handoff.digest(body)
+
+
+def inspect_diff(run, task_id, *, emit=False):
+    """Emit the complete candidate patch and bind that emission to the current worker state."""
+    run = Path(run).resolve()
+    doc = preflight(run)
+    worker, _, changed, patch = proposal(run, doc, task_id)
+    body, inspection_id = diff_inspection(run, doc, task_id, worker, changed, patch)
+    directory = run / 'diff-inspections' / task_id
+    if directory.is_symlink():
+        raise ValueError('diff inspection directory cannot be a symlink')
+    directory.mkdir(parents=True, exist_ok=True)
+    receipt = directory / (inspection_id + '.json')
+    if receipt.exists() and unseal(load(receipt)) != body:
+        raise ValueError('diff inspection receipt changed')
+    result = {'status': 'PARALLEL_BUILD_FULL_DIFF_EMITTED', 'task_id': task_id,
+            'changed_paths': changed, 'patch_sha256': body['patch_sha256'],
+            'inspection_id': inspection_id, 'diff_bytes': len(patch),
+            'full_diff': patch.decode('utf-8', errors='replace')}
+    if emit:
+        print(json.dumps(result, indent=2), flush=True)
+    if not receipt.exists():
+        write(receipt, seal(body))
+    return result
+
+
+def require_diff_inspection(run, doc, task_id, worker, changed, patch):
+    body, inspection_id = diff_inspection(run, doc, task_id, worker, changed, patch)
+    receipt = run / 'diff-inspections' / task_id / (inspection_id + '.json')
+    if not receipt.is_file() or unseal(load(receipt)) != body:
+        raise ValueError('full diff inspection missing or stale; run inspect-diff after the final edit')
+    return inspection_id
+
+
 def checks(cwd, selected, directory, timeout):
     results = []
     for index, command in enumerate(selected):
@@ -277,6 +316,7 @@ def finish(run, task_id, status, summary):
     try:
         if status == 'ready':
             worker, item, changed, patch = proposal(run, doc, task_id)
+            result['diff_inspection_id'] = require_diff_inspection(run, doc, task_id, worker, changed, patch)
             result['worker_state'] = candidate_state(worker)
             result['changed_paths'] = changed
             result['patch_sha256'] = hashlib.sha256(patch).hexdigest()
@@ -307,6 +347,8 @@ def integrate(run):
         if (result.get('worker_state') != candidate_state(worker) or result.get('changed_paths') != changed or result.get('patch_sha256') != hashlib.sha256(patch).hexdigest()
                 or (directory / 'patch.diff').read_bytes() != patch):
             raise ValueError('worker changed after tests: ' + tid)
+        if result.get('diff_inspection_id') != require_diff_inspection(run, doc, tid, worker, changed, patch):
+            raise ValueError('full diff inspection changed after return: ' + tid)
         results = result.get('checks', [])
         if len(results) != len(item['checks']):
             raise ValueError('required task checks missing: ' + tid)
@@ -352,6 +394,7 @@ def main():
     p = subs.add_parser('prepare'); p.add_argument('project'); p.add_argument('feature_id'); p.add_argument('--plan', required=True); p.add_argument('--out', required=True)
     p = subs.add_parser('preflight'); p.add_argument('run')
     p = subs.add_parser('task-view'); p.add_argument('run'); p.add_argument('task_id')
+    p = subs.add_parser('inspect-diff'); p.add_argument('run'); p.add_argument('task_id')
     p = subs.add_parser('finish'); p.add_argument('run'); p.add_argument('task_id'); p.add_argument('--status', required=True, choices=['ready', 'blocked', 'failed']); p.add_argument('--summary', required=True)
     p = subs.add_parser('integrate'); p.add_argument('run')
     args = parser.parse_args()
@@ -360,11 +403,14 @@ def main():
         elif args.action == 'preflight':
             doc = preflight(args.run); result = {'status': 'PARALLEL_BUILD_INPUTS_CURRENT', 'run_digest': handoff.digest(doc)}
         elif args.action == 'task-view': result = task_view(args.run, args.task_id)
+        elif args.action == 'inspect-diff': result = inspect_diff(args.run, args.task_id, emit=True)
         elif args.action == 'finish': result = finish(args.run, args.task_id, args.status, args.summary)
         else: result = integrate(args.run)
-        print(json.dumps(result, indent=2))
+        if args.action != 'inspect-diff':
+            print(json.dumps(result, indent=2))
         return 0 if result['status'] in {'PARALLEL_BUILD_PREPARED', 'PARALLEL_BUILD_INPUTS_CURRENT',
-                                       'PARALLEL_BUILD_TASK_VIEW_CURRENT', 'ready', 'candidate_checks_passed'} else 1
+                                       'PARALLEL_BUILD_TASK_VIEW_CURRENT', 'PARALLEL_BUILD_FULL_DIFF_EMITTED',
+                                       'ready', 'candidate_checks_passed'} else 1
     except (ValueError, OSError, KeyError, TypeError, subprocess.SubprocessError) as exc:
         print('PARALLEL_BUILD_ERROR: ' + str(exc), file=sys.stderr); return 1
 
