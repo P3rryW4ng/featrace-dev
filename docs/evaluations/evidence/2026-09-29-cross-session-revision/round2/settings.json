@@ -1,0 +1,17 @@
+{
+  "disableAllHooks": false,
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Bash|Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 /private/tmp/featrace-resume-0533-e0zic_sg/observer.py /private/tmp/featrace-resume-0533-e0zic_sg",
+            "timeout": 20
+          }
+        ]
+      }
+    ]
+  }
+}

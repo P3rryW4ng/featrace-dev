@@ -1,0 +1,66 @@
+[
+  {
+    "label": "held-out-contract",
+    "command": [
+      "python3",
+      "/private/tmp/featrace-resume-contract-tests.py"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": "test_no_other_formatter_uppercase (__main__.CurrentProductContract) ... ok\ntest_preview_changed_boundary (__main__.CurrentProductContract) ... ok\ntest_preview_long (__main__.CurrentProductContract) ... ok\ntest_preview_short_empty (__main__.CurrentProductContract) ... ok\ntest_preview_unicode_characters (__main__.CurrentProductContract) ... ok\ntest_receipt_preserved (__main__.CurrentProductContract) ... ok\ntest_status_remaining_task (__main__.CurrentProductContract) ... ok\n\n----------------------------------------------------------------------\nRan 7 tests in 0.000s\n\nOK\n"
+  },
+  {
+    "label": "project-tests",
+    "command": [
+      "python3",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "tests",
+      "-v"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": "test_receipt_keeps_short_value (test_legacy.ReceiptContract) ... ok\ntest_receipt_stays_twelve (test_legacy.ReceiptContract) ... ok\ntest_counts_python_unicode_characters (test_preview.PreviewLabelTests) ... ok\ntest_empty_returns_empty (test_preview.PreviewLabelTests) ... ok\ntest_exactly_six_unchanged (test_preview.PreviewLabelTests) ... ok\ntest_five_characters_unchanged (test_preview.PreviewLabelTests) ... ok\ntest_input_not_mutated (test_preview.PreviewLabelTests) ... ok\ntest_longer_than_six_keeps_first_six (test_preview.PreviewLabelTests) ... ok\ntest_no_io (test_preview.PreviewLabelTests) ... ok\ntest_seven_characters_now_truncated (test_preview.PreviewLabelTests) ... ok\ntest_receipt_does_not_follow_preview_limit (test_preview.ReceiptIndependenceTests) ... ok\ntest_receipt_keeps_value_between_preview_and_receipt_limits (test_preview.ReceiptIndependenceTests) ... ok\ntest_receipt_still_twelve_while_preview_is_six (test_preview.ReceiptIndependenceTests) ... ok\ntest_already_clean_uppercased (test_status.StatusLabelTests) ... ok\ntest_empty_returns_empty (test_status.StatusLabelTests) ... ok\ntest_inner_whitespace_kept (test_status.StatusLabelTests) ... ok\ntest_preview_and_receipt_unchanged (test_status.StatusLabelTests) ... ok\ntest_strips_and_uppercases (test_status.StatusLabelTests) ... ok\ntest_uses_python_str_upper (test_status.StatusLabelTests) ... ok\ntest_whitespace_only_returns_empty (test_status.StatusLabelTests) ... ok\n\n----------------------------------------------------------------------\nRan 20 tests in 0.001s\n\nOK\n"
+  },
+  {
+    "label": "validate-check",
+    "command": [
+      "python3",
+      "/Users/mac/.claude/skills/dev/core/scripts/validate-feature.py",
+      "/private/tmp/featrace-resume-0533-e0zic_sg/project",
+      "RESUME-001",
+      "--stage",
+      "check"
+    ],
+    "exit": 0,
+    "stdout": "FEATURE_VALID\n",
+    "stderr": ""
+  },
+  {
+    "label": "audit-delivery",
+    "command": [
+      "python3",
+      "/Users/mac/.claude/skills/dev/core/scripts/audit-delivery.py",
+      "/private/tmp/featrace-resume-0533-e0zic_sg/project",
+      "RESUME-001"
+    ],
+    "exit": 0,
+    "stdout": "DELIVERY_EVIDENCE_CURRENT: selected checks passed and verified-fix test IDs were selected\nScope: manifests, tracked content outside .agent-workflow and registered evidence only; check task meaning, test assertions, uncommitted code and delivery report manually\n",
+    "stderr": ""
+  },
+  {
+    "label": "revision-status",
+    "command": [
+      "python3",
+      "/Users/mac/.claude/skills/dev/core/scripts/revise.py",
+      "status",
+      "/private/tmp/featrace-resume-0533-e0zic_sg/project",
+      "RESUME-001"
+    ],
+    "exit": 0,
+    "stdout": "{\n  \"baseline_version\": 2,\n  \"verified_version\": 2,\n  \"pending\": []\n}\n",
+    "stderr": ""
+  }
+]

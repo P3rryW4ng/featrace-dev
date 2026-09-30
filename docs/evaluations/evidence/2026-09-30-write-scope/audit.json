@@ -1,0 +1,285 @@
+{
+  "revision": {
+    "exit_code": 0,
+    "elapsed_seconds": 184.442,
+    "head": "5179ad2f17cd907844a318913a4d894019a4f4a5",
+    "changed": [
+      ".agent-workflow/.gitignore",
+      ".agent-workflow/features/RESUME-001/decisions.json",
+      ".agent-workflow/features/RESUME-001/decisions.md",
+      ".agent-workflow/features/RESUME-001/impact.json",
+      ".agent-workflow/features/RESUME-001/impact.md",
+      ".agent-workflow/features/RESUME-001/revisions.md",
+      ".agent-workflow/features/RESUME-001/spec/prd-analysis.md",
+      ".agent-workflow/features/RESUME-001/spec/prd-intake.json",
+      ".agent-workflow/features/RESUME-001/spec/requirements.json",
+      ".agent-workflow/features/RESUME-001/spec/spec.md",
+      ".agent-workflow/features/RESUME-001/task-review.json",
+      ".agent-workflow/features/RESUME-001/task-review.md",
+      ".agent-workflow/features/RESUME-001/tasks.json",
+      ".agent-workflow/features/RESUME-001/tasks.md",
+      ".agent-workflow/features/RESUME-001/verification.json",
+      ".agent-workflow/features/RESUME-001/verification.md"
+    ],
+    "added": [
+      ".agent-workflow/features/RESUME-001/revisions/CHG-001.json",
+      ".agent-workflow/features/RESUME-001/sources/revisions/87a25e882624064ab7e04e1d55df243cf3f6e326687886c8c84873b7613b8a82.md",
+      ".agent-workflow/scratch/RESUME-001/revise-v2-attempt1/CHG-proposal.json"
+    ],
+    "removed": [],
+    "skill_invocations": [
+      {
+        "tool": "Skill",
+        "skill": "featrace-write-scope:dev",
+        "args": "next --feature RESUME-001"
+      }
+    ],
+    "selected_calls": [
+      {
+        "tool": "Skill",
+        "skill": "featrace-write-scope:dev",
+        "args": "next --feature RESUME-001"
+      },
+      {
+        "tool": "Bash",
+        "command": "cd /private/tmp/featrace-write-scope-0534-r714e38o; ls -la; ls -R inputs revision | head -80; S=plugin/skills/dev/core/references; ls $S; wc -l $S/{orchestration,workflow,next-workflow,revision-workflow,write-scope,requirement-schema}.md"
+      },
+      {
+        "tool": "Bash",
+        "command": "cd /private/tmp/featrace-write-scope-0534-r714e38o; S=plugin/skills/dev/core/references; cat $S/{orchestration,workflow,next-workflow,revision-workflow,write-scope}.md; cd revision/project; git status --short; find . -path ./.git -prune -o -type f -print; cat .gitignore 2>/dev/null"
+      },
+      {
+        "tool": "Bash",
+        "command": "cd /private/tmp/featrace-write-scope-0534-r714e38o/revision/project; git status --short; find . -path ./.git -prune -o -type f -print; git log --stat -3 | head -60"
+      },
+      {
+        "tool": "Bash",
+        "command": "cd /private/tmp/featrace-write-scope-0534-r714e38o; cat inputs/prd-v2.md; echo ----; F=revision/project/.agent-workflow/features/RESUME-001; cat $F/sources/prd-original.md; echo ----; cat $F/spec/requirements.json; cat $F/decisions.json $F/revisions.md; ls plugin/skills/dev/core/scripts"
+      },
+      {
+        "tool": "Bash",
+        "command": "cd /private/tmp/featrace-write-scope-0534-r714e38o/plugin/skills/dev; P=/private/tmp/featrace-write-scope-0534-r714e38o/revision/project; python3 core/scripts/feature-status.py $P RESUME-001 2>&1 | head -60; python3 core/scripts/revise.py status $P RESUME-001; F=$P/.agent-workflow/features/RESUME-001; cat $F/tasks.json; cat $P/.agent-workflow/.gitignore; python3 core/scripts/revise.py --help 2>&1|head; python3 core/scripts/revise.py propose --help 2>&1 | head -20"
+      },
+      {
+        "tool": "Bash",
+        "command": "cd /private/tmp/featrace-write-scope-0534-r714e38o/plugin/skills/dev; grep -n -i \"decision\" core/references/requirement-schema.md | head -30; grep -n -i \"decision\\|chosen\\|approved\" core/scripts/revisions.py | head -50"
+      },
+      {
+        "tool": "Bash",
+        "command": "cd /private/tmp/featrace-write-scope-0534-r714e38o/plugin/skills/dev; sed -n 55,107p core/references/requirement-schema.md; grep -n \"def apply\\|decision\" core/scripts/revise.py | head -40"
+      },
+      {
+        "tool": "Bash",
+        "command": "cd /private/tmp/featrace-write-scope-0534-r714e38o/revision/project/.agent-workflow/features/RESUME-001; cat spec/prd-intake.json"
+      },
+      {
+        "tool": "Bash",
+        "command": "cd /private/tmp/featrace-write-scope-0534-r714e38o/revision/project; printf '/scratch/\\n' >> .agent-workflow/.gitignore; A=.agent-workflow/scratch/RESUME-001/revise-v2-attempt1; mkdir -p $A; git check-ignore -v $A/x; git status --short; realpath $A; shasum -a 256 ../../inputs/prd-v2.md"
+      },
+      {
+        "tool": "Bash",
+        "command": "cd /private/tmp/featrace-write-scope-0534-r714e38o/revision/project; python3 - <<'EOF'\nimport json\np='.agent-workflow/features/RESUME-001/decisions.json'\nd=json.load(open(p))\nd['decisions'].append({\n \"id\":\"D-001\",\"title\":\"R-1 preview limit revised from 8 to 6 characters (PRD v2)\",\"status\":\"approved\",\n \"field\":\"preview_label character limit\",\n \"conflicting_sources\":[\"sources/prd-original.md#R-1 Preview (limit 8)\",\"inputs/prd-v2.md (limit 6)\"],\n \"options\":[\"A. Keep 8 (v1)\",\"B. 6 per approved PRD v2\"],\n \"chosen\":\"B: preview_label returns the first 6 Python Unicode characters; <=6 unchanged; empty unchanged; length-7 input is truncated\",\n \"impact\":[\"R-1\",\"T-1\",\"tests/test_preview.py\",\"src/format"
+      },
+      {
+        "tool": "Bash",
+        "command": "cd /private/tmp/featrace-write-scope-0534-r714e38o/revision/project; A=$PWD/.agent-workflow/scratch/RESUME-001/revise-v2-attempt1; python3 - \"$A\" <<'EOF'\nimport json,sys\nr=json.load(open('.agent-workflow/features/RESUME-001/spec/requirements.json'))\nr1=[x for x in r['requirements'] if x['id']=='R-1'][0]\nac=list(r1['acceptance_criteria'])\nnew=list(ac)\nnew[0]=\"preview_label returns exactly the first 6 Python Unicode characters (code points, as by str slicing) for input longer than 6 characters; a length-7 input is truncated to its first 6 characters.\"\nnew[1]=\"Input of at most 6 characters, including exactly 6, is returned unchanged.\"\nnew[5]=\"receipt_id does not share the changed preview limit:"
+      },
+      {
+        "tool": "Bash",
+        "command": "cd /private/tmp/featrace-write-scope-0534-r714e38o/plugin/skills/dev; P=/private/tmp/featrace-write-scope-0534-r714e38o/revision/project; python3 core/scripts/revise.py apply $P RESUME-001 --revision CHG-001 && python3 core/scripts/revise.py status $P RESUME-001; find $P/.agent-workflow/features/RESUME-001/revisions $P/.agent-workflow/features/RESUME-001/sources -type f; cmp $P/.agent-workflow/features/RESUME-001/sources/prd-original.md <(git -C $P show HEAD:.agent-workflow/features/RESUME-001/sources/prd-original.md 2>/dev/null) ; echo cmp=$?"
+      },
+      {
+        "tool": "Bash",
+        "command": "cd /private/tmp/featrace-write-scope-0534-r714e38o/plugin/skills/dev; P=/private/tmp/featrace-write-scope-0534-r714e38o/revision/project; F=$P/.agent-workflow/features/RESUME-001; shasum -a 256 $F/sources/prd-original.md; cat $F/revisions/CHG-001.json | head -30; for s in register-source review-prd task_review impact regression_review verification validate-feature; do echo \"== $s\"; python3 core/scripts/$s.py --help 2>&1 | head -25; done"
+      },
+      {
+        "tool": "Bash",
+        "command": "cd /private/tmp/featrace-write-scope-0534-r714e38o/plugin/skills/dev; sed -n 1,80p core/scripts/register-source.py"
+      },
+      {
+        "tool": "Bash",
+        "command": "cd /private/tmp/featrace-write-scope-0534-r714e38o/plugin/skills/dev; grep -n \"def source_path\" -A25 core/scripts/prd_intake.py; grep -n \"superseded_by\\|revisions/\" core/scripts/*.py | head -30"
+      },
+      {
+        "tool": "Bash",
+        "command": "cd /private/tmp/featrace-write-scope-0534-r714e38o/plugin/skills/dev; sed -n 170,240p core/scripts/prd_intake.py"
+      },
+      {
+        "tool": "Bash",
+        "command": "cd /private/tmp/featrace-write-scope-0534-r714e38o/revision/project; python3 - <<'EOF'\nimport json\nF='.agent-workflow/features/RESUME-001/'\nit=json.load(open(F+'spec/prd-intake.json')); rq=json.load(open(F+'spec/requirements.json'))\nV2='sources/revisions/87a25e882624064ab7e04e1d55df243cf3f6e326687886c8c84873b7613b8a82.md'\nCHG='revisions/CHG-001.json'\nit['sources']+= [{\"id\":\"SRC-02\",\"path\":V2,\"kind\":\"document\"},{\"id\":\"SRC-03\",\"path\":CHG,\"kind\":\"document\"}]\nit['units']+= [\n {\"id\":\"U-5\",\"source\":V2,\"locator\":\"title line and paragraph 1 (approved revision of R-1)\",\"kind\":\"text\",\"status\":\"read\"},\n {\"id\":\"U-6\",\"source\":V2,\"locator\":\"paragraph 2 (preserved behavior and authority)\",\"kind\":\"text\",\"st"
+      },
+      {
+        "tool": "Bash",
+        "command": "cd /private/tmp/featrace-write-scope-0534-r714e38o/plugin/skills/dev/core; cat references/task-semantic-review.md; python3 scripts/task_review.py review --help; python3 scripts/task_review.py sync --help"
+      },
+      {
+        "tool": "Bash",
+        "command": "cd /private/tmp/featrace-write-scope-0534-r714e38o/revision/project; cat src/formatting.py; grep -n \"def test\\|8\\|class\" tests/test_preview.py; cat .agent-workflow/features/RESUME-001/impact.json .agent-workflow/features/RESUME-001/regression-review.json; python3 -c \"\nimport json;v=json.load(open('.agent-workflow/features/RESUME-001/verification.json'));print(json.dumps({k:v[k] for k in v if k!='items'},indent=1)[:1500]);print(json.dumps(v['items'][0],indent=1));[print(i['id'],i.get('status'),i.get('requirement_ids') or i.get('requirement_id'),i.get('title','')[:80]) for i in v['items']]\""
+      },
+      {
+        "tool": "Bash",
+        "command": "cd /private/tmp/featrace-write-scope-0534-r714e38o/plugin/skills/dev/core/references; grep -n -i \"base_revision\\|requirement change\\|revision\" impact-review.md historical-regression.md | head; grep -n -i \"stale\\|retire\\|sync\\|baseline\" verification-workflow.md | head -20"
+      },
+      {
+        "tool": "Bash",
+        "command": "cd /private/tmp/featrace-write-scope-0534-r714e38o/revision/project; python3 - <<'EOF'\nimport json\nF='.agent-workflow/features/RESUME-001/'\nt=json.load(open(F+'tasks.json'))\nt1=t['tasks'][0]; assert t1['id']=='T-1'\nt1['title']=\"Change preview_label limit to 6 (baseline v2, CHG-001) with independent receipt limit and tests\"\nt1['status']='planned'\nt1['preserved']=[\"receipt_id 12-char behavior\",\"status_label unchanged\",\"tests/test_legacy.py unchanged\",\"preview empty/short unchanged, no mutation or I/O\"]\nt1['description']=\"Reopened by applied revision CHG-001 (D-001, approved PRD v2): set PREVIEW_LIMIT to 6 in src/formatting.py; replace the 8-character boundary tests in tests/test_preview.py wit"
+      },
+      {
+        "tool": "Bash",
+        "command": "cd /private/tmp/featrace-write-scope-0534-r714e38o/plugin/skills/dev; P=/private/tmp/featrace-write-scope-0534-r714e38o/revision/project\npython3 core/scripts/task_review.py review $P RESUME-001 --reviewer agent --task T-1 --requirement R-1 --evidence \"R-1 v2 statement and AC0-AC6 (baseline v2)\" --evidence \"revisions/CHG-001.json changes (title/statement/acceptance_criteria)\" --evidence \"D-001 approved decision\" --evidence \"intake S-7, S-8, S-9 (PRD v2 and CHG-001)\" --evidence \"impact.json B-1/B-2\" --notes \"Compared reopened T-1 against R-1 v2 only: PREVIEW_LIMIT 8->6 matches statement/AC0 (length-7 truncated); 5/6 unchanged matches AC1; empty and non-ASCII cases match AC2/AC6; no mutation/I/"
+      },
+      {
+        "tool": "Bash",
+        "command": "cd /private/tmp/featrace-write-scope-0534-r714e38o/plugin/skills/dev; P=/private/tmp/featrace-write-scope-0534-r714e38o/revision/project; python3 core/scripts/feature-status.py $P RESUME-001 | sed -n 8,20p; cat $P/.agent-workflow/features/RESUME-001/revisions.md; cd $P; git status --short --untracked-files=all; git diff --stat; git diff --quiet HEAD -- src tests && echo \"src/tests untouched\"; python3 -c \"import json;print(len(json.load(open('.agent-workflow/features/RESUME-001/verification.json'))['retired']))\""
+      },
+      {
+        "tool": "Write",
+        "path": "/private/tmp/featrace-write-scope-0534-r714e38o/revision/assessment.md"
+      }
+    ],
+    "hook_denials": []
+  },
+  "mutation": {
+    "exit_code": 0,
+    "elapsed_seconds": 93.998,
+    "head": "5179ad2f17cd907844a318913a4d894019a4f4a5",
+    "changed": [
+      ".agent-workflow/.gitignore"
+    ],
+    "added": [
+      ".agent-workflow/scratch/RESUME-001/mutation-y674VT/m1-preview-limit-12/fault.diff",
+      ".agent-workflow/scratch/RESUME-001/mutation-y674VT/m1-preview-limit-12/run.log",
+      ".agent-workflow/scratch/RESUME-001/mutation-y674VT/m1-preview-limit-12/src/__init__.py",
+      ".agent-workflow/scratch/RESUME-001/mutation-y674VT/m1-preview-limit-12/src/formatting.py",
+      ".agent-workflow/scratch/RESUME-001/mutation-y674VT/m1-preview-limit-12/tests/__init__.py",
+      ".agent-workflow/scratch/RESUME-001/mutation-y674VT/m1-preview-limit-12/tests/test_legacy.py",
+      ".agent-workflow/scratch/RESUME-001/mutation-y674VT/m1-preview-limit-12/tests/test_preview.py",
+      ".agent-workflow/scratch/RESUME-001/mutation-y674VT/m2-receipt-shares-preview-limit/fault.diff",
+      ".agent-workflow/scratch/RESUME-001/mutation-y674VT/m2-receipt-shares-preview-limit/run.log",
+      ".agent-workflow/scratch/RESUME-001/mutation-y674VT/m2-receipt-shares-preview-limit/src/__init__.py",
+      ".agent-workflow/scratch/RESUME-001/mutation-y674VT/m2-receipt-shares-preview-limit/src/formatting.py",
+      ".agent-workflow/scratch/RESUME-001/mutation-y674VT/m2-receipt-shares-preview-limit/tests/__init__.py",
+      ".agent-workflow/scratch/RESUME-001/mutation-y674VT/m2-receipt-shares-preview-limit/tests/test_legacy.py",
+      ".agent-workflow/scratch/RESUME-001/mutation-y674VT/m2-receipt-shares-preview-limit/tests/test_preview.py",
+      ".agent-workflow/scratch/RESUME-001/mutation-y674VT/original-run.log"
+    ],
+    "removed": [],
+    "skill_invocations": [
+      {
+        "tool": "Skill",
+        "skill": "featrace-write-scope:dev",
+        "args": "next --feature RESUME-001"
+      }
+    ],
+    "selected_calls": [
+      {
+        "tool": "Skill",
+        "skill": "featrace-write-scope:dev",
+        "args": "next --feature RESUME-001"
+      },
+      {
+        "tool": "Bash",
+        "command": "cd /private/tmp/featrace-write-scope-0534-r714e38o/plugin/skills/dev/core/references && wc -l orchestration.md workflow.md next-workflow.md write-scope.md feature-selection.md; cd /private/tmp/featrace-write-scope-0534-r714e38o/mutation/project && git status --short --ignored && find . -path ./.git -prune -o -type f -print | head -100; ls /private/tmp/featrace-write-scope-0534-r714e38o/mutation"
+      },
+      {
+        "tool": "Bash",
+        "command": "cd /private/tmp/featrace-write-scope-0534-r714e38o/plugin/skills/dev/core/references && cat orchestration.md workflow.md next-workflow.md write-scope.md feature-selection.md"
+      },
+      {
+        "tool": "Bash",
+        "command": "S=/private/tmp/featrace-write-scope-0534-r714e38o/plugin/skills/dev; P=/private/tmp/featrace-write-scope-0534-r714e38o/mutation/project; cd $P && python3 $S/core/scripts/feature-context.py resolve $P --feature RESUME-001; ls $S/core/scripts; python3 $S/core/scripts/feature-status.py --help 2>&1 | head -20"
+      },
+      {
+        "tool": "Bash",
+        "command": "S=/private/tmp/featrace-write-scope-0534-r714e38o/plugin/skills/dev; P=/private/tmp/featrace-write-scope-0534-r714e38o/mutation/project; cd $P && python3 $S/core/scripts/feature-status.py $P RESUME-001; F=.agent-workflow/features/RESUME-001; cat $F/tasks.md $F/verification.md $F/fixes.md $F/decisions.md; cat src/formatting.py tests/*.py; cat .agent-workflow/.gitignore"
+      },
+      {
+        "tool": "Bash",
+        "command": "git rev-parse HEAD && python3 -m unittest discover -s tests -v 2>&1; echo \"RC=$?\"; git check-ignore -v .agent-workflow/scratch/RESUME-001/x || echo \"scratch not ignored\"; ls -la .agent-workflow | grep -i scratch"
+      },
+      {
+        "tool": "Bash",
+        "command": "printf '/scratch/\\n' >> .agent-workflow/.gitignore && tail -3 .agent-workflow/.gitignore && mkdir -p .agent-workflow/scratch/RESUME-001 && A=$(mktemp -d /private/tmp/featrace-write-scope-0534-r714e38o/mutation/project/.agent-workflow/scratch/RESUME-001/mutation-XXXXXX) && echo $A && git check-ignore -v \"$A/probe\" && git status --short"
+      },
+      {
+        "tool": "Bash",
+        "command": "P=/private/tmp/featrace-write-scope-0534-r714e38o/mutation/project; A=$P/.agent-workflow/scratch/RESUME-001/mutation-y674VT; cd $P\nfor m in m1-preview-limit-12 m2-receipt-shares-preview-limit; do mkdir -p $A/$m; cp -R src tests $A/$m/; done\nsed -i '' 's/^PREVIEW_LIMIT = 8$/PREVIEW_LIMIT = 12/' $A/m1-preview-limit-12/src/formatting.py\nsed -i '' 's/return text\\[:RECEIPT_LIMIT\\]/return text[:PREVIEW_LIMIT]/' $A/m2-receipt-shares-preview-limit/src/formatting.py\nfor m in m1-preview-limit-12 m2-receipt-shares-preview-limit; do\n  echo \"== $m src diff\"; diff -u src/formatting.py $A/$m/src/formatting.py | tee $A/$m/fault.diff\n  echo \"== $m tests identical to original?\"; diff -r tests $A/$m/tests && e"
+      },
+      {
+        "tool": "Write",
+        "path": "/private/tmp/featrace-write-scope-0534-r714e38o/mutation/assessment.md"
+      }
+    ],
+    "hook_denials": []
+  },
+  "scratch-denied": {
+    "exit_code": 0,
+    "elapsed_seconds": 94.206,
+    "head": "5179ad2f17cd907844a318913a4d894019a4f4a5",
+    "changed": [],
+    "added": [],
+    "removed": [],
+    "skill_invocations": [
+      {
+        "tool": "Skill",
+        "skill": "featrace-write-scope:dev",
+        "args": "next --feature RESUME-001"
+      }
+    ],
+    "selected_calls": [
+      {
+        "tool": "Skill",
+        "skill": "featrace-write-scope:dev",
+        "args": "next --feature RESUME-001"
+      },
+      {
+        "tool": "Bash",
+        "command": "cd /private/tmp/featrace-write-scope-0534-r714e38o/plugin/skills/dev/core/references && wc -l orchestration.md workflow.md next-workflow.md write-scope.md feature-selection.md; cat next-workflow.md write-scope.md"
+      },
+      {
+        "tool": "Bash",
+        "command": "cd /private/tmp/featrace-write-scope-0534-r714e38o/scratch-denied/project && git status --short --ignored && find . -path ./.git -prune -o -type f -print | sort && cat .gitignore 2>/dev/null"
+      },
+      {
+        "tool": "Bash",
+        "command": "cd /private/tmp/featrace-write-scope-0534-r714e38o/scratch-denied/project && cat .agent-workflow/.gitignore README.md src/formatting.py tests/*.py && F=.agent-workflow/features/RESUME-001 && cat $F/tasks.md $F/verification.md $F/spec/spec.md $F/revisions.md && git log --stat -4 | head -60"
+      },
+      {
+        "tool": "Bash",
+        "command": "cd /private/tmp/featrace-write-scope-0534-r714e38o/plugin/skills/dev && P=/private/tmp/featrace-write-scope-0534-r714e38o/scratch-denied/project; python3 core/scripts/feature-context.py resolve $P --feature RESUME-001; echo \"rc=$?\"; ls core/scripts; python3 core/scripts/feature-status.py --help 2>&1 | head -20"
+      },
+      {
+        "tool": "Bash",
+        "command": "python3 core/scripts/feature-status.py /private/tmp/featrace-write-scope-0534-r714e38o/scratch-denied/project RESUME-001"
+      },
+      {
+        "tool": "Bash",
+        "command": "P=/private/tmp/featrace-write-scope-0534-r714e38o/scratch-denied/project; cd $P && ls -la .agent-workflow | head; test -L .agent-workflow && echo SYMLINK; printf '/scratch/\\n' >> .agent-workflow/.gitignore && tail -3 .agent-workflow/.gitignore && mkdir -p .agent-workflow/scratch/RESUME-001 && A=$(mktemp -d \"$P/.agent-workflow/scratch/RESUME-001/mutation-XXXXXX\") && echo $A && git check-ignore -v \"$A/x\" && git status --short"
+      },
+      {
+        "tool": "Bash",
+        "command": "cd /private/tmp/featrace-write-scope-0534-r714e38o/scratch-denied/project && git status --short; ls .agent-workflow/scratch 2>&1; git rev-parse HEAD; PYTHONDONTWRITEBYTECODE=1 python3 -B -m unittest discover -s tests -v; echo \"rc=$?\"; git status --short --ignored | grep -v '^!! .agent-workflow' "
+      },
+      {
+        "tool": "Bash",
+        "command": "cd /private/tmp/featrace-write-scope-0534-r714e38o/scratch-denied/project && for M in preview12 receipt_shares; do echo \"===== MUTANT $M =====\"; PYTHONDONTWRITEBYTECODE=1 python3 -B - \"$M\" <<'EOF'\nimport sys, types, unittest, importlib\nmode = sys.argv[1]\norig = open(\"src/formatting.py\").read()\nif mode == \"preview12\":\n    old, new = \"PREVIEW_LIMIT = 8\\n\", \"PREVIEW_LIMIT = 12\\n\"\nelse:\n    old, new = \"return text[:RECEIPT_LIMIT]\", \"return text[:PREVIEW_LIMIT]\"\nassert orig.count(old) == 1, \"mutation anchor not unique\"\nmutated = orig.replace(old, new)\nimport src\nmod = types.ModuleType(\"src.formatting\"); mod.__file__ = \"<in-memory mutant %s>\" % mode\nexec(compile(mutated, mod.__file__, \"exec\"), mod"
+      },
+      {
+        "tool": "Write",
+        "path": "/private/tmp/featrace-write-scope-0534-r714e38o/scratch-denied/assessment.md"
+      }
+    ],
+    "hook_denials": [
+      {
+        "tool": "Bash",
+        "id": "toolu_01PnJBLg6koJsSGNJ7qduSzn",
+        "reason": "project-local scratch write unavailable (EACCES)"
+      },
+      {
+        "tool": "Bash",
+        "id": "toolu_015DeY6xwWLSKxiewQcy1XFe",
+        "reason": "project-local scratch write unavailable (EACCES)"
+      }
+    ]
+  }
+}

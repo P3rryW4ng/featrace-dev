@@ -1,0 +1,23 @@
+{
+  "audit.json": "904a176e9b1fe733a62ebe9448e465d29dc9c406a0d228cc96aac744916d24af",
+  "mutation/settings.json": "e3a7e522e6fe3cd03063e9d527aec7a6f42157dbe18d27bede710547a3a54ecd",
+  "mutation/prompt.txt": "a1157d59010cb0479c4701a13c10b6b7b223b6b575197e14b2960b79249e0f11",
+  "mutation/assessment.md": "ea50c9e5e4baa2b5a91def89cd9a9220e32217b710d7390a594aad5209a766d7",
+  "mutation/original-run.log": "7e55489b5fb5363e10f3d29eef823c2c1ab87da0db128bac57925e973049a9b3",
+  "mutation/execution.json": "12076ea537d97b766d5a004fb8ec1a5123b9133ac0ba741b183204deb8d92291",
+  "mutation/m1-preview-limit-12/fault.diff": "1210550cc81abca61dc5b96076eeb268c78f93a2bf25e9491dc17dff9965e218",
+  "mutation/m1-preview-limit-12/run.log": "429c144d8bac4a9b9c2bdd5e409bd5bc6f395830438dfa0b6a25093ae5bfd6d2",
+  "mutation/m2-receipt-shares-preview-limit/fault.diff": "9bc9da8b48617878db183807914b3ea0537d4c69fb966e336ce99109087e2ac9",
+  "mutation/m2-receipt-shares-preview-limit/run.log": "f51e5a3d8c0d6c1ba065e8f6032b0f0688cdf63915a828e201ed54be49cd5546",
+  "scratch-denied/settings.json": "b7a7044c31e84ed11ce7c67d13470cfd75c904b68624a690708e60d44a977725",
+  "scratch-denied/injections.jsonl": "6483307a8a2b1fb83a865cae16374ab0bad1d93492e7ca86d30f8d796508c8f2",
+  "scratch-denied/prompt.txt": "b58d885d1067c9cb8b77b369b1bdff5f27f7e665f34cdab25059861207b4887e",
+  "scratch-denied/assessment.md": "1ea7263a1c635d05443fb8b38afd7757e66f52a403879f31ae975dbd60d0bcc3",
+  "scratch-denied/execution.json": "e5d0fd55fee0000f7df16d85e400a2e9d8ab5d733091518388cd71b7272d04c0",
+  "revision/CHG-001.json": "44739bb2a60858ae26166f0ae225e5d916f032750c00abe07006350d81b52d04",
+  "revision/settings.json": "93dc412f1bb20e359ec1c14193089d0c27042864eb051cb2b36e26a9a6fd3b7b",
+  "revision/prompt.txt": "33f83575a8aeb21589d1c4002a43380815c0be9291606aab0af84d9be4fd64b8",
+  "revision/CHG-proposal.json": "16a99b8345ac4f8eca0a9fd637c5e4c6e0cb14df03b1047da07502a5543bf91c",
+  "revision/assessment.md": "4ffacaf518769c653510cb7dd218e91c4530b8693fab78fe0b252d1fbab1e11a",
+  "revision/execution.json": "069c99591eda3d0e82dca85ceb042f7a5e9b456b3df55a664bf3a73dbc61d8ad"
+}

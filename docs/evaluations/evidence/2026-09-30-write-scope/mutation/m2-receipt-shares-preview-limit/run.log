@@ -1,0 +1,66 @@
+test_receipt_keeps_short_value (test_legacy.ReceiptContract) ... ok
+test_receipt_stays_twelve (test_legacy.ReceiptContract) ... FAIL
+test_counts_python_unicode_characters (test_preview.PreviewLabelTests) ... ok
+test_empty_returns_empty (test_preview.PreviewLabelTests) ... ok
+test_exactly_eight_unchanged (test_preview.PreviewLabelTests) ... ok
+test_input_not_mutated (test_preview.PreviewLabelTests) ... ok
+test_longer_than_eight_keeps_first_eight (test_preview.PreviewLabelTests) ... ok
+test_nine_characters_drops_last (test_preview.PreviewLabelTests) ... ok
+test_no_io (test_preview.PreviewLabelTests) ... ok
+test_seven_characters_unchanged (test_preview.PreviewLabelTests) ... ok
+test_receipt_does_not_follow_preview_limit (test_preview.ReceiptIndependenceTests) ... FAIL
+test_receipt_keeps_value_between_preview_and_receipt_limits (test_preview.ReceiptIndependenceTests) ... FAIL
+test_receipt_still_twelve_while_preview_is_eight (test_preview.ReceiptIndependenceTests) ... FAIL
+
+======================================================================
+FAIL: test_receipt_stays_twelve (test_legacy.ReceiptContract)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/featrace-write-scope-0534-r714e38o/mutation/project/.agent-workflow/scratch/RESUME-001/mutation-y674VT/m2-receipt-shares-preview-limit/tests/test_legacy.py", line 6, in test_receipt_stays_twelve
+    self.assertEqual(receipt_id("abcdefghijklmnop"), "abcdefghijkl")
+AssertionError: 'abcdefgh' != 'abcdefghijkl'
+- abcdefgh
++ abcdefghijkl
+?         ++++
+
+
+======================================================================
+FAIL: test_receipt_does_not_follow_preview_limit (test_preview.ReceiptIndependenceTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/featrace-write-scope-0534-r714e38o/mutation/project/.agent-workflow/scratch/RESUME-001/mutation-y674VT/m2-receipt-shares-preview-limit/tests/test_preview.py", line 42, in test_receipt_does_not_follow_preview_limit
+    self.assertEqual(receipt_id("abcdefghijklmnop"), "abcdefghijkl")
+AssertionError: 'abc' != 'abcdefghijkl'
+- abc
++ abcdefghijkl
+
+
+======================================================================
+FAIL: test_receipt_keeps_value_between_preview_and_receipt_limits (test_preview.ReceiptIndependenceTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/featrace-write-scope-0534-r714e38o/mutation/project/.agent-workflow/scratch/RESUME-001/mutation-y674VT/m2-receipt-shares-preview-limit/tests/test_preview.py", line 39, in test_receipt_keeps_value_between_preview_and_receipt_limits
+    self.assertEqual(receipt_id("abcdefghij"), "abcdefghij")
+AssertionError: 'abcdefgh' != 'abcdefghij'
+- abcdefgh
++ abcdefghij
+?         ++
+
+
+======================================================================
+FAIL: test_receipt_still_twelve_while_preview_is_eight (test_preview.ReceiptIndependenceTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/featrace-write-scope-0534-r714e38o/mutation/project/.agent-workflow/scratch/RESUME-001/mutation-y674VT/m2-receipt-shares-preview-limit/tests/test_preview.py", line 36, in test_receipt_still_twelve_while_preview_is_eight
+    self.assertEqual(receipt_id(text), "abcdefghijkl")
+AssertionError: 'abcdefgh' != 'abcdefghijkl'
+- abcdefgh
++ abcdefghijkl
+?         ++++
+
+
+----------------------------------------------------------------------
+Ran 13 tests in 0.001s
+
+FAILED (failures=4)
+RC=1

@@ -1,0 +1,29 @@
+{
+  "disableAllHooks": false,
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Read|Bash|Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 /private/tmp/featrace-write-scope-0534-r714e38o/observer.py /private/tmp/featrace-write-scope-0534-r714e38o/scratch-denied",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Read|Bash|Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 /private/tmp/featrace-write-scope-0534-r714e38o/observer.py /private/tmp/featrace-write-scope-0534-r714e38o/scratch-denied",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}

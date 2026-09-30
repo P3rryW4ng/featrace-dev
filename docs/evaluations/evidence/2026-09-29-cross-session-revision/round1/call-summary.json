@@ -1,0 +1,298 @@
+[
+  {
+    "order": 1,
+    "event": 1,
+    "name": "Skill",
+    "path": null,
+    "description": null,
+    "command_prefix": ""
+  },
+  {
+    "order": 2,
+    "event": 3,
+    "name": "Bash",
+    "path": null,
+    "description": "Survey skill files, inputs and project",
+    "command_prefix": "cd /Users/mac/.claude/skills/dev && ls -R | head -80 && wc -c core/references/*.md; cd /private/tmp/featrace-resume-0533-e0zic_sg && ls -la . inputs project && cat inputs/prd-v1.md && cd project && git log --oneline && find . -path ./.git -prune -o -type f -print"
+  },
+  {
+    "order": 3,
+    "event": 5,
+    "name": "Bash",
+    "path": null,
+    "description": "Read project source and main workflow refs",
+    "command_prefix": "cd /private/tmp/featrace-resume-0533-e0zic_sg && cat project/README.md project/src/*.py project/tests/*.py; ls -la round1 round2; cd /Users/mac/.claude/skills/dev/core/references && cat orchestration.md workflow.md next-workflow.md"
+  },
+  {
+    "order": 4,
+    "event": 7,
+    "name": "Bash",
+    "path": null,
+    "description": "Read selection, git-sharing and PRD analysis refs",
+    "command_prefix": "cd /Users/mac/.claude/skills/dev/core/references && cat feature-selection.md git-sharing.md prd-analysis.md"
+  },
+  {
+    "order": 5,
+    "event": 9,
+    "name": "Bash",
+    "path": null,
+    "description": "Resolve feature and read baseline ref",
+    "command_prefix": "cd /Users/mac/.claude/skills/dev && python3 core/scripts/feature-context.py resolve /private/tmp/featrace-resume-0533-e0zic_sg/project --feature RESUME-001; python3 core/scripts/feature-context.py list /private/tmp/featrace-resume-0533-e0zic_sg/project; ls core/scripts | tail -30; sed -n 1,200p core/references/project-baseline.md | head -120"
+  },
+  {
+    "order": 6,
+    "event": 11,
+    "name": "Bash",
+    "path": null,
+    "description": "Read requirement schema and profiles list",
+    "command_prefix": "cd /Users/mac/.claude/skills/dev && ls profiles profiles/*; cat core/references/requirement-schema.md; cat core/assets/config.yaml"
+  },
+  {
+    "order": 7,
+    "event": 13,
+    "name": "Bash",
+    "path": null,
+    "description": "Read generic profile, set up git ignore, prepare scan",
+    "command_prefix": "cd /Users/mac/.claude/skills/dev && cat profiles/generic/PROFILE.md; P=/private/tmp/featrace-resume-0533-e0zic_sg/project; python3 core/scripts/setup-workflow-git.py $P; python3 core/scripts/project.py scan-prepare $P; cd $P && git status --short"
+  },
+  {
+    "order": 8,
+    "event": 15,
+    "name": "Bash",
+    "path": null,
+    "description": "Inspect generated baseline draft files",
+    "command_prefix": "cd /private/tmp/featrace-resume-0533-e0zic_sg/project/.agent-workflow && find . -type f | sort && for f in baseline-draft/baseline/*; do echo \"=== $f\"; cat \"$f\"; done"
+  },
+  {
+    "order": 9,
+    "event": 17,
+    "name": "Bash",
+    "path": null,
+    "description": "Write baseline notes and publish scan",
+    "command_prefix": "cd /private/tmp/featrace-resume-0533-e0zic_sg/project/.agent-workflow/baseline-draft/baseline && cat > architecture.md <<'EOF'\n# Architecture\n\nObserved (source-reviewed, commit 199b3b7):\n\n- `src/formatting.py` — single pure-function module: `preview_label`, `receipt_id`, `status_label`; module constants `PREVIEW_LIMIT = 12`, `RECEIPT_LIMIT = 12`.\n- `src/__init__.py` — empty package marker.\n- `test"
+  },
+  {
+    "order": 10,
+    "event": 19,
+    "name": "Bash",
+    "path": null,
+    "description": "Initialize feature RESUME-001 and show records",
+    "command_prefix": "cd /Users/mac/.claude/skills/dev && P=/private/tmp/featrace-resume-0533-e0zic_sg/project && shasum -a 256 /private/tmp/featrace-resume-0533-e0zic_sg/inputs/prd-v1.md && bash core/scripts/init-feature.sh RESUME-001 /private/tmp/featrace-resume-0533-e0zic_sg/inputs/prd-v1.md $P && cd $P/.agent-workflow/features/RESUME-001 && find . -type f | sort && shasum -a 256 sources/* && cat spec/requirements.j"
+  },
+  {
+    "order": 11,
+    "event": 21,
+    "name": "Bash",
+    "path": null,
+    "description": "Read revision workflow and revise.py CLI",
+    "command_prefix": "cd /Users/mac/.claude/skills/dev/core/references && cat revision-workflow.md | head -80; grep -n \"add_argument\\|def main\\|subparsers\\|add_parser\" ../scripts/revise.py | head -40"
+  },
+  {
+    "order": 12,
+    "event": 23,
+    "name": "Bash",
+    "path": null,
+    "description": "Write feature canonical records and render",
+    "command_prefix": "cd /private/tmp/featrace-resume-0533-e0zic_sg/project/.agent-workflow/features/RESUME-001 && python3 - <<'EOF'\nimport json\nreq=json.load(open('spec/requirements.json'))\nf=req['feature']\nf['title']='Formatting preview limit and status label'\nf['source_status']={'prd':'present','api':'not_applicable','figma':'not_applicable'}\nf['source_notes']={'api':'Local pure string functions with no backend or d"
+  },
+  {
+    "order": 13,
+    "event": 25,
+    "name": "Bash",
+    "path": null,
+    "description": "Record PRD review and validate draft/develop",
+    "command_prefix": "cd /Users/mac/.claude/skills/dev && P=/private/tmp/featrace-resume-0533-e0zic_sg/project && python3 core/scripts/review-prd.py $P RESUME-001 --reviewer agent --notes \"Re-read sources/prd-original.md (sha256 57fac7d3...) paragraph by paragraph. U-1 preamble excluded as authority/module background. R-1: 8-char limit as Python code points, <=8 unchanged (incl. exactly 8), empty->empty, no mutation/I/"
+  },
+  {
+    "order": 14,
+    "event": 27,
+    "name": "Bash",
+    "path": null,
+    "description": "Read Scope stage references",
+    "command_prefix": "cd /Users/mac/.claude/skills/dev/core/references && cat impact-review.md task-semantic-review.md historical-regression.md; sed -n 1,200p module-context.md"
+  },
+  {
+    "order": 15,
+    "event": 29,
+    "name": "Bash",
+    "path": null,
+    "description": "Create module catalog, set scope, plan module",
+    "command_prefix": "P=/private/tmp/featrace-resume-0533-e0zic_sg/project; mkdir -p $P/.agent-workflow/modules/drafts && cat > $P/.agent-workflow/modules/index.json <<'EOF'\n{\n  \"schema_version\": 1,\n  \"shared_stack\": \"Python 3 standard library only; unittest; no build manifest (README.md)\",\n  \"global_files\": [\"README.md\"],\n  \"modules\": [\n    {\"id\": \"formatting\", \"summary\": \"Pure string formatting functions (preview_lab"
+  },
+  {
+    "order": 16,
+    "event": 31,
+    "name": "Bash",
+    "path": null,
+    "description": "Review formatting module dossier and render graph",
+    "command_prefix": "P=/private/tmp/featrace-resume-0533-e0zic_sg/project; cat > $P/.agent-workflow/modules/drafts/formatting.json <<'EOF'\n{\n  \"module_id\": \"formatting\",\n  \"technology\": [{\"detail\": \"Python 3 standard library only, no dependencies; unittest discovery from project root\", \"evidence_files\": [\"README.md\"]}],\n  \"behaviors\": [\n    {\"detail\": \"Baseline (199b3b7): preview_label returns text[:PREVIEW_LIMIT] wit"
+  },
+  {
+    "order": 17,
+    "event": 33,
+    "name": "Bash",
+    "path": null,
+    "description": "Write impact, sync regression and task review",
+    "command_prefix": "P=/private/tmp/featrace-resume-0533-e0zic_sg/project; F=$P/.agent-workflow/features/RESUME-001; cat > $F/impact.json <<'EOF'\n{\n  \"schema_version\": 1,\n  \"feature_id\": \"RESUME-001\",\n  \"base_revision\": \"199b3b7b2d7757d0b2cef8ad6c585b68dcf1bc60\",\n  \"inspected_paths\": [\"src/formatting.py\", \"src/__init__.py\", \"tests/test_legacy.py\", \"tests/__init__.py\", \"README.md\"],\n  \"allowed_paths\": [\"src/formatting."
+  },
+  {
+    "order": 18,
+    "event": 35,
+    "name": "Bash",
+    "path": null,
+    "description": "Record task review and validate develop stage",
+    "command_prefix": "P=/private/tmp/featrace-resume-0533-e0zic_sg/project; cd /Users/mac/.claude/skills/dev && python3 core/scripts/task_review.py review $P RESUME-001 --reviewer agent --notes \"T-1 wording/paths/preserved list compared to R-1 statement and AC0-AC6 (S-2,S-3,S-6): covers 8-char limit, independent receipt limit, legacy tests unchanged. T-2 compared to R-2 statement and AC0-AC3 (S-4,S-5,S-6): strip+upper,"
+  },
+  {
+    "order": 19,
+    "event": 37,
+    "name": "Bash",
+    "path": null,
+    "description": "Adopt requirement baseline and show status",
+    "command_prefix": "P=/private/tmp/featrace-resume-0533-e0zic_sg/project; cd /Users/mac/.claude/skills/dev && python3 core/scripts/revise.py init $P RESUME-001 --reason \"Approved original PRD inputs/prd-v1.md (sha256 57fac7d3...); user confirmed all business rules in this conversation (2026-09-29) and authorized baseline adoption\" && python3 core/scripts/revise.py status $P RESUME-001; python3 core/scripts/feature-st"
+  },
+  {
+    "order": 20,
+    "event": 39,
+    "name": "Bash",
+    "path": null,
+    "description": "Stage workflow records and check ignores",
+    "command_prefix": "cat .agent-workflow/.gitignore && git add .agent-workflow && git status --short && python3 -c \"import json;print(json.load(open('.agent-workflow/features/RESUME-001/spec/requirements.json'))['feature']['status'])\""
+  },
+  {
+    "order": 21,
+    "event": 41,
+    "name": "Bash",
+    "path": null,
+    "description": "Find allowed feature status values",
+    "command_prefix": "cd /Users/mac/.claude/skills/dev/core/scripts && grep -n \"provisional\" *.py | head -15"
+  },
+  {
+    "order": 22,
+    "event": 43,
+    "name": "Bash",
+    "path": null,
+    "description": "Mark provisional, validate, commit scope records",
+    "command_prefix": "python3 - <<'EOF'\nimport json\np='.agent-workflow/features/RESUME-001/spec/requirements.json'\nd=json.load(open(p)); d['feature']['status']='provisional'; json.dump(d,open(p,'w'),indent=2,ensure_ascii=False)\nEOF\ncd /Users/mac/.claude/skills/dev && P=/private/tmp/featrace-resume-0533-e0zic_sg/project && python3 core/scripts/render-workspace.py $P RESUME-001 && python3 core/scripts/validate-feature.py"
+  },
+  {
+    "order": 23,
+    "event": 45,
+    "name": "Write",
+    "path": "/private/tmp/featrace-resume-0533-e0zic_sg/project/tests/test_preview.py",
+    "description": null,
+    "command_prefix": ""
+  },
+  {
+    "order": 24,
+    "event": 47,
+    "name": "Bash",
+    "path": null,
+    "description": "Run tests before implementation (expect failures)",
+    "command_prefix": "python3 -m unittest discover -s tests -v 2>&1 | tail -25"
+  },
+  {
+    "order": 25,
+    "event": 49,
+    "name": "Edit",
+    "path": "/private/tmp/featrace-resume-0533-e0zic_sg/project/src/formatting.py",
+    "description": null,
+    "command_prefix": ""
+  },
+  {
+    "order": 26,
+    "event": 51,
+    "name": "Bash",
+    "path": null,
+    "description": "Run tests after implementation and show diff",
+    "command_prefix": "python3 -m unittest discover -s tests -v 2>&1 | tail -18 && python3 -m unittest tests.test_preview tests.test_legacy 2>&1 | tail -3 && git diff && git status --short"
+  },
+  {
+    "order": 27,
+    "event": 53,
+    "name": "Bash",
+    "path": null,
+    "description": "Mutation-check new tests in temp copy",
+    "command_prefix": "T=$(mktemp -d) && cp -R src tests $T/ && cd $T && sed -i '' 's/text\\[:RECEIPT_LIMIT\\]/text[:PREVIEW_LIMIT]/' src/formatting.py && echo \"mutant A (receipt shares preview limit):\" && python3 -m unittest tests.test_preview 2>&1 | tail -1; cp /private/tmp/featrace-resume-0533-e0zic_sg/project/src/formatting.py src/ && sed -i '' 's/PREVIEW_LIMIT = 8/PREVIEW_LIMIT = 12/' src/formatting.py && echo \"mutan"
+  },
+  {
+    "order": 28,
+    "event": 55,
+    "name": "Bash",
+    "path": null,
+    "description": "Commit R-1 code and read verification workflow",
+    "command_prefix": "git add src/formatting.py tests/test_preview.py && git commit -q -m \"feat(formatting): limit preview_label to 8 characters (RESUME-001 R-1)\n\nreceipt_id keeps its independent 12-character limit. Adds boundary,\nUnicode, no-mutation/no-I/O and receipt-independence tests.\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>\" && git rev-parse HEAD && sed -n 1,400p /Users/mac/.claude/skills/dev/core"
+  },
+  {
+    "order": 29,
+    "event": 57,
+    "name": "Bash",
+    "path": null,
+    "description": "Select gate, inventory inputs, sync verification",
+    "command_prefix": "P=/private/tmp/featrace-resume-0533-e0zic_sg/project; cat > $P/.agent-workflow/project-baseline/quality-gates.json <<'EOF'\n{\"selection_reason\": \"README.md documents this as the project test command; user authorized running applicable real checks for R-1 (2026-09-29)\",\n \"gates\": [{\"name\": \"unit\", \"command\": [\"python3\", \"-m\", \"unittest\", \"discover\", \"-s\", \"tests\", \"-v\"], \"cwd\": \".\", \"timeout_seconds"
+  },
+  {
+    "order": 30,
+    "event": 59,
+    "name": "Bash",
+    "path": null,
+    "description": "Map automatic rows and run verification",
+    "command_prefix": "P=/private/tmp/featrace-resume-0533-e0zic_sg/project; python3 - <<EOF\nimport json\np='$P/.agent-workflow/features/RESUME-001/verification.json'\nd=json.load(open(p))\ncov={\n'requirement:R-1:1:fea4f3a5ee55':'PreviewLabelTests.test_longer_than_eight_keeps_first_eight, test_nine_characters_drops_last and test_counts_python_unicode_characters (accented, CJK, emoji code points) assert exact first-8 output"
+  },
+  {
+    "order": 31,
+    "event": 61,
+    "name": "Bash",
+    "path": null,
+    "description": "Refresh formatting dossier after code change",
+    "command_prefix": "P=/private/tmp/featrace-resume-0533-e0zic_sg/project; cd /Users/mac/.claude/skills/dev && D=$(python3 core/scripts/module_context.py plan $P --module formatting | python3 -c \"import json,sys;print(json.load(sys.stdin)[0]['digest'])\"); echo $D; cd $P && cat src/formatting.py && python3 - <<'EOF'\nimport json\np='.agent-workflow/modules/drafts/formatting.json'\nd=json.load(open(p))\nd['behaviors']=[\n {\""
+  },
+  {
+    "order": 32,
+    "event": 63,
+    "name": "Bash",
+    "path": null,
+    "description": "Run verification with selected gate",
+    "command_prefix": "P=/private/tmp/featrace-resume-0533-e0zic_sg/project; cd /Users/mac/.claude/skills/dev && python3 core/scripts/verification.py run $P RESUME-001 2>&1 | tail -30; echo \"EXIT=$?\""
+  },
+  {
+    "order": 33,
+    "event": 65,
+    "name": "Bash",
+    "path": null,
+    "description": "Show verification status and quality report",
+    "command_prefix": "P=/private/tmp/featrace-resume-0533-e0zic_sg/project; cd /Users/mac/.claude/skills/dev && python3 core/scripts/verification.py status $P RESUME-001 | python3 -c \"\nimport json,sys;d=json.load(sys.stdin);print(d['digest'],d['tested_revision'])\nfor i in d['items']: print(i['status'],i['id'])\"; python3 -c \"\nimport json;r=json.load(open('$P/.agent-workflow/project-baseline/quality-report.json'));print("
+  },
+  {
+    "order": 34,
+    "event": 67,
+    "name": "Bash",
+    "path": null,
+    "description": "Confirm unchanged files, record manual rows",
+    "command_prefix": "P=/private/tmp/featrace-resume-0533-e0zic_sg/project; cd $P && echo \"legacy diff vs base:\" && git diff --stat 199b3b7 HEAD -- tests/test_legacy.py tests/__init__.py src/__init__.py README.md && echo \"(none)\" && git diff --stat 199b3b7 HEAD -- src tests && shasum -a 256 .agent-workflow/features/RESUME-001/sources/prd-original.md ../inputs/prd-v1.md && grep -n \"^import\\|^from\" tests/test_preview.py\n"
+  },
+  {
+    "order": 35,
+    "event": 69,
+    "name": "Bash",
+    "path": null,
+    "description": "Mark T-1 done, validate check, audit",
+    "command_prefix": "P=/private/tmp/featrace-resume-0533-e0zic_sg/project; cd $P && python3 - <<'EOF'\nimport json\np='.agent-workflow/features/RESUME-001/tasks.json'\nd=json.load(open(p))\nfor t in d['tasks']:\n    if t['id']=='T-1':\n        t['status']='done'\n        t['implementation_revision']='b7cfbe90bfd9347e21f7b61e7b7cd5d5f8c1c42f'\n        t['test_evidence']='2026-09-29T10:25:33Z verification.py run, gate unit (pyt"
+  },
+  {
+    "order": 36,
+    "event": 71,
+    "name": "Bash",
+    "path": null,
+    "description": "Commit verification records, confirm final state",
+    "command_prefix": "git add .agent-workflow && git status --short && git commit -q -m \"chore(workflow): RESUME-001 T-1 verification evidence; R-2 planned\n\nGate unit passed 13/13 at b7cfbe9; R-1 rows passed; R-2 rows not run.\nFeature remains provisional.\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>\" && git log --oneline && git status --short && cd /Users/mac/.claude/skills/dev && python3 core/scripts/featu"
+  },
+  {
+    "order": 37,
+    "event": 73,
+    "name": "Write",
+    "path": "/private/tmp/featrace-resume-0533-e0zic_sg/round1/assessment.md",
+    "description": null,
+    "command_prefix": ""
+  }
+]

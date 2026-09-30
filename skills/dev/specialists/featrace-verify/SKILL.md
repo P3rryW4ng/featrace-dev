@@ -36,6 +36,8 @@ Identify contradictions, uncovered behavior and evidence limits. Support each fi
 
 ## Return
 
+Follow `../../core/references/write-scope.md` for the router-assigned external output. Write only that result path; do not create extra temporary scripts, copies or summaries in system temp or the project. Missing/unwritable output is a blocker, not permission to choose a new location.
+
 Write only the external result requested by the router; no business code, project records or generated views. Use this JSON shape (replace examples with actual evidence):
 
 ```json

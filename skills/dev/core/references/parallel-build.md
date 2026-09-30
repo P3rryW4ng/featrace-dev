@@ -16,7 +16,7 @@ Complete the ordinary Scope prerequisites first: confirmed requirements, reviewe
 
 Select exactly two existing planned/in_progress tasks. Read entry points, callers, shared state/resources and interfaces to assess independence. No overlapping file or ancestor/descendant ownership, no task dependencies, no unresolved interface decisions. Different files alone are insufficient: if both modify the same behavior or one relies on the other's new output, serialize them. Record a concise technical rationale with file/line evidence, agreed interfaces and behavior to preserve. A script checks declarations, not semantic independence.
 
-Put the reviewed plan in a fresh external scratch location. Example shape (replace the task IDs, paths, evidence and approved commands):
+Read `write-scope.md` before preparing temporary inputs. Put the reviewed plan in a fresh external scratch location within the actual authorized write scope; no system-temp fallback under a project-only restriction. Example shape (replace the task IDs, paths, evidence and approved commands):
 
 ```json
 {
@@ -51,7 +51,7 @@ Prepare captures current primary inputs with the existing Verify helper, freezes
 
 Include the worker sequencing constraint in dispatch: wait for edit/write success, then inspect the actual diff and wait for that result, then invoke `finish` separately. Never batch these dependent steps or leave a writer running during checks. This ordering is required inside each worker, not between independent workers.
 
-After successful router preflight, use the host's native independent Agent mechanism. Give each worker only its task ID, its worktree, RUN, frozen input path, Skill root, `specialists/featrace-build/SKILL.md` and side-effect restrictions. They use the same specialist with separate contexts/code directories. Do not pass a guessed implementation answer or give either worker write access to the primary/shared records. State whether permissions enforce the split or it remains an instruction plus post-run checks.
+After successful router preflight, use the host's native independent Agent mechanism. Give each worker only its task ID, its worktree, RUN, frozen input path, Skill root, `specialists/featrace-build/SKILL.md` and side-effect restrictions. Also pass exact permitted write paths and, if needed, an assigned `<RUN>/scratch/<TASK-ID>/` directory for temporary copies/scripts; peers and frozen inputs remain read-only. They use the same specialist with separate contexts/code directories. Do not pass a guessed implementation answer or give either worker write access to the primary/shared records. State whether permissions enforce the split or it remains an instruction plus post-run checks.
 
 Workers return through parallel-build.py finish. Each return has its own directory; failed/blocked/missing returns stop integration, and cannot be silently overwritten. Source/requirement/Skill drift, frozen input edits, code changes after checks, edits to workflow records, or expansion beyond assigned paths also block. A cancelled Agent is not a successful empty patch. Do not automatically retry while the other worker writes; retain edits and arrange a new attempt when the cause is resolved.
 

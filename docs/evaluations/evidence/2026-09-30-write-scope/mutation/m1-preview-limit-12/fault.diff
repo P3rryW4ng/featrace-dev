@@ -1,0 +1,8 @@
+--- src/formatting.py	2026-09-29 18:24:47
++++ /private/tmp/featrace-write-scope-0534-r714e38o/mutation/project/.agent-workflow/scratch/RESUME-001/mutation-y674VT/m1-preview-limit-12/src/formatting.py	2026-09-29 18:45:54
+@@ -1,4 +1,4 @@
+-PREVIEW_LIMIT = 8
++PREVIEW_LIMIT = 12
+ RECEIPT_LIMIT = 12
+ 
+ def preview_label(text):

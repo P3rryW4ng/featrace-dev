@@ -1,0 +1,19 @@
+# Agent-authored temporary writes (0.5.34)
+
+Read before creating temporary proposals, mutation-test copies, scratch scripts, command-output files or review/worker scratch. This is a write-location rule, not another canonical record or a sandbox. The user's permitted writes take precedence; filesystem access alone does not expand a project-only instruction.
+
+## Ordinary stages
+
+Use a unique attempt directory under `<PROJECT>/.agent-workflow/scratch/<FEATURE-ID>/` for Agent-authored temporary files; project preparation without a feature uses `scratch/project/`. Resolve it against the authorized project root and do not follow an existing symlink outside that boundary. Create it only when actually needed and writable. Never use bare `mktemp -d`, default `TemporaryDirectory()`/`NamedTemporaryFile()`, `/tmp`, the home directory or the installed Skill as an implicit fallback. Supply the explicit attempt parent to `mktemp`/Python tempfile; use absolute paths for temporary proposals and redirected output so a changed shell cwd does not move the write.
+
+Before using this local scratch, preserve the existing `.agent-workflow/.gitignore` managed block and custom rules. If needed, append `/scratch/` as a separate local rule **after** that block; do not modify the bundled block or untrack existing files. Check the actual scratch path with Git and ensure the new attempt is not tracked; ignored is not a security or sharing approval. If the chosen location is unavailable or the permitted scope excludes it, report the exact blocker; do not silently move outside the project. Read-only help/status/review requests do not authorize creating scratch or ignore rules.
+
+Temporary inputs and outputs do not become approved sources, test evidence or completion merely by existing. Preserve failed attempts and evidence. Remove only the current attempt's disposable files when authorized and no longer needed; do not delete other attempts, original sources or failed records to make the worktree look clean. Summaries must report actual locations and any deviation, including files later deleted.
+
+## Explicit role exceptions
+
+Independent Verify keeps its existing external snapshot/result location to avoid changing the project being reviewed. The router must choose a unique external attempt **within the user/host-authorized write scope**, pass its exact snapshot and result paths and restrict the reviewer to the assigned result file. Do not grant arbitrary `/tmp` access or additional writes merely because review uses scratch. If only project writes are allowed and no external review location is authorized, stop that optional review before preparation rather than violating the boundary.
+
+Parallel Build keeps its authorized external RUN and assigned worktrees. The router passes the exact worktree code paths, frozen read-only inputs, and a task-specific scratch directory under `<RUN>/scratch/<TASK-ID>/` if temporary work is needed. A worker may write only its assigned code and own explicitly assigned scratch; never the primary project, peer scratch or frozen inputs. Existing helpers still own result/patch/log writes. Do not put scratch under `.agent-workflow` in a worker or widen `allowed_paths` to admit temporary files.
+
+Carry the permitted project/output/worktree roots and selected scratch path in the stage/Agent dispatch text, not a new JSON schema. Each stage and specialist must retain these constraints when creating scripts, copies, proposals or redirects. A denied write stops that operation; report it, never retry at an unapproved path. Tool/build-managed caches and side effects are governed by the actual command authorization and host permissions; this rule does not make arbitrary test commands safe or enforce every filesystem write. Strict confinement requires the host's permission/sandbox controls plus actual operation inspection.

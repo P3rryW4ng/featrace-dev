@@ -32,6 +32,8 @@ Read `core/references/requirement-schema.md` when editing feature records, `core
 
 ## Boundaries that apply across stages
 
+Before Agent-authored temporary writes, read `core/references/write-scope.md`: ordinary stages use ignored project-local scratch; independent review and isolated workers retain only their explicitly authorized locations. Pass the exact write scope and scratch path at handoff; never use a system-temp fallback to escape a restricted scope.
+
 Before any parallel Build, first load `orchestration.md` and complete the normal Scope route using `workflow.md`, `impact-review.md`, `task-semantic-review.md` and `historical-regression.md`. Then use `parallel-build.md`; a supplied plan or green legacy validator does not replace current Scope reviews. Missing reviews with writes disallowed mean stop before prepare/dispatch.
 
 - Original evidence remains unchanged. Requirements, tasks, decisions, traceability and fixes use their canonical JSON; Markdown views are generated. Newer text alone does not override an approved requirement. Missing evidence, unresolved product choices and actual failures remain visible.

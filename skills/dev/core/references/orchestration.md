@@ -29,6 +29,7 @@ Before moving between stages, make the handoff recoverable from canonical projec
 - input identity or digest when the existing workflow provides one;
 - confirmed facts and unresolved decisions, without replacing their canonical records;
 - artifacts changed and evidence references;
+- permitted write roots/output paths and the selected scratch location, following `write-scope.md` before any temporary writes;
 - allowed next stage or stages;
 - blockers and the exact human input, permission or environment change needed.
 

@@ -1,0 +1,26 @@
+{
+  "src/__init__.py": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "text": ""
+  },
+  "src/formatting.py": {
+    "sha256": "1ffc98ed5db11306d37766cb54368945ab6f6b8b8818b6ab2c32923a6143ce9b",
+    "text": "PREVIEW_LIMIT = 8\nRECEIPT_LIMIT = 12\n\ndef preview_label(text):\n    return text[:PREVIEW_LIMIT]\n\ndef receipt_id(text):\n    return text[:RECEIPT_LIMIT]\n\ndef status_label(text):\n    return text\n"
+  },
+  "tests/test_preview.py": {
+    "sha256": "542227f4aa4c0cb40cc0a94d3d29eaaef985a2f241bf8d744261b0b763c765ce",
+    "text": "import unittest\nfrom unittest import mock\nfrom src import formatting\nfrom src.formatting import preview_label, receipt_id\n\nclass PreviewLabelTests(unittest.TestCase):\n    def test_longer_than_eight_keeps_first_eight(self):\n        self.assertEqual(preview_label(\"abcdefghijklmnop\"), \"abcdefgh\")\n    def test_nine_characters_drops_last(self):\n        self.assertEqual(preview_label(\"abcdefghi\"), \"abcdefgh\")\n    def test_exactly_eight_unchanged(self):\n        self.assertEqual(preview_label(\"abcdefgh\"), \"abcdefgh\")\n    def test_seven_characters_unchanged(self):\n        self.assertEqual(preview_label(\"abcdefg\"), \"abcdefg\")\n    def test_empty_returns_empty(self):\n        self.assertEqual(preview_label(\"\"), \"\")\n    def test_counts_python_unicode_characters(self):\n        # Each of these is one code point but several UTF-8 bytes.\n        text = \"héllo wörld\"\n        self.assertEqual(preview_label(text), \"héllo wö\")\n        self.assertEqual(preview_label(\"日本語テキストです!\"), \"日本語テキストで\")\n        self.assertEqual(preview_label(\"😀\" * 10), \"😀\" * 8)\n    def test_input_not_mutated(self):\n        text = \"abcdefghijkl\"\n        preview_label(text)\n        self.assertEqual(text, \"abcdefghijkl\")\n    def test_no_io(self):\n        with mock.patch(\"builtins.open\") as opened, mock.patch(\"builtins.print\") as printed:\n            preview_label(\"abcdefghijkl\")\n        opened.assert_not_called()\n        printed.assert_not_called()\n\nclass ReceiptIndependenceTests(unittest.TestCase):\n    def test_receipt_still_twelve_while_preview_is_eight(self):\n        text = \"abcdefghijklmnop\"\n        self.assertEqual(receipt_id(text), \"abcdefghijkl\")\n        self.assertEqual(preview_label(text), \"abcdefgh\")\n    def test_receipt_keeps_value_between_preview_and_receipt_limits(self):\n        self.assertEqual(receipt_id(\"abcdefghij\"), \"abcdefghij\")\n    def test_receipt_does_not_follow_preview_limit(self):\n        with mock.patch.object(formatting, \"PREVIEW_LIMIT\", 3):\n            self.assertEqual(receipt_id(\"abcdefghijklmnop\"), \"abcdefghijkl\")\n\nif __name__ == \"__main__\":\n    unittest.main()\n"
+  },
+  "tests/__init__.py": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "text": ""
+  },
+  "tests/test_legacy.py": {
+    "sha256": "871b7b76f1845f39dc744c0d7b9cb789d940308c61e44cd2182b31deab80a651",
+    "text": "import unittest\nfrom src.formatting import receipt_id\n\nclass ReceiptContract(unittest.TestCase):\n    def test_receipt_stays_twelve(self):\n        self.assertEqual(receipt_id(\"abcdefghijklmnop\"), \"abcdefghijkl\")\n    def test_receipt_keeps_short_value(self):\n        self.assertEqual(receipt_id(\"abc\"), \"abc\")\n"
+  },
+  ".agent-workflow/features/RESUME-001/sources/prd-original.md": {
+    "sha256": "57fac7d321baaef5102e69fc733aa1ebeb6665a0583a0cc34da0a56dd80f6894",
+    "text": "# RESUME-001 — Formatting changes, approved original PRD\n\nAll product rules below are confirmed for this synthetic exercise. Module: formatting.\n\nR-1 Preview: preview_label(text) returns the first 8 Python Unicode characters of text. Strings of at most 8 characters are returned unchanged. Empty string returns empty. No mutation or I/O. receipt_id(text) must keep its existing first-12-character behavior; it must not share a changed preview limit.\n\nR-2 Status: status_label(text) strips leading/trailing whitespace and uppercases the remaining text using Python str.upper(). Empty or whitespace-only input returns empty. This rule does not change preview or receipt formatting.\n\nTests must assert meaningful boundaries and preserved receipt behavior. Python standard library only; no new dependencies or unrelated refactoring. Technical implementation choices are delegated to the Agent; product behavior above is fixed.\n"
+  }
+}

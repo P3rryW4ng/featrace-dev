@@ -1,0 +1,63 @@
+{
+  "base_version": 1,
+  "base_digest": "5813112f8d84d5b7c717da8ab097b1500d574bb9c4d67f488b92f77a0de796d8",
+  "kind": "requirement_change",
+  "reason": "Approved PRD v2: replace only R-1's preview limit 8 -> 6 Python Unicode characters; receipt_id 12 and R-2 unchanged",
+  "decision_ids": [
+    "D-001"
+  ],
+  "evidence": [
+    "inputs/prd-v2.md (sha256 87a25e882624064ab7e04e1d55df243cf3f6e326687886c8c84873b7613b8a82), approved by product owner per user request 2026-09-29",
+    "D-001 approved decision"
+  ],
+  "impact_review": "Inspect src/formatting.py preview_label limit constant/slice and its separation from receipt_id's 12 limit; T-1 must be reopened and tests/test_preview.py 8-char boundary assertions (7 unchanged, 8 unchanged, 9 truncated) replaced by 5/6/7 boundaries; ReceiptIndependenceTests and tests.test_legacy.ReceiptContract must keep passing. v1 verification results (13/13 at b7cfbe9) remain historical and do not verify v2.",
+  "preserved_behavior": "receipt_id first-12-character behavior; R-2 status_label strip+str.upper, whitespace-only -> empty; preview empty/short unchanged, no mutation or I/O; stdlib only, no unrelated refactoring",
+  "task_ids": [
+    "T-1"
+  ],
+  "code_paths": [
+    "src/formatting.py",
+    "tests/test_preview.py"
+  ],
+  "test_ids": [
+    "tests.test_preview.PreviewLabelTests",
+    "tests.test_preview.ReceiptIndependenceTests",
+    "tests.test_legacy.ReceiptContract"
+  ],
+  "changes": [
+    {
+      "requirement_id": "R-1",
+      "field": "title",
+      "before": "Preview label limited to 8 characters; receipt keeps 12",
+      "after": "Preview label limited to 6 characters; receipt keeps 12"
+    },
+    {
+      "requirement_id": "R-1",
+      "field": "statement",
+      "before": "preview_label(text) returns the first 8 Python Unicode characters of text.",
+      "after": "preview_label(text) returns the first 6 Python Unicode characters of text."
+    },
+    {
+      "requirement_id": "R-1",
+      "field": "acceptance_criteria",
+      "before": [
+        "preview_label returns exactly the first 8 Python Unicode characters (code points, as by str slicing) for input longer than 8 characters.",
+        "Input of at most 8 characters, including exactly 8, is returned unchanged.",
+        "preview_label(\"\") returns \"\".",
+        "preview_label performs no mutation and no I/O.",
+        "receipt_id(text) keeps its existing behavior of returning the first 12 characters; values of at most 12 characters are unchanged.",
+        "receipt_id does not share the changed preview limit: changing the preview limit to 8 must not change receipt_id output.",
+        "Tests assert meaningful preview boundaries (7, 8, 9 characters, empty, non-ASCII) and preserved receipt behavior, using only the Python standard library with no new dependencies or unrelated refactoring."
+      ],
+      "after": [
+        "preview_label returns exactly the first 6 Python Unicode characters (code points, as by str slicing) for input longer than 6 characters; a length-7 input is truncated to its first 6 characters.",
+        "Input of at most 6 characters, including exactly 6, is returned unchanged.",
+        "preview_label(\"\") returns \"\".",
+        "preview_label performs no mutation and no I/O.",
+        "receipt_id(text) keeps its existing behavior of returning the first 12 characters; values of at most 12 characters are unchanged.",
+        "receipt_id does not share the changed preview limit: changing the preview limit to 6 must not change receipt_id output.",
+        "Tests assert meaningful preview boundaries (5, 6, 7 characters, empty, non-ASCII) and preserved receipt behavior, using only the Python standard library with no new dependencies or unrelated refactoring."
+      ]
+    }
+  ]
+}

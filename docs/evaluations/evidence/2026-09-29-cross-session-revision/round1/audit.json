@@ -1,0 +1,353 @@
+{
+  "execution": {
+    "exit_code": 0,
+    "elapsed_seconds": 311.296
+  },
+  "cli_result": {
+    "subtype": "success",
+    "is_error": false,
+    "total_cost_usd": 1.789136,
+    "duration_ms": 309698,
+    "num_turns": 39,
+    "usage": {
+      "input_tokens": 72,
+      "cache_creation_input_tokens": 98177,
+      "cache_read_input_tokens": 2439960,
+      "output_tokens": 25772,
+      "output_tokens_details": {
+        "thinking_tokens": 3779
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 98177,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "not_available",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 938,
+          "cache_read_input_tokens": 101429,
+          "cache_creation_input_tokens": 2037,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 2037
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard"
+    }
+  },
+  "skill_calls": [
+    {
+      "skill": "dev",
+      "args": "next --feature RESUME-001"
+    }
+  ],
+  "agent_calls": [],
+  "feature": {
+    "id": "RESUME-001",
+    "title": "Formatting preview limit and status label",
+    "status": "provisional",
+    "workflow_version": 3,
+    "impact_required": true,
+    "history_regression_required": true,
+    "task_review_required": true,
+    "module_scope": {
+      "status": "confirmed",
+      "capability": {
+        "id": "formatting-labels",
+        "name": "Preview and status label formatting"
+      },
+      "assignments": [
+        {
+          "module_id": "formatting",
+          "role": "owner",
+          "responsibility": "Owns preview_label, receipt_id and status_label in src/formatting.py and their tests",
+          "evidence_refs": [
+            "src/formatting.py",
+            "tests/test_legacy.py",
+            "sources/prd-original.md: Module: formatting"
+          ]
+        }
+      ],
+      "note": "PRD names module formatting; single-module project."
+    },
+    "source_status": {
+      "prd": "present",
+      "api": "not_applicable",
+      "figma": "not_applicable"
+    },
+    "source_notes": {
+      "api": "Local pure string functions with no backend or data contract (PRD: no I/O; README: no external I/O).",
+      "figma": "Headless Python library functions; no UI or visual behavior in scope."
+    },
+    "prd_path": "sources/prd-original.md",
+    "prd_paths": [
+      "sources/prd-original.md"
+    ],
+    "modules": [
+      "formatting"
+    ],
+    "module_context_required": true,
+    "baseline": {
+      "version": 1,
+      "digest": "5813112f8d84d5b7c717da8ab097b1500d574bb9c4d67f488b92f77a0de796d8",
+      "initial_requirements": [
+        {
+          "id": "R-1",
+          "title": "Preview label limited to 8 characters; receipt keeps 12",
+          "statement": "preview_label(text) returns the first 8 Python Unicode characters of text.",
+          "status": "confirmed",
+          "acceptance_criteria": [
+            "preview_label returns exactly the first 8 Python Unicode characters (code points, as by str slicing) for input longer than 8 characters.",
+            "Input of at most 8 characters, including exactly 8, is returned unchanged.",
+            "preview_label(\"\") returns \"\".",
+            "preview_label performs no mutation and no I/O.",
+            "receipt_id(text) keeps its existing behavior of returning the first 12 characters; values of at most 12 characters are unchanged.",
+            "receipt_id does not share the changed preview limit: changing the preview limit to 8 must not change receipt_id output.",
+            "Tests assert meaningful preview boundaries (7, 8, 9 characters, empty, non-ASCII) and preserved receipt behavior, using only the Python standard library with no new dependencies or unrelated refactoring."
+          ],
+          "assumptions": []
+        },
+        {
+          "id": "R-2",
+          "title": "Status label strips and uppercases",
+          "statement": "status_label(text) strips leading/trailing whitespace and uppercases the remaining text using Python str.upper().",
+          "status": "confirmed",
+          "acceptance_criteria": [
+            "status_label returns text.strip().upper() for input with surrounding whitespace.",
+            "Empty or whitespace-only input returns \"\".",
+            "Implementing status_label does not change preview_label or receipt_id formatting.",
+            "Tests assert meaningful status boundaries and preserved receipt behavior, using only the Python standard library with no new dependencies or unrelated refactoring."
+          ],
+          "assumptions": []
+        }
+      ],
+      "registered_at": "2026-09-29T10:24:10.509457+00:00",
+      "reason": "Approved original PRD inputs/prd-v1.md (sha256 57fac7d3...); user confirmed all business rules in this conversation (2026-09-29) and authorized baseline adoption",
+      "applied": [],
+      "cancelled": [],
+      "deliveries": []
+    },
+    "verification_required": true
+  },
+  "requirements": [
+    {
+      "id": "R-1",
+      "title": "Preview label limited to 8 characters; receipt keeps 12",
+      "status": "confirmed",
+      "source_item_ids": [
+        "S-2",
+        "S-3",
+        "S-6"
+      ],
+      "sources": [
+        {
+          "type": "prd",
+          "ref": "sources/prd-original.md#R-1 Preview"
+        },
+        {
+          "type": "prd",
+          "ref": "sources/prd-original.md#Tests/constraints paragraph"
+        }
+      ],
+      "statement": "preview_label(text) returns the first 8 Python Unicode characters of text.",
+      "acceptance_criteria": [
+        "preview_label returns exactly the first 8 Python Unicode characters (code points, as by str slicing) for input longer than 8 characters.",
+        "Input of at most 8 characters, including exactly 8, is returned unchanged.",
+        "preview_label(\"\") returns \"\".",
+        "preview_label performs no mutation and no I/O.",
+        "receipt_id(text) keeps its existing behavior of returning the first 12 characters; values of at most 12 characters are unchanged.",
+        "receipt_id does not share the changed preview limit: changing the preview limit to 8 must not change receipt_id output.",
+        "Tests assert meaningful preview boundaries (7, 8, 9 characters, empty, non-ASCII) and preserved receipt behavior, using only the Python standard library with no new dependencies or unrelated refactoring."
+      ],
+      "assumptions": [],
+      "tasks": [
+        "T-1"
+      ],
+      "tests": [
+        "tests.test_preview.PreviewLabelTests",
+        "tests.test_preview.ReceiptIndependenceTests",
+        "tests.test_legacy.ReceiptContract"
+      ]
+    },
+    {
+      "id": "R-2",
+      "title": "Status label strips and uppercases",
+      "status": "confirmed",
+      "source_item_ids": [
+        "S-4",
+        "S-5",
+        "S-6"
+      ],
+      "sources": [
+        {
+          "type": "prd",
+          "ref": "sources/prd-original.md#R-2 Status"
+        },
+        {
+          "type": "prd",
+          "ref": "sources/prd-original.md#Tests/constraints paragraph"
+        }
+      ],
+      "statement": "status_label(text) strips leading/trailing whitespace and uppercases the remaining text using Python str.upper().",
+      "acceptance_criteria": [
+        "status_label returns text.strip().upper() for input with surrounding whitespace.",
+        "Empty or whitespace-only input returns \"\".",
+        "Implementing status_label does not change preview_label or receipt_id formatting.",
+        "Tests assert meaningful status boundaries and preserved receipt behavior, using only the Python standard library with no new dependencies or unrelated refactoring."
+      ],
+      "assumptions": [],
+      "tasks": [
+        "T-2"
+      ],
+      "tests": [
+        "tests.test_status.StatusLabelTests"
+      ]
+    }
+  ],
+  "tasks": {
+    "feature_id": "RESUME-001",
+    "tasks": [
+      {
+        "id": "T-1",
+        "title": "Change preview_label limit to 8 with independent receipt limit and tests",
+        "status": "done",
+        "requirement_ids": [
+          "R-1"
+        ],
+        "allowed_paths": [
+          "src/formatting.py",
+          "tests/test_preview.py"
+        ],
+        "preserved": [
+          "receipt_id 12-char behavior",
+          "status_label unchanged",
+          "tests/test_legacy.py unchanged"
+        ],
+        "implementation_revision": "b7cfbe90bfd9347e21f7b61e7b7cd5d5f8c1c42f",
+        "test_evidence": "2026-09-29T10:25:33Z verification.py run, gate unit (python3 -m unittest discover -s tests -v): 13 tests OK at b7cfbe9; red run before implementation had 4 expected failures; mutation check in temp copy caught both mutants; R-1 manual rows passed by Agent inspection."
+      },
+      {
+        "id": "T-2",
+        "title": "Implement status_label strip+upper with tests",
+        "status": "planned",
+        "requirement_ids": [
+          "R-2"
+        ],
+        "allowed_paths": [
+          "src/formatting.py",
+          "tests/test_status.py"
+        ],
+        "preserved": [
+          "preview_label and receipt_id unchanged"
+        ]
+      }
+    ]
+  },
+  "quality_report": {
+    "tested_at": "2026-09-29T10:25:33.883963+00:00",
+    "project_snapshot": {
+      "version": 2,
+      "evidence": {
+        "AGENTS.md": null,
+        "CLAUDE.md": null,
+        "README.md": "5562281ba5c064c9f9a333a1675ab0e09f8c8bec4da1d505846a46293b22aecd",
+        "src/formatting.py": "1ffc98ed5db11306d37766cb54368945ab6f6b8b8818b6ab2c32923a6143ce9b",
+        "tests/test_legacy.py": "871b7b76f1845f39dc744c0d7b9cb789d940308c61e44cd2182b31deab80a651"
+      },
+      "profile": "generic",
+      "git_head": "b7cfbe90bfd9347e21f7b61e7b7cd5d5f8c1c42f",
+      "files": {}
+    },
+    "results": [
+      {
+        "name": "unit",
+        "command": [
+          "python3",
+          "-m",
+          "unittest",
+          "discover",
+          "-s",
+          "tests",
+          "-v"
+        ],
+        "test_ids": [
+          "tests.test_preview.PreviewLabelTests",
+          "tests.test_preview.ReceiptIndependenceTests",
+          "tests.test_legacy.ReceiptContract"
+        ],
+        "returncode": 0,
+        "status": "passed",
+        "stdout": "",
+        "stderr": "test_receipt_keeps_short_value (test_legacy.ReceiptContract) ... ok\ntest_receipt_stays_twelve (test_legacy.ReceiptContract) ... ok\ntest_counts_python_unicode_characters (test_preview.PreviewLabelTests) ... ok\ntest_empty_returns_empty (test_preview.PreviewLabelTests) ... ok\ntest_exactly_eight_unchanged (test_preview.PreviewLabelTests) ... ok\ntest_input_not_mutated (test_preview.PreviewLabelTests) ... ok\ntest_longer_than_eight_keeps_first_eight (test_preview.PreviewLabelTests) ... ok\ntest_nine_characters_drops_last (test_preview.PreviewLabelTests) ... ok\ntest_no_io (test_preview.PreviewLabelTests) ... ok\ntest_seven_characters_unchanged (test_preview.PreviewLabelTests) ... ok\ntest_receipt_does_not_follow_preview_limit (test_preview.ReceiptIndependenceTests) ... ok\ntest_receipt_keeps_value_between_preview_and_receipt_limits (test_preview.ReceiptIndependenceTests) ... ok\ntest_receipt_still_twelve_while_preview_is_eight (test_preview.ReceiptIndependenceTests) ... ok\n\n----------------------------------------------------------------------\nRan 13 tests in 0.000s\n\nOK\n"
+      }
+    ],
+    "feature_baseline": {
+      "feature_id": "RESUME-001",
+      "version": 1,
+      "digest": "5813112f8d84d5b7c717da8ab097b1500d574bb9c4d67f488b92f77a0de796d8"
+    }
+  },
+  "legacy_test_unchanged": true,
+  "installed_unchanged": true,
+  "source_hashes": {
+    ".agent-workflow/features/RESUME-001/sources/prd-original.md": "57fac7d321baaef5102e69fc733aa1ebeb6665a0583a0cc34da0a56dd80f6894"
+  },
+  "current_head": "5179ad2f17cd907844a318913a4d894019a4f4a5",
+  "project_files": {
+    ".agent-workflow/.baseline.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".agent-workflow/.gitignore": "91dececf7b738bd475397817531b39287073b530b85c221f9497fad90997f4ea",
+    ".agent-workflow/features/RESUME-001/decisions.json": "ed35a4e46513f227e36ced417cf44c8859556fbdceb9242e7508dfd1d387baef",
+    ".agent-workflow/features/RESUME-001/decisions.md": "2cce984feac8953790a34cb9a7176e7bb9b7dc08d81140ee7a42766571afb28d",
+    ".agent-workflow/features/RESUME-001/fixes.json": "f603a8718dd0435ac7649dc3bfbdfb4cfe95f942e597d4942ca53c44118fcc52",
+    ".agent-workflow/features/RESUME-001/fixes.md": "8878e05605956c3729c66ad518d7fbf0c978e59dead7be6cc1ea1ad659bcecca",
+    ".agent-workflow/features/RESUME-001/impact.json": "81466a66efb4ec173a7d397296513a9e751fb5565e27cf63b3f78dec95094b88",
+    ".agent-workflow/features/RESUME-001/impact.md": "c1fb685cf4e0f2798fd31bdafc26d5212b4efe54539ddaf7351b1072395a9957",
+    ".agent-workflow/features/RESUME-001/regression-review.json": "9bfd804176ab36c7cb526221418a8aa3ef284b51e75af140a4ccef16ef29bb30",
+    ".agent-workflow/features/RESUME-001/regression-review.md": "806ec14dd6647cda11c9e28090f013b30f122f30dc0616ae687492a575c0a5d0",
+    ".agent-workflow/features/RESUME-001/revisions.md": "eb81d07344068a4ea33c950e67287d3f6533fc9b2ed29d16126e7832b1bdf952",
+    ".agent-workflow/features/RESUME-001/sources/prd-original.md": "57fac7d321baaef5102e69fc733aa1ebeb6665a0583a0cc34da0a56dd80f6894",
+    ".agent-workflow/features/RESUME-001/spec/prd-analysis.md": "8b0a17dfd6d6fd22ee850907f4eaf0046423a12e89582aa5125af7c50daa4f50",
+    ".agent-workflow/features/RESUME-001/spec/prd-intake.json": "e7e36f601bdb025a0fe78011804fb10f3afa1b45ee6f59157d6a0e41eea44d97",
+    ".agent-workflow/features/RESUME-001/spec/requirements.json": "474eb3fc6c5c75060ea5de4422165e5de01be9559ce1d4a30860a3f901bed913",
+    ".agent-workflow/features/RESUME-001/spec/spec.md": "e4db4c4c3540396fb44d46ac0c589360808ce0c09c39555b19c375c68025a65b",
+    ".agent-workflow/features/RESUME-001/task-review.json": "ec4691e631de8cdc015d7dd52386ca7bff0bd5f3d44537a88d4c4c86665bf4fd",
+    ".agent-workflow/features/RESUME-001/task-review.md": "6ecb659e61660649baaa79d45e1a2b093fad4973e333838de67775571d375829",
+    ".agent-workflow/features/RESUME-001/tasks.json": "a57fb6ba34bae046b208b278ec97dc9599fd22960f1584e863538c740bcceff7",
+    ".agent-workflow/features/RESUME-001/tasks.md": "b8a2bf6fd9683f97736b65517a06793b654552277dbf4e119e077bd0ac4bf711",
+    ".agent-workflow/features/RESUME-001/traceability.json": "9fcca424eb3d9a6069919a5fb83cc123c628192c1d371b0c687337f4f4451204",
+    ".agent-workflow/features/RESUME-001/traceability.md": "44e31dcfd8265ce2d5b3c1550ede26c74b238c60b89ffa60348e768bce54b6bb",
+    ".agent-workflow/features/RESUME-001/verification.json": "c11fcafb20e225f0435a249ee124e7469ba960d02cd222c5fe4b766ca344e097",
+    ".agent-workflow/features/RESUME-001/verification.md": "7e3e1e30feca8dc6a9044b893b2b2e78939193905a1b6df318a0a46b998b9bd2",
+    ".agent-workflow/modules/drafts/formatting.json": "9a73bc5dc40fe4c1ac3d2f2ff8b30c1ca91c6c3235282eae5a62d022af93e252",
+    ".agent-workflow/modules/drafts/scope.json": "d8724d93ab9b5bf1b6643631027869bcba75d11f82900aad6e3ccc9c34ff85b9",
+    ".agent-workflow/modules/formatting.json": "f57cf8395bf3cebe3de943fb6378c4ac5f7411109b8f130c360990e3eaaf4203",
+    ".agent-workflow/modules/formatting.md": "55503b71739c4ff1b133246ff5425f7eefabc6a7dfd9a01b83ad0226855159e8",
+    ".agent-workflow/modules/graph.json": "6cc957990db7d6d39c55cda13559979c8aa1c72745279f0f5309dba6a0d49ffc",
+    ".agent-workflow/modules/graph.md": "5776dd20296ceb9ce2dc0ecaf7f76e3b4d768b568620aa097b1b78de7a7b4e3e",
+    ".agent-workflow/modules/index.json": "a932c352cca5257b0db4366040074332f5dcb5711138d71ae15c3a12a4b0c16d",
+    ".agent-workflow/modules/index.md": "dfe888866ca1480f861b18d80398a29fc943192c75c845bd5c27dbf1bc3c1b40",
+    ".agent-workflow/project-baseline/architecture.md": "33a019d71005fef4b410bfc1411a5ffdcac0d43d7c1476889cbe861fad842abb",
+    ".agent-workflow/project-baseline/conventions.md": "bdf1536b0638372b3e0933120a4c4dec117d7e313cf78169bfa58e96b400495e",
+    ".agent-workflow/project-baseline/coverage.md": "7286732ad9f8c60f41b9983686f6d4b0fba5e4d38119878fcd4e20356a4fa978",
+    ".agent-workflow/project-baseline/evidence-files.json": "d60c212f697fda4c0860195d1cc4ec4d24aaaf91324fa69fb394c69b9e244f0a",
+    ".agent-workflow/project-baseline/examples.md": "07d85b37c9c907aec45f042ba4f9096b10fd435778ff44fa3ab98bccb57762a8",
+    ".agent-workflow/project-baseline/fingerprint.json": "04abe544d2571b5422572966d201b362cd7d6696af37c5732d9d542bb8e44f48",
+    ".agent-workflow/project-baseline/inventory.md": "edc37b78e23bde9cc80a2ae30769af1fd432ed8f3ad398803ae2377645da449b",
+    ".agent-workflow/project-baseline/quality-gates.json": "402b4de85a54cf7bf97d93e5ddcca372ce9252ad78cbd94e9860d6cc246ba7d2",
+    ".agent-workflow/project-baseline/quality-report.json": "85d11af2fc8bc2676c50ac34b45d76c7239d98a58ec8f50aecbf84dc826c0f8e",
+    "README.md": "5562281ba5c064c9f9a333a1675ab0e09f8c8bec4da1d505846a46293b22aecd",
+    "src/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/formatting.py": "1ffc98ed5db11306d37766cb54368945ab6f6b8b8818b6ab2c32923a6143ce9b",
+    "tests/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "tests/test_legacy.py": "871b7b76f1845f39dc744c0d7b9cb789d940308c61e44cd2182b31deab80a651",
+    "tests/test_preview.py": "542227f4aa4c0cb40cc0a94d3d29eaaef985a2f241bf8d744261b0b763c765ce"
+  }
+}

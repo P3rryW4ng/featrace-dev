@@ -1,0 +1,11 @@
+--- src/formatting.py	2026-09-29 18:24:47
++++ /private/tmp/featrace-write-scope-0534-r714e38o/mutation/project/.agent-workflow/scratch/RESUME-001/mutation-y674VT/m2-receipt-shares-preview-limit/src/formatting.py	2026-09-29 18:45:54
+@@ -5,7 +5,7 @@
+     return text[:PREVIEW_LIMIT]
+ 
+ def receipt_id(text):
+-    return text[:RECEIPT_LIMIT]
++    return text[:PREVIEW_LIMIT]
+ 
+ def status_label(text):
+     return text

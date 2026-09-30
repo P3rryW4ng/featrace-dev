@@ -32,3 +32,5 @@ Archive marks local lifecycle only. Commit reviewed shared records with their im
 5. Missing original sources or stale PRD review must be resolved independently of baseline validity. Run the appropriate feature validation before continuing development.
 
 Fingerprint includes Git HEAD; after a commit it may become stale even when shared notes remain valid. Review actual changes before refresh; do not repeatedly commit fingerprint updates. Existing tracked ignored files remain tracked: review exact paths with the user/project authorization before removing them from the index while preserving local copies. Ignore rules do not erase Git history. Never rewrite history or publish changes as a side effect of setup.
+
+Agent-authored ordinary scratch uses `.agent-workflow/scratch/` under `write-scope.md`. When needed append `/scratch/` after the existing managed block and check actual Git disposition; do not change the managed template or automatically untrack files. Independently authorized reviewer/worker external scratch remains separate.

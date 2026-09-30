@@ -1,0 +1,67 @@
+test_receipt_keeps_short_value (test_legacy.ReceiptContract) ... ok
+test_receipt_stays_twelve (test_legacy.ReceiptContract) ... ok
+test_counts_python_unicode_characters (test_preview.PreviewLabelTests) ... FAIL
+test_empty_returns_empty (test_preview.PreviewLabelTests) ... ok
+test_exactly_eight_unchanged (test_preview.PreviewLabelTests) ... ok
+test_input_not_mutated (test_preview.PreviewLabelTests) ... ok
+test_longer_than_eight_keeps_first_eight (test_preview.PreviewLabelTests) ... FAIL
+test_nine_characters_drops_last (test_preview.PreviewLabelTests) ... FAIL
+test_no_io (test_preview.PreviewLabelTests) ... ok
+test_seven_characters_unchanged (test_preview.PreviewLabelTests) ... ok
+test_receipt_does_not_follow_preview_limit (test_preview.ReceiptIndependenceTests) ... ok
+test_receipt_keeps_value_between_preview_and_receipt_limits (test_preview.ReceiptIndependenceTests) ... ok
+test_receipt_still_twelve_while_preview_is_eight (test_preview.ReceiptIndependenceTests) ... FAIL
+
+======================================================================
+FAIL: test_counts_python_unicode_characters (test_preview.PreviewLabelTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/featrace-write-scope-0534-r714e38o/mutation/project/.agent-workflow/scratch/RESUME-001/mutation-y674VT/m1-preview-limit-12/tests/test_preview.py", line 20, in test_counts_python_unicode_characters
+    self.assertEqual(preview_label(text), "héllo wö")
+AssertionError: 'héllo wörld' != 'héllo wö'
+- héllo wörld
+?         ---
++ héllo wö
+
+
+======================================================================
+FAIL: test_longer_than_eight_keeps_first_eight (test_preview.PreviewLabelTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/featrace-write-scope-0534-r714e38o/mutation/project/.agent-workflow/scratch/RESUME-001/mutation-y674VT/m1-preview-limit-12/tests/test_preview.py", line 8, in test_longer_than_eight_keeps_first_eight
+    self.assertEqual(preview_label("abcdefghijklmnop"), "abcdefgh")
+AssertionError: 'abcdefghijkl' != 'abcdefgh'
+- abcdefghijkl
+?         ----
++ abcdefgh
+
+
+======================================================================
+FAIL: test_nine_characters_drops_last (test_preview.PreviewLabelTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/featrace-write-scope-0534-r714e38o/mutation/project/.agent-workflow/scratch/RESUME-001/mutation-y674VT/m1-preview-limit-12/tests/test_preview.py", line 10, in test_nine_characters_drops_last
+    self.assertEqual(preview_label("abcdefghi"), "abcdefgh")
+AssertionError: 'abcdefghi' != 'abcdefgh'
+- abcdefghi
+?         -
++ abcdefgh
+
+
+======================================================================
+FAIL: test_receipt_still_twelve_while_preview_is_eight (test_preview.ReceiptIndependenceTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/featrace-write-scope-0534-r714e38o/mutation/project/.agent-workflow/scratch/RESUME-001/mutation-y674VT/m1-preview-limit-12/tests/test_preview.py", line 37, in test_receipt_still_twelve_while_preview_is_eight
+    self.assertEqual(preview_label(text), "abcdefgh")
+AssertionError: 'abcdefghijkl' != 'abcdefgh'
+- abcdefghijkl
+?         ----
++ abcdefgh
+
+
+----------------------------------------------------------------------
+Ran 13 tests in 0.001s
+
+FAILED (failures=4)
+RC=1

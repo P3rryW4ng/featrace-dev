@@ -1,0 +1,37 @@
+{
+  "core_result": "passed_in_this_synthetic_exercise",
+  "strict_side_effect_compliance": "partial; project-external temporary writes by both rounds",
+  "round1_elapsed_seconds": 311.296,
+  "round2_elapsed_seconds": 335.153,
+  "cli_cost_estimate_total_usd": 3.6805336000000004,
+  "session_identity_hashes": [
+    "5f2d9cfe0c7a67736cdc483499d25055aabd0290437a18aaed2b5e01a25efb75",
+    "8a782ee70b4617b7245e7d4275f16d8e545290028f34e0f82a5ef74bfb433661"
+  ],
+  "fresh_sessions": true,
+  "round2_read_round1_assessment_or_held_out_tests": false,
+  "original_prd_unchanged": true,
+  "R2_semantics_unchanged": true,
+  "receipt_function_ast_unchanged": true,
+  "legacy_tests_unchanged": true,
+  "installed_unchanged": true,
+  "quality_baseline_after_revision_before_run": 1,
+  "confirmed_baseline_at_observation": 2,
+  "old_evidence_rejection_exit_codes": [
+    1,
+    1,
+    1
+  ],
+  "final_quality_baseline": 2,
+  "old_quality_test_time": "2026-09-29T10:25:33.883963+00:00",
+  "new_quality_test_time": "2026-09-29T10:31:11.763376+00:00",
+  "all_previous_passed_attempts_preserved": true,
+  "previous_passed_attempt_count": 11,
+  "retired_item_count": 7,
+  "full_saved_report_received": true,
+  "read_write_complete_sequence_separate": true,
+  "report_sha_matches_registered_delivery": true,
+  "final_feature_status": "complete",
+  "final_confirmed_version": 2,
+  "delivered_version": 2
+}

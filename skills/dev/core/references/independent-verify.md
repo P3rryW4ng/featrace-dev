@@ -6,7 +6,7 @@ Use only when the user explicitly requests independent review, e.g. `/dev check 
 
 Confirm project/feature and the review scope. Determine a defensible pre-change Git base from impact/feature commits and the user's request; do not silently use HEAD when the implementation is already committed. Ask only if the base cannot be established. Preserve uncommitted work. Verify source access with `verify-inputs.py`; do not fill missing evidence. Obtain permission through the host only when actual delegation or environment access requires it.
 
-Pause writes for this serial review. Use a unique task scratch directory OUTSIDE the project for the input snapshot and result, retain failed attempts there, and do not commit them automatically. The snapshot is a disposable input manifest, not a new authoritative handoff record or state machine.
+Pause writes for this serial review. Read `write-scope.md` and select a unique external directory within the actual authorized write scope before creating it; a project-only restriction is not permission to use system temp. Pass exact snapshot/result write paths in dispatch. Use a unique task scratch directory OUTSIDE the project for the input snapshot and result, retain failed attempts there, and do not commit them automatically. The snapshot is a disposable input manifest, not a new authoritative handoff record or state machine.
 
 ```text
 python3 core/scripts/verify-handoff.py capture <PROJECT> <ID> --base <BASE> [--path <ignored-evidence-file> ...]

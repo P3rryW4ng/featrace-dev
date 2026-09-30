@@ -17,6 +17,8 @@ Stop if it fails. Preflight precedes reading run.json, task evidence or code. Sc
 
 ## Implementation boundary
 
+For any temporary scripts or test copies, read `../../core/references/write-scope.md` and use only the router-assigned task scratch under RUN. Never default to system temp, create workflow scratch in the worker or broaden code ownership for temporary files. If no permitted scratch is assigned, stop that temporary operation and report the missing location.
+
 - Edit only the exact paths assigned to your task in your own worktree. Read related local consumers and project conventions as needed; being in different files does not establish semantic independence.
 - Do not write to the primary checkout, another worker, frozen inputs or any `.agent-workflow` records. Do not change Git configuration, branches, commits, worktree registration or another task's interface. Leave implementation edits uncommitted; the helper exports them with a private index.
 - Do not expand scope to make a test green, weaken existing assertions or accept a regression that violates confirmed preservation. Return blocked with the necessary scope/authority correction instead.
