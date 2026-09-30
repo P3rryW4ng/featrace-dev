@@ -1,0 +1,13 @@
+test_default_and_legacy_unchanged (__main__.PreviewContract) ... ok
+test_duplicate_lines_and_no_input_mutation (__main__.PreviewContract) ... ok
+test_empty (__main__.PreviewContract) ... ok
+test_floor_cents (__main__.PreviewContract) ... ok
+test_invalid_preserved (__main__.PreviewContract) ... ok
+test_member_capped (__main__.PreviewContract) ... ok
+test_member_uncapped (__main__.PreviewContract) ... ok
+test_revision_discriminator (__main__.PreviewContract) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.029s
+
+OK

@@ -1,0 +1,87 @@
+{
+  "independent-contract": {
+    "rc": 0,
+    "tail": [
+      "",
+      "----------------------------------------------------------------------",
+      "Ran 18 tests in 0.029s",
+      "",
+      "OK"
+    ]
+  },
+  "project-tests": {
+    "rc": 0,
+    "tail": [
+      "",
+      "----------------------------------------------------------------------",
+      "Ran 32 tests in 0.001s",
+      "",
+      "OK"
+    ]
+  },
+  "validate-check": {
+    "rc": 0,
+    "tail": [
+      "FEATURE_VALID"
+    ]
+  },
+  "audit-delivery": {
+    "rc": 0,
+    "tail": [
+      "DELIVERY_EVIDENCE_CURRENT: selected checks passed and verified-fix test IDs were selected",
+      "Scope: manifests, tracked content outside .agent-workflow and registered evidence only; check task meaning, test assertions, uncommitted code and delivery report manually"
+    ]
+  },
+  "verification-status": {
+    "rc": 0,
+    "tail": [
+      "      \"status\": \"passed\",",
+      "      \"expected\": \"Run all unittest suites\"",
+      "    }",
+      "  ]",
+      "}"
+    ]
+  },
+  "revision-status": {
+    "rc": 0,
+    "tail": [
+      "{",
+      "  \"baseline_version\": 2,",
+      "  \"verified_version\": 2,",
+      "  \"pending\": []",
+      "}"
+    ]
+  },
+  "installed_unchanged": true,
+  "preserved_files": {
+    "prd-v1.md": true,
+    "tests/test_existing.py": true,
+    "src/storeflow/catalog.py": true,
+    "src/storeflow/payments.py": true,
+    "src/storeflow/receipts.py": true,
+    "src/storeflow/legacy_export.py": true
+  },
+  "original_source_preserved": true,
+  "git_status": "",
+  "head": "0bfd351ce5a724224b966724b6804b80dca4b1c2",
+  "feature_status": "complete",
+  "baseline_version": 2,
+  "tasks": [
+    {
+      "id": "T-1",
+      "status": "done"
+    },
+    {
+      "id": "T-2",
+      "status": "done"
+    },
+    {
+      "id": "T-3",
+      "status": "done"
+    },
+    {
+      "id": "T-4",
+      "status": "done"
+    }
+  ]
+}

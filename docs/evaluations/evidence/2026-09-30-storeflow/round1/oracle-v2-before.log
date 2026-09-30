@@ -1,0 +1,141 @@
+test_default_and_legacy_unchanged (__main__.PreviewContract) ... ok
+test_duplicate_lines_and_no_input_mutation (__main__.PreviewContract) ... FAIL
+test_empty (__main__.PreviewContract) ... ok
+test_floor_cents (__main__.PreviewContract) ... FAIL
+test_invalid_preserved (__main__.PreviewContract) ... ok
+test_member_capped (__main__.PreviewContract) ... FAIL
+test_member_uncapped (__main__.PreviewContract) ... FAIL
+test_revision_discriminator (__main__.PreviewContract) ... FAIL
+test_decline_rolls_back (__main__.CheckoutContract) ... ERROR
+test_decline_then_retry_once (__main__.CheckoutContract) ... ERROR
+test_default_charge (__main__.CheckoutContract) ... ok
+test_duplicate_sku_atomic (__main__.CheckoutContract) ... ERROR
+test_insufficient_later_line_atomic (__main__.CheckoutContract) ... ERROR
+test_invalid_does_not_write (__main__.CheckoutContract) ... ERROR
+test_member_charge_and_receipt (__main__.CheckoutContract) ... ERROR
+test_preserve_old_receipt (__main__.CheckoutContract) ... ERROR
+test_repeat_different_basket (__main__.CheckoutContract) ... ERROR
+test_repeat_invalid_input (__main__.CheckoutContract) ... ERROR
+
+======================================================================
+ERROR: test_decline_rolls_back (__main__.CheckoutContract)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/featrace_storeflow_oracle.py", line 64, in test_decline_rolls_back
+    with self.assertRaises(PaymentDeclined):self.shop.place_order('declined',[('book',1)],member=True)
+TypeError: place_order() got an unexpected keyword argument 'member'
+
+======================================================================
+ERROR: test_decline_then_retry_once (__main__.CheckoutContract)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/featrace_storeflow_oracle.py", line 68, in test_decline_then_retry_once
+    with self.assertRaises(PaymentDeclined):self.shop.place_order('retry',[('book',1)],member=True)
+TypeError: place_order() got an unexpected keyword argument 'member'
+
+======================================================================
+ERROR: test_duplicate_sku_atomic (__main__.CheckoutContract)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/featrace_storeflow_oracle.py", line 60, in test_duplicate_sku_atomic
+    with self.assertRaises(ValueError):self.shop.place_order('stock',[('book',2),('book',2)],member=True)
+TypeError: place_order() got an unexpected keyword argument 'member'
+
+======================================================================
+ERROR: test_insufficient_later_line_atomic (__main__.CheckoutContract)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/featrace_storeflow_oracle.py", line 56, in test_insufficient_later_line_atomic
+    with self.assertRaises(ValueError):self.shop.place_order('stock',[('book',1),('pen',99)],member=True)
+TypeError: place_order() got an unexpected keyword argument 'member'
+
+======================================================================
+ERROR: test_invalid_does_not_write (__main__.CheckoutContract)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/featrace_storeflow_oracle.py", line 75, in test_invalid_does_not_write
+    with self.assertRaises(ValueError):self.shop.place_order('invalid',lines,member=True)
+TypeError: place_order() got an unexpected keyword argument 'member'
+
+======================================================================
+ERROR: test_member_charge_and_receipt (__main__.CheckoutContract)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/featrace_storeflow_oracle.py", line 41, in test_member_charge_and_receipt
+    r=self.shop.place_order('one',[('book',2)],member=True)
+TypeError: place_order() got an unexpected keyword argument 'member'
+
+======================================================================
+ERROR: test_preserve_old_receipt (__main__.CheckoutContract)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/featrace_storeflow_oracle.py", line 53, in test_preserve_old_receipt
+    self.assertIs(self.shop.place_order('historical',[],member=True),r);self.assertEqual(self.snapshot(),old);self.assertEqual(export_receipt(r)['amount_cents'],7777)
+TypeError: place_order() got an unexpected keyword argument 'member'
+
+======================================================================
+ERROR: test_repeat_different_basket (__main__.CheckoutContract)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/featrace_storeflow_oracle.py", line 46, in test_repeat_different_basket
+    r=self.shop.place_order('dup',[('book',1)],member=True);old=self.snapshot()
+TypeError: place_order() got an unexpected keyword argument 'member'
+
+======================================================================
+ERROR: test_repeat_invalid_input (__main__.CheckoutContract)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/featrace_storeflow_oracle.py", line 49, in test_repeat_invalid_input
+    r=self.shop.place_order('dup',[('book',1)],member=True);old=self.snapshot()
+TypeError: place_order() got an unexpected keyword argument 'member'
+
+======================================================================
+FAIL: test_duplicate_lines_and_no_input_mutation (__main__.PreviewContract)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/featrace_storeflow_oracle.py", line 35, in test_duplicate_lines_and_no_input_mutation
+    lines=[('pen',1),('pen',2)];self.assertEqual(preview(lines,member=True)['total_cents'],expected(1500));self.assertEqual(lines,[('pen',1),('pen',2)])
+AssertionError: 1350 != 1275
+
+======================================================================
+FAIL: test_floor_cents (__main__.PreviewContract)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/featrace_storeflow_oracle.py", line 30, in test_floor_cents
+    with patch.dict(PRICES,{'odd':333}):self.assertEqual(preview([('odd',1)],member=True)['total_cents'],expected(333))
+AssertionError: 300 != 284
+
+======================================================================
+FAIL: test_member_capped (__main__.PreviewContract)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/featrace_storeflow_oracle.py", line 23, in test_member_capped
+    self.assertEqual(preview([('bag',2)],member=True)['total_cents'],30000-CAP)
+AssertionError: 28000 != 28800
+
+======================================================================
+FAIL: test_member_uncapped (__main__.PreviewContract)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/featrace_storeflow_oracle.py", line 21, in test_member_uncapped
+    self.assertEqual(preview([('book',1)],member=True),{'subtotal_cents':5000,'discount_cents':5000-expected(5000),'total_cents':expected(5000)})
+AssertionError: {'subtotal_cents': 5000, 'discount_cents': 500, 'total_cents': 4500} != {'subtotal_cents': 5000, 'discount_cents': 750, 'total_cents': 4250}
+- {'discount_cents': 500, 'subtotal_cents': 5000, 'total_cents': 4500}
+?                      -                                            -
+
++ {'discount_cents': 750, 'subtotal_cents': 5000, 'total_cents': 4250}
+?                    +                                            +
+
+
+======================================================================
+FAIL: test_revision_discriminator (__main__.PreviewContract)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/featrace_storeflow_oracle.py", line 25, in test_revision_discriminator
+    self.assertEqual(preview([('book',2)],member=True)['total_cents'],expected(10000))
+AssertionError: 9000 != 8800
+
+----------------------------------------------------------------------
+Ran 18 tests in 0.015s
+
+FAILED (failures=5, errors=9)

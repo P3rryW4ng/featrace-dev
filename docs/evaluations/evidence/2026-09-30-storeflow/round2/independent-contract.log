@@ -1,0 +1,23 @@
+test_default_and_legacy_unchanged (__main__.PreviewContract) ... ok
+test_duplicate_lines_and_no_input_mutation (__main__.PreviewContract) ... ok
+test_empty (__main__.PreviewContract) ... ok
+test_floor_cents (__main__.PreviewContract) ... ok
+test_invalid_preserved (__main__.PreviewContract) ... ok
+test_member_capped (__main__.PreviewContract) ... ok
+test_member_uncapped (__main__.PreviewContract) ... ok
+test_revision_discriminator (__main__.PreviewContract) ... ok
+test_decline_rolls_back (__main__.CheckoutContract) ... ok
+test_decline_then_retry_once (__main__.CheckoutContract) ... ok
+test_default_charge (__main__.CheckoutContract) ... ok
+test_duplicate_sku_atomic (__main__.CheckoutContract) ... ok
+test_insufficient_later_line_atomic (__main__.CheckoutContract) ... ok
+test_invalid_does_not_write (__main__.CheckoutContract) ... ok
+test_member_charge_and_receipt (__main__.CheckoutContract) ... ok
+test_preserve_old_receipt (__main__.CheckoutContract) ... ok
+test_repeat_different_basket (__main__.CheckoutContract) ... ok
+test_repeat_invalid_input (__main__.CheckoutContract) ... ok
+
+----------------------------------------------------------------------
+Ran 18 tests in 0.027s
+
+OK

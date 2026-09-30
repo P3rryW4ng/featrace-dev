@@ -1,0 +1,12 @@
+diff --git a/src/storeflow/checkout.py b/src/storeflow/checkout.py
+index dd4da1b..fd00351 100644
+--- a/src/storeflow/checkout.py
++++ b/src/storeflow/checkout.py
+@@ -9,6 +9,7 @@ class Checkout:
+ 
+     def place_order(self, request_id, lines, member=False):
+         if request_id in self.receipts:
++            self.inventory.reserve(lines)
+             return self.receipts[request_id]
+         if not lines:
+             raise ValueError("empty order")

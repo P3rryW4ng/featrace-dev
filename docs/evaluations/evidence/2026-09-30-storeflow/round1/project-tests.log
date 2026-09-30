@@ -1,0 +1,21 @@
+test_empty_order (test_existing.ExistingTests) ... ok
+test_empty_preview (test_existing.ExistingTests) ... ok
+test_invalid_line (test_existing.ExistingTests) ... ok
+test_legacy_subtotal (test_existing.ExistingTests) ... ok
+test_old_preview (test_existing.ExistingTests) ... ok
+test_repeat_is_cached (test_existing.ExistingTests) ... ok
+test_successful_order (test_existing.ExistingTests) ... ok
+test_default_and_explicit_false_are_undiscounted (test_member_preview.MemberPreviewTests) ... ok
+test_empty_preview_all_zero (test_member_preview.MemberPreviewTests) ... ok
+test_invalid_lines_still_raise (test_member_preview.MemberPreviewTests) ... ok
+test_member_cap_per_order (test_member_preview.MemberPreviewTests) ... ok
+test_member_floor_to_integer_cents (test_member_preview.MemberPreviewTests) ... ok
+test_member_ten_percent (test_member_preview.MemberPreviewTests) ... ok
+test_repeated_sku_counts_normally (test_member_preview.MemberPreviewTests) ... ok
+test_three_keys_and_total_relation (test_member_preview.MemberPreviewTests) ... ok
+test_gross_totals_unaffected_by_member_preview (test_member_preview.PreserveWithPreviewTests) ... ok
+
+----------------------------------------------------------------------
+Ran 16 tests in 0.000s
+
+OK

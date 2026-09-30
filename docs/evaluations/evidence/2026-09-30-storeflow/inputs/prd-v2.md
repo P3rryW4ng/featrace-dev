@@ -1,0 +1,2 @@
+# STORE-001 approved revision v2
+Replace only the member discount percentage and cap: 15% of subtotal, floor to integer cents, capped at 1200 cents per order. This replaces v1 10% / 2000. Apply to both preview and order charging. All other v1 requirements, receipt/legacy contracts, invalid inputs, duplicate request behavior, and atomic rollback stay unchanged. Product owner approves this revision; preserve v1 source bytes and history.

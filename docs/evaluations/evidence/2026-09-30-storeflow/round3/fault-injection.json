@@ -1,0 +1,9 @@
+{
+  "kind": "explicit synthetic injection",
+  "file": "src/storeflow/checkout.py",
+  "prior_sha256": "f013672cd5d05edd7b1175b880565d9c705be6db0c3a8764338ff0073d8ec370",
+  "faulty_sha256": "2c540eb7543b7723a2af0c9bfdb33c99970782e865de7b25b5275422175f412d",
+  "change": "reserve lines before returning cached receipt on duplicate request ID",
+  "fault_commit": "723a914a7d10d5f21a0f9da1d69031343b238537",
+  "clean_revision": "1e63e9ab19a7782de00f54c4ec06c1ba84c4ee85"
+}

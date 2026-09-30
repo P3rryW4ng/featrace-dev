@@ -1,0 +1,251 @@
+diff --git a/src/storeflow/checkout.py b/src/storeflow/checkout.py
+index 4948e54..dd4da1b 100644
+--- a/src/storeflow/checkout.py
++++ b/src/storeflow/checkout.py
+@@ -1,4 +1,4 @@
+-from .pricing import calculate_total
++from .pricing import quote
+ from .receipts import Receipt
+ 
+ class Checkout:
+@@ -7,14 +7,24 @@ class Checkout:
+         self.ledger = ledger
+         self.receipts = {}
+ 
+-    def place_order(self, request_id, lines):
++    def place_order(self, request_id, lines, member=False):
+         if request_id in self.receipts:
+             return self.receipts[request_id]
+         if not lines:
+             raise ValueError("empty order")
+-        amount = calculate_total(lines)
++        amount = quote(lines, member)["total_cents"]
++        needed = {}
++        for sku, qty in lines:
++            needed[sku] = needed.get(sku, 0) + qty
++        for sku, qty in needed.items():
++            if self.inventory.stock.get(sku, 0) < qty:
++                raise ValueError("insufficient stock")
+         self.inventory.reserve(lines)
+-        paid = self.ledger.charge(request_id, amount)
++        try:
++            paid = self.ledger.charge(request_id, amount)
++        except BaseException:
++            self.inventory.release(lines)
++            raise
+         receipt = Receipt(request_id, paid)
+         self.receipts[request_id] = receipt
+         return receipt
+diff --git a/src/storeflow/pricing.py b/src/storeflow/pricing.py
+index bbbabf8..d955015 100644
+--- a/src/storeflow/pricing.py
++++ b/src/storeflow/pricing.py
+@@ -1,7 +1,7 @@
+ from .catalog import subtotal
+ 
+-MEMBER_DISCOUNT_PERCENT = 10
+-MEMBER_DISCOUNT_CAP_CENTS = 2000
++MEMBER_DISCOUNT_PERCENT = 15
++MEMBER_DISCOUNT_CAP_CENTS = 1200
+ 
+ def calculate_total(lines):
+     return subtotal(lines)
+diff --git a/tests/test_member_checkout.py b/tests/test_member_checkout.py
+new file mode 100644
+index 0000000..e31250a
+--- /dev/null
++++ b/tests/test_member_checkout.py
+@@ -0,0 +1,135 @@
++import unittest
++from src.storeflow import catalog
++from src.storeflow.storefront import preview
++from src.storeflow.pricing import calculate_total
++from src.storeflow.legacy_export import export_subtotal
++from src.storeflow.inventory import Inventory
++from src.storeflow.payments import Ledger, PaymentDeclined
++from src.storeflow.checkout import Checkout
++from src.storeflow.receipts import Receipt, export_receipt
++
++def make(stock):
++    inv=Inventory(stock);ledger=Ledger();return inv,ledger,Checkout(inv,ledger)
++
++def snapshot(inv, ledger, shop):
++    return (dict(inv.stock), dict(ledger.charges), ledger.charge_count, dict(shop.receipts))
++
++class MemberCheckoutTests(unittest.TestCase):
++    def test_default_and_false_charge_undiscounted(self):
++        inv,ledger,shop=make({"book":5})
++        self.assertEqual(shop.place_order("d-1",[("book",2)]).paid_cents,10000)
++        self.assertEqual(shop.place_order("d-2",[("book",1)],member=False).paid_cents,5000)
++        self.assertEqual(shop.place_order("d-3",[("book",1)],False).paid_cents,5000)
++        self.assertEqual(ledger.charges,{"d-1":10000,"d-2":5000,"d-3":5000})
++    def test_member_charges_v2_policy(self):
++        # v2 (CHG-001): 15% floored, capped at 1200 cents per order
++        inv,ledger,shop=make({"book":10,"pen":10,"bag":2})
++        self.assertEqual(shop.place_order("m-1",[("book",1)],member=True).paid_cents,4250)
++        self.assertEqual(shop.place_order("m-2",[("book",2)],member=True).paid_cents,8800)
++        self.assertEqual(shop.place_order("m-3",[("pen",3)],True).paid_cents,1275)
++        self.assertEqual(shop.place_order("m-4",[("bag",2)],member=True).paid_cents,28800)
++        self.assertEqual(ledger.charges,{"m-1":4250,"m-2":8800,"m-3":1275,"m-4":28800})
++    def test_member_charge_equals_preview_total(self):
++        original=dict(catalog.PRICES)
++        try:
++            catalog.PRICES["odd"]=1999
++            cases=[[("book",1)],[("pen",1)],[("book",1),("pen",6)],[("book",1),("book",1)],[("bag",1),("pen",9)],[("odd",1)],[("odd",4)]]
++            for i,lines in enumerate(cases):
++                inv,ledger,shop=make({"book":5,"pen":10,"bag":2,"odd":5})
++                expected=preview(lines,member=True)["total_cents"]
++                r=shop.place_order("p-%d"%i,lines,member=True)
++                self.assertEqual(r.paid_cents,expected,lines)
++                self.assertEqual(ledger.charges["p-%d"%i],expected)
++        finally:
++            catalog.PRICES.clear();catalog.PRICES.update(original)
++    def test_receipt_type_and_export_format(self):
++        inv,ledger,shop=make({"book":2})
++        r=shop.place_order("fmt",[("book",1)],member=True)
++        self.assertIs(type(r),Receipt)
++        self.assertEqual(export_receipt(r),{"receipt_id":"fmt","amount_cents":4250})
++        self.assertIs(type(r.paid_cents),int)
++    def test_repeat_returns_original_receipt_despite_different_input(self):
++        inv,ledger,shop=make({"book":3,"pen":3})
++        r=shop.place_order("same",[("book",1)])
++        before=snapshot(inv,ledger,shop)
++        for lines,member in [([("book",1)],True),([("pen",2)],False),([("bad",1)],True),([("book",0)],False),([("book",True)],False),([],True),([("book",99)],False)]:
++            self.assertIs(shop.place_order("same",lines,member=member),r)
++        self.assertEqual(snapshot(inv,ledger,shop),before)
++        self.assertEqual(r.paid_cents,5000)
++    def test_repeat_member_receipt_not_replaced_by_non_member_repeat(self):
++        inv,ledger,shop=make({"book":3})
++        r=shop.place_order("mem",[("book",1)],member=True)
++        self.assertIs(shop.place_order("mem",[("book",1)]),r)
++        self.assertEqual(r.paid_cents,4250);self.assertEqual(ledger.charge_count,1);self.assertEqual(inv.stock["book"],2)
++
++class AtomicCheckoutTests(unittest.TestCase):
++    def assert_fails_unchanged(self, stock, lines, member, exc):
++        inv,ledger,shop=make(stock)
++        shop.place_order("prior",[("book",1)])
++        before=snapshot(inv,ledger,shop)
++        with self.assertRaises(exc):shop.place_order("fail",lines,member=member)
++        self.assertEqual(snapshot(inv,ledger,shop),before)
++        self.assertNotIn("fail",shop.receipts)
++    def test_validation_failure_unchanged(self):
++        for lines in [[("bad",1)],[("book",1),("bad",1)],[("book",0)],[("book",-1)],[("book",True)],[("book",1.0)]]:
++            for member in (False,True):
++                self.assert_fails_unchanged({"book":5},lines,member,ValueError)
++    def test_insufficient_stock_unchanged(self):
++        for member in (False,True):
++            self.assert_fails_unchanged({"book":5,"pen":2},[("book",1),("pen",3)],member,ValueError)
++            self.assert_fails_unchanged({"book":1},[("book",1)],member,ValueError)
++    def test_repeated_sku_stock_combined(self):
++        for member in (False,True):
++            self.assert_fails_unchanged({"book":2},[("book",1),("book",1)],member,ValueError)
++        inv,ledger,shop=make({"book":2})
++        r=shop.place_order("ok",[("book",1),("book",1)],member=True)
++        self.assertEqual(inv.stock["book"],0);self.assertEqual(r.paid_cents,8800)
++    def test_empty_order_raises(self):
++        for member in (False,True):
++            self.assert_fails_unchanged({"book":5},[],member,ValueError)
++    def test_decline_unchanged_then_retry_succeeds_once(self):
++        for member,amount in ((False,10000),(True,8800)):
++            inv,ledger,shop=make({"book":3})
++            ledger.decline_next=True
++            before=snapshot(inv,ledger,shop)
++            with self.assertRaises(PaymentDeclined):shop.place_order("retry",[("book",2)],member=member)
++            self.assertEqual(snapshot(inv,ledger,shop),before)
++            self.assertFalse(ledger.decline_next)
++            r=shop.place_order("retry",[("book",2)],member=member)
++            self.assertEqual(r.paid_cents,amount);self.assertEqual(inv.stock["book"],1)
++            self.assertEqual(ledger.charges,{"retry":amount});self.assertEqual(ledger.charge_count,1)
++            self.assertIs(shop.place_order("retry",[("book",1)],member=not member),r)
++            self.assertEqual(inv.stock["book"],1);self.assertEqual(ledger.charge_count,1)
++    def test_unexpected_charge_error_releases_stock(self):
++        inv,ledger,shop=make({"book":3})
++        def boom(request_id, amount):raise RuntimeError("gateway")
++        ledger.charge=boom
++        before=snapshot(inv,ledger,shop)
++        with self.assertRaises(RuntimeError):shop.place_order("x",[("book",1),("book",1)],member=True)
++        self.assertEqual(snapshot(inv,ledger,shop),before)
++
++class PreserveTests(unittest.TestCase):
++    def test_gross_totals_unaffected_by_member_orders(self):
++        lines=[("bag",1),("book",1)]
++        inv,ledger,shop=make({"bag":1,"book":1})
++        self.assertEqual(shop.place_order("g",lines,member=True).paid_cents,18800)
++        self.assertEqual(calculate_total(lines),20000)
++        self.assertEqual(export_subtotal(lines),{"gross_cents":20000})
++    def test_existing_receipts_never_rewritten(self):
++        inv,ledger,shop=make({"book":5})
++        r1=shop.place_order("r1",[("book",1)])
++        r2=shop.place_order("r2",[("book",1)],member=True)
++        shop.place_order("r1",[("book",1)],member=True)
++        self.assertEqual(export_receipt(r1),{"receipt_id":"r1","amount_cents":5000})
++        self.assertEqual(export_receipt(r2),{"receipt_id":"r2","amount_cents":4250})
++        self.assertIs(shop.receipts["r1"],r1);self.assertIs(shop.receipts["r2"],r2)
++        self.assertEqual(ledger.charges,{"r1":5000,"r2":4250});self.assertEqual(ledger.charge_count,2)
++    def test_prices_unchanged(self):
++        original=dict(catalog.PRICES)
++        inv,ledger,shop=make({"book":1,"pen":1,"bag":1})
++        shop.place_order("pr",[("book",1),("pen",1),("bag",1)],member=True)
++        self.assertEqual(catalog.PRICES,original)
++        self.assertEqual(catalog.PRICES,{"book":5000,"pen":500,"bag":15000})
++
++if __name__ == "__main__":
++    unittest.main()
+diff --git a/tests/test_member_preview.py b/tests/test_member_preview.py
+index 326247a..db9700c 100644
+--- a/tests/test_member_preview.py
++++ b/tests/test_member_preview.py
+@@ -9,22 +9,29 @@ class MemberPreviewTests(unittest.TestCase):
+         self.assertEqual(preview([("book",2)]), expected)
+         self.assertEqual(preview([("book",2)], member=False), expected)
+         self.assertEqual(preview([("bag",2)], False), {"subtotal_cents":30000,"discount_cents":0,"total_cents":30000})
+-    def test_member_ten_percent(self):
+-        self.assertEqual(preview([("book",2)], member=True), {"subtotal_cents":10000,"discount_cents":1000,"total_cents":9000})
++    def test_member_fifteen_percent(self):
++        # v2 (CHG-001): 15% of subtotal, replacing v1 10%
++        self.assertEqual(preview([("book",1)], member=True), {"subtotal_cents":5000,"discount_cents":750,"total_cents":4250})
++        self.assertEqual(preview([("pen",3)], member=True), {"subtotal_cents":1500,"discount_cents":225,"total_cents":1275})
+     def test_member_floor_to_integer_cents(self):
+         # catalog prices are all multiples of 10, so a temporary odd price exercises flooring
+-        self.assertEqual(preview([("pen",1)], member=True)["discount_cents"], 50)
++        self.assertEqual(preview([("pen",1)], member=True)["discount_cents"], 75)
+         from src.storeflow import catalog
+         original = dict(catalog.PRICES)
+         try:
+             catalog.PRICES["odd"] = 1999
+-            self.assertEqual(preview([("odd",1)], member=True), {"subtotal_cents":1999,"discount_cents":199,"total_cents":1800})
++            self.assertEqual(preview([("odd",1)], member=True), {"subtotal_cents":1999,"discount_cents":299,"total_cents":1700})
++            catalog.PRICES["odd"] = 7999
++            self.assertEqual(preview([("odd",1)], member=True), {"subtotal_cents":7999,"discount_cents":1199,"total_cents":6800})
+         finally:
+             catalog.PRICES.clear(); catalog.PRICES.update(original)
+     def test_member_cap_per_order(self):
+-        self.assertEqual(preview([("bag",1),("book",1)], member=True), {"subtotal_cents":20000,"discount_cents":2000,"total_cents":18000})
+-        self.assertEqual(preview([("bag",2)], member=True), {"subtotal_cents":30000,"discount_cents":2000,"total_cents":28000})
+-        self.assertEqual(preview([("bag",1),("pen",9)], member=True)["discount_cents"], 1950)
++        # v2 (CHG-001): cap 1200 cents per order, replacing v1 2000
++        self.assertEqual(preview([("book",1),("pen",6)], member=True), {"subtotal_cents":8000,"discount_cents":1200,"total_cents":6800})
++        self.assertEqual(preview([("book",2)], member=True), {"subtotal_cents":10000,"discount_cents":1200,"total_cents":8800})
++        self.assertEqual(preview([("bag",1),("book",1)], member=True), {"subtotal_cents":20000,"discount_cents":1200,"total_cents":18800})
++        self.assertEqual(preview([("bag",2)], member=True), {"subtotal_cents":30000,"discount_cents":1200,"total_cents":28800})
++        self.assertEqual(preview([("book",1),("pen",5)], member=True)["discount_cents"], 1125)
+     def test_three_keys_and_total_relation(self):
+         result = preview([("book",1),("pen",3)], member=True)
+         self.assertEqual(set(result), {"subtotal_cents","discount_cents","total_cents"})
+@@ -39,13 +46,14 @@ class MemberPreviewTests(unittest.TestCase):
+             for member in (False, True):
+                 with self.assertRaises(ValueError):preview(lines, member=member)
+     def test_repeated_sku_counts_normally(self):
+-        self.assertEqual(preview([("book",1),("book",1)], member=True), {"subtotal_cents":10000,"discount_cents":1000,"total_cents":9000})
++        self.assertEqual(preview([("book",1),("book",1)], member=True), {"subtotal_cents":10000,"discount_cents":1200,"total_cents":8800})
++        self.assertEqual(preview([("pen",1),("pen",2)], member=True), {"subtotal_cents":1500,"discount_cents":225,"total_cents":1275})
+         self.assertEqual(preview([("pen",1),("pen",2)]), {"subtotal_cents":1500,"discount_cents":0,"total_cents":1500})
+ 
+ class PreserveWithPreviewTests(unittest.TestCase):
+     def test_gross_totals_unaffected_by_member_preview(self):
+         lines = [("bag",2),("book",1)]
+-        self.assertEqual(preview(lines, member=True)["discount_cents"], 2000)
++        self.assertEqual(preview(lines, member=True)["discount_cents"], 1200)
+         self.assertEqual(calculate_total(lines), 35000)
+         self.assertEqual(export_subtotal(lines), {"gross_cents":35000})
+ 

@@ -1,0 +1,55 @@
+test_default_and_legacy_unchanged (__main__.PreviewContract) ... ok
+test_duplicate_lines_and_no_input_mutation (__main__.PreviewContract) ... ok
+test_empty (__main__.PreviewContract) ... ok
+test_floor_cents (__main__.PreviewContract) ... ok
+test_invalid_preserved (__main__.PreviewContract) ... ok
+test_member_capped (__main__.PreviewContract) ... ok
+test_member_uncapped (__main__.PreviewContract) ... ok
+test_revision_discriminator (__main__.PreviewContract) ... ok
+test_decline_rolls_back (__main__.CheckoutContract) ... ok
+test_decline_then_retry_once (__main__.CheckoutContract) ... FAIL
+test_default_charge (__main__.CheckoutContract) ... ok
+test_duplicate_sku_atomic (__main__.CheckoutContract) ... ok
+test_insufficient_later_line_atomic (__main__.CheckoutContract) ... ok
+test_invalid_does_not_write (__main__.CheckoutContract) ... ok
+test_member_charge_and_receipt (__main__.CheckoutContract) ... ok
+test_preserve_old_receipt (__main__.CheckoutContract) ... ok
+test_repeat_different_basket (__main__.CheckoutContract) ... ERROR
+test_repeat_invalid_input (__main__.CheckoutContract) ... ERROR
+
+======================================================================
+ERROR: test_repeat_different_basket (__main__.CheckoutContract)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/featrace_storeflow_oracle.py", line 47, in test_repeat_different_basket
+    self.assertIs(self.shop.place_order('dup',[('bag',99)],member=False),r);self.assertEqual(self.snapshot(),old)
+  File "/private/tmp/featrace-storeflow-0534-8306iq4r/project/src/storeflow/checkout.py", line 12, in place_order
+    self.inventory.reserve(lines)
+  File "/private/tmp/featrace-storeflow-0534-8306iq4r/project/src/storeflow/inventory.py", line 8, in reserve
+    raise ValueError("insufficient stock")
+ValueError: insufficient stock
+
+======================================================================
+ERROR: test_repeat_invalid_input (__main__.CheckoutContract)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/featrace_storeflow_oracle.py", line 50, in test_repeat_invalid_input
+    self.assertIs(self.shop.place_order('dup',[('nope',-1)],member=False),r);self.assertEqual(self.snapshot(),old)
+  File "/private/tmp/featrace-storeflow-0534-8306iq4r/project/src/storeflow/checkout.py", line 12, in place_order
+    self.inventory.reserve(lines)
+  File "/private/tmp/featrace-storeflow-0534-8306iq4r/project/src/storeflow/inventory.py", line 9, in reserve
+    self.stock[sku] -= qty
+KeyError: 'nope'
+
+======================================================================
+FAIL: test_decline_then_retry_once (__main__.CheckoutContract)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/featrace_storeflow_oracle.py", line 71, in test_decline_then_retry_once
+    self.assertIs(self.shop.place_order('retry',[('book',1)],member=False),r);self.assertEqual(self.inv.stock['book'],2)
+AssertionError: 1 != 2
+
+----------------------------------------------------------------------
+Ran 18 tests in 0.015s
+
+FAILED (failures=1, errors=2)

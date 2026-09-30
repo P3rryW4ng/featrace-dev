@@ -1,0 +1,92 @@
+diff --git a/src/storeflow/pricing.py b/src/storeflow/pricing.py
+index a2db21a..bbbabf8 100644
+--- a/src/storeflow/pricing.py
++++ b/src/storeflow/pricing.py
+@@ -1,4 +1,15 @@
+ from .catalog import subtotal
+ 
++MEMBER_DISCOUNT_PERCENT = 10
++MEMBER_DISCOUNT_CAP_CENTS = 2000
++
+ def calculate_total(lines):
+     return subtotal(lines)
++
++def member_discount(subtotal_cents):
++    return min(subtotal_cents * MEMBER_DISCOUNT_PERCENT // 100, MEMBER_DISCOUNT_CAP_CENTS)
++
++def quote(lines, member=False):
++    gross = calculate_total(lines)
++    discount = member_discount(gross) if member else 0
++    return {"subtotal_cents": gross, "discount_cents": discount, "total_cents": gross - discount}
+diff --git a/src/storeflow/storefront.py b/src/storeflow/storefront.py
+index 130c939..672089d 100644
+--- a/src/storeflow/storefront.py
++++ b/src/storeflow/storefront.py
+@@ -1,5 +1,4 @@
+-from .pricing import calculate_total
++from .pricing import quote
+ 
+-def preview(lines):
+-    return {"subtotal_cents": calculate_total(lines), "discount_cents": 0,
+-            "total_cents": calculate_total(lines)}
++def preview(lines, member=False):
++    return quote(lines, member)
+diff --git a/tests/test_member_preview.py b/tests/test_member_preview.py
+new file mode 100644
+index 0000000..326247a
+--- /dev/null
++++ b/tests/test_member_preview.py
+@@ -0,0 +1,53 @@
++import unittest
++from src.storeflow.storefront import preview
++from src.storeflow.pricing import calculate_total
++from src.storeflow.legacy_export import export_subtotal
++
++class MemberPreviewTests(unittest.TestCase):
++    def test_default_and_explicit_false_are_undiscounted(self):
++        expected = {"subtotal_cents":10000,"discount_cents":0,"total_cents":10000}
++        self.assertEqual(preview([("book",2)]), expected)
++        self.assertEqual(preview([("book",2)], member=False), expected)
++        self.assertEqual(preview([("bag",2)], False), {"subtotal_cents":30000,"discount_cents":0,"total_cents":30000})
++    def test_member_ten_percent(self):
++        self.assertEqual(preview([("book",2)], member=True), {"subtotal_cents":10000,"discount_cents":1000,"total_cents":9000})
++    def test_member_floor_to_integer_cents(self):
++        # catalog prices are all multiples of 10, so a temporary odd price exercises flooring
++        self.assertEqual(preview([("pen",1)], member=True)["discount_cents"], 50)
++        from src.storeflow import catalog
++        original = dict(catalog.PRICES)
++        try:
++            catalog.PRICES["odd"] = 1999
++            self.assertEqual(preview([("odd",1)], member=True), {"subtotal_cents":1999,"discount_cents":199,"total_cents":1800})
++        finally:
++            catalog.PRICES.clear(); catalog.PRICES.update(original)
++    def test_member_cap_per_order(self):
++        self.assertEqual(preview([("bag",1),("book",1)], member=True), {"subtotal_cents":20000,"discount_cents":2000,"total_cents":18000})
++        self.assertEqual(preview([("bag",2)], member=True), {"subtotal_cents":30000,"discount_cents":2000,"total_cents":28000})
++        self.assertEqual(preview([("bag",1),("pen",9)], member=True)["discount_cents"], 1950)
++    def test_three_keys_and_total_relation(self):
++        result = preview([("book",1),("pen",3)], member=True)
++        self.assertEqual(set(result), {"subtotal_cents","discount_cents","total_cents"})
++        self.assertEqual(result["total_cents"], result["subtotal_cents"]-result["discount_cents"])
++        self.assertTrue(all(type(v) is int for v in result.values()))
++    def test_empty_preview_all_zero(self):
++        zero = {"subtotal_cents":0,"discount_cents":0,"total_cents":0}
++        self.assertEqual(preview([]), zero)
++        self.assertEqual(preview([], member=True), zero)
++    def test_invalid_lines_still_raise(self):
++        for lines in [[("bad",1)],[("book",0)],[("book",-1)],[("book",True)],[("book",1.0)],[("book",1),("bad",1)]]:
++            for member in (False, True):
++                with self.assertRaises(ValueError):preview(lines, member=member)
++    def test_repeated_sku_counts_normally(self):
++        self.assertEqual(preview([("book",1),("book",1)], member=True), {"subtotal_cents":10000,"discount_cents":1000,"total_cents":9000})
++        self.assertEqual(preview([("pen",1),("pen",2)]), {"subtotal_cents":1500,"discount_cents":0,"total_cents":1500})
++
++class PreserveWithPreviewTests(unittest.TestCase):
++    def test_gross_totals_unaffected_by_member_preview(self):
++        lines = [("bag",2),("book",1)]
++        self.assertEqual(preview(lines, member=True)["discount_cents"], 2000)
++        self.assertEqual(calculate_total(lines), 35000)
++        self.assertEqual(export_subtotal(lines), {"gross_cents":35000})
++
++if __name__ == "__main__":
++    unittest.main()

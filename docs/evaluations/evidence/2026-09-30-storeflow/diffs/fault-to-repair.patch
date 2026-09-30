@@ -1,0 +1,33 @@
+diff --git a/src/storeflow/checkout.py b/src/storeflow/checkout.py
+index fd00351..dd4da1b 100644
+--- a/src/storeflow/checkout.py
++++ b/src/storeflow/checkout.py
+@@ -9,7 +9,6 @@ class Checkout:
+ 
+     def place_order(self, request_id, lines, member=False):
+         if request_id in self.receipts:
+-            self.inventory.reserve(lines)
+             return self.receipts[request_id]
+         if not lines:
+             raise ValueError("empty order")
+diff --git a/tests/test_member_checkout.py b/tests/test_member_checkout.py
+index e31250a..7b1fcb2 100644
+--- a/tests/test_member_checkout.py
++++ b/tests/test_member_checkout.py
+@@ -61,6 +61,16 @@ class MemberCheckoutTests(unittest.TestCase):
+         r=shop.place_order("mem",[("book",1)],member=True)
+         self.assertIs(shop.place_order("mem",[("book",1)]),r)
+         self.assertEqual(r.paid_cents,4250);self.assertEqual(ledger.charge_count,1);self.assertEqual(inv.stock["book"],2)
++    def test_repeat_with_available_stock_has_no_effects(self):
++        # FIX-001: a cached repeat must not reserve stock even when it would fit
++        for member in (False,True):
++            inv,ledger,shop=make({"book":5,"pen":5})
++            r=shop.place_order("dup",[("book",1)],member=member)
++            before=snapshot(inv,ledger,shop)
++            for lines in ([("book",1)],[("book",2),("pen",1)],[("book",1)]):
++                self.assertIs(shop.place_order("dup",lines,member=member),r)
++                self.assertEqual(snapshot(inv,ledger,shop),before)
++            self.assertEqual(inv.stock,{"book":4,"pen":5});self.assertEqual(ledger.charge_count,1)
+ 
+ class AtomicCheckoutTests(unittest.TestCase):
+     def assert_fails_unchanged(self, stock, lines, member, exc):

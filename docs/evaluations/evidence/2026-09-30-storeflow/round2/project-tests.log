@@ -1,0 +1,36 @@
+test_empty_order (test_existing.ExistingTests) ... ok
+test_empty_preview (test_existing.ExistingTests) ... ok
+test_invalid_line (test_existing.ExistingTests) ... ok
+test_legacy_subtotal (test_existing.ExistingTests) ... ok
+test_old_preview (test_existing.ExistingTests) ... ok
+test_repeat_is_cached (test_existing.ExistingTests) ... ok
+test_successful_order (test_existing.ExistingTests) ... ok
+test_decline_unchanged_then_retry_succeeds_once (test_member_checkout.AtomicCheckoutTests) ... ok
+test_empty_order_raises (test_member_checkout.AtomicCheckoutTests) ... ok
+test_insufficient_stock_unchanged (test_member_checkout.AtomicCheckoutTests) ... ok
+test_repeated_sku_stock_combined (test_member_checkout.AtomicCheckoutTests) ... ok
+test_unexpected_charge_error_releases_stock (test_member_checkout.AtomicCheckoutTests) ... ok
+test_validation_failure_unchanged (test_member_checkout.AtomicCheckoutTests) ... ok
+test_default_and_false_charge_undiscounted (test_member_checkout.MemberCheckoutTests) ... ok
+test_member_charge_equals_preview_total (test_member_checkout.MemberCheckoutTests) ... ok
+test_member_charges_v2_policy (test_member_checkout.MemberCheckoutTests) ... ok
+test_receipt_type_and_export_format (test_member_checkout.MemberCheckoutTests) ... ok
+test_repeat_member_receipt_not_replaced_by_non_member_repeat (test_member_checkout.MemberCheckoutTests) ... ok
+test_repeat_returns_original_receipt_despite_different_input (test_member_checkout.MemberCheckoutTests) ... ok
+test_existing_receipts_never_rewritten (test_member_checkout.PreserveTests) ... ok
+test_gross_totals_unaffected_by_member_orders (test_member_checkout.PreserveTests) ... ok
+test_prices_unchanged (test_member_checkout.PreserveTests) ... ok
+test_default_and_explicit_false_are_undiscounted (test_member_preview.MemberPreviewTests) ... ok
+test_empty_preview_all_zero (test_member_preview.MemberPreviewTests) ... ok
+test_invalid_lines_still_raise (test_member_preview.MemberPreviewTests) ... ok
+test_member_cap_per_order (test_member_preview.MemberPreviewTests) ... ok
+test_member_fifteen_percent (test_member_preview.MemberPreviewTests) ... ok
+test_member_floor_to_integer_cents (test_member_preview.MemberPreviewTests) ... ok
+test_repeated_sku_counts_normally (test_member_preview.MemberPreviewTests) ... ok
+test_three_keys_and_total_relation (test_member_preview.MemberPreviewTests) ... ok
+test_gross_totals_unaffected_by_member_preview (test_member_preview.PreserveWithPreviewTests) ... ok
+
+----------------------------------------------------------------------
+Ran 31 tests in 0.001s
+
+OK

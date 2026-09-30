@@ -1,0 +1,34 @@
+{
+  "oracle-v1": {
+    "returncode": 0,
+    "tail": [
+      "----------------------------------------------------------------------",
+      "Ran 8 tests in 0.029s",
+      "",
+      "OK"
+    ]
+  },
+  "project-tests": {
+    "returncode": 0,
+    "tail": [
+      "----------------------------------------------------------------------",
+      "Ran 16 tests in 0.000s",
+      "",
+      "OK"
+    ]
+  },
+  "installed_unchanged": true,
+  "unchanged_legacy": {
+    "prd-v1.md": true,
+    "tests/test_existing.py": true,
+    "src/__init__.py": true,
+    "src/storeflow/catalog.py": true,
+    "src/storeflow/payments.py": true,
+    "src/storeflow/receipts.py": true,
+    "src/storeflow/__init__.py": true,
+    "src/storeflow/checkout.py": true,
+    "src/storeflow/legacy_export.py": true,
+    "src/storeflow/inventory.py": true
+  },
+  "source_copy_matches": true
+}
