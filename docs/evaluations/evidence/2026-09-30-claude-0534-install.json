@@ -1,0 +1,18 @@
+{
+  "version": "0.5.34",
+  "implementation_commit": "a123694",
+  "pushed": true,
+  "file_count": 75,
+  "source_install_marker_match": true,
+  "backup": "/Users/mac/.feature-delivery/backups/20260930T021812-claude-e0d62259",
+  "backup_version": "0.5.33",
+  "backup_matches_own_marker": true,
+  "codex_install_changed": false,
+  "regression": {
+    "count": 267,
+    "status": "passed",
+    "seconds": 70.765,
+    "date": "2026-09-30"
+  },
+  "note": "Install/hash evidence; native use belongs to the subsequent StoreFlow rehearsal."
+}
