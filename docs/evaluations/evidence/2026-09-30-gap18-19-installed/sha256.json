@@ -1,0 +1,24 @@
+{
+  "files": {
+    "checks.json": "6e8986e89470059ea4c9f693ddd90f1ddb9aaa800a945a76970c26166a9f5d55",
+    "fixture/README.md": "0b76e427d9b6265d3a355523550368a9268e8ed18ed0d69953346bc07138e16e",
+    "fixture/app/build.gradle.kts": "761922b20ea15d9b3ac492ac941b21711bfb302ab423839e2a24a37b83948056",
+    "fixture/app/src/main/kotlin/example/AppEntry.kt": "3bb77158578848013d172253a4297eb54846a54d59b69dc1d677a6f0d9a0266a",
+    "fixture/debugkit/build.gradle.kts": "876e5ddfddedac8b99538703859ca44c855309af922b970437d2461b93680111",
+    "fixture/debugkit/src/main/kotlin/example/DebugPanel.kt": "3b6bf825409cbcea8fc2ae05e6de730f1755311d3f2b00efce7d1c9c7f3210e0",
+    "fixture/identity/build.gradle.kts": "876e5ddfddedac8b99538703859ca44c855309af922b970437d2461b93680111",
+    "fixture/identity/src/main/kotlin/example/IdentityGateway.kt": "006c9de64717eda67338ec13ebbb79a08968727249edeaf04495be6bd0c797e6",
+    "fixture/settings.gradle.kts": "5bc7a4719a666c4f6e21e5ae2a53f9c53084774c1ea031bbb1349816cc8e7d61",
+    "injected-wrong-index.json": "d1a7ce958b62eb0001637a4fa8467ff53d3c220e4362deb316bc194682a85a40",
+    "negative-candidates.json": "44cc5c77d07d017ba7a0d3bdf53373937c918c66405a5d0118c3a2acd8bf25d7",
+    "negative-graph.json": "040c61e8701e59fb1d5ee12222a27e3834b1cb09e96731a2bd3815c5a5a443c0",
+    "negative-index.json": "e3eaf657701b4c74444d187aa50c9e6e0b6ac3728a10d58f0dca1be6bd329417",
+    "negative-result.json": "50deeea55f401b2dd24a043a4d246f2525d60d81038cc26da4d6602f8c52e1fb",
+    "negative-tool-sequence.json": "9a649b0ceb75a915e77d3f26a6056adab34efd8131e36e2f7617c991696038b2",
+    "positive-candidates.json": "44cc5c77d07d017ba7a0d3bdf53373937c918c66405a5d0118c3a2acd8bf25d7",
+    "positive-graph.json": "7dd0ba63caff0767ed5fac7259afb04366d8794c80d4a4399a243001aae4304b",
+    "positive-index.json": "8936ad366a45b22019c285a8822b1d85ac8cb176607b4866e5692cd91f6f1b93",
+    "positive-result.json": "0f71d0e3ae57a1ddb9cdfedd725f4ec3f922623da1848804d9284844b2675a53",
+    "positive-tool-sequence.json": "5e3ae4b41adc2b6867baa3404d78d33c84707278607ec1347a9b3a7666203f90"
+  }
+}

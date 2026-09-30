@@ -1,0 +1,11 @@
+{
+  "installed_version": "0.5.35",
+  "installed_files": 75,
+  "positive_source_files_unchanged": true,
+  "negative_source_files_unchanged": true,
+  "positive_tracked_git_diff_empty": true,
+  "negative_tracked_git_diff_empty": true,
+  "positive_verify": "BASELINE_VALID",
+  "negative_verify": "BASELINE_VALID",
+  "quality_gates": "0 selected; SELECTION_REQUIRED"
+}

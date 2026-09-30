@@ -1,0 +1,76 @@
+{
+  "schema_version": 1,
+  "nodes": [
+    {
+      "id": "module:app",
+      "kind": "module",
+      "label": "app",
+      "summary": "Android application module; AppEntry consumes IdentityGateway"
+    },
+    {
+      "id": "module:identity",
+      "kind": "module",
+      "label": "identity",
+      "summary": "Android library exposing IdentityGateway (empty class)"
+    },
+    {
+      "id": "module:debugkit",
+      "kind": "module",
+      "label": "debugkit",
+      "summary": "Android library with DebugPanel (empty class); only a variant-conditional candidate consumer"
+    },
+    {
+      "id": "candidate::external",
+      "kind": "module_candidate",
+      "label": ":external",
+      "status": "unresolved_target"
+    }
+  ],
+  "edges": [
+    {
+      "from": "module:app",
+      "to": "module:identity",
+      "relation": "depends_on",
+      "status": "declared",
+      "evidence_refs": [
+        ".agent-workflow/modules/index.json"
+      ]
+    },
+    {
+      "from": "module:app",
+      "to": "candidate::external",
+      "relation": "implementation",
+      "status": "candidate",
+      "evidence_refs": [
+        "app/build.gradle.kts:4"
+      ]
+    },
+    {
+      "from": "module:app",
+      "to": "module:identity",
+      "relation": "implementation",
+      "status": "candidate",
+      "evidence_refs": [
+        "app/build.gradle.kts:3"
+      ]
+    },
+    {
+      "from": "module:app",
+      "to": "module:debugkit",
+      "relation": "\"${flavor}Implementation\"",
+      "status": "conditional_candidate",
+      "evidence_refs": [
+        "app/build.gradle.kts:5"
+      ]
+    }
+  ],
+  "gaps": [
+    "Gradle candidate: app/build.gradle.kts:4: dependency target :external is not a static include candidate",
+    "Gradle candidate: app/build.gradle.kts:5: add-style project dependency requires manual review"
+  ],
+  "limits": [
+    "Declared build/module relationships are not a complete runtime call graph.",
+    "Capability roles come only from confirmed feature scope records.",
+    "Dashed Gradle relationships are unconfirmed static candidates."
+  ]
+}

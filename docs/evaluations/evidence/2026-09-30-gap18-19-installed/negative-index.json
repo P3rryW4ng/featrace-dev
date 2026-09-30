@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "shared_stack": "Android Gradle (Kotlin DSL) with Kotlin sources; static declarations only, no runnable build",
+  "global_files": [
+    "settings.gradle.kts",
+    "README.md"
+  ],
+  "modules": [
+    {
+      "id": "app",
+      "summary": "Android application module; AppEntry consumes IdentityGateway. debugkit is only a variant-conditional candidate (app/build.gradle.kts:5, ${flavor} undefined) and :external is an unresolved target (app/build.gradle.kts:4); neither is an unconditional dependency",
+      "roots": [
+        "app"
+      ],
+      "depends_on": [
+        "identity"
+      ],
+      "evidence_files": [
+        "app/build.gradle.kts",
+        "app/src/main/kotlin/example/AppEntry.kt"
+      ]
+    },
+    {
+      "id": "identity",
+      "summary": "Android library exposing IdentityGateway (empty class)",
+      "roots": [
+        "identity"
+      ],
+      "depends_on": [],
+      "evidence_files": [
+        "identity/build.gradle.kts",
+        "identity/src/main/kotlin/example/IdentityGateway.kt"
+      ]
+    },
+    {
+      "id": "debugkit",
+      "summary": "Android library with DebugPanel (empty class); only a variant-conditional candidate consumer",
+      "roots": [
+        "debugkit"
+      ],
+      "depends_on": [],
+      "evidence_files": [
+        "debugkit/build.gradle.kts",
+        "debugkit/src/main/kotlin/example/DebugPanel.kt"
+      ]
+    }
+  ]
+}

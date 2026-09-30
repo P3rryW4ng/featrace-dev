@@ -24,6 +24,7 @@
 | 跨会话综合交付 | [StoreFlow 演练](evaluations/2026-09-30-storeflow.md) | 合成 v1→v2→人为回归修复三会话通过独立契约；原报告文字滞后，后续修正见 GAP-23 |
 | GAP-23 报告结论收口 | [0.5.35 原生复核](evaluations/2026-09-30-gap23.md) | 原生会话修正了旧待办措辞，单独全文回读后登记哈希再更新状态；真实项目稳定性仍待测 |
 | GAP-06 流程成本 | [轻量测量口径与 StoreFlow 样本](evaluations/gap06-cost-measurement.md) | 三轮合成执行的总时间、CLI 费用估计和调用次数可核；记录分钟数、维护者工时及真实净收益未测量 |
+| GAP-18/19 模块图候选与条件边 | [0.5.35 安装版 Agent 正反例](evaluations/2026-09-30-gap18-19-installed.md) | 小型合成 Gradle 仓库中未知目标、条件边均保留；错误无条件目录边被硬拒绝并由 Agent 修正。未运行 Gradle，真实复杂项目采用待测 |
 
 ## 本轮综合演练
 

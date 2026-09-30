@@ -1,0 +1,85 @@
+{
+  "schema_version": 1,
+  "kind": "gradle_static_candidates",
+  "status": "candidate_only",
+  "source_files": {
+    "app/build.gradle.kts": "761922b20ea15d9b3ac492ac941b21711bfb302ab423839e2a24a37b83948056",
+    "debugkit/build.gradle.kts": "876e5ddfddedac8b99538703859ca44c855309af922b970437d2461b93680111",
+    "identity/build.gradle.kts": "876e5ddfddedac8b99538703859ca44c855309af922b970437d2461b93680111",
+    "settings.gradle.kts": "5bc7a4719a666c4f6e21e5ae2a53f9c53084774c1ea031bbb1349816cc8e7d61"
+  },
+  "modules": [
+    {
+      "build_id": ":app",
+      "root": "app",
+      "evidence_refs": [
+        "settings.gradle.kts:2"
+      ],
+      "registered_module_ids": [
+        "app"
+      ],
+      "status": "pending_review"
+    },
+    {
+      "build_id": ":debugkit",
+      "root": "debugkit",
+      "evidence_refs": [
+        "settings.gradle.kts:2"
+      ],
+      "registered_module_ids": [
+        "debugkit"
+      ],
+      "status": "pending_review"
+    },
+    {
+      "build_id": ":identity",
+      "root": "identity",
+      "evidence_refs": [
+        "settings.gradle.kts:2"
+      ],
+      "registered_module_ids": [
+        "identity"
+      ],
+      "status": "pending_review"
+    }
+  ],
+  "edges": [
+    {
+      "from": ":app",
+      "to": ":external",
+      "configuration": "implementation",
+      "status": "candidate",
+      "evidence_refs": [
+        "app/build.gradle.kts:4"
+      ]
+    },
+    {
+      "from": ":app",
+      "to": ":identity",
+      "configuration": "implementation",
+      "status": "candidate",
+      "evidence_refs": [
+        "app/build.gradle.kts:3"
+      ]
+    }
+  ],
+  "conditional_edges": [
+    {
+      "from": ":app",
+      "to": ":debugkit",
+      "configuration_expression": "\"${flavor}Implementation\"",
+      "status": "conditional_candidate",
+      "evidence_refs": [
+        "app/build.gradle.kts:5"
+      ]
+    }
+  ],
+  "gaps": [
+    "app/build.gradle.kts:4: dependency target :external is not a static include candidate",
+    "app/build.gradle.kts:5: add-style project dependency requires manual review"
+  ],
+  "limits": [
+    "Static Gradle declarations are candidates, not confirmed module ownership or runtime calls.",
+    "Dynamic/composite includes, type-safe accessors, convention plugins, aliases, reflection and runtime navigation require manual review."
+  ]
+}
