@@ -1,0 +1,77 @@
+{
+  "fixture_head_before": "32647834111ce306ea143d86c336632e9fa36087",
+  "fixture_head_after": "5e73ceed0a3230988995a091268835530f236eaa",
+  "installed_unchanged": true,
+  "status": "complete",
+  "delivery_count": 2,
+  "report_sha256": "7564c2a02d02daa9a4e68fe2814661ff60e040e273747740953e0afb3fa9a3e4",
+  "delivery_hash_matches": true,
+  "old_report_unqualified_remaining": true,
+  "new_report_unqualified_remaining": false,
+  "new_report_time_scoped": true,
+  "new_report_canonical_pointer": true,
+  "business_diff": "",
+  "git_status": "",
+  "ordered_critical_calls": [
+    {
+      "event": 106,
+      "tool": "Edit",
+      "summary": "/private/tmp/gap23-native-0535/project/.agent-workflow/features/STORE-001/delivery-report.md"
+    },
+    {
+      "event": 108,
+      "tool": "Edit",
+      "summary": "/private/tmp/gap23-native-0535/project/.agent-workflow/features/STORE-001/delivery-report.md"
+    },
+    {
+      "event": 111,
+      "tool": "Read",
+      "summary": "/private/tmp/gap23-native-0535/project/.agent-workflow/features/STORE-001/delivery-report.md"
+    },
+    {
+      "event": 117,
+      "tool": "Bash",
+      "summary": "python3 /Users/mac/.claude/skills/dev/core/scripts/revise.py verify . STORE-001 --code-revision 32647834111ce306ea143d86c336632e9fa36087 --evidence delivery-report.md; echo rc=$?; shasum -a 256 .agent-workflow/features/STORE-001/delivery-report.md"
+    },
+    {
+      "event": 125,
+      "tool": "Bash",
+      "summary": "S=/Users/mac/.claude/skills/dev/core/scripts; python3 - <<'EOF'\nimport json\np='.agent-workflow/features/STORE-001/spec/requirements.json'\nd=json.load(open(p))\nf=d['feature']\nf['status']='complete'\nf['status_note']='Baseline v2 (CHG-001/D-001) re-delivered with"
+    }
+  ],
+  "checks": {
+    "feature_check": {
+      "exit_code": 0,
+      "summary": [
+        "FEATURE_VALID"
+      ]
+    },
+    "delivery_audit": {
+      "exit_code": 0,
+      "summary": [
+        "DELIVERY_EVIDENCE_CURRENT: selected checks passed and verified-fix test IDs were selected",
+        "Scope: manifests, tracked content outside .agent-workflow and registered evidence only; check task meaning, test assertions, uncommitted code and delivery report manually"
+      ]
+    },
+    "revision_status": {
+      "exit_code": 0,
+      "summary": [
+        "{",
+        "  \"baseline_version\": 2,",
+        "  \"verified_version\": 2,",
+        "  \"pending\": []",
+        "}"
+      ]
+    },
+    "project_tests": {
+      "exit_code": 0,
+      "summary": [
+        "",
+        "----------------------------------------------------------------------",
+        "Ran 32 tests in 0.001s",
+        "",
+        "OK"
+      ]
+    }
+  }
+}

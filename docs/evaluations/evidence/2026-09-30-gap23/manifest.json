@@ -1,0 +1,18 @@
+{
+  "sha256": {
+    "before.json": "e28b02fea7f4e3e7026684657451d33c58087d7373bae50d3809f870b4cd103c",
+    "usage.json": "8cbef7fed11b5f9aa466231d52de0b044fc0f8ee853575e30c26b2249930ba49",
+    "feature-check.log": "7cdb7fb123e0456e7e0716373a538facc249be83ac1561091470df37396a9885",
+    "critical-calls.json": "25ece4af1ccf1cca4162c038fd7f678b85245373dae86a0eef34c7517783c34b",
+    "prompt.txt": "7efd68561fba8d4893ecf7141e9e9b3ac6545182ff7131815506d4cf968c5677",
+    "after.json": "6a8e3bd420db5be00a8051cf5a8ae0ff5d9e955784e069046289defd5c715ccd",
+    "assessment.md": "34c94ccf17f3713f3db67cc221f4cb022e98d21e8a6a2f8998ddd272d1ad293f",
+    "parent-audit.json": "9a549547242d8045803011c83ef69da51a9d472611594e3e059e0a7d5501b8ba",
+    "project-tests.log": "126318233f1b7f94e87aa01ed48657a112efab846725bd8243d0060f7093e3ee",
+    "revision-status.log": "90a3e586f30c1a4c6f752fea08fb68ec08d9c82055ad93d093b1c8a7bce1d080",
+    "execution.json": "d0a3ccb6396880e7baeb68f80f31368e1fb7e3211845fce27240828a7f2fbc73",
+    "report-before.md": "14da5d1f707d34d31ce71f14b6a30702375aff429d9ad75efda3c213c643f6b6",
+    "delivery-audit.log": "c8dcd2d850fd993043e9f3d2025a7dba973eea11d3617e1e6e13d4c9b90c3fa5",
+    "report-after.md": "7564c2a02d02daa9a4e68fe2814661ff60e040e273747740953e0afb3fa9a3e4"
+  }
+}
