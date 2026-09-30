@@ -4,7 +4,7 @@
 
 ## 当前发布与检查
 
-当前源码为 0.5.37，本机 Claude 安装仍为 0.5.36；[旧版安装版 Agent 对照](evaluations/2026-09-30-build-installed-ab.md)已执行，0.5.37 的安装版采用未验证。0.5.37 的 `test_parallel_build` 29/29、完整 unittest 277/277 于 2026-09-30 实跑通过（84.957 秒，退出码 0）。测试不证明 Agent 理解、行为覆盖或产品成熟度。Skill Creator `quick_validate.py` 因 PyYAML 不可用未成功运行；三个 Skill frontmatter 的 Ruby YAML 解析、`py_compile` 与 `git diff --check` 通过。
+当前源码和本机 Claude 安装均为 0.5.37；安装版 76 个运行文件与标记哈希相符。[单 Worker 隔离复检](evaluations/2026-09-30-build-installed-full-diff.md)观察到 Agent 实际按顺序读取任务视图、输出完整补丁并交回 ready；旧[双 Worker 对照](evaluations/2026-09-30-build-installed-ab.md)保留。0.5.37 的 `test_parallel_build` 29/29、完整 unittest 277/277 于 2026-09-30 实跑通过（84.957 秒，退出码 0）。测试不证明 Agent 理解、行为覆盖或产品成熟度。Skill Creator `quick_validate.py` 因 PyYAML 不可用未成功运行；三个 Skill frontmatter 的 Ruby YAML 解析、`py_compile` 与 `git diff --check` 通过。
 
 ## 能力证据导航
 
@@ -15,7 +15,7 @@
 | 独立 Verify | [Claude 0.5.24](evaluations/2026-09-28-claude-0524-verify.md) | 缺陷/正常/缺资料与过期拒绝；真实准确率及成本仍待测 |
 | 内部选择串行／两 Worker | [原生策略演练](evaluations/2026-09-29-native-auto-build.md) | 有实际选择与候选检查；不支持任意宽度调度或证明提速 |
 | Build 任务级输入视图 | [0.5.36 源仓测量](evaluations/2026-09-30-build-task-view.md)、[安装版同输入对照](evaluations/2026-09-30-build-installed-ab.md)，完整回归 272/272 | 安装版两个 Worker 均按顺序调用预检和任务视图；本次并行更慢更贵，候选被独立合同探针检出缺陷；不证明真实上下文节省或提效 |
-| Worker 全文补丁检查 | [0.5.37 源仓验证](evaluations/2026-09-30-build-full-diff.md)，完整回归 277/277 | `inspect-diff` 输出完整补丁，`finish ready` 拒绝缺失/过期/改写的检查记录；未验证安装版 Agent 全文阅读或语义判断 |
+| Worker 全文补丁检查 | [0.5.37 源仓验证](evaluations/2026-09-30-build-full-diff.md)、[安装版单 Worker 复检](evaluations/2026-09-30-build-installed-full-diff.md)，完整回归 277/277 | 实际 Agent 单独调用并收到完整补丁后才 `finish`，补丁与返回逐字一致；未验证语义判断或双 Worker 集成 |
 | Build 失败边界 | [边界验证](evaluations/2026-09-29-build-boundaries.md)、[失败返回](evaluations/2026-09-29-gap20-return-gate.md) | 来源漂移/越界/失败返回停止；并非新版所有分支都重跑完整派发 |
 | 候选采用与普通 Verify | [接续演练](evaluations/2026-09-29-adoption.md) | 采用前阻断、漂移拒绝与技术证据回填；不冒充产品/真机验收 |
 | 修复→重测→交付 | [Repair 演练](evaluations/2026-09-29-repair.md) | 修复/重测已执行；早期报告曾需提醒，后由 Deliver 规则补强 |

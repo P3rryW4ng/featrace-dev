@@ -35,7 +35,7 @@
 
 <a id="verify-pilot-next"></a>
 
-已拆出 featrace-verify 与 featrace-build 专家；Requirement/Scope/Repair/Deliver 仍主要在同一 Agent 按需加载。独立 Verify 保持可选，普通 Build 内部保守选择串行或一对 Worker。0.5.36 的 Build 任务视图只从冻结权威记录选取当前任务的起点资料，缺口须有据扩读；共享记录不并发写，输入过期/越界/失败停止当前尝试，合格候选采用后回到普通 Verify。[安装版 Agent 对照](docs/evaluations/2026-09-30-build-installed-ab.md)已见 Worker 按任务调用视图，但只看了 diff 统计；0.5.37 源码以当前补丁全文输出记录收紧 `finish ready`，安装版采用待复检。此次双 Worker 候选在合同外测中仍有遗漏；继续以真实需求成本与正确性决定扩大拆分，而非凭合成绿色测试扩大并发。
+已拆出 featrace-verify 与 featrace-build 专家；Requirement/Scope/Repair/Deliver 仍主要在同一 Agent 按需加载。独立 Verify 保持可选，普通 Build 内部保守选择串行或一对 Worker。0.5.36 的 Build 任务视图只从冻结权威记录选取当前任务的起点资料，缺口须有据扩读；共享记录不并发写，输入过期/越界/失败停止当前尝试，合格候选采用后回到普通 Verify。[旧安装版 Agent 对照](docs/evaluations/2026-09-30-build-installed-ab.md)已见 Worker 按任务调用视图，但只看了 diff 统计；0.5.37 以当前补丁全文输出记录收紧 `finish ready`，[安装版单 Worker 复检](docs/evaluations/2026-09-30-build-installed-full-diff.md)观察到新调用顺序，尚未复测双 Worker 集成或语义正确性。此前双 Worker 候选在合同外测中仍有遗漏；继续以真实需求成本与正确性决定扩大拆分，而非凭合成绿色测试扩大并发。
 
 扩大拆分或并发前须有：交接没有额外遗漏、故障现场可恢复、实际任务值得分离且时间/Token/重复读取成本可接受的证据。当前不开发任意 Worker 数、自动多波次调度或通用自动重试；不把拆文件等同隔离上下文。决策见 [A42–A54](docs/decisions/architecture.md)。
 

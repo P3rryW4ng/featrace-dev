@@ -1,8 +1,8 @@
 # 使用与迭代指南
 
-## 0.5.37 Build 专家任务视图与全文差异检查（2026-09-30，源码待安装）
+## 0.5.37 Build 专家任务视图与全文差异检查（2026-09-30，已安装 Claude）
 
-用户仍只使用 `/dev`；Requirement、Scope、Repair、Deliver 暂由主 Agent 按阶段加载，独立 Verify 仍是可选复核。内部判断两个任务确实可以并行且 Scope 前置有效时，路由冻结原有权威记录并给每个 Build Worker 分配独立工作区。Worker 先运行 preflight，再通过 `parallel-build.py task-view <RUN> <TASK-ID>` 取得本任务的需求、明确相关或未标关联的决策、保留行为、接口与检查；不默认把整份并行计划放入它的上下文。需要核对原始来源、调用方、共享状态或关联不明的内容时，按证据读取冻结原件；新依赖或产品冲突交回 Scope。0.5.37 源码要求 Worker 在编辑完成后调用 `parallel-build.py inspect-diff <RUN> <TASK-ID>` 输出并核对完整补丁，`finish ready` 拒绝缺失或过期的检查记录。该视图和差异检查不另立需求权威，也不限制文件系统读权限；脚本不能证明 Agent 读懂补丁，旧的输入过期、越界、失败、集成后重测规则不变。本机 Claude Code 当前安装的仍是 0.5.36；其任务视图采用已在[隔离对照](evaluations/2026-09-30-build-installed-ab.md)中观察，0.5.37 尚无安装版 Agent 采用结论。
+用户仍只使用 `/dev`；Requirement、Scope、Repair、Deliver 暂由主 Agent 按阶段加载，独立 Verify 仍是可选复核。内部判断两个任务确实可以并行且 Scope 前置有效时，路由冻结原有权威记录并给每个 Build Worker 分配独立工作区。Worker 先运行 preflight，再通过 `parallel-build.py task-view <RUN> <TASK-ID>` 取得本任务的需求、明确相关或未标关联的决策、保留行为、接口与检查；不默认把整份并行计划放入它的上下文。需要核对原始来源、调用方、共享状态或关联不明的内容时，按证据读取冻结原件；新依赖或产品冲突交回 Scope。0.5.37 源码要求 Worker 在编辑完成后调用 `parallel-build.py inspect-diff <RUN> <TASK-ID>` 输出并核对完整补丁，`finish ready` 拒绝缺失或过期的检查记录。该视图和差异检查不另立需求权威，也不限制文件系统读权限；脚本不能证明 Agent 读懂补丁，旧的输入过期、越界、失败、集成后重测规则不变。本机 Claude Code 已安装 0.5.37；[单 Worker 隔离复检](evaluations/2026-09-30-build-installed-full-diff.md)观察到实际调用与全文输出，未证明双 Worker 集成或语义正确性。旧版[双 Worker 对照](evaluations/2026-09-30-build-installed-ab.md)保留。
 
 ## 0.5.35 Deliver 报告结论截点（2026-09-30）
 
