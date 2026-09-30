@@ -15,6 +15,9 @@ CORE = Path(__file__).resolve().parent
 spec = importlib.util.spec_from_file_location('build_snapshot', CORE / 'verify-handoff.py')
 handoff = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(handoff)
+view_spec = importlib.util.spec_from_file_location('build_inputs', CORE / 'build-inputs.py')
+build_inputs = importlib.util.module_from_spec(view_spec)
+view_spec.loader.exec_module(build_inputs)
 
 
 def load(path):
@@ -188,6 +191,24 @@ def preflight(run):
     return doc
 
 
+def task_view(run, task_id):
+    """Return only one worker's task and relevant authority after full preflight."""
+    run = Path(run).resolve()
+    doc = preflight(run)
+    item = next((row for row in doc['plan']['tasks'] if row['task_id'] == task_id), None)
+    if item is None or task_id not in doc['workspaces']:
+        raise ValueError('task not in this attempt')
+    authority = build_inputs.collect(run / 'inputs', doc['feature_id'], task_id)
+    return {'status': 'PARALLEL_BUILD_TASK_VIEW_CURRENT',
+            'run_digest': handoff.digest(doc), 'feature_id': doc['feature_id'],
+            'base_revision': doc['base_revision'], 'task_id': task_id,
+            'worker_path': doc['workspaces'][task_id]['path'],
+            'frozen_authority_root': str(run / 'inputs'),
+            'assigned': item, 'shared_interfaces': doc['plan']['independence'],
+            'authority_view': authority,
+            'note': 'Read-only task projection; source files, code and full records may need evidence-backed expansion.'}
+
+
 def proposal(run, doc, task_id):
     item = next((t for t in doc['plan']['tasks'] if t['task_id'] == task_id), None)
     if item is None:
@@ -330,6 +351,7 @@ def main():
     subs = parser.add_subparsers(dest='action', required=True)
     p = subs.add_parser('prepare'); p.add_argument('project'); p.add_argument('feature_id'); p.add_argument('--plan', required=True); p.add_argument('--out', required=True)
     p = subs.add_parser('preflight'); p.add_argument('run')
+    p = subs.add_parser('task-view'); p.add_argument('run'); p.add_argument('task_id')
     p = subs.add_parser('finish'); p.add_argument('run'); p.add_argument('task_id'); p.add_argument('--status', required=True, choices=['ready', 'blocked', 'failed']); p.add_argument('--summary', required=True)
     p = subs.add_parser('integrate'); p.add_argument('run')
     args = parser.parse_args()
@@ -337,10 +359,12 @@ def main():
         if args.action == 'prepare': result = prepare(args.project, args.feature_id, load(args.plan), args.out)
         elif args.action == 'preflight':
             doc = preflight(args.run); result = {'status': 'PARALLEL_BUILD_INPUTS_CURRENT', 'run_digest': handoff.digest(doc)}
+        elif args.action == 'task-view': result = task_view(args.run, args.task_id)
         elif args.action == 'finish': result = finish(args.run, args.task_id, args.status, args.summary)
         else: result = integrate(args.run)
         print(json.dumps(result, indent=2))
-        return 0 if result['status'] in {'PARALLEL_BUILD_PREPARED', 'PARALLEL_BUILD_INPUTS_CURRENT', 'ready', 'candidate_checks_passed'} else 1
+        return 0 if result['status'] in {'PARALLEL_BUILD_PREPARED', 'PARALLEL_BUILD_INPUTS_CURRENT',
+                                       'PARALLEL_BUILD_TASK_VIEW_CURRENT', 'ready', 'candidate_checks_passed'} else 1
     except (ValueError, OSError, KeyError, TypeError, subprocess.SubprocessError) as exc:
         print('PARALLEL_BUILD_ERROR: ' + str(exc), file=sys.stderr); return 1
 

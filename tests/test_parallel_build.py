@@ -102,6 +102,23 @@ class ParallelBuildTests(unittest.TestCase):
         self.assertIn('.upper()', (self.run / 'integration/upper.py').read_text())
         self.assertIn('.lower()', (self.run / 'integration/lower.py').read_text())
 
+    def test_worker_view_is_task_scoped_and_bound_to_current_frozen_inputs(self):
+        self.prepare()
+        view = build.task_view(self.run, 'T-UP')
+        self.assertEqual(view['status'], 'PARALLEL_BUILD_TASK_VIEW_CURRENT')
+        self.assertEqual(view['assigned']['task_id'], 'T-UP')
+        self.assertEqual(view['authority_view']['task']['id'], 'T-UP')
+        self.assertEqual(view['authority_view']['omitted_explicitly_unrelated']['tasks'], 1)
+        self.assertNotIn('T-LOW', [task['id'] for task in [view['authority_view']['task']]])
+        self.assertNotIn('snapshot', view)
+        cli = subprocess.run([sys.executable, str(CORE / 'parallel-build.py'),
+                              'task-view', str(self.run), 'T-UP'], capture_output=True, text=True)
+        self.assertEqual(cli.returncode, 0, cli.stderr)
+        self.assertEqual(json.loads(cli.stdout), view)
+        (self.run / 'inputs/.agent-workflow/features/FEAT-001/tasks.json').write_text('{}')
+        with self.assertRaisesRegex(ValueError, 'frozen authority changed'):
+            build.task_view(self.run, 'T-UP')
+
     def test_ownership_conflict_and_dependencies_rejected_before_worktree_creation(self):
         self.plan['tasks'][1]['allowed_paths'] = ['upper.py']
         with self.assertRaisesRegex(ValueError, 'ownership conflict'): self.prepare()

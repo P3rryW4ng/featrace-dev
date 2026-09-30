@@ -17,7 +17,7 @@ Before reading project evidence, run the read-only helper:
 python3 <SKILL>/core/scripts/verify-handoff.py check <PROJECT> <ID> --snapshot <SNAPSHOT>
 ```
 
-If it fails, stop and return blocked with the error; do not repair the snapshot. Run `verify-inputs.py <PROJECT> <ID>` to identify actual readable sources and quality claims. Missing sources, build evidence or acceptance artifacts stay missing. A historical recorded observation is evidence of that observation, not an independent rerun or screenshot.
+If it fails, stop and return blocked with the error; do not repair the snapshot. Run `verify-inputs.py <PROJECT> <ID>` as the read-only starting view of sources, code state and quality claims. Begin with identified paths and the implementation diff; read additional callers, shared resources and old behavior when evidence leads there. A starting view is not a cap on relevant evidence, and missing sources, build evidence or acceptance artifacts stay missing. A historical recorded observation is evidence of that observation, not an independent rerun or screenshot.
 
 ## Investigation
 

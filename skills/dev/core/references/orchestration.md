@@ -8,6 +8,8 @@ The router may read the selected feature identity, `feature-status.py` output, u
 
 The router must not reread every source, code file and test result merely to choose a stage. It must not summarize its way around a failed gate. `help`, `list`, `status` and delivery-mode activation remain read-only and do not require a stage handoff.
 
+The stage view is a read strategy over existing canonical records, not a second store. Requirement reads sources and requirement authority; Scope reads module/code evidence, impact and task meaning; Build starts from its assigned task and preserved behavior; Verify can expand across tasks and consumers; Repair starts from the mismatch and failed evidence; Deliver reads current verification and all unresolved closure conditions. Do not preload all feature records for every stage. A narrow view must expose missing or ambiguous linkage and permit evidence-backed expansion; it cannot silently treat omitted material as irrelevant.
+
 ## Capability contracts
 
 | Stage | Enter when | Required input | Required output and exit condition | Load on demand |
@@ -40,6 +42,8 @@ Write facts to the existing requirement, task, decision, impact, fix, verificati
 This release uses the same Agent with progressive disclosure. Load the orchestration contract first, then only the chosen stage references. A chained route loads the next stage only after the previous exit condition is met. Do not preload every reference "for safety"; load a direct dependency when a real condition activates it.
 
 Independent Verify is opt-in under `independent-verify.md`: a fresh, read-only reviewer loads `specialists/featrace-verify/SKILL.md`, returns evidence, and the router reconciles it. Ordinary check remains unchanged; unsupported hosts report unavailable. A Build pair chosen under `build-strategy.md` requires the same Scope exit first (workflow, impact, task semantics and historical review), plus current task/history review records; read-only missing reviews block instead of exploiting legacy warnings. It is available under `parallel-build.md`, using the bundled `specialists/featrace-build/SKILL.md`, separate detached worktrees and a tested external integration candidate. It never writes canonical records or promotes code by itself. Authorized Build now chooses conservatively between serial and one independent pair; user-forced serial takes precedence. No general scheduler, arbitrary worker count or automatic waves are enabled. Expand only after measuring omissions, false assumptions, handoff loss, interventions, time and token cost against the same-stage baseline.
+
+For the independent Build pair, the router passes task identity and frozen input location, not all records inline. After preflight, each worker calls `parallel-build.py task-view` to obtain only its assigned task projection, then reads original evidence when needed. Independent Verify already starts with `verify-inputs.py` and a bound snapshot; it must still search relevant consumers beyond the starting file list. These are context-management aids, not file-system access controls or semantic completeness guarantees.
 
 ## Stop and return rules
 

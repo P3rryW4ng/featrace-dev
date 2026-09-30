@@ -13,7 +13,13 @@ Before reading task evidence or editing code, run:
 python3 <SKILL>/core/scripts/parallel-build.py preflight <RUN>
 ```
 
-Stop if it fails. Preflight precedes reading run.json, task evidence or code. Scope review is the router's completed prerequisite: do not perform adoption, sync, review or canonical writes from a worker. Read `<RUN>/run.json` for your exact task, interfaces, preservation rules, allowed paths and selected checks. Read relevant original sources, confirmed requirements, decisions, impact and reviewed task meaning under `<RUN>/inputs/.agent-workflow/`; use these frozen copies as the authority. Missing detail, a conflicting contract or a newly discovered dependency is a blocker, not permission to invent behavior.
+Stop if it fails. Preflight precedes reading task evidence or code. Then request only this task's read-only view:
+
+```text
+python3 <SKILL>/core/scripts/parallel-build.py task-view <RUN> <TASK-ID>
+```
+
+Require `PARALLEL_BUILD_TASK_VIEW_CURRENT`. The helper rechecks frozen inputs and returns the assigned worktree, checks, interfaces and the selected task's requirements, related decisions, traceability and change/preserve boundaries. Only `assigned.allowed_paths` permits edits; `impact.reviewed_change_paths` describes the broader reviewed feature, not your ownership. Do not load the full `run.json` or every feature record by default. This view is a starting index, not new authority or a promise that other code is irrelevant: read cited original sources and inspect callers/shared behavior as needed. A decision without explicit requirement linkage and every preserve behavior stays visible. If the view reports a gap, or a newly found dependency needs more records, inspect the frozen originals under `<RUN>/inputs/.agent-workflow/`; return blocked to Scope when the assignment or product authority must change. Do not perform adoption, sync, review or canonical writes from a worker.
 
 ## Implementation boundary
 
