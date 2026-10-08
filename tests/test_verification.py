@@ -2,7 +2,7 @@ import json
 import sys
 import unittest
 import test_impact
-from verification import sync, load_plan, context, record, state, validate_verification
+from verification import sync, load_plan, context, record, retain, state, validate_verification
 
 
 class VerificationTests(unittest.TestCase):
@@ -132,3 +132,76 @@ class VerificationTests(unittest.TestCase):
         # Invalid configuration must fail before it can borrow the earlier green report.
         self.run_checks(expected=1)
 
+    def test_scoped_copy_change_retains_prior_navigation_observation_without_retest(self):
+        (self.root / 'copy.txt').write_text('Original display copy')
+        self.doc['allowed_paths'].append('copy.txt')
+        self.doc['inspected_paths'].append('copy.txt')
+        self.save()
+        plan = self.plan()
+        navigation = next(r for r in plan['items'] if r['source'] == 'impact:B-2')
+        navigation['dependencies'] = ['convert.py', 'state.py']
+        navigation['scope_reason'] = 'Navigation/shared-state behavior depends on these inspected implementation files'
+        self.write('verification.json', plan)
+        # Establish evidence after the copy file and reviewed impact boundary exist.
+        self.run_checks(); self.accept_manual()
+        navigation = next(r for r in self.plan()['items'] if r['source'] == 'impact:B-2')
+        original = navigation['history'][-1]
+        (self.root / 'copy.txt').write_text('New display copy')
+        stamp, _ = context(self.root, self.folder, self.plan())
+        self.assertEqual(state(navigation, stamp), 'stale')
+        with self.assertRaisesRegex(ValueError, 'review every changed'):
+            retain(self.root, self.folder, navigation['id'], stamp, ['convert.py'], 'Navigation does not read copy', 'Reviewed call path')
+        retain(self.root, self.folder, navigation['id'], stamp, ['copy.txt'],
+               'Copy is displayed as inert text; the navigation callback and shared state are unchanged',
+               'Compared copy.txt diff and the registered navigation caller; no click handler reads this value')
+        retained = next(r for r in self.plan()['items'] if r['id'] == navigation['id'])['history'][-1]
+        self.assertEqual(retained['status'], 'retained')
+        self.assertEqual(retained['tested_revision'], original['tested_revision'])
+        self.assertNotEqual(retained['reviewed_revision'], '')
+        self.assertEqual(state(next(r for r in self.plan()['items'] if r['id'] == navigation['id']), stamp), 'retained')
+        visible = json.loads(self.run_script('verification.py', 'status', self.root, 'FEAT-001', expected=2))
+        item = next(i for i in visible['items'] if i['id'] == navigation['id'])
+        self.assertEqual((item['tested_revision'], item['reviewed_revision']), (retained['tested_revision'], retained['reviewed_revision']))
+        self.assertEqual(state(self.plan()['items'][-1], stamp), 'stale')  # gate must rerun
+        (self.root / 'copy.txt').write_text('Another copy change')
+        next_stamp, _ = context(self.root, self.folder, self.plan())
+        self.assertEqual(state(next(r for r in self.plan()['items'] if r['id'] == navigation['id']), next_stamp), 'stale')
+
+    def test_scoped_relevance_unknown_or_semantic_change_cannot_carry_pass(self):
+        plan = self.plan()
+        row = next(r for r in plan['items'] if r['source'] == 'impact:B-2')
+        row['dependencies'] = ['state.py']
+        row['scope_reason'] = 'Preserved shared-state behavior uses state.py'
+        self.write('verification.json', plan)
+        self.accept_manual()
+        (self.root / 'convert.py').write_text('changed shared implementation')
+        stamp, _ = context(self.root, self.folder, self.plan())
+        with self.assertRaisesRegex(ValueError, 'reasoning'):
+            retain(self.root, self.folder, row['id'], stamp, ['convert.py'], '', '')
+        req = json.loads((self.folder / 'spec/requirements.json').read_text())
+        req['requirements'][0]['statement'] = 'Different business meaning'
+        self.write('spec/requirements.json', req)
+        stamp, _ = context(self.root, self.folder, self.plan())
+        with self.assertRaisesRegex(ValueError, 'semantic'):
+            retain(self.root, self.folder, row['id'], stamp, ['convert.py'], 'Looks unrelated', 'Reviewed diff')
+
+    def test_clickable_copy_and_shared_code_dependencies_require_retest(self):
+        (self.root / 'copy.txt').write_text('Clickable link copy')
+        self.doc['allowed_paths'].extend(['copy.txt', 'state.py'])
+        self.doc['inspected_paths'].append('copy.txt')
+        self.save()
+        plan = self.plan()
+        row = next(r for r in plan['items'] if r['source'] == 'impact:B-2')
+        row['dependencies'] = ['copy.txt', 'state.py']
+        row['scope_reason'] = 'Click target and navigation state are both consumed by this behavior'
+        self.write('verification.json', plan)
+        self.accept_manual()
+        (self.root / 'copy.txt').write_text('Changed clickable link copy')
+        stamp, _ = context(self.root, self.folder, self.plan())
+        with self.assertRaisesRegex(ValueError, 'dependency changed'):
+            retain(self.root, self.folder, row['id'], stamp, ['copy.txt'], 'Unrelated', 'Reviewed')
+        self.accept_manual()
+        (self.root / 'state.py').write_text('changed navigation state')
+        stamp, _ = context(self.root, self.folder, self.plan())
+        with self.assertRaisesRegex(ValueError, 'dependency changed'):
+            retain(self.root, self.folder, row['id'], stamp, ['state.py'], 'Unrelated', 'Reviewed')

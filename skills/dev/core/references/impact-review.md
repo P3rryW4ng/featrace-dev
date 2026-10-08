@@ -47,7 +47,7 @@ Run `python3 core/scripts/impact.py <PROJECT> <ID>` to read changed paths and cu
 
 Run appropriate regressions for changed and preserved behaviors. Capture digest before and after tests; only if equal record it in verification, with actual method and evidence (test/manual scenario, tested commit/build, observed outcome). `validate-feature.py --stage check` checks scope and evidence freshness. render-workspace.py generates impact.md. Include waivers in delivery-report.md.
 
-The digest includes changed file contents/modes, inspected files and checklist meaning. Editing a registered dependency or boundary invalidates results; workflow progress alone does not. Reassess affected behaviors and rerun appropriate tests. Evidence transfer for demonstrably unrelated changes must be explained, never silently replace old digests. This minimum uses a shared digest, so it can conservatively invalidate multiple behaviors; per-behavior automatic dependency analysis is deferred.
+The digest includes changed file contents/modes, inspected files and checklist meaning. Editing a registered dependency or boundary invalidates results; workflow progress alone does not. Reassess affected behaviors and rerun appropriate tests. Evidence transfer for demonstrably unrelated changes must be explained, never silently replace old digests. The shared digest initially invalidates multiple behaviors; adopted verification lists can retain a previously passed **preserved** behavior after an explicit dependency/path review using `verification.py retain` (see verification-workflow.md). This is a reviewed exception, not automatic dependency analysis or a new test run. Unknown or changed dependencies require investigation and retest.
 
 ## Limits and sharing
 
