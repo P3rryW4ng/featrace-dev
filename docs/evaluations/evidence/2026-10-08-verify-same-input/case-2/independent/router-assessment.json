@@ -1,0 +1,49 @@
+{
+  "skill_path": "/Users/mac/.claude/skills/dev",
+  "skill_version_markers": "independent-verify.md 0.5.24; write-scope.md 0.5.34; highest reference marker 0.5.35; skill_sha256 a8c3760084a97884f2405f2cfad34d714054af7703ec45a68298dbc5b1873938",
+  "project": "/private/tmp/featrace-verify-ab-fawpj6me/case-2",
+  "feature_id": "DEMO-PREVIEW",
+  "base": "06b8e82323877beaa307f932e1eb3e721febdd88 (user-supplied pre-change base)",
+  "head": "4d41b8bbc21a55f992d3f5415e8458f248ad96a2",
+  "worktree": "clean tracked tree; ignored inputs: sources/prd.txt, project-baseline/quality-report.json",
+  "snapshot": "/private/tmp/featrace-verify-ab-fawpj6me/outputs/case-2/independent/snapshot.json",
+  "input_digest": "028ed16a97fafda21f1fe729904304d4968fb8102adbda076e4b40d53e1ff5fa",
+  "preflight": "verify-handoff.py check -> VERIFY_HANDOFF_CURRENT, exit 0",
+  "manifest_comparison": "All 11 input-manifest.json sha256 values match: 7 records/sources via snapshot file entries, 4 tracked code/test files via direct sha256 (bound in snapshot through git HEAD/index with empty worktree diff). Snapshot additionally records missing config.yaml/modules/quality-gates.json.",
+  "dispatch": "Fresh general-purpose subagent (no inherited conversation) given specialist path, snapshot path, result path, neutral question and restrictions only. Read-only is instruction-level, not a sandbox; post-run checks: git status and snapshot re-check.",
+  "write_scope": "Only /private/tmp/featrace-verify-ab-fawpj6me/outputs/case-2/independent/{snapshot.json,router-assessment.json,result.json}",
+  "return_validation": "Agent completed (9 tool uses, 36533 subagent tokens, 53.1s); result.json nonempty, status=reviewed; router re-ran verify-handoff.py check --result -> VERIFY_REVIEW_RETURN_CURRENT exit 0; project git status clean after run.",
+  "reconciliation": [
+    {
+      "finding": "preview() limited to 8 via new PREVIEW_LIMIT",
+      "classification": "confirmed",
+      "basis": "git diff 06b8e82..HEAD src/formatting.py; requirements.json R-1 AC1"
+    },
+    {
+      "finding": "Receipt formatting preserved (DISPLAY_LIMIT=12, receipt.py unchanged, only consumer)",
+      "classification": "confirmed",
+      "basis": "src/receipt.py:1,4; git grep at HEAD; diff stat excludes src/receipt.py"
+    },
+    {
+      "finding": "Intermediate commit 1fb70a0 regressed receipt (DISPLAY_LIMIT=8), fixed at 4d41b8b",
+      "classification": "confirmed (historical risk only; not a defect at HEAD)",
+      "basis": "git show 1fb70a0:src/formatting.py"
+    },
+    {
+      "finding": "Test assertions cover both ACs but no real execution evidence",
+      "classification": "confirmed evidence gap",
+      "basis": "tests/test_preview.py:9-13; quality-report.json tested_at='synthetic fixture; not a real measured run', only a compile claim"
+    }
+  ],
+  "unresolved_gaps": [
+    "sources/layout.png listed in prd_paths but absent",
+    "no executed unit-test result",
+    "TEST-PREVIEW/TEST-RECEIPT IDs not mapped to test methods",
+    "no impact.json",
+    "traceability lists src/receipt.py as code though unchanged",
+    "feature status provisional; figma source missing",
+    "non-string/multibyte input behavior unspecified"
+  ],
+  "overall": "No implementation mismatch at HEAD against confirmed R-1; delivery not supportable yet due to evidence gaps. Review result does not set verified/complete.",
+  "elapsed_seconds_router_wall": 98
+}

@@ -1,0 +1,17 @@
+{
+  "base": "06b8e82323877beaa307f932e1eb3e721febdd88",
+  "head": "4d41b8bbc21a55f992d3f5415e8458f248ad96a2",
+  "files": {
+    ".gitignore": "2631084a8d7ab88865640777f3e5a137ec047494ad40a6dda08694560a8223cb",
+    ".agent-workflow/project-baseline/quality-report.json": "4b2889f1c401ac9b4ece179c04ef4a034ad73394402af59eb5915971e4e41b24",
+    ".agent-workflow/features/DEMO-PREVIEW/decisions.json": "37715320abe3223e45d8b42095f192d9013462fc75b100e8ca090a563eaba7c7",
+    ".agent-workflow/features/DEMO-PREVIEW/traceability.json": "8f83d3e44da8225477d190f1052b52b61bdfb96f9cc4728ec522154bdbc165ac",
+    ".agent-workflow/features/DEMO-PREVIEW/tasks.json": "8e04d64972e4665017ee7236d91d47e682ffd30b758c771e81a590e6d60680a1",
+    ".agent-workflow/features/DEMO-PREVIEW/spec/requirements.json": "30e5c3188f51f80d1f6bccc014e0dab498064bfc899c15651aebc9b994fc6d4e",
+    ".agent-workflow/features/DEMO-PREVIEW/spec/prd-intake.json": "4239449ab92efe8a64646db5bdf4a694909d03079977a66c10a91a49b62d12b4",
+    ".agent-workflow/features/DEMO-PREVIEW/sources/prd.txt": "f3cba2b299c78c9ddaee3d92fa364b7891cb75f7a38567d8ba0d11877d28bd40",
+    "tests/test_preview.py": "1a119b4311dd890d95a54b92ab27a312d73c48f178888f9038424531e6a5f3e1",
+    "src/formatting.py": "7c42b0d12803e72838d02051b8c99242e8fc927d3f9678b4d75b3b4bffc4da0d",
+    "src/receipt.py": "72562d129c1b42abd09edfc111acec719301a5fcc1b9f3c57a44a2fb74b1a50d"
+  }
+}

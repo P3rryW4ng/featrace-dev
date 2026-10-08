@@ -1,0 +1,96 @@
+{
+  "input_digest": "af9c13d125b80a41376a124d88bc3639e20c5b062ee35d79cbbf3f1af7df4b78",
+  "status": "reviewed",
+  "summary": "Reviewed DEMO-PREVIEW R-1 (confirmed) against prd.txt, requirements/tasks/traceability/decisions, the base..HEAD diff (only src/formatting.py: DISPLAY_LIMIT 12 -> 8), consumers of DISPLAY_LIMIT, and tests/test_preview.py. The preview half of R-1 is met by the code. The preservation half is not: src/receipt.py imports the shared DISPLAY_LIMIT, so receipt_reference now truncates at 8 instead of 12. This is a confirmed implementation defect against an explicit preservation requirement, not a product choice. Fixing it means restoring the old receipt behavior (for example a separate receipt limit of 12); it does not need a new decision. Evidence is also thin: TEST-PREVIEW has no explicit mapping, the only test checks a 3-char input, which does not exercise the 8-char boundary, nothing tests receipts, the quality report is a synthetic compile-only claim, and source S2 layout.png is missing. Elapsed time and token usage were not measured.",
+  "read_paths": [
+    ".agent-workflow/features/DEMO-PREVIEW/sources/prd.txt",
+    ".agent-workflow/features/DEMO-PREVIEW/spec/prd-intake.json",
+    ".agent-workflow/features/DEMO-PREVIEW/spec/requirements.json",
+    ".agent-workflow/features/DEMO-PREVIEW/decisions.json",
+    ".agent-workflow/features/DEMO-PREVIEW/tasks.json",
+    ".agent-workflow/features/DEMO-PREVIEW/traceability.json",
+    ".agent-workflow/project-baseline/quality-report.json",
+    ".gitignore",
+    "src/formatting.py",
+    "src/receipt.py",
+    "tests/test_preview.py",
+    "base:src/formatting.py",
+    "base:src/receipt.py",
+    "base:tests/test_preview.py"
+  ],
+  "findings": [
+    {
+      "claim": "Confirmed implementation mismatch: changing the shared DISPLAY_LIMIT from 12 to 8 also changes receipt reference formatting. This violates the confirmed R-1 requirement that receipt formatting stay unchanged.",
+      "evidence": [
+        {
+          "path": ".agent-workflow/features/DEMO-PREVIEW/sources/prd.txt",
+          "locator": "line 1",
+          "observation": "States 'Receipt reference formatting must remain unchanged.'"
+        },
+        {
+          "path": ".agent-workflow/features/DEMO-PREVIEW/spec/requirements.json",
+          "locator": "/requirements/0",
+          "observation": "R-1 has status confirmed, with acceptance criterion 'Receipt references retain existing behavior'."
+        },
+        {
+          "path": "base:src/formatting.py",
+          "locator": "line 1 (base 06b8e82)",
+          "observation": "At the base, DISPLAY_LIMIT = 12."
+        },
+        {
+          "path": "src/formatting.py",
+          "locator": "line 1 (HEAD 1fb70a0)",
+          "observation": "Now DISPLAY_LIMIT = 8. This is the only change between base and HEAD."
+        },
+        {
+          "path": "src/receipt.py",
+          "locator": "lines 1-4",
+          "observation": "receipt_reference imports the shared DISPLAY_LIMIT and returns value[:DISPLAY_LIMIT]. The file did not change, but receipts now truncate at 8 characters instead of 12 (at base, base:src/receipt.py also used DISPLAY_LIMIT, which was 12)."
+        },
+        {
+          "path": ".agent-workflow/features/DEMO-PREVIEW/traceability.json",
+          "locator": "/links/0/code",
+          "observation": "Lists only src/formatting.py. The src/receipt.py consumer is not traced."
+        },
+        {
+          "path": ".agent-workflow/features/DEMO-PREVIEW/tasks.json",
+          "locator": "/tasks/0/status",
+          "observation": "T-1 is marked done even though the preservation criterion is violated."
+        }
+      ]
+    },
+    {
+      "claim": "Test evidence does not prove either acceptance criterion. TEST-PREVIEW has no explicit mapping. The only test checks a 3-character input, so it does not exercise the 8-character boundary, and no test covers receipt_reference.",
+      "evidence": [
+        {
+          "path": ".agent-workflow/features/DEMO-PREVIEW/traceability.json",
+          "locator": "/links/0/tests",
+          "observation": "Points to the logical ID TEST-PREVIEW. No record maps it to an executable case or command."
+        },
+        {
+          "path": "tests/test_preview.py",
+          "locator": "lines 5-6",
+          "observation": "The only assertion is preview('abc') == 'abc'. It passes for both limit 12 and limit 8, so it does not distinguish them. The file is unchanged from base."
+        },
+        {
+          "path": ".agent-workflow/project-baseline/quality-report.json",
+          "locator": "/tested_at, /results",
+          "observation": "Self-described as a 'synthetic fixture; not a real measured run', with only a compile 'passed' claim. It contains no test results."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    "Source S2 sources/layout.png is listed in prd-intake.json and requirements.json prd_paths but does not exist (verify-inputs reports source_unavailable). Any layout constraints for the preview label could not be reviewed.",
+    "No impact.json exists for this feature. Consumer coverage was checked independently: git grep finds src/receipt.py as the only other DISPLAY_LIMIT consumer among tracked files. Untracked or external consumers are outside the snapshot.",
+    "TEST-PREVIEW has no executable mapping. Whether other tests exist outside tests/test_preview.py cannot be established from the bound inputs, though git ls-files shows no other test files.",
+    "The exact receipt behavior to preserve is inferred from base code (truncate at 12). The PRD does not state the receipt length explicitly.",
+    "Feature status is provisional while R-1 is confirmed and decisions.json is empty. Nothing authorizes changing receipt behavior."
+  ],
+  "checks_not_run": [
+    "python3 -m unittest tests/test_preview.py: not executed (read-only review). Purpose: confirm the existing preview test passes.",
+    "Boundary tests for preview (inputs of 8 and 9+ characters giving at most 8 characters): not present and not executed.",
+    "Regression test that receipt_reference keeps its base behavior (12-character truncation): not present and not executed. It would currently fail.",
+    "Project compile/build: not executed. The quality report's compile claim is synthetic and was not independently confirmed."
+  ]
+}

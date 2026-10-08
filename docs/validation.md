@@ -1,6 +1,6 @@
 # 验证与评估索引
 
-更新：2026-09-30。本页只提供当前证据导航与结论边界。历次执行的完整记录保留在[验证历史](history/2026-09-30-validation.md)；其中版本、安装和“下一步”只代表当时。当前任务见 [ROADMAP](../ROADMAP.md)。
+更新：2026-10-08。本页只提供当前证据导航与结论边界。历次执行的完整记录保留在[验证历史](history/2026-09-30-validation.md)；其中版本、安装和“下一步”只代表当时。当前任务见 [ROADMAP](../ROADMAP.md)。
 
 ## 当前发布与检查
 
@@ -12,7 +12,7 @@
 |---|---|---|
 | 基础真实交付 | [CASE-01](reviews/2026-09-18-case-01.md)、[CASE-02](reviews/2026-09-21-case-02.md) | 已取得最终交付及多来源案例；新版模块/影响机制没有在所有案例完整采用 |
 | PRD 表达差异 | [样例评估](evaluations/2026-09-18-prd-styles.md) | 8/8 样例语义通过；单模型样例不证明所有 PRD 无遗漏 |
-| 独立 Verify | [Claude 0.5.24](evaluations/2026-09-28-claude-0524-verify.md) | 缺陷/正常/缺资料与过期拒绝；真实准确率及成本仍待测 |
+| 独立 Verify | [Claude 0.5.24](evaluations/2026-09-28-claude-0524-verify.md)、[0.5.37 同输入对照](evaluations/2026-10-08-verify-same-input.md) | 合成缺陷/正确例两路均判对；独立路由未增加有效发现，总墙钟 +50.4%、CLI 估费 +63.9%，另有一条轻微依据不足判断；真实准确率与净收益仍待测，保持可选 |
 | 内部选择串行／两 Worker | [原生策略演练](evaluations/2026-09-29-native-auto-build.md) | 有实际选择与候选检查；不支持任意宽度调度或证明提速 |
 | Build 任务级输入视图 | [0.5.36 源仓测量](evaluations/2026-09-30-build-task-view.md)、[安装版同输入对照](evaluations/2026-09-30-build-installed-ab.md)，完整回归 272/272 | 安装版两个 Worker 均按顺序调用预检和任务视图；本次并行更慢更贵，候选被独立合同探针检出缺陷；不证明真实上下文节省或提效 |
 | Worker 全文补丁检查 | [0.5.37 源仓验证](evaluations/2026-09-30-build-full-diff.md)、[安装版单 Worker 复检](evaluations/2026-09-30-build-installed-full-diff.md)，完整回归 277/277 | 实际 Agent 单独调用并收到完整补丁后才 `finish`，补丁与返回逐字一致；未验证语义判断或双 Worker 集成 |

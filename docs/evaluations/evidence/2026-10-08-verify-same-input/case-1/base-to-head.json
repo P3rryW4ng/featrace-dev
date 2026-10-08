@@ -1,0 +1,4 @@
+{
+  "format": "git diff base..HEAD -- src tests",
+  "patch": "diff --git a/src/formatting.py b/src/formatting.py\nindex f16e89c..5a2d7ed 100644\n--- a/src/formatting.py\n+++ b/src/formatting.py\n@@ -1,4 +1,4 @@\n-DISPLAY_LIMIT = 12\n+DISPLAY_LIMIT = 8\n \n def preview(value):\n     return value[:DISPLAY_LIMIT]\n"
+}

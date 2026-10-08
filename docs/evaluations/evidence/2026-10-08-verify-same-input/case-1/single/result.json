@@ -1,0 +1,179 @@
+{
+  "feature_id": "DEMO-PREVIEW",
+  "project": "/private/tmp/featrace-verify-ab-fawpj6me/case-1",
+  "skill": {
+    "path": "/Users/mac/.claude/skills/dev",
+    "version": "0.5.35 (from header of core/references/verification-workflow.md; SKILL.md frontmatter carries no version field)",
+    "route": "check -> Verify, ordinary single-Agent path, read-only; no delegation"
+  },
+  "revision": {
+    "base": "06b8e82323877beaa307f932e1eb3e721febdd88",
+    "head": "1fb70a01f72a93b240ddf22c8b62783aa44a8f10",
+    "worktree": "clean (git status --short empty)",
+    "input_identity": "All 11 files in input-manifest.json re-hashed with shasum -a 256; every hash matches the manifest, including the git-ignored sources/prd.txt and project-baseline/quality-report.json."
+  },
+  "summary": "Not supported. The confirmed requirement R-1 has two acceptance criteria. Criterion 1 (preview shows at most 8 characters) is met by code inspection: DISPLAY_LIMIT changed 12 -> 8 and preview() slices to it. Criterion 2 (receipt references retain existing behavior) is violated: src/receipt.py imports the same DISPLAY_LIMIT constant, so receipt_reference() now truncates to 8 characters instead of 12. This is an implementation mismatch, not merely an evidence gap. Separately, the evidence is insufficient even for criterion 1: the only test asserts preview('abc') == 'abc' (never exercises truncation), the traceability test ID TEST-PREVIEW does not exist in the code, the quality report is a self-declared synthetic compile claim with no test result, and the registered source sources/layout.png is missing. Feature must remain provisional; delivery is not supported.",
+  "verdict": "implementation_mismatch_plus_evidence_gaps",
+  "read_paths": [
+    "/Users/mac/.claude/skills/dev/SKILL.md (provided in invocation)",
+    "/Users/mac/.claude/skills/dev/core/references/verification-workflow.md",
+    "/private/tmp/featrace-verify-ab-fawpj6me/outputs/case-1/single/input-manifest.json",
+    ".agent-workflow/features/DEMO-PREVIEW/sources/prd.txt",
+    ".agent-workflow/features/DEMO-PREVIEW/spec/requirements.json",
+    ".agent-workflow/features/DEMO-PREVIEW/spec/prd-intake.json",
+    ".agent-workflow/features/DEMO-PREVIEW/tasks.json",
+    ".agent-workflow/features/DEMO-PREVIEW/traceability.json",
+    ".agent-workflow/features/DEMO-PREVIEW/decisions.json",
+    ".agent-workflow/project-baseline/quality-report.json",
+    ".gitignore",
+    "src/formatting.py",
+    "src/receipt.py (HEAD and git show 06b8e82:src/receipt.py)",
+    "tests/test_preview.py",
+    "git diff 06b8e82..HEAD",
+    "ls .agent-workflow/features/DEMO-PREVIEW/sources/"
+  ],
+  "findings": [
+    {
+      "id": "F-1",
+      "type": "implementation_mismatch",
+      "severity": "blocking",
+      "claim": "The change alters receipt reference formatting, violating PRD sentence 2 and R-1 acceptance criterion 2 ('Receipt references retain existing behavior').",
+      "evidence": [
+        {
+          "path": "src/formatting.py",
+          "locator": "line 1; git diff 06b8e82..HEAD",
+          "observation": "DISPLAY_LIMIT changed from 12 to 8. This is the only code change in the diff."
+        },
+        {
+          "path": "src/receipt.py",
+          "locator": "lines 1-4 (unchanged since base)",
+          "observation": "`from src.formatting import DISPLAY_LIMIT`; `receipt_reference(value)` returns `value[:DISPLAY_LIMIT]`. Shared constant means receipt truncation moved from 12 to 8."
+        },
+        {
+          "path": ".agent-workflow/features/DEMO-PREVIEW/sources/prd.txt",
+          "locator": "sentence 2",
+          "observation": "'Receipt reference formatting must remain unchanged.'"
+        }
+      ],
+      "counterexample": "By code reading (not executed): receipt_reference('ABCDEFGHIJKL') returned 'ABCDEFGHIJKL' at base (limit 12) and returns 'ABCDEFGH' at HEAD (limit 8). Any receipt reference of length 9-12 or longer is affected.",
+      "method": "Agent static inspection of the diff and the constant's consumers; no code executed."
+    },
+    {
+      "id": "F-2",
+      "type": "supported_by_inspection_only",
+      "severity": "info",
+      "claim": "Preview label truncation to at most 8 characters (R-1 criterion 1) is implemented.",
+      "evidence": [
+        {
+          "path": "src/formatting.py",
+          "locator": "lines 1-4",
+          "observation": "preview(value) returns value[:8] for sliceable inputs, so output length is <= 8 for strings."
+        }
+      ],
+      "limits": "No executed test covers truncation; display-layer consumers of preview() (UI rendering, wrapping, multi-byte/grapheme handling) are not present in the repo and were not observed."
+    },
+    {
+      "id": "F-3",
+      "type": "evidence_gap",
+      "severity": "blocking",
+      "claim": "Test evidence does not cover either acceptance criterion.",
+      "evidence": [
+        {
+          "path": "tests/test_preview.py",
+          "locator": "PreviewTests.test_short_input",
+          "observation": "Only assertion: preview('abc') == 'abc'. Passes with any limit >= 3; does not test inputs longer than 8 and does not touch receipt_reference. File unchanged between base and HEAD."
+        },
+        {
+          "path": ".agent-workflow/features/DEMO-PREVIEW/traceability.json",
+          "locator": "links[0].tests",
+          "observation": "References test ID 'TEST-PREVIEW'; grep finds this string nowhere else in the project, so the ID is not bound to any actual test."
+        },
+        {
+          "path": ".agent-workflow/features/DEMO-PREVIEW/traceability.json",
+          "locator": "links[0].code",
+          "observation": "Lists only src/formatting.py; the affected consumer src/receipt.py is not traced."
+        }
+      ]
+    },
+    {
+      "id": "F-4",
+      "type": "evidence_gap",
+      "severity": "blocking",
+      "claim": "The quality report is not real verification evidence.",
+      "evidence": [
+        {
+          "path": ".agent-workflow/project-baseline/quality-report.json",
+          "locator": "tested_at; results[0]",
+          "observation": "tested_at is 'synthetic fixture; not a real measured run'; the only result is 'compile' passed with note 'synthetic fixture claim'. No test command or result is recorded. Although git_head equals current HEAD, a compile claim cannot prove behavior, and the file is git-ignored."
+        }
+      ]
+    },
+    {
+      "id": "F-5",
+      "type": "evidence_gap",
+      "severity": "medium",
+      "claim": "A registered requirement source is missing and not reconciled.",
+      "evidence": [
+        {
+          "path": ".agent-workflow/features/DEMO-PREVIEW/spec/prd-intake.json",
+          "locator": "sources[1] (S2)",
+          "observation": "Registers image sources/layout.png."
+        },
+        {
+          "path": ".agent-workflow/features/DEMO-PREVIEW/sources/",
+          "locator": "directory listing",
+          "observation": "Only prd.txt exists; layout.png is absent. requirements.json prd_paths also lists it, and source_status.figma is 'missing' without justification. Its content (possibly visual constraints on the preview) is unknown."
+        }
+      ]
+    },
+    {
+      "id": "F-6",
+      "type": "record_inconsistency",
+      "severity": "medium",
+      "claim": "Recorded task completion overstates delivery; verification records required by the workflow are absent.",
+      "evidence": [
+        {
+          "path": ".agent-workflow/features/DEMO-PREVIEW/tasks.json",
+          "locator": "T-1.status",
+          "observation": "'done', linked to R-1, but the implementation breaks R-1's receipt criterion (F-1)."
+        },
+        {
+          "path": ".agent-workflow/features/DEMO-PREVIEW/",
+          "locator": "file inventory",
+          "observation": "No verification.json, delivery-report.md or impact record exists; decisions.json is empty (no decision accepting the receipt change). feature.status is 'provisional', which is consistent with the evidence."
+        }
+      ]
+    },
+    {
+      "id": "F-7",
+      "type": "consistent",
+      "severity": "info",
+      "claim": "The confirmed requirement faithfully restates the original source.",
+      "evidence": [
+        {
+          "path": ".agent-workflow/features/DEMO-PREVIEW/spec/requirements.json",
+          "locator": "requirements[0] R-1",
+          "observation": "Statement and both acceptance criteria match prd.txt (8-char preview limit; receipt formatting unchanged). No ambiguity requiring clarification for F-1."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    "sources/layout.png (S2) is registered but missing; its requirements cannot be checked.",
+    "No executed test evidence for preview truncation (>8 chars) or receipt_reference preservation; TEST-PREVIEW is not bound to real code.",
+    "Quality report is a synthetic compile claim, not a measured run; no tests recorded.",
+    "No verification.json checklist, impact review or delivery report for the feature.",
+    "UI/display consumers of preview() are not in the repository; actual on-screen rendering is unobserved.",
+    "Behavioral conclusions (F-1, F-2) come from static inspection; no code was executed per the read-only constraint."
+  ],
+  "checks_not_run": [
+    "python3 -m unittest / any project test or build (forbidden by request)",
+    "core/scripts/verify-inputs.py (the supplied input-manifest.json was used as the inventory; hashes re-verified manually with shasum)",
+    "core/scripts/validate-feature.py --stage check",
+    "core/scripts/audit-delivery.py",
+    "core/scripts/verification.py sync/run/record/status (would write feature records)",
+    "Browser/MCP or device/UI observation",
+    "Delivery report write/read and status mutation (delivery explicitly out of scope)"
+  ],
+  "recommended_next_step": "Repair route (not performed): decouple receipt_reference from DISPLAY_LIMIT (keep 12 for receipts), add tests asserting preview('ABCDEFGHIJKL') == 'ABCDEFGH' and receipt_reference unchanged at 12, bind traceability to real test IDs and src/receipt.py, supply or justify layout.png, then run real checks via verification.py."
+}

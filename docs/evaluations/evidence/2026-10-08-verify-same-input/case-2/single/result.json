@@ -1,0 +1,140 @@
+{
+  "feature_id": "DEMO-PREVIEW",
+  "mode": "single-Agent ordinary Verify path (read-only; not delegated)",
+  "skill": {
+    "path": "/Users/mac/.claude/skills/dev/SKILL.md",
+    "version": "no version marker found (grep for 'version' in SKILL.md and agents/ returned nothing; no VERSION file)"
+  },
+  "revision": {
+    "base": "06b8e82323877beaa307f932e1eb3e721febdd88",
+    "head": "4d41b8bbc21a55f992d3f5415e8458f248ad96a2",
+    "worktree": "clean for tracked files; ignored dirs .agent-workflow/project-baseline/ and features/*/sources/ present",
+    "input_manifest_match": "all 11 manifest SHA-256 hashes matched the files read"
+  },
+  "summary": "The implementation at HEAD 4d41b8b matches confirmed requirement R-1 by code inspection: preview() now truncates to PREVIEW_LIMIT=8, and receipt_reference() still truncates to DISPLAY_LIMIT=12, the same as the base. The intermediate commit 1fb70a0 had set the shared DISPLAY_LIMIT to 8, which would have shortened receipts too. HEAD reverses that, so the net diff from the base leaves receipt behavior unchanged. I found no implementation mismatch. Delivery is still not supported: the source image layout.png is listed in the index but missing, the feature status is 'provisional', there is no actual test-run evidence (the only quality report is a synthetic compile claim), the traceability test IDs are not tied to real test functions, and no verification.json or delivery report exists. These are evidence gaps, not code defects. Verdict: the implementation looks right, but delivery evidence is incomplete, so the feature stays provisional.",
+  "verdict": "implementation_consistent_with_R-1; evidence_insufficient_for_delivery",
+  "read_paths": [
+    "/Users/mac/.claude/skills/dev/SKILL.md (via skill load)",
+    "/Users/mac/.claude/skills/dev/core/references/verification-workflow.md (grep excerpts)",
+    "/private/tmp/featrace-verify-ab-fawpj6me/outputs/case-2/single/input-manifest.json",
+    ".gitignore",
+    ".agent-workflow/features/DEMO-PREVIEW/sources/prd.txt",
+    ".agent-workflow/features/DEMO-PREVIEW/spec/prd-intake.json",
+    ".agent-workflow/features/DEMO-PREVIEW/spec/requirements.json",
+    ".agent-workflow/features/DEMO-PREVIEW/decisions.json",
+    ".agent-workflow/features/DEMO-PREVIEW/tasks.json",
+    ".agent-workflow/features/DEMO-PREVIEW/traceability.json",
+    ".agent-workflow/project-baseline/quality-report.json",
+    "src/formatting.py",
+    "src/receipt.py",
+    "tests/test_preview.py",
+    "git diff 06b8e82..4d41b8b",
+    "git show 06b8e82:src/formatting.py, 06b8e82:src/receipt.py",
+    "git show 1fb70a0 -- src/formatting.py",
+    "git log --stat 06b8e82..HEAD",
+    "ls .agent-workflow/features/DEMO-PREVIEW/ and sources/"
+  ],
+  "findings": [
+    {
+      "id": "F-1",
+      "type": "implementation_supports_requirement",
+      "claim": "Preview labels are limited to at most 8 characters, as R-1 acceptance criterion 1 requires.",
+      "evidence": {
+        "path": "src/formatting.py",
+        "locator": "lines 1, 4-5",
+        "observation": "PREVIEW_LIMIT = 8; preview(value) returns value[:PREVIEW_LIMIT]. Slicing never returns more than 8 elements. The source wording is 'at most eight characters' (sources/prd.txt line 1)."
+      }
+    },
+    {
+      "id": "F-2",
+      "type": "implementation_supports_requirement",
+      "claim": "Receipt reference formatting is unchanged from the base (R-1 acceptance criterion 2).",
+      "evidence": {
+        "path": "src/receipt.py; src/formatting.py",
+        "locator": "receipt.py lines 1-4 (identical at 06b8e82 and HEAD); formatting.py line 2 DISPLAY_LIMIT = 12 (same as base)",
+        "observation": "receipt_reference() still slices to DISPLAY_LIMIT, which is still 12. src/receipt.py is not in the base..HEAD diff. The only repo consumers of DISPLAY_LIMIT/preview are src/receipt.py and tests/test_preview.py."
+      }
+    },
+    {
+      "id": "F-3",
+      "type": "historical_risk_resolved",
+      "claim": "The intermediate commit would have broken receipts; HEAD fixes this.",
+      "evidence": {
+        "path": "git show 1fb70a0 -- src/formatting.py",
+        "locator": "commit 1fb70a01f72a93b240ddf22c8b62783aa44a8f10",
+        "observation": "1fb70a0 changed the shared DISPLAY_LIMIT from 12 to 8, which would have truncated receipt_reference to 8 as well. 4d41b8b restored DISPLAY_LIMIT=12 and added a separate PREVIEW_LIMIT=8. Only HEAD is acceptable; any evidence produced at 1fb70a0 would be stale and showed the regression."
+      }
+    },
+    {
+      "id": "F-4",
+      "type": "test_assertions_relevant_but_not_executed",
+      "claim": "The test assertions check the right behavior but are thin, and I found no evidence that they were run.",
+      "evidence": {
+        "path": "tests/test_preview.py",
+        "locator": "lines 6-13",
+        "observation": "test_preview_limit checks a 12-char input becomes 8 chars. test_short_input checks 'abc' is unchanged. test_receipt_reference_preserved checks a 16-char input becomes 12 chars, which matches base behavior. No test covers exactly 8 or 9 characters, or empty/None/non-str input (base behavior for these is unchanged by slicing). No test-run output or result exists in the project."
+      }
+    },
+    {
+      "id": "F-5",
+      "type": "evidence_gap",
+      "claim": "The traceability test IDs do not point to real tests.",
+      "evidence": {
+        "path": ".agent-workflow/features/DEMO-PREVIEW/traceability.json",
+        "locator": "links[0].tests = [TEST-PREVIEW, TEST-RECEIPT]",
+        "observation": "Neither ID appears in tests/test_preview.py. No quality-gates or verification record defines them. Under verification-workflow.md, a test ID alone does not prove behavior."
+      }
+    },
+    {
+      "id": "F-6",
+      "type": "evidence_gap",
+      "claim": "The quality report is not real verification evidence.",
+      "evidence": {
+        "path": ".agent-workflow/project-baseline/quality-report.json",
+        "locator": "tested_at; results[0]",
+        "observation": "tested_at says 'synthetic fixture; not a real measured run'. The only result is a compile 'passed' noted as a 'synthetic fixture claim'. It names git_head 4d41b8b, but no test command or timestamp is recorded. Compile success cannot stand in for behavior acceptance."
+      }
+    },
+    {
+      "id": "F-7",
+      "type": "evidence_gap",
+      "claim": "A source listed in the index is missing, and its content was never reconciled.",
+      "evidence": {
+        "path": ".agent-workflow/features/DEMO-PREVIEW/spec/prd-intake.json; requirements.json",
+        "locator": "prd-intake sources[S2] path sources/layout.png; requirements feature.prd_paths[1]; source_status.figma = missing",
+        "observation": "sources/ contains only prd.txt, and layout.png does not exist. Any layout or visual constraint on preview labels, such as an ellipsis or truncation style, is unknown. decisions.json is empty, so no waiver or not-applicable justification is recorded."
+      }
+    },
+    {
+      "id": "F-8",
+      "type": "status_record",
+      "claim": "The feature is not recorded as complete, and no verification checklist or delivery report exists.",
+      "evidence": {
+        "path": ".agent-workflow/features/DEMO-PREVIEW/",
+        "locator": "directory listing; requirements.json feature.status",
+        "observation": "Status is 'provisional'. The directory has no verification.json, verification.md or delivery-report.md. T-1 is 'done' and R-1 is 'confirmed', but those are self-reported records."
+      }
+    }
+  ],
+  "gaps": [
+    "sources/layout.png (S2) is missing; its layout or visual requirements are unread and unreconciled, and no decision records it as not applicable or waived.",
+    "There is no actual test execution evidence for HEAD 4d41b8b. The quality report is a synthetic compile claim.",
+    "Traceability IDs TEST-PREVIEW and TEST-RECEIPT are not mapped to concrete test functions or commands.",
+    "No adopted verification checklist (verification.json) and no delivery report exist.",
+    "Boundary coverage is thin: no tests at exactly 8 or 9 characters, and none for empty or non-string input.",
+    "The meaning of 'characters' for multi-code-point text (combining marks, emoji, grapheme clusters) is unspecified. Python slicing counts code points. This is an uncertain risk, not a confirmed mismatch.",
+    "UI or manual acceptance of how the shortened label looks has not been observed."
+  ],
+  "checks_not_run": [
+    "python -m unittest / pytest on tests/test_preview.py (project tests were prohibited by the evaluation constraints)",
+    "Any build or compile",
+    "validate-feature.py --stage check",
+    "audit-delivery.py",
+    "verification.py sync/run (it would write project records)",
+    "Delivery report write/read and status mutation (stopped before Deliver, as instructed)",
+    "Browser/MCP or visual inspection"
+  ],
+  "writes": [
+    "/private/tmp/featrace-verify-ab-fawpj6me/outputs/case-2/single/result.json (only)"
+  ]
+}

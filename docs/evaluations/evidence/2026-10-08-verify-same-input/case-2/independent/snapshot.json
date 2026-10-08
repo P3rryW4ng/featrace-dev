@@ -1,0 +1,87 @@
+{
+  "input_digest": "028ed16a97fafda21f1fe729904304d4968fb8102adbda076e4b40d53e1ff5fa",
+  "inputs": {
+    "schema_version": 1,
+    "project": "/private/tmp/featrace-verify-ab-fawpj6me/case-2",
+    "feature_id": "DEMO-PREVIEW",
+    "base_revision": "06b8e82323877beaa307f932e1eb3e721febdd88",
+    "extra_paths": [],
+    "git_head": "4d41b8bbc21a55f992d3f5415e8458f248ad96a2",
+    "tracked_paths": [
+      ".agent-workflow/features/DEMO-PREVIEW/decisions.json",
+      ".agent-workflow/features/DEMO-PREVIEW/spec/prd-intake.json",
+      ".agent-workflow/features/DEMO-PREVIEW/spec/requirements.json",
+      ".agent-workflow/features/DEMO-PREVIEW/tasks.json",
+      ".agent-workflow/features/DEMO-PREVIEW/traceability.json",
+      ".gitignore",
+      "src/formatting.py",
+      "src/receipt.py",
+      "tests/test_preview.py"
+    ],
+    "base_paths": [
+      ".agent-workflow/features/DEMO-PREVIEW/decisions.json",
+      ".agent-workflow/features/DEMO-PREVIEW/spec/prd-intake.json",
+      ".agent-workflow/features/DEMO-PREVIEW/spec/requirements.json",
+      ".agent-workflow/features/DEMO-PREVIEW/tasks.json",
+      ".agent-workflow/features/DEMO-PREVIEW/traceability.json",
+      ".gitignore",
+      "src/formatting.py",
+      "src/receipt.py",
+      "tests/test_preview.py"
+    ],
+    "changed_paths": [
+      ".agent-workflow/features/DEMO-PREVIEW/traceability.json",
+      "src/formatting.py",
+      "tests/test_preview.py"
+    ],
+    "worktree_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "index_sha256": "71150984549e4b309122d53e60b5d8700e92507bee795d3d44341501cd160c87",
+    "files": {
+      ".agent-workflow/config.yaml": {
+        "state": "missing"
+      },
+      ".agent-workflow/features/DEMO-PREVIEW/decisions.json": {
+        "state": "file",
+        "sha256": "37715320abe3223e45d8b42095f192d9013462fc75b100e8ca090a563eaba7c7",
+        "size": 54
+      },
+      ".agent-workflow/features/DEMO-PREVIEW/sources/prd.txt": {
+        "state": "file",
+        "sha256": "f3cba2b299c78c9ddaee3d92fa364b7891cb75f7a38567d8ba0d11877d28bd40",
+        "size": 106
+      },
+      ".agent-workflow/features/DEMO-PREVIEW/spec/prd-intake.json": {
+        "state": "file",
+        "sha256": "4239449ab92efe8a64646db5bdf4a694909d03079977a66c10a91a49b62d12b4",
+        "size": 232
+      },
+      ".agent-workflow/features/DEMO-PREVIEW/spec/requirements.json": {
+        "state": "file",
+        "sha256": "30e5c3188f51f80d1f6bccc014e0dab498064bfc899c15651aebc9b994fc6d4e",
+        "size": 629
+      },
+      ".agent-workflow/features/DEMO-PREVIEW/tasks.json": {
+        "state": "file",
+        "sha256": "8e04d64972e4665017ee7236d91d47e682ffd30b758c771e81a590e6d60680a1",
+        "size": 197
+      },
+      ".agent-workflow/features/DEMO-PREVIEW/traceability.json": {
+        "state": "file",
+        "sha256": "8f83d3e44da8225477d190f1052b52b61bdfb96f9cc4728ec522154bdbc165ac",
+        "size": 287
+      },
+      ".agent-workflow/modules": {
+        "state": "missing"
+      },
+      ".agent-workflow/project-baseline/quality-report.json": {
+        "state": "file",
+        "sha256": "4b2889f1c401ac9b4ece179c04ef4a034ad73394402af59eb5915971e4e41b24",
+        "size": 275
+      },
+      ".agent-workflow/quality-gates.json": {
+        "state": "missing"
+      }
+    },
+    "skill_sha256": "a8c3760084a97884f2405f2cfad34d714054af7703ec45a68298dbc5b1873938"
+  }
+}

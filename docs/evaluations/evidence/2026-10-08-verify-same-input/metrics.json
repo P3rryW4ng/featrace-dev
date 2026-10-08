@@ -1,0 +1,58 @@
+{
+  "case-1": {
+    "single": {
+      "exit_code": 0,
+      "elapsed_seconds": 76.202,
+      "cli_duration_ms": 73966,
+      "cli_estimated_cost_usd": 0.5009468,
+      "model": "claude-opus-5-5",
+      "input_tokens": 12,
+      "cache_read_input_tokens": 157914,
+      "cache_creation_input_tokens": 41172,
+      "output_tokens": 6997,
+      "native_subagents_spawned": 0,
+      "terminal_reason": "completed"
+    },
+    "independent": {
+      "exit_code": 0,
+      "elapsed_seconds": 93.322,
+      "cli_duration_ms": 92082,
+      "cli_estimated_cost_usd": 0.6521934,
+      "model": "claude-opus-5-5",
+      "input_tokens": 30,
+      "cache_read_input_tokens": 373677,
+      "cache_creation_input_tokens": 60366,
+      "output_tokens": 9471,
+      "native_subagents_spawned": 1,
+      "terminal_reason": "completed"
+    }
+  },
+  "case-2": {
+    "single": {
+      "exit_code": 0,
+      "elapsed_seconds": 72.403,
+      "cli_duration_ms": 71069,
+      "cli_estimated_cost_usd": 0.4080584,
+      "model": "claude-opus-5-5",
+      "input_tokens": 10,
+      "cache_read_input_tokens": 122372,
+      "cache_creation_input_tokens": 31593,
+      "output_tokens": 6540,
+      "native_subagents_spawned": 0,
+      "terminal_reason": "completed"
+    },
+    "independent": {
+      "exit_code": 0,
+      "elapsed_seconds": 130.17,
+      "cli_duration_ms": 128779,
+      "cli_estimated_cost_usd": 0.8378807999999999,
+      "model": "claude-opus-5-5",
+      "input_tokens": 40,
+      "cache_read_input_tokens": 571649,
+      "cache_creation_input_tokens": 68299,
+      "output_tokens": 13228,
+      "native_subagents_spawned": 1,
+      "terminal_reason": "completed"
+    }
+  }
+}
