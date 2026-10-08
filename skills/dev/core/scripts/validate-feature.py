@@ -3,6 +3,7 @@
 import argparse
 import json
 import pathlib
+import subprocess
 import sys
 import re
 from prd_intake import validate_intake
@@ -203,6 +204,23 @@ def main():
     task_review_errors, task_review_warnings = validate_task_review(feature_dir, req_doc, tasks, args.stage)
     errors.extend(task_review_errors)
     warnings.extend(task_review_warnings)
+    if (args.stage == "check" and feature.get("status") == "complete"
+            and isinstance(feature.get("workflow_version"), int)
+            and feature["workflow_version"] >= 4 and not errors):
+        delivery_report = feature_dir / "delivery-report.md"
+        if not delivery_report.is_file() or not delivery_report.read_text().strip():
+            errors.append("complete requires a nonempty feature delivery report")
+        else:
+            audit = subprocess.run(
+                [sys.executable, str(pathlib.Path(__file__).with_name("audit-delivery.py")),
+                 str(pathlib.Path(args.root).resolve()), args.feature_id],
+                capture_output=True, text=True,
+            )
+            if audit.returncode:
+                details = [line.removeprefix("ERROR: ") for line in audit.stdout.splitlines()
+                           if line.startswith("ERROR: ")]
+                errors.append("complete requires current delivery audit: "
+                              + ("; ".join(details) or audit.stderr.strip() or "audit unavailable"))
     return report(errors, warnings)
 
 

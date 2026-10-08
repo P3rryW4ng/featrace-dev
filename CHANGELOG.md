@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.5.38 — 2026-10-08
+
+- 新建工作流标记 `complete` 后，`validate-feature --stage check` 要求非空项目交付报告与当前 `audit-delivery` 通过；状态更新后需再运行校验。旧工作流不批量迁移。
+- 新建历史回归记录按每条 `planned_checks` 登记结果、方法与证据，部分完成或结果数量不符不能整体记为 `passed`；旧版记录保持可读，不重写历史。字段校验不能证明测试真的执行或结果语义正确。
+
 ## 0.5.37 — 2026-09-30
 
 - Build Worker 在 `finish ready` 前调用 `inspect-diff`：helper 输出实际完整补丁并在尝试目录登记与当前补丁/工作区状态绑定的检查记录。仅查看路径或 `diff --stat` 不再满足 ready 门禁；编辑后旧检查自动失效。

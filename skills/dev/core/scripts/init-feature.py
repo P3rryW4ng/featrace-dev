@@ -37,7 +37,7 @@ for number, source in enumerate(sources, 1):
     shutil.copy2(source, folder / 'sources' / source_name)
     registered.append({'id': 'SRC-%02d' % number, 'path': 'sources/' + source_name, 'kind': kind})
 paths = [row['path'] for row in registered]
-doc = {"feature": {"id": feature, "title": "", "status": "drafted", "workflow_version": 3,
+doc = {"feature": {"id": feature, "title": "", "status": "drafted", "workflow_version": 4,
                    "impact_required": True,
                    "history_regression_required": True,
                    "task_review_required": True,

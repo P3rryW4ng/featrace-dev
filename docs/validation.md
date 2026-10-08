@@ -4,13 +4,15 @@
 
 ## 当前发布与检查
 
-当前源码和本机 Claude 安装均为 0.5.37；安装版 76 个运行文件与标记哈希相符。[单 Worker 隔离复检](evaluations/2026-09-30-build-installed-full-diff.md)观察到 Agent 实际按顺序读取任务视图、输出完整补丁并交回 ready；旧[双 Worker 对照](evaluations/2026-09-30-build-installed-ab.md)保留。0.5.37 的 `test_parallel_build` 29/29、完整 unittest 277/277 于 2026-09-30 实跑通过（84.957 秒，退出码 0）。测试不证明 Agent 理解、行为覆盖或产品成熟度。Skill Creator `quick_validate.py` 因 PyYAML 不可用未成功运行；三个 Skill frontmatter 的 Ruby YAML 解析、`py_compile` 与 `git diff --check` 通过。
+当前源码与本机 Claude 安装均为 0.5.38。本机安装的 76 个运行文件与源码、安装标记哈希一致，旧 0.5.37 备份哈希核对通过。0.5.38 完整 unittest **280/280** 于 2026-10-08 实跑通过（82.388 秒，退出码 0），覆盖新完成审计及逐项回归结果的正反例与旧记录兼容；[安装版 Agent 隔离复检](evaluations/2026-10-08-gap24-25-installed.md)已跑，尚无新真实需求验证证据。[0.5.37 单 Worker 安装版复检](evaluations/2026-09-30-build-installed-full-diff.md)及旧[双 Worker 对照](evaluations/2026-09-30-build-installed-ab.md)保留。测试不证明 Agent 理解、真实执行、行为覆盖或产品成熟度。
 
 ## 能力证据导航
 
 | 能力 | 证据 | 能证明／不能证明 |
 |---|---|---|
 | 基础真实交付 | [CASE-01](reviews/2026-09-18-case-01.md)、[CASE-02](reviews/2026-09-21-case-02.md) | 已取得最终交付及多来源案例；新版模块/影响机制没有在所有案例完整采用 |
+| 新版真实连续交付 | [CASE-03](reviews/2026-10-08-case-03.md) | 真实需求经纠错完成、当前门禁与设备证据闭环；首轮误标完成及部分回归冒充全通过需外部复核纠正，第二阶段连续交付里程碑未通过 |
+| CASE-03 最小补强 | [0.5.38 安装版隔离复检](evaluations/2026-10-08-gap24-25-installed.md)、完整回归 280/280 | v4 完成状态要求当前 audit；新建 schema v3 历史回归逐项结果；旧记录可读。合成失败边界、正向与旧 v2 兼容对照通过；未做真实需求验证，字段完整不能证明证据真实 |
 | PRD 表达差异 | [样例评估](evaluations/2026-09-18-prd-styles.md) | 8/8 样例语义通过；单模型样例不证明所有 PRD 无遗漏 |
 | 独立 Verify | [Claude 0.5.24](evaluations/2026-09-28-claude-0524-verify.md)、[0.5.37 同输入对照](evaluations/2026-10-08-verify-same-input.md) | 合成缺陷/正确例两路均判对；独立路由未增加有效发现，总墙钟 +50.4%、CLI 估费 +63.9%，另有一条轻微依据不足判断；真实准确率与净收益仍待测，保持可选 |
 | 内部选择串行／两 Worker | [原生策略演练](evaluations/2026-09-29-native-auto-build.md) | 有实际选择与候选检查；不支持任意宽度调度或证明提速 |
@@ -31,6 +33,10 @@
 ## 本轮综合演练
 
 [协议](evaluations/2026-09-30-storeflow-protocol.md)在结果前固定；[结果](evaluations/2026-09-30-storeflow.md)已归档。三轮原生 Claude Code 合成演练分别完成部分开发、获批修订后交付、故意注入回归后的修复。最终项目 32/32、独立契约 18/18；0.5.34 安装版未改。第三轮 0.5.34 报告结论仍写已完成步骤为待办，作为原始失败保留；0.5.35 的后续[最小修正复核](evaluations/2026-09-30-gap23.md)不能改写该旧结果。此案例不代表自然业务需求。
+
+## 结构与文档一致性
+
+[2026-10-08 复核](reviews/2026-10-08-structure-and-direction.md)核对运行包、两类专家、维护职责、关键脚本契约和本机安装，修正文档中的旧状态与流程图偏差。静态语法、路径和安装哈希检查不替代功能或真实收益验证。
 
 ## 统一评价口径
 

@@ -160,7 +160,7 @@ def validate_review(root, folder, requirements, stage):
         return errors, warnings
     try:
         doc = read(path)
-        if (not isinstance(doc, dict) or doc.get('schema_version') not in (1, 2)
+        if (not isinstance(doc, dict) or doc.get('schema_version') not in (1, 2, 3)
                 or doc.get('feature_id') != folder.name):
             raise ValueError('identity/schema mismatch')
         history_ids(doc.get('history', []))
@@ -207,6 +207,24 @@ def validate_review(root, folder, requirements, stage):
                             errors.append('historical fix retest evidence is stale: ' + candidate_id)
                         if result.get('status') == 'waived' and not all(text(result.get(field)) for field in ('residual_risk', 'approval_ref')):
                             errors.append('historical fix waiver needs residual_risk and approval_ref: ' + candidate_id)
+                        if doc['schema_version'] >= 3:
+                            planned = item.get('planned_checks', [])
+                            checks = result.get('checks')
+                            if not isinstance(checks, list) or len(checks) != len(planned):
+                                errors.append('historical fix retest needs one result per planned check: ' + candidate_id)
+                            else:
+                                statuses = []
+                                for index, (expected, check) in enumerate(zip(planned, checks), 1):
+                                    if (not isinstance(check, dict) or check.get('planned_check') != expected
+                                            or check.get('status') not in ('passed', 'waived')
+                                            or not text(check.get('method')) or not text(check.get('evidence'))):
+                                        errors.append('historical fix planned check %d needs matching status/method/evidence: %s' % (index, candidate_id))
+                                        continue
+                                    statuses.append(check['status'])
+                                    if check['status'] == 'waived' and not all(text(check.get(field)) for field in ('residual_risk', 'approval_ref')):
+                                        errors.append('historical fix planned check %d waiver needs residual_risk and approval_ref: %s' % (index, candidate_id))
+                                if len(statuses) == len(planned) and result['status'] != ('waived' if 'waived' in statuses else 'passed'):
+                                    errors.append('historical fix overall result conflicts with planned checks: ' + candidate_id)
         return errors, warnings
     except (OSError, ValueError, TypeError, KeyError) as exc:
         return ['invalid historical regression review: ' + str(exc)], warnings
@@ -234,6 +252,16 @@ def render(folder):
                   '- Planned checks: ' + ', '.join(item.get('planned_checks', [])),
                   '- Result: ' + result.get('status', ''),
                   '- Evidence: ' + result.get('evidence', ''), '']
+        for index, check in enumerate(result.get('checks', []) if isinstance(result.get('checks'), list) else [], 1):
+            if isinstance(check, dict):
+                lines += ['- Planned check %d: %s' % (index, check.get('planned_check', '')),
+                          '  - Result: ' + check.get('status', ''),
+                          '  - Method: ' + check.get('method', ''),
+                          '  - Evidence: ' + check.get('evidence', '')]
+                if check.get('status') == 'waived':
+                    lines += ['  - Residual risk: ' + check.get('residual_risk', ''),
+                              '  - Approval: ' + check.get('approval_ref', '')]
+                lines.append('')
     if not doc.get('candidates'):
         lines += ['No related verified fixes were found from registered modules and code paths.', '']
     history = doc.get('history', [])
@@ -321,7 +349,8 @@ def sync(root, feature_id):
         if archived['history_id'] not in known_history_ids:
             history.append(archived)
             known_history_ids.add(archived['history_id'])
-    record = {'schema_version': 2, 'feature_id': feature_id, 'scope': scope, 'candidates': candidates,
+    schema_version = 3 if not old else max(2, old.get('schema_version', 2))
+    record = {'schema_version': schema_version, 'feature_id': feature_id, 'scope': scope, 'candidates': candidates,
               'review_digest': review_digest, 'dispositions': dispositions, 'history': history}
     requirements['feature']['history_regression_required'] = True
     if req_path.read_bytes() != original_requirements:

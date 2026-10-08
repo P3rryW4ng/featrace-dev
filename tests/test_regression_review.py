@@ -3,7 +3,7 @@ from pathlib import Path
 import unittest
 
 import test_impact
-from regression_review import sync, validate_review
+from regression_review import sync, validate_review, render
 
 
 class HistoricalRegressionReviewTests(unittest.TestCase):
@@ -85,6 +85,8 @@ class HistoricalRegressionReviewTests(unittest.TestCase):
         record['dispositions'][0]['result'] = {
             'status': 'passed', 'method': 'fixture regression', 'evidence': 'OLD-REG passed',
             'tested_revision': 'current-v2', 'review_digest': record['review_digest'],
+            'checks': [{'planned_check': 'Repeat OLD-REG against the current build',
+                        'status': 'passed', 'method': 'unit test', 'evidence': 'OLD-REG passed'}],
         }
         self.store(record)
         self.assertEqual(self.validate('check'), [])
@@ -109,7 +111,7 @@ class HistoricalRegressionReviewTests(unittest.TestCase):
         (self.historical / 'fixes.json').write_text(json.dumps(fixes))
 
         updated, _ = sync(self.root, 'FEAT-001')
-        self.assertEqual(updated['schema_version'], 2)
+        self.assertEqual(updated['schema_version'], 3)
         self.assertEqual(updated['dispositions'], [])
         self.assertEqual(len(updated['history']), 1)
         archived = updated['history'][0]
@@ -153,6 +155,57 @@ class HistoricalRegressionReviewTests(unittest.TestCase):
         self.store(record)
         with self.assertRaisesRegex(ValueError, 'invalid or duplicate history'):
             sync(self.root, 'FEAT-001')
+
+    def test_new_review_rejects_partial_or_mismatched_planned_check_results(self):
+        record, _ = sync(self.root, 'FEAT-001')
+        self.assertEqual(record['schema_version'], 3)
+        candidate = record['candidates'][0]
+        planned = ['Repeat OLD-REG against the current build', 'Exercise the repaired return path']
+        result = {'status': 'passed', 'method': 'unit and device', 'evidence': 'first check passed',
+                  'tested_revision': 'current-v2', 'review_digest': record['review_digest'],
+                  'checks': [{'planned_check': planned[0], 'status': 'passed',
+                              'method': 'unit test', 'evidence': 'OLD-REG passed'}]}
+        record['dispositions'] = [{'candidate_id': candidate['id'],
+                                   'candidate_digest': candidate['candidate_digest'],
+                                   'action': 'retest', 'reason': 'Touches the repaired path.',
+                                   'planned_checks': planned, 'result': result}]
+        self.store(record)
+        self.assertTrue(any('one result per planned check' in e for e in self.validate('check')))
+        result['checks'].append({'planned_check': planned[0], 'status': 'passed',
+                                 'method': 'device', 'evidence': 'wrong check duplicated'})
+        self.store(record)
+        self.assertTrue(any('planned check 2' in e for e in self.validate('check')))
+        result['checks'][1] = {'planned_check': planned[1], 'status': 'passed',
+                               'method': 'device', 'evidence': 'return path observed'}
+        self.store(record)
+        self.assertEqual(self.validate('check'), [])
+        render(self.folder)
+        view = (self.folder / 'regression-review.md').read_text()
+        self.assertIn('Planned check 2: Exercise the repaired return path', view)
+        self.assertIn('Evidence: return path observed', view)
+        result['checks'][1]['status'] = 'waived'
+        self.store(record)
+        self.assertTrue(any('waiver needs' in e for e in self.validate('check')))
+        result['checks'][1].update(residual_risk='Return path not executed', approval_ref='D-1')
+        result.update(status='waived', residual_risk='Return path not executed', approval_ref='D-1')
+        self.store(record)
+        self.assertEqual(self.validate('check'), [])
+
+    def test_existing_version_two_review_remains_readable(self):
+        record, _ = sync(self.root, 'FEAT-001')
+        record['schema_version'] = 2
+        candidate = record['candidates'][0]
+        record['dispositions'] = [{'candidate_id': candidate['id'],
+                                   'candidate_digest': candidate['candidate_digest'],
+                                   'action': 'retest', 'reason': 'Touches repaired path.',
+                                   'planned_checks': ['Repeat OLD-REG against the current build'],
+                                   'result': {'status': 'passed', 'method': 'fixture regression',
+                                              'evidence': 'OLD-REG passed', 'tested_revision': 'current-v2',
+                                              'review_digest': record['review_digest']}}]
+        self.store(record)
+        self.assertEqual(self.validate('check'), [])
+        updated, _ = sync(self.root, 'FEAT-001')
+        self.assertEqual(updated['schema_version'], 2)
 
     def test_agent_instructions_preserve_explicit_sync_only_scope(self):
         repository = Path(__file__).resolve().parents[1]

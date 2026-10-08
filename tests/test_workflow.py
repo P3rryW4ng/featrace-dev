@@ -50,7 +50,7 @@ class WorkflowTests(unittest.TestCase):
         requirements = json.loads((self.folder / 'spec/requirements.json').read_text())
         self.assertTrue(requirements['feature']['history_regression_required'])
         self.assertTrue(requirements['feature']['task_review_required'])
-        self.assertEqual(requirements['feature']['workflow_version'], 3)
+        self.assertEqual(requirements['feature']['workflow_version'], 4)
         self.assertEqual(requirements['feature']['module_scope']['status'], 'pending')
         before = (self.folder / 'spec/requirements.json').read_bytes()
         self.run_script(CORE / 'init-feature.py', 'FEAT-001', self.prd, self.root, expected=1)
@@ -68,6 +68,41 @@ class WorkflowTests(unittest.TestCase):
         self.run_script(CORE / 'render-workspace.py', self.root, 'FEAT-001')
         self.assertIn('Uppercase', (self.folder / 'spec/spec.md').read_text())
         self.assertIn('R-1 → T-1 → UT-1', (self.folder / 'traceability.md').read_text())
+
+    def test_new_complete_feature_requires_current_delivery_audit(self):
+        self.valid()
+        self.req['feature'].update(
+            workflow_version=4, status='complete', module_context_required=False,
+            module_scope={'status': 'not_applicable', 'note': 'No registered module catalog in fixture',
+                          'capability': None, 'assignments': []},
+        )
+        self.record('spec/requirements.json', self.req)
+        output = self.validate('check', expected=1).stdout
+        self.assertIn('nonempty feature delivery report', output)
+        (self.folder / 'delivery-report.md').write_text('Fixture delivery evidence reviewed.')
+        output = self.validate('check', expected=1).stdout
+        self.assertIn('complete requires current delivery audit', output)
+        subprocess.run(['git', 'init', str(self.root)], check=True, capture_output=True)
+        (self.root / 'convert.py').write_text('def convert(value): return value.upper()\n')
+        subprocess.run(['git', '-C', str(self.root), 'add', 'convert.py'], check=True, capture_output=True)
+        subprocess.run(['git', '-C', str(self.root), '-c', 'user.name=Fixture',
+                        '-c', 'user.email=fixture@example.invalid', 'commit', '-m', 'fixture'],
+                       check=True, capture_output=True)
+        baseline = self.root / '.agent-workflow/project-baseline'
+        baseline.mkdir(parents=True)
+        (baseline / 'quality-gates.json').write_text(json.dumps({'gates': [
+            {'name': 'unit', 'command': [sys.executable, '-c', 'print("UT-1 passed")'],
+             'test_ids': ['UT-1']}]}))
+        self.run_script(CORE / 'project.py', 'check', self.root)
+        self.validate('check')
+        (self.root / 'convert.py').write_text('def convert(value): return value.lower()\n')
+        subprocess.run(['git', '-C', str(self.root), 'add', 'convert.py'], check=True, capture_output=True)
+        subprocess.run(['git', '-C', str(self.root), '-c', 'user.name=Fixture',
+                        '-c', 'user.email=fixture@example.invalid', 'commit', '-m', 'changed source'],
+                       check=True, capture_output=True)
+        output = self.validate('check', expected=1).stdout
+        self.assertIn('complete requires current delivery audit', output)
+        self.assertIn('stale', output)
 
     def test_render_traceability_displays_current_task_list(self):
         self.valid()
