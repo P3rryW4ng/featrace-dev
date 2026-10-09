@@ -2,6 +2,8 @@
 
 Read PRODUCT.md, MAINTAINER.md and ROADMAP.md before modifying the Skill. PRODUCT.md owns the confirmed product mission, staged target, boundaries and success measures. Preserve the distinction between the current developer-assistance stage, the strategic north star and the final bounded-autonomy vision. Keep runtime resources self-contained under skills/dev. Use synthetic inputs in tests; never commit project .agent-workflow or personal configuration. Run python3 -m unittest discover -s tests -v after script changes. Update VERSION and CHANGELOG for releases. Do not claim planned capabilities are implemented.
 
+Before a release, apply the version-selection policy in MAINTAINER.md: choose the changed number from the implemented capability and contract, document the rationale, and do not increment the last number merely because another commit or publication occurred. Keep historical numbers unchanged. Documentation-only maintenance does not create a new runtime release.
+
 When changing runtime commands, states, source applicability, conflict handling, or quality gates, review and update the daily workflow diagram and notes in docs/usage.md in the same change. Keep its verification date current and distinguish implemented behavior from ROADMAP plans.
 
 Before continuing development, inspect VERSION, git status and recent commits; distinguish source version, tested behavior, installed copy and remote release. Read docs/decisions/architecture.md for accepted decisions and docs/validation.md for evidence. Chat history and an installed skill are not the source of truth. If documentation conflicts with code, record the discrepancy; do not silently treat a planned capability as implemented.
