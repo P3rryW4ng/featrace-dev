@@ -207,7 +207,8 @@ def locate(root, path=None, query=None):
             matches.append({'module': module['id'], 'status': state['status'],
                             'matched_roots': roots, 'matched_evidence_files': evidence,
                             'matched_text': matched_text, 'dossier': state['dossier'],
-                            'changed_paths': state['changed_paths']})
+                            'scope_file_count': len(state['scope_files']),
+                            'changed_path_count': len(state['changed_paths']) if state['reviewed_revision'] else None})
     candidates = []
     candidate_path = safe(root, '.agent-workflow/modules/candidates.json')
     if path and candidate_path.is_file():
@@ -219,16 +220,19 @@ def locate(root, path=None, query=None):
         except (OSError, ValueError, KeyError, TypeError) as exc:
             return {'status': 'candidate_evidence_stale', 'path': path, 'matches': matches,
                     'candidates': [], 'note': str(exc)}
-    status = ('mapped' if matches else 'candidate_only' if candidates else
+    global_evidence = bool(path and index and path in index['global_files'])
+    status = ('mapped' if matches else 'project_evidence' if global_evidence else 'candidate_only' if candidates else
               'map_missing' if not index else 'outside_map' if path else 'not_found_in_map')
     notes = {
         'mapped': 'Registered matches are investigation leads, not proof of complete ownership or impact; inspect code and callers.',
         'candidate_only': 'Only an unreviewed static build candidate covers this path; inspect code before registering a module.',
+        'project_evidence': 'This is registered project-wide evidence, not a module-owned path; inspect its effect on relevant modules.',
         'map_missing': 'No reviewed module catalog exists; establish it from project evidence before relying on a map.',
         'outside_map': 'Existing path lies outside registered roots and valid build candidates; investigate and extend the map if supported.',
         'not_found_in_map': 'Literal text was not found in registered summaries/dossiers; this does not prove the behavior is absent.',
     }
     return {'status': status, 'path': path, 'query': query, 'matches': matches,
+            'global_evidence': global_evidence,
             'candidates': candidates, 'note': notes[status]}
 
 
