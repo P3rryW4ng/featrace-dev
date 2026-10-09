@@ -4,7 +4,9 @@
 
 ## Resolve context first
 
-Resolve the selected feature using `feature-selection.md`, reread its records and run the read-only status summary. `--feature ID` overrides only this invocation. If no reliable selection or explicit ID exists, list available features and ask the user to choose; never guess from recency or a sole directory. A new feature still starts with `/dev prd ... --feature ID`.
+First distinguish a clear request to create a new feature from continuation of an existing one. A new-feature request uses the readiness check in `feature-selection.md` even when an older feature is selected: missing product ID or accessible PRD source is asked once before writes; with both present, route to the existing `prd` flow. Do not ask the user to choose an existing feature or provide an internal module name merely because no current selection exists.
+
+For existing-feature work, resolve the selected feature using `feature-selection.md`, reread its records and run the read-only status summary. `--feature ID` overrides only this invocation. If no reliable selection or explicit ID exists, list available features and ask the user to choose; never guess from recency or a sole directory. New-feature creation still uses the underlying `/dev prd ... --feature ID` action, even when the user describes it in ordinary language.
 
 State the selected route in one short line, including stages when useful, for example `Route: Requirement/figma → Scope → Build (new design assets for the current feature)`, then perform only the eligible portion rather than merely recommending its command. Underlying actions write their normal records and the stage handoff uses those records; `next` creates no separate routing file.
 

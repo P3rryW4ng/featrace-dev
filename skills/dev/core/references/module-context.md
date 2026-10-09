@@ -56,6 +56,8 @@ Code modules and business capabilities are different axes. A red-envelope capabi
 
 New workflow v3 features begin with a pending scope. After PRD analysis run the read-only suggestion helper, inspect the relevant catalog summaries/code and then ask the user to confirm only the ambiguous product ownership or scope:
 
+The new-feature readiness reply starts with the product ID and PRD source, not a user-entered code module. After the draft, report module candidates and their actual roles/evidence; if the catalog is absent or the match is uncertain, label the scope `待调查` or ask one focused ownership question rather than guessing. Keep the pending scope until the existing review/set or not-applicable path is justified. No separate intake checklist file is needed.
+
 ```text
 python3 core/scripts/feature_scope.py suggest <PROJECT> <ID>
 python3 core/scripts/feature_scope.py set <PROJECT> <ID> --input <scope.json>
