@@ -8,7 +8,7 @@
 
 FeatraceDev helps coding agents understand requirements, investigate impact, implement changes, repair defects, and verify delivery in existing codebases. It connects original sources, confirmed requirements, tasks, historical fixes, and test evidence so future changes can build on recorded facts and completion claims have a clear verification scope.
 
-Works with Claude Code and Codex. Includes a generic workflow and an Android adapter. Current source version: **0.5.39**. Check the installed version separately on each machine.
+Works with Claude Code and Codex. Includes a generic workflow and an Android adapter. Current source version: **0.5.40**. Check the installed version separately on each machine.
 
 > This is a developer-assisted delivery tool. It surfaces missing decisions and evidence, but cannot guarantee complete PRD understanding, discover every dependency, or replace device testing and subjective acceptance.
 
