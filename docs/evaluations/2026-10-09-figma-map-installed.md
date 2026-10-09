@@ -24,3 +24,13 @@
 此轮没有修改业务代码、没有运行 Android 构建或真机测试，也未声称四个模块的功能细节已被审完。业务仓库原有未跟踪 `acceptance/` 未碰。六个地图文件经路径/内容范围检查后以 `5f4027c01` 单独提交并推送到 Codeup 的 `feature/wallet-module` 分支；其他分支需合并后才能使用。真实多人交接、跨模块问题定位速度和遗漏率未测。
 
 业务项目旧基线的 `project.py verify` 仍返回 `BASELINE_STALE`（manifests、evidence、git_head），涉及此前累积的项目变更，并非仅此地图提交。未为消除此状态而重扫、改写旧基线或运行 Android 构建；开始新功能前应按当前代码和登记证据审查并刷新基线。
+
+## 登录恢复后的安装版 Claude Code Agent 隔离复检
+
+2026-10-09 在 Claude Code 重新登录后，另建 `/private/tmp/featrace-agent-isolation-v3caj8m7/` 下的两份固定小夹具，使用本机安装的 **0.5.42** 和 `claude -p` 全新会话执行只读调查。此节是上述 401 失败之后的新证据，不改写旧失败。CLI 的可读目录显式增加安装版 Skill 路径，允许 Read/Bash；没有启用权限绕过。完整工具轨迹与结果保存在该临时目录的 `figma-agent-v3.jsonl`、`map-agent.jsonl`，临时文件可能被清理，不把它们算作仓库长期证据。
+
+Figma 首次 Agent 尝试读到了 Skill 和参考说明，但在运行索引命令前达到预设的 10 轮上限（`error_max_turns`，估费约 $0.32）。第二次提高上限后，非交互权限配置仍阻止读取安装目录及执行脚本；Agent 如实表示三项均未实测（估费约 $0.30）。第三次明确允许安装目录和只读工具，Agent 读取设计索引契约并实际调用安装版脚本：`validate --stage check` 退出 0；原文件节点 `1:3` 配合不同字节来源得到 `exact_identity`、`content_review_required=true`、`evidence_bytes=different`；复制节点 `NEW123/9:9` 只得到两个 `candidate_only` 状态、`requires_confirmation=true`，未擅自选定。Agent 还通过阅读材料发现修订文件多了未登记的 `1:4`，没有把校验通过说成状态枚举完整。第三次 5 轮、CLI 估费约 $0.27；五个夹具文件的 SHA-256 前后相同。
+
+模块地图 Agent 读取安装版说明并实际运行定位和计划。它先用错误的 shell 循环把整串参数当成一个参数，三次 argparse 均退出 2；随后分别重跑，`wallet/payment.py` 得到 `mapped`、档案 `unreviewed`，`outside/bug.py` 得到 `outside_map`，两次定位均退出 0；`plan --module wallet` 列出 wallet 与直接调用方 app、chat，三者档案均未复核，退出 2。Agent 将退出 2 正确解释为档案缺口而非可直接开发，并说明图只反映登记的静态关系，不证明完整运行时调用链。该会话 8 轮、CLI 估费约 $0.37；Git HEAD 与干净工作树前后未变。
+
+**结论边界**：已观察到安装版 Agent 在定向隔离任务中读取相关指引、调用脚本、保留候选和未知区域，并识别资料新增状态；不能由此宣称它在普通真实需求中会自然触发、Figma 页面/状态无遗漏、共享地图已被同事复用，或这套流程节省了时间。两次失败及 Agent 的一次命令拼装错误也说明安装权限和 CLI 调用方式有实际成本。下一笔真实需求继续按 ROADMAP 采集自然采用、遗漏、误判和维护耗时。
