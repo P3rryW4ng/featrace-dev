@@ -1,4 +1,19 @@
-# Scoped module knowledge and capability graph (0.5.21)
+# Scoped module knowledge and capability graph (0.5.41)
+
+## Incremental shared map and unknown territory
+
+The module catalog is a **partial, evolving map**, not an inventory of every implementation detail. Keep three states distinct: a reviewed dossier that is still current, a static/build or text match that needs investigation, and code outside the registered map. A current dossier is only current for its declared files and evidence; it does not prove all callers or runtime behavior are known.
+
+Before touching an unfamiliar path, or when a bug points outside the current feature, locate a concrete file first. If the user only describes behavior, run a literal map search for leads, then inspect code/navigation/callers and locate the actual path. The literal query is not semantic matching and a miss is not proof the code does not exist:
+
+```text
+python3 core/scripts/module_context.py locate <PROJECT> --path app/src/SomeScreen.kt
+python3 core/scripts/module_context.py locate <PROJECT> --query "payment receipt"
+```
+
+`mapped` returns registered modules with current/stale/unreviewed/gaps dossier state; overlapping roots may return several modules. `candidate_only` means a valid Gradle candidate covers the path but no reviewed catalog entry does. `outside_map` means the existing path is not covered by any registered root/evidence or valid candidate. `map_missing` means no formal catalog exists; `path_missing` and `candidate_evidence_stale` require separate investigation. Query misses return `not_found_in_map`, never `outside_map`. These are navigation results, not ownership decisions or permission to change code. Resolve competing matches from source and confirmed capability roles. Use `plan` on the selected modules to expand direct callers and dependencies, then inspect runtime edges that the graph cannot see.
+
+When exploration finds a real boundary or behavior, update only the affected catalog entry/dossier with scoped file evidence and review it; rerender the graph. If evidence is incomplete, leave a gap or candidate rather than inventing a completed map. When code moves outside the map, investigate the new path and revise roots before relying on an old dossier. After a feature/fix changes accepted behavior, update its affected dossier and feature links in the same delivery work. Commit reviewed shared map files after the normal sensitivity review so teammates can reuse them. Git history preserves the prior map; concurrent edits to the same catalog/dossier need an explicit merge and fresh `plan`/review, never last-writer-wins. Source PRDs and local quality outputs retain their separate sharing policy.
 
 ## Android Gradle candidate discovery
 

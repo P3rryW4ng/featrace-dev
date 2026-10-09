@@ -2,7 +2,7 @@ import copy
 import json
 import unittest
 import test_impact
-from module_context import plan, review, catalog, validate_modules, render_graph, discover_gradle_candidates
+from module_context import plan, review, catalog, validate_modules, render_graph, discover_gradle_candidates, locate
 from feature_scope import set_scope, not_applicable, validate_scope, suggest
 
 
@@ -48,6 +48,37 @@ class ModuleTests(unittest.TestCase):
         self.assertEqual({r['module'] for r in rows}, {'wallet', 'identity', 'app'})
         self.assertTrue(all(r['status'] == 'unreviewed' for r in rows))
         self.assertFalse(any('chat/code.txt' in r['scope_files'] for r in rows))
+
+    def test_locate_known_unknown_and_missing_path_without_writes(self):
+        before = self.git('status', '--short')
+        known = locate(self.root, path='wallet/code.txt')
+        self.assertEqual(known['status'], 'mapped')
+        self.assertEqual(known['matches'][0]['module'], 'wallet')
+        self.assertEqual(known['matches'][0]['status'], 'unreviewed')
+        (self.root / 'unmapped.py').write_text('pass\n')
+        self.assertEqual(locate(self.root, path='unmapped.py')['status'], 'outside_map')
+        self.assertEqual(locate(self.root, path='absent.py')['status'], 'path_missing')
+        self.assertEqual(self.git('status', '--short').replace('?? unmapped.py\n', ''), before)
+
+    def test_locate_literal_query_and_review_freshness(self):
+        self.accept('wallet')
+        found = locate(self.root, query='behaviors observed')
+        self.assertEqual(found['status'], 'mapped')
+        self.assertEqual([row['module'] for row in found['matches']], ['wallet'])
+        self.assertEqual(found['matches'][0]['status'], 'current')
+        (self.root / 'wallet/code.txt').write_text('changed')
+        self.assertEqual(locate(self.root, query='wallet behavior')['matches'][0]['status'], 'stale')
+        self.assertEqual(locate(self.root, query='nonexistent phrase')['status'], 'not_found_in_map')
+
+    def test_locate_candidate_only_without_formal_catalog(self):
+        (self.root / 'settings.gradle.kts').write_text('include(":wallet")\n')
+        discover_gradle_candidates(self.root)
+        (self.modules / 'index.json').unlink()
+        result = locate(self.root, path='wallet/code.txt')
+        self.assertEqual(result['status'], 'candidate_only')
+        self.assertEqual(result['candidates'][0]['build_id'], ':wallet')
+        (self.root / 'settings.gradle.kts').write_text('include(":other")\n')
+        self.assertEqual(locate(self.root, path='wallet/code.txt')['status'], 'candidate_evidence_stale')
 
     def test_review_generates_dossiers_and_global_overview(self):
         self.accept_scope()

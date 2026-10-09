@@ -6,6 +6,8 @@ For a new feature, after `feature-selection.md` confirms the user-supplied ID an
 
 Registered evidence kinds are `document`, `html`, `design`, and `api`. Initial `/dev prd` files are inferred as document/HTML. For supplementary API or Figma material, first preserve the accessible export or an Agent-authored evidence manifest as a regular local file, then run `python3 core/scripts/register-source.py <PROJECT> <ID> <FILE> --kind api|design`. This single helper copies immutable evidence and synchronizes intake sources with `feature.prd_paths`; do not edit those indexes separately. If a link cannot be exported, the manifest must record its exact URL, relevant operation/node, version and access gaps without inventing content. Registration does not count as reading or semantic reconciliation.
 
+For registered Figma evidence, follow `design-index.md`: inventory only relevant logical screens and distinct states, retain exact file/node identities and link read states to intake units. On a later design update, use identity matching first; descriptions and screenshots only suggest candidates. A match does not approve changed design semantics.
+
 ## 1. Reading inventory
 
 A feature may start with only a document, only HTML, or both, then receive API/design evidence. Initialize with one primary file and repeat `--source` for additional document/HTML files. `sources` registers every supplied part; no source kind is universally mandatory. Preserve all originals in sources/. A linked URL is only a reference until its content is accessible. If HTML depends on CSS, scripts, images or a server, verify those dependencies or record the resulting reading gap; a bare HTML file may not reproduce the interaction.

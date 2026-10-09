@@ -161,6 +161,77 @@ def plan(root, selected):
     return output
 
 
+def _contains_path(boundary, name):
+    boundary = boundary.rstrip('/')
+    return name == boundary or name.startswith(boundary + '/')
+
+
+def locate(root, path=None, query=None):
+    """Locate a known code path or literal term without promoting guesses to facts."""
+    root = root.resolve()
+    if bool(path) == bool(query):
+        raise ValueError('locate requires exactly one of path or query')
+    if path:
+        path_name(path)
+        target = safe(root, path)
+        if not target.exists():
+            return {'status': 'path_missing', 'path': path, 'matches': [], 'candidates': [],
+                    'note': 'The path is absent; no module ownership was inferred.'}
+        if target.is_symlink():
+            raise ValueError('symlink path requires manual review')
+    elif not query.strip():
+        raise ValueError('query must be nonempty')
+    index_path = safe(root, '.agent-workflow/modules/index.json')
+    index = catalog(root) if index_path.is_file() else None
+    matches = []
+    if index:
+        for module in index['modules']:
+            evidence = sorted(name for name in module['evidence_files'] if path and name == path)
+            roots = sorted(name for name in module['roots'] if path and _contains_path(name, path))
+            matched_text = []
+            if query:
+                term = query.casefold()
+                if term in module['id'].casefold() or term in module['summary'].casefold():
+                    matched_text.append('catalog')
+                dossier = safe(root, '.agent-workflow/modules/' + module['id'] + '.json')
+                if dossier.is_file():
+                    doc = read(dossier)
+                    body = doc.get('body', {})
+                    if any(term in row.get('detail', '').casefold() for key in SECTIONS
+                           for row in body.get(key, []) if isinstance(row, dict)):
+                        matched_text.append('dossier')
+            if not roots and not evidence and not matched_text:
+                continue
+            # A match identifies an investigation starting point, not complete ownership.
+            state = next(row for row in plan(root, [module['id']]) if row['module'] == module['id'])
+            matches.append({'module': module['id'], 'status': state['status'],
+                            'matched_roots': roots, 'matched_evidence_files': evidence,
+                            'matched_text': matched_text, 'dossier': state['dossier'],
+                            'changed_paths': state['changed_paths']})
+    candidates = []
+    candidate_path = safe(root, '.agent-workflow/modules/candidates.json')
+    if path and candidate_path.is_file():
+        try:
+            doc = load_gradle_candidates(root)
+            candidates = [{'build_id': row['build_id'], 'root': row['root'],
+                           'evidence_refs': row['evidence_refs']}
+                          for row in doc['modules'] if _contains_path(row['root'], path)]
+        except (OSError, ValueError, KeyError, TypeError) as exc:
+            return {'status': 'candidate_evidence_stale', 'path': path, 'matches': matches,
+                    'candidates': [], 'note': str(exc)}
+    status = ('mapped' if matches else 'candidate_only' if candidates else
+              'map_missing' if not index else 'outside_map' if path else 'not_found_in_map')
+    notes = {
+        'mapped': 'Registered matches are investigation leads, not proof of complete ownership or impact; inspect code and callers.',
+        'candidate_only': 'Only an unreviewed static build candidate covers this path; inspect code before registering a module.',
+        'map_missing': 'No reviewed module catalog exists; establish it from project evidence before relying on a map.',
+        'outside_map': 'Existing path lies outside registered roots and valid build candidates; investigate and extend the map if supported.',
+        'not_found_in_map': 'Literal text was not found in registered summaries/dossiers; this does not prove the behavior is absent.',
+    }
+    return {'status': status, 'path': path, 'query': query, 'matches': matches,
+            'candidates': candidates, 'note': notes[status]}
+
+
 def review(root, module_id, body, expected):
     root = root.resolve(); index = catalog(root)
     module = next((m for m in index['modules'] if m['id'] == module_id), None)
@@ -617,11 +688,19 @@ def validate_modules(root, folder, req, stage):
 
 def main():
     p = argparse.ArgumentParser(description=__doc__)
-    p.add_argument('action', choices=['plan', 'review', 'graph', 'discover']); p.add_argument('root', type=Path)
+    p.add_argument('action', choices=['plan', 'review', 'graph', 'discover', 'locate']); p.add_argument('root', type=Path)
     p.add_argument('--module', action='append'); p.add_argument('--feature')
+    p.add_argument('--path'); p.add_argument('--query')
     p.add_argument('--input', type=Path); p.add_argument('--digest')
     args = p.parse_args(); root = args.root.resolve()
     try:
+        if args.action == 'locate':
+            if args.module or args.feature or args.input or args.digest:
+                raise ValueError('locate accepts only path or query')
+            print(json.dumps(locate(root, args.path, args.query), ensure_ascii=False, indent=2))
+            return 0
+        if args.path or args.query:
+            raise ValueError('path and query are only for locate')
         if args.action == 'discover':
             if args.module or args.feature or args.input or args.digest:
                 raise ValueError('discover does not accept module, feature, input or digest')

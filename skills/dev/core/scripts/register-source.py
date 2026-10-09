@@ -79,6 +79,7 @@ def register(root, feature_id, supplied, kind):
         paths.append(row['path'])
     if kind == 'design':
         feature.setdefault('source_status', {})['figma'] = 'present'
+        feature['design_index_required'] = True
     elif kind == 'api':
         feature.setdefault('source_status', {})['api'] = 'present'
     intake_before, req_before = intake_path.read_bytes(), req_path.read_bytes()
@@ -91,7 +92,7 @@ def register(root, feature_id, supplied, kind):
         if destination.exists() and not destination.is_symlink():
             destination.unlink()
         raise
-    return {'status': 'registered', 'source': row}
+    return {'status': 'registered', 'source': row, 'design_index_required': kind == 'design'}
 
 
 def main():

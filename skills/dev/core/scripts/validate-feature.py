@@ -7,6 +7,7 @@ import subprocess
 import sys
 import re
 from prd_intake import validate_intake
+from design_index import validate_index
 from revisions import validate_revisions
 from impact import validate_impact
 from verification import validate_verification
@@ -189,6 +190,9 @@ def main():
         intake_errors, intake_warnings = validate_intake(feature_dir, req_doc, args.stage)
         errors.extend(intake_errors)
         warnings.extend(intake_warnings)
+    design_errors, design_warnings = validate_index(feature_dir, req_doc, args.stage)
+    errors.extend(design_errors)
+    warnings.extend(design_warnings)
     fix_errors, fix_warnings = validate_fixes(feature_dir, args.feature_id, requirements, tasks, decisions, args.stage)
     errors.extend(fix_errors)
     warnings.extend(fix_warnings)

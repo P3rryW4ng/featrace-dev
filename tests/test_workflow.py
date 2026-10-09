@@ -69,6 +69,14 @@ class WorkflowTests(unittest.TestCase):
         self.assertIn('Uppercase', (self.folder / 'spec/spec.md').read_text())
         self.assertIn('R-1 → T-1 → UT-1', (self.folder / 'traceability.md').read_text())
 
+    def test_design_index_gate_is_opt_in(self):
+        self.valid()
+        self.validate()
+        self.req['feature']['design_index_required'] = True
+        self.record('spec/requirements.json', self.req)
+        output = self.validate(expected=1).stdout
+        self.assertIn('design index missing', output)
+
     def test_new_complete_feature_requires_current_delivery_audit(self):
         self.valid()
         self.req['feature'].update(

@@ -6,6 +6,7 @@ Each feature is stored at `.agent-workflow/features/<feature-id>/`.
 sources/                 Immutable original document/HTML PRD parts, API, Figma exports and links
 spec/prd-intake.json      Reading inventory, source excerpts and coverage review
 spec/prd-analysis.md      Generated reading/coverage view
+design-index.json         Scoped Figma logical screens and states; required after a new design source is registered
 spec/requirements.json   Canonical requirement records
 spec/spec.md             Generated, human-readable requirement view
 tasks.json               Atomic implementation slices and status
@@ -45,6 +46,7 @@ The files under `core/schemas/` describe only shallow containers. The Python val
 - `traceability.json`: top level `feature_id` and `links` array. Every link requires an existing `requirement_id`; check requires at least one link for every active requirement. The validator does not fully prove task/code/test reverse links.
 - `fixes.json`: see `fix-workflow.md`. `verification` and `evidence` must be arrays of non-empty strings. `regression_test_ids` is an array of declared test ID strings for verified repairs; `regression_scope_notes` maps selected cross-scope test IDs to non-empty reasons. `closed` uses a `closure` object with `outcome`, `reason` and `evidence`, with further fields per outcome.
 - `spec/prd-intake.json`: each registered source has `id`, a relative `path` under `sources/`, and `kind` (`document`, `html`, `design`, or `api`). Use `register-source.py` for supplementary local API/design evidence so this list and `feature.prd_paths` change together. Each coverage aspect points to a requirement `statement` or an acceptance criterion using `field: "acceptance_criteria/0"` (zero-based index), with exact `target_text`; the validator intentionally treats changed targets as requiring review. Do not silently refresh `target_text` and leave the review marked verified.
+- `design-index.json`: new Figma registrations set `feature.design_index_required=true`; record relevant logical screens, their separate states and exact file/node IDs. Read states cite intake units with matching `figma_file_key` and `figma_node_id`; check rejects incomplete states. See [design-index.md](design-index.md). Existing features without the flag remain compatible.
 
 Minimal shape of a task and a PRD source registration; replace IDs and text with actual evidence:
 
