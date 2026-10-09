@@ -2,6 +2,12 @@
 
 Invoking `/dev` with no arguments activates delivery mode for the current Claude Code conversation and project. This is conversational state, not a file, repository setting, daemon, or host-level mode. It ends when the user says `dev off` or asks to exit delivery mode, when the project changes, or when the conversation ends. Never claim it persists into a new session or another project.
 
+## Visible mode indicator
+
+While this mode is active, start **every user-facing reply** (including read-only answers, progress updates, and questions) with one compact line: `FeatraceDev ON · 项目：<project> · 需求：<selected ID or 未选择>`. Localize the labels to the user's language. Use the actual current project and this conversation's selection; an explicit `--feature ID` for one command does not silently replace the selected ID. Never infer a selection from the only feature on disk. If the project or selection cannot be established reliably, say `待确认` instead of guessing, and resolve it before any feature mutation. This line is an Agent reply convention, not a persistent host status indicator or proof that the Skill remains loaded after a context reset.
+
+An empty `/dev` is safe to repeat as a mode check: if already active for the same project, keep the existing reliable selection, display the indicator and current selection, and return without running `next`, scanning, creating records, or changing files. If activation state is uncertain, treat the explicit `/dev` as a fresh activation for the current project; do not claim that an earlier mode survived. No separate status command or mode file is needed.
+
 ## Activation
 
 On activation:
@@ -28,5 +34,7 @@ Claude Code already owns slash commands such as `/status`; do not instruct the u
 ## Exit and limitations
 
 `dev off`, `/dev off`, or an unambiguous request to exit disables the conversational default immediately and performs no workflow mutation. Report the exit in one line.
+
+For that exit reply, display `FeatraceDev OFF` rather than an `ON` indicator. If the project changes, end the old project's mode and say it is off; the user can enter `/dev` again in the new project. After exit, do not display an `ON` line on ordinary replies or imply that the mode is still active.
 
 The mode relies on Claude retaining and applying conversation context. It cannot guarantee activation after a new session, context reset, or host behavior that does not load the Skill. Cross-session always-on behavior would require project-level `CLAUDE.md` or `.claude/rules` installation and is intentionally outside this portable Skill because it would modify the user's project configuration.
