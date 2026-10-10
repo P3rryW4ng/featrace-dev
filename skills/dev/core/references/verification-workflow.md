@@ -39,6 +39,8 @@ For other blockers, retain a truthful partial report and `provisional` for the u
 
 ## Generate and review
 
+For an externally owned configuration task, read `external-configuration.md` before choosing checks. The changed behavior is established by the external configuration receipt and a narrow end-to-end observation, not by repeating client compile or unrelated tests. In a mixed feature, earlier client checks may be reused only when their quality snapshot and selection remain current; report their original tested revision rather than describing them as freshly run for the configuration task. Do not mark an unobserved external deployment complete. This does not bypass the existing empty-gate or stale-report rules.
+
 Prepare the impact checklist under impact-review.md. Read `project-baseline.md` for quality candidate/selection semantics, then select concrete quality-gates.json commands under existing project rules. Run:
 
 ```text

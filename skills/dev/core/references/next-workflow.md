@@ -22,6 +22,7 @@ Use the user's meaning and current records, not isolated keywords:
 | Expected behavior is unclear, alternatives need a product choice, or existing/new behavior may conflict | `clarify` |
 | Confirmed correction/addition changes requirement meaning | `revise`; a newer message alone is not approval |
 | Requirements are eligible and the user asks to implement or continue | `develop`; after the final task is done, continue through ordinary Verify and eligible Deliver without another prompt |
+| A task's behavior is owned by external configuration and Scope finds no local code change for it | `external-configuration.md`: announce zero local code, prepare the exact handoff, then verify actual application; do not dispatch Build for this task |
 | User asks to validate/accept the implementation | `check`; continue to Deliver when all evidence supports closure, unless the request is explicitly check-only or read-only |
 | Feature is already `complete` and the question is whether a later merge affects that accepted delivery | `post-merge-review.md`: inventory the exact diff, investigate each changed path and report historical delivery versus merged-revision scope separately; do not reopen or run full check merely because HEAD moved |
 | User explicitly requests delivery/closure | Deliver under `verification-workflow.md`: save the feature-local report, wait for a separate full read to return, then compare evidence before a separate complete mutation; continue Verify first if applicable evidence is not current |
