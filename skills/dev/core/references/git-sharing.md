@@ -23,7 +23,7 @@ For approved source sharing, append an exact exception after the managed block, 
 
 ## Fresh clone / another machine
 
-Archive marks local lifecycle only. Commit reviewed shared records with their implementation branch, then push when authorized. The archive helper reports candidate files' Git disposition; a clean scoped status is not proof of remote upload. Source artifacts, logs and ignored local state remain under separate sharing decisions. Before switching branches handle uncommitted changes deliberately; untracked files are not isolated by branch.
+Archive marks local lifecycle only. During Build, `task-commit.md` governs a scoped local commit for each completed separable task; final Verify/Deliver records may need a later records-only commit. Commit reviewed shared records with their implementation branch, then push when authorized. The archive helper reports candidate files' Git disposition; a clean scoped status is not proof of remote upload. Source artifacts, logs and ignored local state remain under separate sharing decisions. Before switching branches handle uncommitted changes deliberately; untracked files are not isolated by branch.
 
 1. Read existing feature records and baseline notes; never initialize over them or replace reviewed notes with placeholders.
 2. Run setup and `project.py verify <PROJECT>`. A missing ignored fingerprint means local validation is needed, not that shared analysis disappeared.

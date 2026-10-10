@@ -34,4 +34,6 @@ An explicit `check --independent` or request for independent review takes the re
 
 After ordinary Scope/develop prerequisites, use `build-strategy.md` to choose serial or an eligible pair automatically. --serial/no-subagents forces serial; uncertainty or insufficient benefit favors serial. An eligible pair loads `parallel-build.md` and returns an external integration candidate, not a primary feature completion.
 
+After a serial task is implemented or a parallel candidate is adopted into the primary checkout, use `task-commit.md` at each completed task boundary. Focused task checks and an exact staged diff support that local commit; the feature-wide Verify/check/audit and remaining manual acceptance happen separately. Do not hold independent finished tasks for a single end-of-feature commit, and do not call a task commit a delivery verdict.
+
 Parallel execution does not skip the develop Scope steps above. Before prepare, read `impact-review.md`, `task-semantic-review.md` and `historical-regression.md`, reuse current evidence or complete the authorized existing review flows. The pilot requires both review records even for legacy features; if writing them is outside this request, stop with Scope blocked, without worktrees or workers.

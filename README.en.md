@@ -8,7 +8,7 @@
 
 FeatraceDev helps coding agents understand requirements, investigate impact, implement changes, repair defects, and verify delivery in existing codebases. It connects original sources, confirmed requirements, tasks, historical fixes, and test evidence so future changes can build on recorded facts and completion claims have a clear verification scope.
 
-Works with Claude Code and Codex. Includes a generic workflow and an Android adapter. Current source version: **0.5.45**. Check the installed version separately on each machine.
+Works with Claude Code and Codex. Includes a generic workflow and an Android adapter. Current source version: **0.6.0**. Check the installed version separately on each machine.
 
 > This is a developer-assisted delivery tool. It surfaces missing decisions and evidence, but cannot guarantee complete PRD understanding, discover every dependency, or replace device testing and subjective acceptance.
 
@@ -19,6 +19,8 @@ Works with Claude Code and Codex. Includes a generic workflow and an Android ada
 - **Delivery**: work toward results that can be accepted and continued by the next developer or agent.
 
 FeatraceDev is the brand name, with Dev referring to development. Feature · Trace · Delivery expresses the product principles: features are the starting point, traceability provides assurance, and delivery is the outcome.
+
+During development, the router makes a local Git commit for each independently completed task after its relevant checks, with a message explaining the outcome, reason, and checks. Final feature verification remains separate; a task commit does not mark the feature complete or push it remotely.
 
 ## Install
 

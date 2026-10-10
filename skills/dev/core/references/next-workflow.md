@@ -40,3 +40,5 @@ Do not use `next` to bypass restore, PRD review, impact, module, verification or
 When the user explicitly asks for independent review, route to Verify using `independent-verify.md`. It is an opt-in read-only pilot. Do not invoke it automatically on plain next/check or a progress question, and do not silently replace fresh-context review with the current Agent.
 
 When next reaches an authorized eligible develop step, load `build-strategy.md` and choose serial or two workers from current Scope evidence and expected benefit. The user need not type --parallel. Task count or “continue” alone does not justify concurrency; --serial/no-subagents is respected. Only an eligible pair loads `parallel-build.md`; status-only and planning-only requests never dispatch.
+
+At each completed Build task boundary, the router loads `task-commit.md` and makes a scoped local commit after focused checks, unless the request or project policy prohibits committing or the task cannot be isolated safely. Do not wait for every task or final feature acceptance merely to save a completed slice. A local commit is not a request to push and does not imply `complete`.
