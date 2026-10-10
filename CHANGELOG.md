@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.8.0 — 2026-10-10
+
+- Add a lightweight `change` entry for a new product work item that modifies existing functionality, and route a standalone defect without an owning feature through the same entry. The user supplies a product ID and short original description; no separately prepared PRD or module label is required.
+- Preserve the original report in the ordinary feature source, create the existing draft records, and register standalone defects as `reported/unclassified` without inventing an expected outcome. Continue through the existing semantic, scope, impact, historical-regression, build/repair and verification rules; an unrelated selected feature is not silently reused.
+- This is a new user-facing creation path and therefore advances the middle version. It does not change old feature records, relax completion gates, or prove natural use in a real project; source tests and any later installation are reported separately.
+
 ## 0.7.3 — 2026-10-10
 
 - Scope 逐任务区分本项目代码与外部配置实施方；对有据确认的零客户端代码任务，在 Build 前直接说明零代码，交付精确配置与参数，并以实际下发和最小端到端观察核对。

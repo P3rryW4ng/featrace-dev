@@ -17,15 +17,15 @@ On activation:
 3. State briefly that ordinary feature-delivery messages now default to `next`, and that bare command words are accepted in this conversation.
 4. Do not scan, create records, or start development merely because the mode was activated.
 
-If `/dev` includes free text that is not a recognized command, activate the mode and treat the text as `next` in the same turn when a feature is selected. If it clearly describes a new feature, use the readiness check in `feature-selection.md`: route to `prd` when its ID and accessible PRD source are present, or ask only for the missing prerequisites. Do not silently reinterpret an ordinary continuation as a new feature.
+If `/dev` includes free text that is not a recognized command, activate the mode and treat the text as `next` in the same turn when a feature is selected. If it clearly describes a new PRD-backed feature, use the readiness check in `feature-selection.md`; if it describes an independent change to existing functionality or a standalone defect, use `lightweight-change.md` and ask only for a missing product ID or description. Do not silently reinterpret an ordinary continuation as a new work item or attach an unrelated report to the selected feature.
 
 ## While active
 
 For later user messages in the same conversation and project:
 
 - Treat ordinary feature-delivery descriptions as `next <description>` and follow `next-workflow.md`.
-- Accept a bare recognized action at the start of the message (`prd`, `next`, `status`, `check`, `fix`, `clarify`, `revise`, `develop`, `api`, `figma`, `list`, `use`, `classify`, `archive`, `restore`, `scan`, `help`) as the corresponding dev action without requiring the `/dev` prefix.
-- For a clearly new feature, including a bare incomplete `prd` request, use `feature-selection.md` before requiring an existing selection. A missing ID or PRD source produces the short readiness line and a focused question, not an inferred ID or a premature project write.
+- Accept a bare recognized action at the start of the message (`prd`, `change`, `next`, `status`, `check`, `fix`, `clarify`, `revise`, `develop`, `api`, `figma`, `list`, `use`, `classify`, `archive`, `restore`, `scan`, `help`) as the corresponding dev action without requiring the `/dev` prefix.
+- For a clearly new PRD-backed feature, including a bare incomplete `prd` request, use `feature-selection.md` before requiring an existing selection. A missing ID or PRD source produces the short readiness line and a focused question, not an inferred ID or a premature project write. For a distinct lightweight change or standalone defect, the creation prerequisites are instead the product ID and original description under `lightweight-change.md`.
 - Keep command parsing narrow. A normal sentence that merely contains one of those words remains natural-language input for `next`.
 - Do not hijack unrelated conversation. Answer general questions normally unless they affect the selected delivery work.
 - Continue to identify and validate project/feature identity before mutations under `feature-selection.md`; report the target in the action's own context, not in every mode indicator. Session mode never supplies a missing feature selection and never weakens an underlying gate.

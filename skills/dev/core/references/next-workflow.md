@@ -4,7 +4,7 @@
 
 ## Resolve context first
 
-First distinguish a clear request to create a new feature from continuation of an existing one. A new-feature request uses the readiness check in `feature-selection.md` even when an older feature is selected: missing product ID or accessible PRD source is asked once before writes; with both present, route to the existing `prd` flow. Do not ask the user to choose an existing feature or provide an internal module name merely because no current selection exists.
+First distinguish continuation from a distinct work item, even when an older feature is selected. A new PRD-backed feature uses the readiness check in `feature-selection.md`; a short request to change existing behavior or report a standalone defect uses `lightweight-change.md` and asks only for a missing product ID or description. Neither route requires the user to identify an internal module. Do not require a formal PRD file for a short change, and do not attach an unrelated issue to the selected feature just to avoid creation.
 
 For existing-feature work, resolve the selected feature using `feature-selection.md`, reread its records and run the read-only status summary. `--feature ID` overrides only this invocation. If no reliable selection or explicit ID exists, list available features and ask the user to choose; never guess from recency or a sole directory. New-feature creation still uses the underlying `/dev prd ... --feature ID` action, even when the user describes it in ordinary language.
 
@@ -16,9 +16,10 @@ Use the user's meaning and current records, not isolated keywords:
 
 | Input/state | Route |
 |---|---|
+| New change to existing functionality, or observed defect without an owning feature record | `lightweight-change.md`: preserve the original short report under a new product ID, investigate ownership/expected behavior, then use the ordinary feature stages |
 | New design reference, replacement image, icon, screenshot of expected appearance, Figma node/export | `figma`; register accessible local evidence as `design`, reconcile affected requirements/tasks, then continue an explicitly requested development step |
 | API contract, schema, response example or backend field evidence | `api`; register as `api` and reconcile before code |
-| Observed behavior differs from expected behavior | `fix`; keep the observation even when cause is unknown |
+| Observed behavior differs from a selected feature's expected behavior | `fix`; keep the observation even when cause is unknown |
 | Expected behavior is unclear, alternatives need a product choice, or existing/new behavior may conflict | `clarify` |
 | Confirmed correction/addition changes requirement meaning | `revise`; a newer message alone is not approval |
 | Requirements are eligible and the user asks to implement or continue | `develop`; after the final task is done, continue through ordinary Verify and eligible Deliver without another prompt |

@@ -1,6 +1,6 @@
 ---
 name: dev
-description: Deliver PRD-driven software features with persistent specifications, source reconciliation, tasks, and validation. Use for dev session mode, help/next/revise/archive/restore/classify/list/use/scan/prd/api/figma/develop/clarify/fix/check/status requests, or continued feature-delivery messages after mode activation; not isolated coding questions. Android has a bundled adapter; other stacks use evidence-based generic configuration.
+description: Deliver PRD-driven features and short change or defect requests in existing codebases with persistent specifications, source reconciliation, tasks, and validation. Use for dev session mode, help/next/change/revise/archive/restore/classify/list/use/scan/prd/api/figma/develop/clarify/fix/check/status requests, or continued delivery messages after mode activation; not isolated coding questions. Android has a bundled adapter; other stacks use evidence-based generic configuration.
 ---
 
 # FeatraceDev
@@ -11,7 +11,8 @@ Use the user's project root or the established workspace. Paths below are relati
 
 - `help [command]`: read `core/references/command-help.md` and answer without project setup, selection, execution or writes. Return after help.
 - Empty `/dev`, `dev off`, and continued messages in delivery mode: read `core/references/session-mode.md`. While active, start every user-facing reply with its visible mode/project line, without repeating the selected feature. Repeating empty `/dev` only refreshes that indicator; activation alone starts no work. Use `status` to show the selected feature on request. Mode lasts only for this conversation and project.
-- A clear request to start a new feature, including an incomplete `prd` command: read `core/references/feature-selection.md` and use its short readiness check. Ask only for a missing product ID or accessible PRD source before initialization. After a successful draft, use `module-context.md` to investigate and propose the module scope; do not demand that the user guess code module names up front.
+- A clear request to start a new PRD-backed feature, including an incomplete `prd` command: read `core/references/feature-selection.md` and use its short readiness check. Ask only for a missing product ID or accessible PRD source before initialization. After a successful draft, use `module-context.md` to investigate and propose the module scope; do not demand that the user guess code module names up front.
+- A new, independent modification of existing behavior or a standalone defect with no owning feature record uses `change [--feature ID] DESCRIPTION` or ordinary language. Read `core/references/lightweight-change.md` and `feature-selection.md`: require the product work-item ID and the user's nonempty original description, but not a formal PRD file or user-supplied module name. An unrelated selected feature is never the implicit owner. Preserve the original report, create an ordinary draft feature, and apply the normal Requirement → Scope → Build/Repair → Verify route. If it is a defect, record it as reported without inventing expected behavior or root cause. Existing-feature fixes continue through `fix-workflow.md`.
 - `list`, `use`, new-feature creation and feature-scoped actions: read `core/references/feature-selection.md`. Confirm the project, feature ID and title before mutation. Never guess the selected feature in a new or uncertain context.
 - Feature mutation or `next`: read `core/references/orchestration.md` and `core/references/workflow.md`. Route through Requirement, Scope, Build, Verify, Repair or Deliver. Load only the chosen stage's references and direct prerequisites. Save handoff facts in existing canonical records; no second state machine or generic handoff file. The router normally uses one Agent; eligible Build selects serial or a two-worker pair using `core/references/build-strategy.md`. A pair's Worker receives a current task-scoped view after preflight, then expands to frozen original evidence when needed. When an implemented task is ready, load `core/references/task-commit.md`: the router commits that task locally with focused checks, without treating the commit as feature acceptance. For an explicit independent review request or `check --independent`, load `core/references/independent-verify.md` and dispatch the bundled Verify specialist in a fresh context when the host supports it.
 - During Scope, classify each task by actual implementation owner and artifact before choosing Build. For an externally owned configuration change with no change to this project's code, load `core/references/external-configuration.md`; say plainly that local code changes are zero, hand off exact configuration and verify its application. Do not send that task to Build or repeat unrelated client checks simply because it shares a feature with code tasks.
@@ -22,16 +23,17 @@ Use the user's project root or the established workspace. Paths below are relati
 |---|---|
 | `scan [--module LABEL ...]` | Scope; `project-baseline.md`, `module-context.md` |
 | `prd FILE --feature ID [--source FILE ...]` | Requirement, then Scope; `prd-analysis.md` |
+| `change [--feature ID] DESCRIPTION` | New lightweight work item for an existing-function change or standalone defect; `lightweight-change.md` |
 | `api FILE-OR-LINK`, `figma FILE-OR-LINK` | Requirement evidence; `prd-analysis.md`; for Figma page/state updates also `design-index.md` |
 | `clarify [ID] QUESTION`, `revise [ID] CHANGE` | Requirement; `clarify-workflow.md` or `revision-workflow.md` |
 | `classify [ID]` | Scope; `module-context.md`; legacy labels also use `feature-archive.md` |
 | `develop [ID]` | Scope → Build; `impact-review.md`, `task-semantic-review.md`, `historical-regression.md`, project profile; `build-strategy.md` chooses serial or two workers after Scope; `--serial` forces serial |
-| `fix [ID] PROBLEM` | Repair → Verify; `fix-workflow.md` |
+| `fix [ID] PROBLEM` | Existing owner: Repair → Verify under `fix-workflow.md`; no owning record: new lightweight defect under `lightweight-change.md` |
 | `check [ID]` | Verify → eligible Deliver; `verification-workflow.md`; explicit `--independent` uses the read-only pilot in `independent-verify.md` |
 | `archive [ID]`, `restore [ID]` | History; `feature-archive.md` (archive requires delivery evidence; restore does not rerun check) |
 | `list`, `use ID`, `status [ID]` | Selection/read-only; `feature-selection.md` |
 
-Read `core/references/requirement-schema.md` when editing feature records, `core/references/git-sharing.md` before first project setup or sharing, and the Android or Generic profile for the actual target module. An inaccessible API/Figma link requires an authorized connector or supplied export; a URL alone is not source content. A new feature requires the product/work-item ID supplied by the user; do not invent one.
+Read `core/references/requirement-schema.md` when editing feature records, `core/references/git-sharing.md` before first project setup or sharing, and the Android or Generic profile for the actual target module. An inaccessible API/Figma link requires an authorized connector or supplied export; a URL alone is not source content. A new feature or lightweight change requires the product/work-item ID supplied by the user; do not invent one.
 
 ## Boundaries that apply across stages
 

@@ -1,6 +1,6 @@
 # PRD analysis contract (intake v1; multi-source extension)
 
-Read for `dev prd`, PRD revisions, and when API/Figma reconciliation changes requirement meaning. This standardizes the analysis process, not the author's document format. Never demand that the product author rewrite a PRD to our template.
+Read for `dev prd`, lightweight change intake, PRD revisions, and when API/Figma reconciliation changes requirement meaning. This standardizes the analysis process, not the author's document format. Never demand that the product author rewrite a PRD to our template. A short user report is an acceptable primary document for `lightweight-change.md`; preserve its exact wording and provenance, but do not turn an observed symptom into an approved expected rule.
 
 For a new feature, after `feature-selection.md` confirms the user-supplied ID and that the target does not already exist, initialize with `bash core/scripts/init-feature.sh <ID> <PRIMARY-DOCUMENT-OR-HTML> <PROJECT> [--source <ADDITIONAL-FILE> ...]`. A single document or HTML file is sufficient. The initializer preserves source bytes and extension; a failed or interrupted import must be resumed without overwriting it. Read project `.agent-workflow/config.yaml` when present; otherwise copy `core/assets/config.yaml` as Agent guidance, not an executable policy engine. Use readers for Word/PDF before decomposing them and record any unreadable portions.
 
