@@ -27,6 +27,7 @@ task-review.md           Generated task review view; never edit as authority
 
 - `id`: stable identifier such as `R-012`.
 - `status`: `inferred`, `confirmed`, `blocked`, or `deprecated`.
+- `inferred` records an Agent-derived reading or preservation constraint, not product approval. A feature can still be `complete` with an active inferred requirement when every acceptance criterion has a reviewable source or existing-behavior basis, its applicable checks have current evidence, and no material product choice remains unresolved. Attribute mixed criteria individually in the delivery report; a confirmed decision for one criterion does not silently confirm the whole requirement. Keep the label inferred instead of promoting it merely to pass a gate. If an inferred criterion would establish a new product rule or change user-visible behavior without authority, use `clarify`/`revise` and keep delivery provisional until resolved. Prefer `impact` for pure old-behavior protection when drafting new work, but do not rewrite a completed requirement solely for tidier classification or invalidate sound evidence without a real semantic change.
 - `source_item_ids`: stable references to mapped items in `spec/prd-intake.json`; required for active requirements before development.
 - `sources`: array of `{type, ref}` objects naming a precise PRD heading, API operation/field, Figma node, or decision ID.
 - `statement`: one testable behavior.
