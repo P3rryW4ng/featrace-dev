@@ -57,3 +57,15 @@ Write only the external result requested by the router; no business code, projec
 A finding is `{"claim":"specific mismatch or risk","evidence":[{"path":"relative/file","locator":"line or JSON pointer","observation":"what this source actually shows"}]}`. `status` is reviewed, blocked or failed, never passed/complete. Reviewed means the read-only investigation finished, even if it found defects. Blocked/failed must explain gaps. Include commands not executed and their purpose in checks_not_run; do not manufacture test results. Add measured elapsed time/token usage if available, otherwise say unmeasured in the summary.
 
 Recheck with the helper and `--result <OUTPUT>` before returning. If inputs changed, retain the result but report stale; do not replace its digest. On timeout, cancellation, inaccessible tools or incomplete output, return the available evidence as blocked/failed when possible. A second reviewer never updates feature complete, fixes verified, decisions, or approval records.
+
+## Message to the router
+
+The result JSON is the complete review artifact; its findings and cited evidence must not be shortened there. After the final helper check, send a compact handoff in the user's language with these labels, in this order:
+
+- **Status:** feature ID, actual `reviewed`, `blocked` or `failed` status, and whether the return check was current. `reviewed` never means passed.
+- **Outcome:** count of evidence-backed findings and unresolved questions. This is the reviewer's report, not the router's confirmed/unsupported/needs-decision classification; do not call a suspicion confirmed.
+- **Evidence:** the most consequential finding with its file/locator, or `no findings`; point to the result path for all findings.
+- **Gaps:** missing source, unrun check or evidence limit that affects the conclusion; state `none found` only if true within this review scope.
+- **Next:** exact result path and the router's reconciliation or recapture action. Do not assign final delivery status.
+
+Use one line per label, no table or nested list; add lines only when distinct material blockers or findings require them. Do not paste the whole JSON, file-read inventory, chronological investigation or repeated background into this message. The router reads every finding and gap from the JSON, regardless of what fits in the short handoff. Never omit a blocker or stale-input status for brevity. Measured time/token use can be one additional line when exposed, otherwise omit it.

@@ -51,3 +51,15 @@ It checks current authority and file ownership, exports the actual code patch, r
 If you cannot implement, return once with `--status blocked` or `--status failed` and the concrete reason. Preserve any edits. If the helper itself cannot run, tell the router that the return is missing/unavailable; do not manufacture it. Missing/failed results prevent integration. Only the router combines candidates, tests their interaction and serially updates canonical task/traceability/verification records through the existing workflow.
 
 Read-only/shared-write boundaries are host instructions unless the host enforces them. Git worktrees isolate code directories but share repository metadata. Scope and hash checks detect final deviations, not arbitrary transient or external side effects. Report actual elapsed time and token use when exposed by the host; do not claim that concurrency automatically made delivery faster.
+
+## Message to the router
+
+The helper's return JSON, exact patch and check logs are the evidence. After inspecting its output, send the router a compact handoff in the user's language with these labels, in this order:
+
+- **Status:** task ID and actual `ready`, `blocked` or `failed` return; use `unavailable` if the helper produced no valid return.
+- **Outcome:** one sentence naming the behavior changed, or the concrete reason work stopped.
+- **Checks:** selected commands actually run and their pass/fail state; explicitly say `not run` when blocked before them.
+- **Risk:** remaining dependency, behavior or evidence gap; say `none found` only within the assigned task scope.
+- **Next:** exact return directory and the router action needed. Never tell the user a candidate is delivered or complete.
+
+Use one line per label, no table or nested list; add lines only when distinct material blockers require them. Do not paste the full diff, JSON, command logs, chronological tool narration or repeated project background into this message. The router must read those artifacts directly and must not treat this short text as proof. Do not compress away a failure, an unreviewed hunk, or a changed interface; point to its exact evidence location and state the blocker plainly. Measured time/token use can be one additional line when exposed, otherwise omit it.
