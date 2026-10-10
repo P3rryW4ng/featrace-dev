@@ -8,7 +8,7 @@ This is display guidance, not a request to execute examples. `/dev help` shows t
 
 | 命令 | 功能 | 示例 |
 |---|---|---|
-| mode | 进入或查看当前会话开发模式；回复首行显示项目和选中需求 | `/dev` |
+| mode | 进入或查看当前会话开发模式；回复首行仅显示模式和项目 | `/dev` |
 | off | 退出当前会话的开发模式 | `dev off` |
 | next | 读取当前进度，用自然语言自动选择并执行下一条现有流程 | `/dev next 我拿到了新的设计图片，路径是 ./assets/` |
 
@@ -51,7 +51,7 @@ This is display guidance, not a request to execute examples. `/dev help` shows t
 
 ## Detail notes (show only the requested command)
 
-- mode/off: empty `/dev` activates current-session delivery mode; repeating it only displays the current project/selection and does not start work. Every reply while active starts with `FeatraceDev ON` and the current project/selected ID; `dev off` or `/dev off` replies `FeatraceDev OFF` and exits. This is an Agent reply convention, not a host status light; it does not persist across sessions/projects or write a mode file. Claude Code `/status` remains built in; use plain `status` or `/dev status` for feature status.
+- mode/off: empty `/dev` activates current-session delivery mode; repeating it only displays `FeatraceDev ON` and the current project, without listing or showing the selected feature, and does not start work. Every reply while active starts with that compact mode/project line; `dev off` or `/dev off` replies `FeatraceDev OFF` and exits. This is an Agent reply convention, not a host status light; it does not persist across sessions/projects or write a mode file. Claude Code `/status` remains built in; use plain `status` or `/dev status` to see the selected feature and its progress.
 - help: optional command name; no arguments shows overview. It does not run the described action.
 - next: optional natural-language description and optional `--feature ID`; existing-feature continuation requires a selected or explicit feature. A clear new-feature request first shows the readiness summary from `feature-selection.md`, asks only for a missing product ID or accessible PRD source, then invokes the existing prd route when ready. It reads status for existing work, announces and executes the applicable route. Questions about progress/problems stay read-only unless fresh verification is explicitly requested; plain continuation may execute one unambiguous authorized step. Images are classified by role: expected/replacement visuals use figma, failure screenshots use fix. Ambiguous product authority gets one focused clarification.
 - scan: first project use or requested refresh. Plain scan refreshes project background; Android projects also receive static Gradle module/dependency candidates with evidence and parsing gaps. Candidates stay pending until reviewed and never update the formal catalog automatically. Optional repeated --module labels select scoped dossiers plus declared dependencies/callers. Verify reports changed HEAD/manifest/evidence/worktree paths so the Agent can choose scope instead of treating every commit as a full semantic rescan. Unknown modules require catalog investigation. No exhaustive understanding guarantee; existing current notes can be reused.

@@ -4,16 +4,16 @@ Invoking `/dev` with no arguments activates delivery mode for the current Claude
 
 ## Visible mode indicator
 
-While this mode is active, start **every user-facing reply** (including read-only answers, progress updates, and questions) with one compact line: `FeatraceDev ON · 项目：<project> · 需求：<selected ID or 未选择>`. Localize the labels to the user's language. Use the actual current project and this conversation's selection; an explicit `--feature ID` for one command does not silently replace the selected ID. Never infer a selection from the only feature on disk. If the project or selection cannot be established reliably, say `待确认` instead of guessing, and resolve it before any feature mutation. This line is an Agent reply convention, not a persistent host status indicator or proof that the Skill remains loaded after a context reset.
+While this mode is active, start **every user-facing reply** (including read-only answers, progress updates, and questions) with one compact line: `FeatraceDev ON · 项目：<project>`. Localize the label to the user's language. Do not put the selected feature ID, title or `未选择` in this recurring indicator. If the project cannot be established reliably, say `待确认` instead of guessing. Keep the selected feature internally for routing; an explicit `--feature ID` for one command does not silently replace it, and never infer a selection from the only feature on disk. Before feature mutation, still identify and validate the actual target under `feature-selection.md`. This line is an Agent reply convention, not a persistent host status indicator or proof that the Skill remains loaded after a context reset.
 
-An empty `/dev` is safe to repeat as a mode check: if already active for the same project, keep the existing reliable selection, display the indicator and current selection, and return without running `next`, scanning, creating records, or changing files. If activation state is uncertain, treat the explicit `/dev` as a fresh activation for the current project; do not claim that an earlier mode survived. No separate status command or mode file is needed.
+An empty `/dev` is safe to repeat as a mode check: if already active for the same project, keep any reliable selection internally, display only the mode/project indicator and brief command guidance, and return without running `next`, scanning, listing features, creating records, or changing files. Do not summarize whether a feature is selected in this mode-check reply. If activation state is uncertain, treat the explicit `/dev` as a fresh activation for the current project; do not claim that an earlier mode survived. To inspect the selected feature and its progress, use plain `status` or `/dev status`; `list` shows available features. No separate mode file is needed.
 
 ## Activation
 
 On activation:
 
 1. Identify and display the current project.
-2. Preserve an already reliable feature selection. If none exists, do not guess: show the active feature list or explain that the user can enter `use ID` or create one with `prd <path> --feature ID`.
+2. Preserve an already reliable feature selection internally. Do not list features, display the selected feature, or announce that none is selected merely because mode was activated. If none exists, do not guess; `status`/`list` can show available features when requested, and `use ID` or `prd <path> --feature ID` can establish a selection.
 3. State briefly that ordinary feature-delivery messages now default to `next`, and that bare command words are accepted in this conversation.
 4. Do not scan, create records, or start development merely because the mode was activated.
 
@@ -28,7 +28,7 @@ For later user messages in the same conversation and project:
 - For a clearly new feature, including a bare incomplete `prd` request, use `feature-selection.md` before requiring an existing selection. A missing ID or PRD source produces the short readiness line and a focused question, not an inferred ID or a premature project write.
 - Keep command parsing narrow. A normal sentence that merely contains one of those words remains natural-language input for `next`.
 - Do not hijack unrelated conversation. Answer general questions normally unless they affect the selected delivery work.
-- Continue to display and validate project/feature identity before mutations. Session mode never supplies a missing feature selection and never weakens an underlying gate.
+- Continue to identify and validate project/feature identity before mutations under `feature-selection.md`; report the target in the action's own context, not in every mode indicator. Session mode never supplies a missing feature selection and never weakens an underlying gate.
 
 Claude Code already owns slash commands such as `/status`; do not instruct the user to replace them. In delivery mode, use plain `status` for feature status, or the explicit `/dev status` form.
 
