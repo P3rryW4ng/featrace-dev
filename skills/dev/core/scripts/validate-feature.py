@@ -6,7 +6,7 @@ import pathlib
 import subprocess
 import sys
 import re
-from prd_intake import validate_intake
+from prd_intake import validate_intake, validate_acceptance_provenance
 from design_index import validate_index
 from revisions import validate_revisions
 from impact import validate_impact
@@ -199,6 +199,8 @@ def main():
     impact_errors, impact_warnings = validate_impact(pathlib.Path(args.root).resolve(), feature_dir, req_doc, args.stage)
     errors.extend(impact_errors)
     warnings.extend(impact_warnings)
+    if not errors:
+        errors.extend(validate_acceptance_provenance(feature_dir, req_doc, decisions, args.stage))
     errors.extend(validate_verification(pathlib.Path(args.root).resolve(), feature_dir, req_doc, args.stage))
     errors.extend(validate_scope(pathlib.Path(args.root).resolve(), feature, args.stage))
     errors.extend(validate_modules(pathlib.Path(args.root).resolve(), feature_dir, req_doc, args.stage))

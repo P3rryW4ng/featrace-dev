@@ -242,6 +242,70 @@ def validate_intake(folder, req_doc, stage, require_review=True):
     return errors, warnings
 
 
+def validate_acceptance_provenance(folder, req_doc, decisions, stage):
+    """Require a reviewable basis for each new-workflow acceptance criterion.
+
+    Exact source links and referenced records are machine-checkable identities;
+    whether their meaning really supports the criterion still needs review.
+    """
+    version = req_doc.get('feature', {}).get('workflow_version', 0)
+    if not isinstance(version, int):
+        return ['feature.workflow_version must be an integer']
+    if stage not in {'develop', 'check'} or version < 5:
+        return []
+    try:
+        intake = json.loads((folder / 'spec/prd-intake.json').read_text())
+        impact = json.loads((folder / 'impact.json').read_text()) if (folder / 'impact.json').exists() else {}
+    except (OSError, ValueError) as exc:
+        return ['acceptance provenance unavailable: ' + str(exc)]
+    source_coverage = set()
+    for item in intake.get('items', []):
+        if not isinstance(item, dict) or item.get('disposition') != 'mapped':
+            continue
+        for aspect in item.get('aspects', []):
+            if not isinstance(aspect, dict) or aspect.get('review') != 'verified' or aspect.get('superseded_by'):
+                continue
+            field = aspect.get('field')
+            if isinstance(field, str) and re.fullmatch(r'acceptance_criteria/\d+', field):
+                source_coverage.add((aspect.get('requirement_id'), int(field.split('/')[1]), aspect.get('target_text')))
+    approved = {d.get('id') for d in decisions if isinstance(d, dict) and d.get('status') == 'approved'}
+    preserved = {b.get('id') for b in impact.get('behaviors', [])
+                 if isinstance(b, dict) and b.get('kind') == 'preserve'}
+    errors = []
+    for req in req_doc.get('requirements', []):
+        if not isinstance(req, dict) or req.get('status') == 'deprecated':
+            continue
+        rid = req.get('id')
+        criteria = req.get('acceptance_criteria', [])
+        bases = req.get('acceptance_basis', [])
+        if not isinstance(criteria, list) or not isinstance(bases, list):
+            errors.append(str(rid) + ': acceptance_basis must be an array')
+            continue
+        seen = set()
+        for basis in bases:
+            if not isinstance(basis, dict) or type(basis.get('index')) is not int:
+                errors.append(str(rid) + ': acceptance_basis needs an integer index')
+                continue
+            index = basis['index']
+            if index < 0 or index >= len(criteria) or index in seen:
+                errors.append(str(rid) + ': duplicate or out-of-range acceptance_basis index ' + str(index))
+                continue
+            seen.add(index)
+            kind, ref = basis.get('kind'), basis.get('ref')
+            if not text(basis.get('evidence')) or not text(ref):
+                errors.append(f'{rid} AC{index + 1}: acceptance_basis needs a reference and evidence')
+            elif kind == 'decision' and ref not in approved:
+                errors.append(f'{rid} AC{index + 1}: decision basis is not approved: {ref}')
+            elif kind == 'preserved_behavior' and ref not in preserved:
+                errors.append(f'{rid} AC{index + 1}: preserved behavior basis is not registered: {ref}')
+            elif kind not in {'decision', 'preserved_behavior'}:
+                errors.append(f'{rid} AC{index + 1}: invalid acceptance_basis kind')
+        for index, criterion in enumerate(criteria):
+            if (rid, index, criterion) not in source_coverage and index not in seen:
+                errors.append(f'{rid} AC{index + 1}: no reviewed source aspect or explicit decision/preserved-behavior basis')
+    return errors
+
+
 def render_intake(folder):
     path = folder / 'spec/prd-intake.json'
     if not path.exists():

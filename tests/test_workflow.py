@@ -6,6 +6,7 @@ import sys
 import tempfile
 import unittest
 from intake_helpers import attach_intake
+from prd_intake import review_digest, validate_acceptance_provenance
 
 REPO = Path(__file__).resolve().parents[1]
 CORE = REPO / 'skills/dev/core/scripts'
@@ -50,7 +51,7 @@ class WorkflowTests(unittest.TestCase):
         requirements = json.loads((self.folder / 'spec/requirements.json').read_text())
         self.assertTrue(requirements['feature']['history_regression_required'])
         self.assertTrue(requirements['feature']['task_review_required'])
-        self.assertEqual(requirements['feature']['workflow_version'], 4)
+        self.assertEqual(requirements['feature']['workflow_version'], 5)
         self.assertEqual(requirements['feature']['module_scope']['status'], 'pending')
         before = (self.folder / 'spec/requirements.json').read_bytes()
         self.run_script(CORE / 'init-feature.py', 'FEAT-001', self.prd, self.root, expected=1)
@@ -68,6 +69,85 @@ class WorkflowTests(unittest.TestCase):
         self.run_script(CORE / 'render-workspace.py', self.root, 'FEAT-001')
         self.assertIn('Uppercase', (self.folder / 'spec/spec.md').read_text())
         self.assertIn('R-1 → T-1 → UT-1', (self.folder / 'traceability.md').read_text())
+
+    def test_new_workflow_requires_each_acceptance_criterion_basis(self):
+        self.valid()
+        self.req['feature']['workflow_version'] = 5
+        self.req['feature']['module_context_required'] = False
+        self.req['feature']['modules'] = []
+        self.req['feature']['module_scope'] = {'status': 'not_applicable', 'note': 'No module catalog in fixture',
+                                               'capability': None, 'assignments': []}
+        self.record('spec/requirements.json', self.req)
+        output = self.validate(expected=1).stdout
+        self.assertIn('R-1 AC1: no reviewed source aspect', output)
+        intake = json.loads((self.folder / 'spec/prd-intake.json').read_text())
+        intake['items'][0]['aspects'].append({
+            'kind': 'behavior', 'text': 'abc becomes ABC', 'requirement_id': 'R-1',
+            'field': 'acceptance_criteria/0', 'target_text': 'abc becomes ABC', 'review': 'verified',
+        })
+        intake['review']['digest'] = review_digest(self.folder, intake, self.req)
+        self.record('spec/prd-intake.json', intake)
+        self.validate()
+        self.req['requirements'][0]['acceptance_criteria'][0] = 'abc becomes abc'
+        self.record('spec/requirements.json', self.req)
+        output = self.validate(expected=1).stdout
+        self.assertIn('coverage target missing or changed', output)
+
+    def test_decision_basis_needs_approved_reference(self):
+        self.valid()
+        self.req['feature']['workflow_version'] = 5
+        self.req['feature']['module_context_required'] = False
+        self.req['feature']['modules'] = []
+        self.req['feature']['module_scope'] = {'status': 'not_applicable', 'note': 'No module catalog in fixture',
+                                               'capability': None, 'assignments': []}
+        self.req['requirements'][0]['acceptance_basis'] = [
+            {'index': 0, 'kind': 'decision', 'ref': 'D-1', 'evidence': 'Product choice for this criterion'},
+        ]
+        self.record('spec/requirements.json', self.req)
+        intake = json.loads((self.folder / 'spec/prd-intake.json').read_text())
+        intake['review']['digest'] = review_digest(self.folder, intake, self.req)
+        self.record('spec/prd-intake.json', intake)
+        output = self.validate(expected=1).stdout
+        self.assertIn('decision basis is not approved', output)
+        self.record('decisions.json', {'feature_id': 'FEAT-001', 'decisions': [
+            {'id': 'D-1', 'status': 'approved', 'chosen': 'Keep uppercase behavior'},
+        ]})
+        self.validate()
+
+    def test_preserved_behavior_basis_needs_registered_impact(self):
+        self.valid()
+        self.req['feature']['workflow_version'] = 5
+        self.req['requirements'][0]['acceptance_basis'] = [
+            {'index': 0, 'kind': 'preserved_behavior', 'ref': 'B-1',
+             'evidence': 'Prior behavior recorded in impact review'},
+        ]
+        self.record('spec/requirements.json', self.req)
+        self.assertIn('preserved behavior basis is not registered',
+                      ' '.join(validate_acceptance_provenance(self.folder, self.req, [], 'check')))
+        self.record('impact.json', {'feature_id': 'FEAT-001', 'behaviors': [
+            {'id': 'B-1', 'kind': 'preserve', 'statement': 'Keep uppercase behavior'},
+        ]})
+        self.assertEqual(validate_acceptance_provenance(self.folder, self.req, [], 'check'), [])
+
+    def test_closure_route_is_read_only_and_waits_for_tasks(self):
+        self.valid()
+        self.record('tasks.json', {'feature_id': 'FEAT-001', 'tasks': [
+            {'id': 'T-1', 'title': 'Implement', 'status': 'in_progress', 'requirement_ids': ['R-1']},
+        ]})
+        before = (self.folder / 'tasks.json').read_bytes()
+        output = self.run_script(CORE / 'closure-route.py', self.root, 'FEAT-001').stdout
+        self.assertIn('CLOSURE_ROUTE_TASKS_PENDING', output)
+        self.assertEqual((self.folder / 'tasks.json').read_bytes(), before)
+        self.record('tasks.json', {'feature_id': 'FEAT-001', 'tasks': [
+            {'id': 'T-1', 'title': 'Implement', 'status': 'done', 'requirement_ids': ['R-1'],
+             'test_evidence': ['fixture check']},
+        ]})
+        output = self.run_script(CORE / 'closure-route.py', self.root, 'FEAT-001').stdout
+        self.assertIn('CLOSURE_ROUTE_VERIFY_REQUIRED', output)
+        self.req['feature']['status'] = 'complete'
+        self.record('spec/requirements.json', self.req)
+        output = self.run_script(CORE / 'closure-route.py', self.root, 'FEAT-001').stdout
+        self.assertIn('CLOSURE_ROUTE_COMPLETE', output)
 
     def test_design_index_gate_is_opt_in(self):
         self.valid()
@@ -103,6 +183,12 @@ class WorkflowTests(unittest.TestCase):
              'test_ids': ['UT-1']}]}))
         self.run_script(CORE / 'project.py', 'check', self.root)
         self.validate('check')
+        self.req['feature']['status'] = 'provisional'
+        self.record('spec/requirements.json', self.req)
+        route = self.run_script(CORE / 'closure-route.py', self.root, 'FEAT-001').stdout
+        self.assertIn('CLOSURE_ROUTE_DELIVER_ELIGIBLE', route)
+        self.req['feature']['status'] = 'complete'
+        self.record('spec/requirements.json', self.req)
         (self.root / 'convert.py').write_text('def convert(value): return value.lower()\n')
         subprocess.run(['git', '-C', str(self.root), 'add', 'convert.py'], check=True, capture_output=True)
         subprocess.run(['git', '-C', str(self.root), '-c', 'user.name=Fixture',

@@ -1,6 +1,12 @@
 # Changelog
 
-## 0.9.0 — 2026-10-12 (local source candidate; installed in Claude Code, not committed or pushed)
+## 0.10.0 — 2026-10-12
+
+- New workflow v5 checks that each acceptance criterion points to an exact reviewed source aspect or an explicit approved decision/preserved-behavior reference. It checks identity and freshness, not semantic truth; older records are not bulk migrated.
+- Add a read-only closure route signal after authorized blocker-clearing mutations. The Agent resumes Verify or eligible Deliver without relying only on the last Build task event, while read-only and explicit-stop requests remain unchanged.
+- Before completion, compare changed/high-risk criteria with their complete source meaning, actual observations, tested revision and a counterexample. After successful Deliver, make a safe feature-scoped local records commit; archive, push and PR remain separate.
+
+## 0.9.0 — 2026-10-12
 
 - Let an already applied revision append one test-coverage classification correction when an immutable proposal mistakenly lists a manual-only test among automatic `test_ids`. The original proposal and semantic baseline remain unchanged; automatic IDs still require passed checks, while manual IDs require named current passed acceptance rows on the current code commit. This addresses OGFR-7840's blocked v2 delivery without fabricating a new product revision or rerunning unrelated checks. The installed Skill subsequently registered OGFR-7840's v2 delivery; the business records remain uncommitted.
 - Bind selected quality gates and their execution report to a product feature ID. Feature verification rejects unbound or previously selected gates before execution; audit rejects a report from another selection. Existing nonempty `quality-gates.json` files need an explicit `selection_feature_id` and a fresh applicable quality run. Do not rewrite old reports to claim current coverage.

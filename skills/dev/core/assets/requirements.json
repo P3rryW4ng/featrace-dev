@@ -3,7 +3,7 @@
     "id": "FEATURE_ID",
     "title": "",
     "status": "drafted",
-    "workflow_version": 3,
+    "workflow_version": 5,
     "impact_required": true,
     "history_regression_required": true,
     "task_review_required": true,

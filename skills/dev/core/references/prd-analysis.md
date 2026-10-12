@@ -52,6 +52,8 @@ This command validates record structure and records a digest. It does not read o
 
 Run validate-feature.py --stage develop afterwards. Draft allows pending extraction with warnings; develop/check require complete inventory, resolved gaps, bidirectional coverage and a current attributed review. Current gates are feature-wide: do not claim unaffected-task automatic eligibility. Creating inventory from guessed material to satisfy a gate is prohibited.
 
+For new workflow v5 features, link each acceptance criterion to its exact source item with an aspect targeting `acceptance_criteria/<index>`. If the criterion instead preserves an established behavior or comes from an approved decision, use the narrowly referenced `acceptance_basis` described in `requirement-schema.md`. A statement-level source aspect alone does not establish every AC. Do not invent an aspect merely to clear the provenance check; missing authority is a clarification blocker. The reference check cannot tell whether a cited sentence actually supports the full expected behavior, so Verify still compares meaning and observed evidence.
+
 ## Record format
 
 New init registers supplied sources in spec/prd-intake.json and leaves units/items empty. Legacy intake without a sources array remains readable. Example (replace all content with actual evidence):

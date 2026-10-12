@@ -32,6 +32,7 @@ task-review.md           Generated task review view; never edit as authority
 - `sources`: array of `{type, ref}` objects naming a precise PRD heading, API operation/field, Figma node, or decision ID.
 - `statement`: one testable behavior.
 - `acceptance_criteria`: observable outcomes, including loading, empty, error, and permission states where relevant.
+- For new workflow v5 records, every active acceptance criterion needs an exact reviewed intake aspect targeting `acceptance_criteria/<zero-based-index>`, or an `acceptance_basis` entry on that requirement: `{index, kind, ref, evidence}`. `kind=decision` cites an approved decision ID; `kind=preserved_behavior` cites a registered `impact.json` preserve behavior ID. Use this only for a genuinely confirmed choice or old-behavior protection; it cannot turn an Agent inference into a new product rule. The validator checks identities and exact target text, while the Agent must compare their actual meanings before completion. Older workflow versions are not retroactively migrated.
 - `assumptions`: unresolved facts. Each must state what evidence would confirm it.
 - `tasks` and `tests`: stable IDs, never prose-only promises.
 
@@ -92,7 +93,7 @@ Only `feature-archive.py` changes archive metadata in normal use. Completion sta
 
 `feature.module_context_required: true` opts scoped work into the current module dossier check (0.5.4). `feature.modules` must then name registered catalog IDs. Workflow v3 adds `feature.module_scope`: `pending`, `confirmed`, or `not_applicable`. Confirmed scope requires `capability: {id, name}` and one or more assignments containing a registered `module_id`, `role` (`owner|host|provider|consumer|shared`), concrete `responsibility`, and nonempty `evidence_refs`; `feature.modules` mirrors assignment order. Not-applicable requires a specific note, empty modules and `module_context_required=false`. See [module-context.md](module-context.md); metadata does not change requirement meaning.
 
-New 0.5.15+ workspaces set `feature.workflow_version: 3`, a pending module scope, `feature.impact_required: true`, `feature.history_regression_required: true` and `feature.task_review_required: true`. Scope must be confirmed or specifically not applicable before develop/check. Workflow v2 keeps its catalog-dependent `module_context_required` choice; false needs `module_context_note`. Older records without these markers retain compatibility and are not bulk migrated.
+New workspaces set `feature.workflow_version: 5`, a pending module scope, `feature.impact_required: true`, `feature.history_regression_required: true` and `feature.task_review_required: true`. Scope must be confirmed or specifically not applicable before develop/check. Workflow v4 added the complete/report/audit check; v5 adds criterion provenance at develop/check. Workflow v2 keeps its catalog-dependent `module_context_required` choice; false needs `module_context_note`. Older records without these markers retain compatibility and are not bulk migrated.
 
 `feature.verification_required: true` is set when adopting the generated verification list (0.5.3). See [verification-workflow.md](verification-workflow.md) for verification.json fields and delivery gating. This metadata is not a semantic requirement revision.
 
