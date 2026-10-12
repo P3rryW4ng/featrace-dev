@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.10.1 — 2026-10-12
+
+- Ordinary Verify now separates reversible device preparation from application observations and product judgment. On a named test device, the Agent first uses available project tools for safe setup, confirms the effective system/app state, and restores the original setting afterward; only inaccessible or subjective steps are sent to the user.
+- Device setup or a saved screenshot alone cannot pass an acceptance row. Keep installed-build identity, actual screen evidence and the observer distinct. No new device driver, quality gate, command or record schema is added; older features remain compatible.
+
 ## 0.10.0 — 2026-10-12
 
 - New workflow v5 checks that each acceptance criterion points to an exact reviewed source aspect or an explicit approved decision/preserved-behavior reference. It checks identity and freshness, not semantic truth; older records are not bulk migrated.
