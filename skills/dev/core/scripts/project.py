@@ -167,8 +167,11 @@ def validate_gates(root, config):
     """Validate all selected commands before executing any; never interpret prose conditions."""
     if not isinstance(config, dict) or not isinstance(config.get('gates'), list):
         raise ValueError('quality-gates.json requires a gates array')
-    if set(config) - {'gates', 'notes', 'selection_reason', 'known_gaps'}:
+    if set(config) - {'gates', 'notes', 'selection_reason', 'known_gaps', 'selection_feature_id'}:
         raise ValueError('unsupported quality configuration field; keep candidates separately')
+    selected_for = config.get('selection_feature_id')
+    if selected_for is not None and (not isinstance(selected_for, str) or not selected_for.strip()):
+        raise ValueError('selection_feature_id must be a non-empty feature ID')
     prepared, names = [], set()
     for gate in config['gates']:
         if not isinstance(gate, dict):
@@ -200,6 +203,16 @@ def validate_gates(root, config):
             raise ValueError('invalid gate timeout')
         prepared.append((gate, cmd, cwd, timeout))
     return prepared
+
+
+def quality_selection(config):
+    """Bind executed commands to one feature without hashing explanatory prose."""
+    fields = ('name', 'command', 'cwd', 'timeout_seconds', 'test_ids')
+    selected = [{key: gate.get(key, '.' if key == 'cwd' else (600 if key == 'timeout_seconds' else []))
+                 for key in fields} for gate in config['gates']]
+    contract = {'feature_id': config.get('selection_feature_id'), 'gates': selected}
+    return {'feature_id': contract['feature_id'],
+            'digest': hashlib.sha256(json.dumps(contract, sort_keys=True, ensure_ascii=False).encode()).hexdigest()}
 
 
 def inventory(root, base):
@@ -431,7 +444,8 @@ def main():
     config = base / 'quality-gates.json'
     if not config.exists():
         print('QUALITY_UNAVAILABLE: no configuration'); return 2
-    prepared = validate_gates(root, json.loads(config.read_text()))
+    selected_config = json.loads(config.read_text())
+    prepared = validate_gates(root, selected_config)
     if args.action == 'validate-gates':
         print('QUALITY_CONFIG_VALID: %d selected gates; commands not executed' % len(prepared))
         if not prepared:
@@ -440,6 +454,8 @@ def main():
     if not prepared:
         print('QUALITY_UNAVAILABLE: no selected gates'); return 2
     if args.feature:
+        if selected_config.get('selection_feature_id') != args.feature:
+            raise ValueError('quality gate selection belongs to another feature or is unbound; select gates for ' + args.feature + ' before check')
         from revisions import binding
     before_baseline = binding(root, args.feature) if args.feature else None
     before_check = snapshot(root)
@@ -456,7 +472,9 @@ def main():
     after_baseline = binding(root, args.feature) if args.feature else None
     if after_check != before_check or after_baseline != before_baseline:
         print('PROJECT_CHANGED_DURING_CHECK: results do not certify the final project snapshot')
-    report = {'tested_at': datetime.now(timezone.utc).isoformat(), 'project_snapshot': before_check, 'results': results, 'feature_baseline': before_baseline}
+    report = {'tested_at': datetime.now(timezone.utc).isoformat(), 'project_snapshot': before_check,
+              'quality_selection': quality_selection(selected_config),
+              'results': results, 'feature_baseline': before_baseline}
     (base / 'quality-report.json').write_text(json.dumps(report, indent=2) + '\n')
     return 0 if after_check == before_check and after_baseline == before_baseline and all(x['status'] == 'passed' for x in results) else 1
 

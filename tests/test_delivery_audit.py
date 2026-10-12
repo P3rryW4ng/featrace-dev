@@ -33,7 +33,7 @@ class DeliveryAuditTests(unittest.TestCase):
                        check=True, capture_output=True)
 
     def gates(self, gates):
-        (self.base / 'quality-gates.json').write_text(json.dumps({'gates': gates}))
+        (self.base / 'quality-gates.json').write_text(json.dumps({'selection_feature_id': 'FEAT-001', 'gates': gates}))
 
     def script(self, name, *args, expected=0):
         proc = subprocess.run([sys.executable, '-B', str(SCRIPTS / name),
@@ -84,6 +84,22 @@ class DeliveryAuditTests(unittest.TestCase):
         self.gates([{'name': 'new-test', 'command': [sys.executable, '-c', 'print("new passed")'],
                      'test_ids': ['UT-1']}])
         self.script('project.py', 'check', self.root)
+        self.script('audit-delivery.py', self.root, 'FEAT-001')
+
+    def test_selection_is_bound_to_feature_and_executed_commands(self):
+        self.script('project.py', 'check', self.root)
+        path = self.base / 'quality-gates.json'
+        config = json.loads(path.read_text())
+        config['selection_feature_id'] = 'OTHER-001'
+        path.write_text(json.dumps(config))
+        self.assertIn('not bound to this feature', self.script('audit-delivery.py', self.root, 'FEAT-001', expected=1))
+        config['selection_feature_id'] = 'FEAT-001'
+        config['gates'][0]['command'] = [sys.executable, '-c', 'print("different")']
+        path.write_text(json.dumps(config))
+        self.assertIn('not bound to this feature', self.script('audit-delivery.py', self.root, 'FEAT-001', expected=1))
+        config['gates'][0]['command'] = [sys.executable, '-c', 'print("passed")']
+        config['selection_reason'] = 'Clarified prose only'
+        path.write_text(json.dumps(config))
         self.script('audit-delivery.py', self.root, 'FEAT-001')
 
     def test_unavailable_result_cannot_claim_selection(self):

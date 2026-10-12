@@ -137,6 +137,37 @@ def inspect(folder, doc):
                 or event.get('proposal_digest') != digest(records[event['id']]) or not nonempty(event.get('reason'))):
             raise ValueError("invalid cancelled revision")
         handled.add(event['id'])
+    corrections = b.get('coverage_corrections', [])
+    if not isinstance(corrections, list):
+        raise ValueError('invalid revision coverage corrections')
+    corrected = set()
+    for event in corrections:
+        if not isinstance(event, dict) or event.get('revision_id') in corrected:
+            raise ValueError('invalid or duplicate revision coverage correction')
+        rid = event.get('revision_id')
+        applied = next((x for x in b['applied'] if x['id'] == rid), None)
+        if applied is None or event.get('proposal_digest') != applied['proposal_digest']:
+            raise ValueError('coverage correction must reference an unchanged applied proposal')
+        if event.get('baseline_version') != applied['version'] or event.get('baseline_digest') != applied['result_digest']:
+            raise ValueError('coverage correction baseline differs')
+        automatic = event.get('automatic_test_ids')
+        manual = event.get('manual_coverage')
+        if not string_list(automatic) or not isinstance(manual, list) or not manual:
+            raise ValueError('coverage correction needs automatic and manual test coverage')
+        mids = [x.get('test_id') for x in manual if isinstance(x, dict)]
+        if len(mids) != len(manual) or not string_list(mids) or set(automatic) & set(mids):
+            raise ValueError('invalid manual test coverage')
+        if set(automatic) | set(mids) != set(records[rid]['test_ids']):
+            raise ValueError('coverage correction must partition original test IDs')
+        if any(not string_list(x.get('verification_sources')) or not x['verification_sources']
+               or not nonempty(x.get('evidence')) for x in manual):
+            raise ValueError('manual coverage needs verification sources and evidence')
+        if not nonempty(event.get('reason')) or not nonempty(event.get('at')):
+            raise ValueError('coverage correction reason and timestamp required')
+        body = {k: v for k, v in event.items() if k != 'correction_digest'}
+        if event.get('correction_digest') != digest(body):
+            raise ValueError('revision coverage correction modified')
+        corrected.add(rid)
     if version != b['version'] or digest(reconstructed) != b.get('digest') or digest(semantics(doc['requirements'])) != b['digest']:
         raise ValueError("baseline drift: use a reviewed revision instead of directly editing requirement meaning")
     for delivery in b['deliveries']:

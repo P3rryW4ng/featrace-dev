@@ -19,7 +19,18 @@ class VerificationTests(unittest.TestCase):
         sync(self.root, self.folder)
 
     def gates(self, command):
-        (self.base / 'quality-gates.json').write_text(json.dumps({'gates': [{'name': 'unit', 'command': command, 'test_ids': ['UT-1']}]}))
+        (self.base / 'quality-gates.json').write_text(json.dumps({'selection_feature_id': 'FEAT-001', 'gates': [{'name': 'unit', 'command': command, 'test_ids': ['UT-1']}]}))
+
+    def test_unbound_or_other_feature_gates_stop_before_execution(self):
+        config = json.loads((self.base / 'quality-gates.json').read_text())
+        for owner in (None, 'OTHER-001'):
+            config.pop('selection_feature_id', None)
+            if owner:
+                config['selection_feature_id'] = owner
+            (self.base / 'quality-gates.json').write_text(json.dumps(config))
+            self.run_script('verification.py', 'sync', self.root, 'FEAT-001', expected=1)
+            self.run_script('project.py', 'check', self.root, '--feature', 'FEAT-001', expected=2)
+            self.assertFalse((self.base / 'quality-report.json').exists())
 
     def plan(self):
         return load_plan(self.folder)
@@ -75,6 +86,30 @@ class VerificationTests(unittest.TestCase):
         self.write('verification.json', doc)
         stamp, _ = context(self.root, self.folder, self.plan())
         self.assertEqual(state(self.plan()['items'][0], stamp), 'stale')
+
+    def test_gate_selection_change_preserves_new_manual_evidence_only(self):
+        self.run_checks(); self.accept_manual()
+        original = self.plan()
+        config = json.loads((self.base / 'quality-gates.json').read_text())
+        config['selection_reason'] = 'Review updated for this feature; project code unchanged'
+        (self.base / 'quality-gates.json').write_text(json.dumps(config))
+        sync(self.root, self.folder)
+        visible = json.loads(self.run_script('verification.py', 'status', self.root, 'FEAT-001', expected=2))
+        manual = [r for r in visible['items'] if r['mode'] == 'manual']
+        self.assertEqual(len(manual), 3)
+        self.assertTrue(all(r['status'] == 'passed' for r in manual))
+        self.assertEqual(visible['items'][-1]['status'], 'stale')
+        self.assertEqual([r['history'] for r in original['items'] if r['mode'] == 'manual'],
+                         [r['history'] for r in self.plan()['items'] if r['mode'] == 'manual'])
+        config['gates'][0]['purpose'] = 'Run current unit assertions'
+        (self.base / 'quality-gates.json').write_text(json.dumps(config))
+        sync(self.root, self.folder)
+        visible = json.loads(self.run_script('verification.py', 'status', self.root, 'FEAT-001', expected=2))
+        self.assertTrue(all(r['status'] == 'passed' for r in visible['items'] if r['mode'] == 'manual'))
+        self.assertEqual(visible['items'][-1]['status'], 'not_run')
+        (self.root / 'convert.py').write_text('changed implementation')
+        visible = json.loads(self.run_script('verification.py', 'status', self.root, 'FEAT-001', expected=2))
+        self.assertTrue(all(r['status'] == 'stale' for r in visible['items'] if r['mode'] == 'manual'))
 
     def test_explicit_mapping_automates_only_reviewed_items(self):
         doc = self.plan()

@@ -59,7 +59,7 @@ def confirmations(folder, record):
 
 def main():
     p = argparse.ArgumentParser(description=__doc__)
-    p.add_argument('action', choices=('init', 'propose', 'apply', 'cancel', 'verify', 'status'))
+    p.add_argument('action', choices=('init', 'propose', 'apply', 'cancel', 'correct-coverage', 'verify', 'status'))
     p.add_argument('project', type=Path)
     p.add_argument('feature_id')
     p.add_argument('--input', type=Path)
@@ -159,6 +159,25 @@ def main():
             b['applied'].append({'id': record['id'], 'version': b['version'], 'proposal_digest': digest(record),
                                  'result_digest': b['digest'], 'decision_digest': digest(decisions), 'at': now()})
             doc['feature']['status'] = 'provisional'
+    elif args.action == 'correct-coverage':
+        if args.input is None or not args.revision:
+            raise ValueError('Coverage correction needs --revision and --input')
+        applied = next((x for x in b['applied'] if x['id'] == args.revision), None)
+        if applied is None or args.revision != b['applied'][-1]['id']:
+            raise ValueError('Correct only the latest applied revision')
+        if any(x.get('revision_id') == args.revision for x in b.get('coverage_corrections', [])):
+            raise ValueError('Revision already has a coverage correction; preserve its history')
+        data = json.loads(args.input.read_text())
+        if not isinstance(data, dict) or set(data) != {'reason', 'automatic_test_ids', 'manual_coverage'}:
+            raise ValueError('Coverage correction needs reason, automatic_test_ids and manual_coverage only')
+        event = dict(data, revision_id=args.revision, proposal_digest=applied['proposal_digest'],
+                     baseline_version=applied['version'], baseline_digest=applied['result_digest'], at=now())
+        event['correction_digest'] = digest(event)
+        trial = copy.deepcopy(doc)
+        trial['feature']['baseline'].setdefault('coverage_corrections', []).append(event)
+        inspect(folder, trial)
+        # This is an append-only classification of the proposal's coverage, not a new semantic baseline.
+        b.setdefault('coverage_corrections', []).append(event)
     elif args.action == 'verify':
         if pending: raise ValueError('Resolve pending revision before verifying delivery')
         if not args.code_revision.strip(): raise ValueError('Tested code revision required')
@@ -170,11 +189,26 @@ def main():
         run_check(root, args.feature_id, 'validate-feature.py', '--stage', 'check')
         run_check(root, args.feature_id, 'audit-delivery.py')
         quality = json.loads((root/'.agent-workflow/project-baseline/quality-report.json').read_text())
-        selected = {tid for item in quality['results'] for tid in item.get('test_ids', [])}
+        selected = {tid for item in quality['results'] if item.get('status') == 'passed'
+                    for tid in item.get('test_ids', [])}
         if b['applied']:
             latest = records[b['applied'][-1]['id']]
-            if any(tid not in selected for tid in latest['test_ids']):
+            correction = next((x for x in b.get('coverage_corrections', [])
+                               if x['revision_id'] == latest['id']), None)
+            automatic = correction['automatic_test_ids'] if correction else latest['test_ids']
+            if any(tid not in selected for tid in automatic):
                 raise ValueError('Revision test IDs were not selected by passed checks; include manual-only coverage in the report, not test_ids')
+            if correction:
+                from verification import load_plan, context, manual_evidence_stamp, state
+                plan = load_plan(folder)
+                stamp, head_now = context(root, folder, plan)
+                for item in correction['manual_coverage']:
+                    for source in item['verification_sources']:
+                        matches = [row for row in plan['items'] if row['source'] == source and row['mode'] == 'manual']
+                        if len(matches) != 1 or state(matches[0], stamp, manual_evidence_stamp(root, folder, matches[0])) != 'passed':
+                            raise ValueError('Manual revision coverage missing/current pass: ' + item['test_id'] + ' / ' + source)
+                        if matches[0]['history'][-1]['tested_revision'] != head_now:
+                            raise ValueError('Manual revision coverage is not bound to current code: ' + source)
         tasks = json.loads((folder/'tasks.json').read_text())['tasks']
         states = doc['feature'].get('source_status', {})
         if (not tasks or any(x.get('status') != 'done' for x in tasks)

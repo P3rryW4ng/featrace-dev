@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.9.0 — 2026-10-12 (local source candidate; installed in Claude Code, not committed or pushed)
+
+- Let an already applied revision append one test-coverage classification correction when an immutable proposal mistakenly lists a manual-only test among automatic `test_ids`. The original proposal and semantic baseline remain unchanged; automatic IDs still require passed checks, while manual IDs require named current passed acceptance rows on the current code commit. This addresses OGFR-7840's blocked v2 delivery without fabricating a new product revision or rerunning unrelated checks. The installed Skill subsequently registered OGFR-7840's v2 delivery; the business records remain uncommitted.
+- Bind selected quality gates and their execution report to a product feature ID. Feature verification rejects unbound or previously selected gates before execution; audit rejects a report from another selection. Existing nonempty `quality-gates.json` files need an explicit `selection_feature_id` and a fresh applicable quality run. Do not rewrite old reports to claim current coverage.
+- New manual verification results include an item-specific evidence digest. Changing gate commands or explanatory selection text no longer invalidates unchanged manual observations; automatic gates still require a current run. Existing manual results keep their original digest rules and history.
+- Clarify that device acceptance requires evidence tying the installed build to the repaired code. OGFR-7840 exposed a false completed claim on an older installed APK; its later business records reached complete after a separate evidence correction and registration. This release changes Skill checks and guidance, not that project's business code or acceptance results.
+- This changes the quality selection and verification result contracts, so the source candidate advances the middle version. Source tests do not constitute installed Agent or real-project validation.
+
 ## 0.8.0 — 2026-10-10
 
 - Add a lightweight `change` entry for a new product work item that modifies existing functionality, and route a standalone defect without an owning feature through the same entry. The user supplies a product ID and short original description; no separately prepared PRD or module label is required.

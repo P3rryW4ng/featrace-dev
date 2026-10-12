@@ -56,7 +56,7 @@ class RevisionTests(unittest.TestCase):
 
     def gates(self, ids=None, bind=True):
         base=self.root/'.agent-workflow/project-baseline';base.mkdir(exist_ok=True)
-        (base/'quality-gates.json').write_text(json.dumps({'gates':[{'name':'uppercase','command':[sys.executable,'-c','assert "ab c".upper() == "AB C"'],'test_ids':ids or ['UT-1']}]}))
+        (base/'quality-gates.json').write_text(json.dumps({'selection_feature_id':'FEAT-001','gates':[{'name':'uppercase','command':[sys.executable,'-c','assert "ab c".upper() == "AB C"'],'test_ids':ids or ['UT-1']}]}))
         self.run_script('project.py','check',self.root,*(['--feature','FEAT-001'] if bind else []))
 
     def test_init_preserves_original_meaning_and_no_fake_delivery(self):
@@ -164,6 +164,76 @@ class RevisionTests(unittest.TestCase):
         self.gates()
         self.cmd('verify','--code-revision','not-a-commit',expected=1)
 
+    def test_applied_manual_test_can_be_corrected_without_rewriting_proposal(self):
+        from impact import MECHANISMS, snapshot
+        from verification import sync, load_plan, context, record
+        proposal = self.proposal()
+        proposal['test_ids'] = ['UT-1', 'MANUAL-1']
+        self.propose(proposal)
+        (self.root/'proposal.json').unlink()
+        original = (self.folder/'revisions/CHG-001.json').read_bytes()
+        self.cmd('apply','--revision','CHG-001')
+        self.review()
+        correction = {'reason':'MANUAL-1 was entered as an automatic test by mistake; device observation is separate',
+                      'automatic_test_ids':['UT-1'],
+                      'manual_coverage':[{'test_id':'MANUAL-1',
+                                          'verification_sources':['requirement:R-1:1'],
+                                          'evidence':'Current device observation is recorded in the acceptance row and delivery report'}]}
+        input_path = self.root/'coverage.json'
+        input_path.write_text(json.dumps(correction))
+        self.cmd('correct-coverage','--revision','CHG-001','--input',input_path)
+        self.assertEqual((self.folder/'revisions/CHG-001.json').read_bytes(), original)
+        self.assertEqual(self.doc()['feature']['baseline']['version'], 2)
+        self.assertEqual(len(self.doc()['feature']['baseline']['coverage_corrections']), 1)
+        self.run_script('render-workspace.py',self.root,'FEAT-001')
+        self.assertIn('MANUAL-1',(self.folder/'revisions.md').read_text())
+        self.cmd('correct-coverage','--revision','CHG-001','--input',input_path,expected=1)
+        input_path.unlink()
+
+        impact = {'schema_version':1,'feature_id':'FEAT-001','base_revision':self.head,
+                  'allowed_paths':['README.md'],'inspected_paths':['README.md'],'excluded_changes':{},
+                  'mechanisms':{k:{'status':'reviewed','evidence':'README fixture inspected'} for k in MECHANISMS},
+                  'behaviors':[{'id':'B-1','kind':'change','statement':'Preserve uppercase output',
+                                'basis':'R-1','requirement_ids':['R-1']}]}
+        self.write('impact.json',impact)
+        self.gates()
+        sync(self.root,self.folder)
+        plan=load_plan(self.folder)
+        stamp, head=context(self.root,self.folder,plan)
+        for row in plan['items']:
+            if row['mode']=='manual':
+                record(self.root,self.folder,row['id'],'passed',stamp,head,'Observed uppercase output',
+                       'Current fixture observation')
+        impact['behaviors'][0]['verification']={'status':'passed','method':'fixture observation',
+                                                'evidence':'Observed uppercase output',
+                                                'digest':snapshot(self.root,impact)['digest']}
+        self.write('impact.json',impact)
+        self.run_script('verification.py','run',self.root,'FEAT-001')
+        plan=load_plan(self.folder)
+        target=next(x for x in plan['items'] if x['source']=='requirement:R-1:1')
+        target['history'][-1]['tested_revision']='other-commit'
+        self.write('verification.json',plan)
+        self.cmd('verify','--code-revision',self.head,expected=1)
+        target['history'][-1]['tested_revision']=self.head
+        self.write('verification.json',plan)
+        self.cmd('verify','--code-revision',self.head)
+        self.assertEqual(len(self.doc()['feature']['baseline']['deliveries']),1)
+        # Neither a changed correction nor a stale manual result may inherit that pass.
+        d=self.doc();d['feature']['baseline']['coverage_corrections'][0]['reason']='tampered'
+        self.write('spec/requirements.json',d)
+        self.cmd('status',expected=1)
+
+    def test_coverage_correction_cannot_drop_or_invent_test_ids(self):
+        proposal=self.proposal();proposal['test_ids']=['UT-1','MANUAL-1']
+        self.propose(proposal);self.cmd('apply','--revision','CHG-001')
+        data={'reason':'Fix the manual test classification','automatic_test_ids':['UT-1'],
+              'manual_coverage':[{'test_id':'OTHER','verification_sources':['requirement:R-1:1'],
+                                  'evidence':'Fixture observation'}]}
+        path=self.root/'coverage.json';path.write_text(json.dumps(data))
+        before=(self.folder/'spec/requirements.json').read_bytes()
+        self.cmd('correct-coverage','--revision','CHG-001','--input',path,expected=1)
+        self.assertEqual((self.folder/'spec/requirements.json').read_bytes(),before)
+
     def test_new_requirement_and_retirement_are_explicit(self):
         proposal=self.proposal();added=copy.deepcopy(self.req['requirements'][0]);added.update(id='R-2',title='Additional rule')
         proposal['changes']=[{'requirement_id':'R-2','field':'$requirement','before':None,'after':added},
@@ -205,6 +275,6 @@ class RevisionTests(unittest.TestCase):
         self.gates()
         base=self.root/'.agent-workflow/project-baseline'
         code="import json;from pathlib import Path;p=Path('.agent-workflow/features/FEAT-001/spec/requirements.json');d=json.loads(p.read_text());d['requirements'][0]['statement']='unreviewed edit';p.write_text(json.dumps(d))"
-        (base/'quality-gates.json').write_text(json.dumps({'gates':[{'name':'mutates-baseline','command':[sys.executable,'-c',code],'test_ids':['UT-1']}]}))
+        (base/'quality-gates.json').write_text(json.dumps({'selection_feature_id':'FEAT-001','gates':[{'name':'mutates-baseline','command':[sys.executable,'-c',code],'test_ids':['UT-1']}]}))
         self.run_script('project.py','check',self.root,'--feature','FEAT-001',expected=2)
         self.run_script('audit-delivery.py',self.root,'FEAT-001',expected=1)

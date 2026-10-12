@@ -1,8 +1,10 @@
 # 验证与评估索引
 
-更新：2026-10-10。本页只提供当前证据导航与结论边界。历次执行的完整记录保留在[验证历史](history/2026-09-30-validation.md)；其中版本、安装和“下一步”只代表当时。当前任务见 [ROADMAP](../ROADMAP.md)。
+更新：2026-10-12。本页只提供当前证据导航与结论边界。历次执行的完整记录保留在[验证历史](history/2026-09-30-validation.md)；其中版本、安装和“下一步”只代表当时。当前任务见 [ROADMAP](../ROADMAP.md)。
 
 ## 当前发布与检查
+
+0.9.0 源码候选针对 [CASE-04](reviews/2026-10-10-case-04.md) 的质量门错绑、人工验收误失效，以及后续 CHG-001 的人工 TEST 误填自动列表，分别增加需求绑定、逐项人工证据摘要和追加式覆盖分类更正。2026-10-12 最终源码改动后完整执行 `python3 -m unittest discover -s tests -v`：**306/306 通过（113 秒，退出码 0）**，含新增修订覆盖正反例；`test_revisions` 定向 18/18 通过。较早的 304 项回归曾有一项旧夹具失败和一项并行 Build 偶发失败，最终回归均通过；它们不是新增更正机制的通过证据。本机 Claude Code 已安装 0.9.0，84 个运行文件与当前源码及安装标记的 SHA-256 逐项一致。安装版 Claude Agent 在 OGFR-7840 真实记录上追加覆盖分类更正，CHG-001 原提案摘要保持一致；因旧质量文件缺 0.9.0 的 `selection_feature_id` / `quality_selection`，实际重跑 unit-wallet 与 app 编译（2026-10-12 11:47–11:49 CST，270 单测、零失败），没有重走真机。8 条人工结果因摘要变化重新登记，均明确未重新观察。基线 v2 delivery 绑定 HEAD `87e87c779` 与报告 SHA-256 `8b4fa775…`，feature 现为 complete；本机再以已安装脚本只读执行 validate check 与 audit，分别返回 `FEATURE_VALID` / `DELIVERY_EVIDENCE_CURRENT`。这支持本次收口，不证明自然需求会少干预，也不能忽略约两分钟重跑和记录重登成本。业务记录已由 Claude Code 提交；远端状态以业务仓库 Git 为准。
 
 0.8.0 源码新增轻量变更/独立故障入口。新增 `init-change.py` 的 5 项定向测试通过：短描述原字节保留、草稿不冒充批准、故障仅登记 reported/unclassified 且 develop 仍阻断、重复编号不覆盖、空描述/非法编号/符号链接来源拒绝。最终修改后的完整 `python3 -m unittest discover -s tests -q` **301/301 通过**，约 88.9 秒，退出码 0；Skill frontmatter 由 Ruby YAML 解析、`git diff --check`、脚本编译亦通过。在独立 `/private/tmp` 安装夹具中，安装器生成 0.8.0 标记且复制了新脚本/说明；本机 Claude Code 随后更新到 0.8.0，84 个运行文件的源码、安装副本与标记 SHA-256 逐项一致，旧安装已备份。首次完整运行在未改动的并行 Build 测试中有 1 FAIL、1 ERROR（300 条；分别为冻结证据日志绑定和索引变更检查），随后单独重跑该模块 29/29 通过、最终完整回归 301/301 通过；没有把首次失败隐去或归因为新入口。[安装版自然语言隔离演练](evaluations/2026-10-10-lightweight-change-installed.md)实际观察到会话内短描述正确分流、缺编号只追问编号、项目零写入。脚本与这轮 Agent 演练均不证明有编号后的建档、真实项目端到端验收或使用成本下降。
 

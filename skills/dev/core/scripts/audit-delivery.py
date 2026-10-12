@@ -6,7 +6,7 @@ from pathlib import Path
 import re
 import sys
 
-from project import quality_snapshot_matches, snapshot
+from project import quality_selection, quality_snapshot_matches, snapshot, validate_gates
 from revisions import binding
 from verification import validate_verification
 
@@ -20,6 +20,8 @@ def audit(root, feature_id):
         fixes_path = feature / 'fixes.json'
         fixes = json.loads(fixes_path.read_text()) if fixes_path.exists() else {'feature_id': feature_id, 'fixes': []}
         report = json.loads((baseline / 'quality-report.json').read_text())
+        selected_config = json.loads((baseline / 'quality-gates.json').read_text())
+        validate_gates(root, selected_config)
     except (OSError, ValueError) as exc:
         return ['required feature record or quality report missing/invalid: ' + str(exc)]
     if (not isinstance(req, dict) or req.get('feature', {}).get('id') != feature_id or
@@ -28,6 +30,8 @@ def audit(root, feature_id):
         return ['feature or fix record does not match requested ID']
     if not isinstance(report, dict) or not isinstance(report.get('results'), list):
         return ['quality report must contain results']
+    if selected_config.get('selection_feature_id') != feature_id or report.get('quality_selection') != quality_selection(selected_config):
+        errors.append('quality report or selected gates are not bound to this feature; reselect applicable gates and rerun check')
     try:
         current = snapshot(root)
     except (OSError, ValueError, TypeError) as exc:

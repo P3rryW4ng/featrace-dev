@@ -98,7 +98,7 @@ class WorkflowTests(unittest.TestCase):
                        check=True, capture_output=True)
         baseline = self.root / '.agent-workflow/project-baseline'
         baseline.mkdir(parents=True)
-        (baseline / 'quality-gates.json').write_text(json.dumps({'gates': [
+        (baseline / 'quality-gates.json').write_text(json.dumps({'selection_feature_id': 'FEAT-001', 'gates': [
             {'name': 'unit', 'command': [sys.executable, '-c', 'print("UT-1 passed")'],
              'test_ids': ['UT-1']}]}))
         self.run_script(CORE / 'project.py', 'check', self.root)

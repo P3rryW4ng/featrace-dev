@@ -55,6 +55,18 @@ The semantic version covers id, title, statement, status, acceptance_criteria an
 
 Apply requires approved named decisions with chosen values and verifies preserved revision-source hashes. The Agent must confirm that those decisions actually support the patch: structural approval does not prove semantic authority. Impact task/code/test lists are reviewed planning references, not automatically proven dependencies. Empty automatic test_ids is allowed for report-backed manual-only validation; explain coverage in impact_review. Do not claim every code path or test is known.
 
+If an **already applied** proposal accidentally listed a manual-only test in `test_ids`, do not edit its immutable JSON or invent a semantic CHG to pass the gate. For the latest applied revision only, append one coverage-classification correction to `feature.baseline.coverage_corrections` via `revise.py correct-coverage`. The correction partitions the proposal's original test IDs exactly: automatic IDs must still be selected by passed quality checks; each manual ID names current passed manual verification sources and an evidence explanation. This does not change the confirmed requirement baseline, code, test result, or proposal digest. It is not a way to waive missing observations. A second correction to the same revision is refused; investigate a mistaken correction explicitly rather than silently replacing history.
+
+```json
+{"reason":"TEST-1 was entered as an automatic test although its evidence is device observation","automatic_test_ids":["TEST-2"],"manual_coverage":[{"test_id":"TEST-1","verification_sources":["requirement:R-1:1","requirement:R-1:2"],"evidence":"Current device observation and installed-build identity are documented in the delivery report"}]}
+```
+
+```sh
+python3 core/scripts/revise.py correct-coverage <PROJECT> <ID> --revision CHG-001 --input <CORRECTION-JSON>
+```
+
+Only use this after checking the named verification rows and their actual evidence. The command validates the immutable proposal reference and exact ID partition; `verify` additionally checks that the named manual rows are currently passed and tied to current Git HEAD. The Agent still checks that those observations really cover the stated test, including device build identity where relevant.
+
 ## After application: requirement version versus delivery version
 
 Apply advances the confirmed baseline and marks feature.status provisional; it does not change task states, code, source applicability or clarification application markers. Inspect affected tasks/code/historical fixes, reopen or update tasks as needed, and reconcile source/decision references and intake aspects without rewriting original PRD bytes. Cite the approved revision when old text and new confirmed intent differ. For a replaced original statement/AC aspect, preserve its old text and target_text, adding `superseded_by: CHG-001` and a nonempty `supersession_reason`. It must match the before value of that applied revision's requirement/field; only those aspects are exempt from matching today's target. Each active requirement still needs current non-superseded coverage. Register the unchanged applied `revisions/CHG-001.json` as a document evidence source/read unit (also update feature.prd_paths if present), then map its confirmed after text to the current requirement; a pending or modified proposal is not accepted as intake evidence. This permits a conversation-backed correction without inventing an external PRD. Run full review-prd after real semantic review; old intake digest is intentionally stale. Mark clarification application applied only when its actual scope has been implemented or otherwise fulfilled.

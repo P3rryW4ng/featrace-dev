@@ -33,6 +33,8 @@ def sources(root, folder):
     config_path = root / '.agent-workflow/project-baseline/quality-gates.json'
     config = read(config_path) if config_path.exists() else {'gates': []}
     validate_gates(root.resolve(), config)
+    if config['gates'] and config.get('selection_feature_id') != folder.name:
+        raise ValueError('quality gate selection belongs to another feature or is unbound; select gates for ' + folder.name + ' before verification')
     impact = read(folder / 'impact.json')
     errors, _ = validate_impact(root, folder, req, 'develop')
     if errors:
@@ -89,6 +91,8 @@ def load_plan(folder):
                 raise ValueError('invalid verification result')
             if any(not isinstance(result.get(k), str) or not result[k].strip() for k in ('digest', 'tested_revision', 'actual', 'evidence', 'at', 'method')):
                 raise ValueError('verification result lacks evidence or tested identity')
+            if 'evidence_digest' in result and (not isinstance(result['evidence_digest'], str) or not result['evidence_digest']):
+                raise ValueError('invalid manual evidence digest')
             if result['status'] == 'retained' and (not isinstance(result.get('scope_files'), dict) or not isinstance(result.get('changed_paths'), list)
                                                    or not result['changed_paths'] or not all(isinstance(result.get(k), str) and result[k].strip() for k in ('reviewed_revision', 'reason', 'source_result_digest', 'semantic_digest'))):
                 raise ValueError('retained evidence lacks reviewed scope and prior identity')
@@ -122,12 +126,30 @@ def context(root, folder, doc):
 
 def semantic_stamp(root, folder, row):
     """Meaning and execution contract, excluding mutable project file contents."""
+    req, _, impact = sources(root, folder)
+    contract = {k: v for k, v in row.items() if k not in ('history', 'retention')}
+    impact_contract = {k: v for k, v in impact.items() if k != 'behaviors'}
+    impact_contract['behaviors'] = [{k: v for k, v in b.items() if k != 'verification'} for b in impact['behaviors']]
+    return digest({'requirements': req['requirements'], 'decisions': read(folder / 'decisions.json'),
+                   'impact_contract': impact_contract, 'item': contract})
+
+
+def legacy_semantic_stamp(root, folder, row):
+    """Accept existing scoped observations only against their original config."""
     req, config, impact = sources(root, folder)
     contract = {k: v for k, v in row.items() if k not in ('history', 'retention')}
     impact_contract = {k: v for k, v in impact.items() if k != 'behaviors'}
     impact_contract['behaviors'] = [{k: v for k, v in b.items() if k != 'verification'} for b in impact['behaviors']]
     return digest({'requirements': req['requirements'], 'decisions': read(folder / 'decisions.json'),
                    'config': config, 'impact_contract': impact_contract, 'item': contract})
+
+
+def manual_evidence_stamp(root, folder, row):
+    """Bind a manual observation to its meaning and project scope, not gate prose."""
+    req, _, impact = sources(root, folder)
+    contract = {k: v for k, v in row.items() if k not in ('history', 'retention')}
+    return digest({'requirements': req['requirements'], 'decisions': read(folder / 'decisions.json'),
+                   'impact': impact_snapshot(root, impact)['digest'], 'item': contract})
 
 
 def scope_files(root, folder):
@@ -170,10 +192,12 @@ def sync(root, folder):
     return doc
 
 
-def state(row, stamp):
+def state(row, stamp, evidence_stamp=None):
     if not row['history']:
         return 'not_run'
     result = row['history'][-1]
+    if row['mode'] == 'manual' and 'evidence_digest' in result and evidence_stamp is not None:
+        return result['status'] if result['evidence_digest'] == evidence_stamp else 'stale'
     return result['status'] if result['digest'] == stamp else 'stale'
 
 
@@ -244,9 +268,11 @@ def record(root, folder, item_id, status, stamp, tested, actual, evidence):
     if row is None or row['mode'] != 'manual' or row['source'] == 'system:no-gates':
         raise ValueError('select a manual acceptance item, not a gate or missing-configuration row')
     scoped = row['source'].startswith('impact:') and bool(row.get('dependencies'))
-    row['history'].append(result(status, stamp, tested, actual, evidence, 'manual',
-                                 semantic=semantic_stamp(root, folder, row) if scoped else None,
-                                 files=scope_files(root, folder) if scoped else None))
+    entry = result(status, stamp, tested, actual, evidence, 'manual',
+                   semantic=semantic_stamp(root, folder, row) if scoped else None,
+                   files=scope_files(root, folder) if scoped else None)
+    entry['evidence_digest'] = manual_evidence_stamp(root, folder, row)
+    row['history'].append(entry)
     save(folder / 'verification.json', doc)
     render(folder)
 
@@ -269,9 +295,9 @@ def retain(root, folder, item_id, stamp, changed, reason, evidence):
     if behavior is None or behavior['kind'] != 'preserve':
         raise ValueError('only preserved behavior may retain prior evidence')
     previous = row['history'][-1]
-    if previous['status'] not in ('passed', 'retained') or previous['digest'] == current:
+    if previous['status'] not in ('passed', 'retained') or state(row, current, manual_evidence_stamp(root, folder, row)) != 'stale':
         raise ValueError('only a stale prior pass can be retained; failures and waivers need fresh disposition')
-    if not isinstance(previous.get('scope_files'), dict) or previous.get('semantic_digest') != semantic_stamp(root, folder, row):
+    if not isinstance(previous.get('scope_files'), dict) or previous.get('semantic_digest') not in (semantic_stamp(root, folder, row), legacy_semantic_stamp(root, folder, row)):
         raise ValueError('prior evidence lacks matching semantic and file provenance; retest')
     now = scope_files(root, folder)
     before = previous['scope_files']
@@ -293,6 +319,7 @@ def retain(root, folder, item_id, stamp, changed, reason, evidence):
     carried['changed_paths'] = delta
     carried['reason'] = reason
     carried['source_result_digest'] = previous['digest']
+    carried['evidence_digest'] = manual_evidence_stamp(root, folder, row)
     row['history'].append(carried)
     save(folder / 'verification.json', doc)
     render(folder)
@@ -310,7 +337,8 @@ def validate_verification(root, folder, req, stage):
         if stage != 'check':
             return []
         stamp, _ = context(root, folder, doc)
-        return ['verification incomplete: ' + r['id'] + ' (' + state(r, stamp) + ')' for r in doc['items'] if state(r, stamp) not in ('passed', 'waived', 'retained')]
+        return ['verification incomplete: ' + r['id'] + ' (' + state(r, stamp, manual_evidence_stamp(root, folder, r) if r['mode'] == 'manual' else None) + ')'
+                for r in doc['items'] if state(r, stamp, manual_evidence_stamp(root, folder, r) if r['mode'] == 'manual' else None) not in ('passed', 'waived', 'retained')]
     except (OSError, ValueError, TypeError, KeyError) as exc:
         return ['invalid verification: ' + str(exc)]
 
@@ -322,7 +350,7 @@ def impact_results(root, folder):
     impact_stamp = impact_snapshot(root, read(folder / 'impact.json'))['digest']
     results = {}
     for row in doc['items']:
-        if row['source'].startswith('impact:') and state(row, stamp) in ('passed', 'waived', 'retained'):
+        if row['source'].startswith('impact:') and state(row, stamp, manual_evidence_stamp(root, folder, row)) in ('passed', 'waived', 'retained'):
             last = row['history'][-1]
             results[row['source'][7:]] = {'status': 'passed' if last['status'] == 'retained' else last['status'], 'method': last['method'],
                                        'evidence': last['actual'] + '\n' + last['evidence'], 'digest': impact_stamp}
@@ -334,7 +362,7 @@ def summary(root, folder):
     stamp, head = context(root, folder, doc)
     items = []
     for row in doc['items']:
-        item = {'id': row['id'], 'mode': row['mode'], 'status': state(row, stamp), 'expected': row['expected']}
+        item = {'id': row['id'], 'mode': row['mode'], 'status': state(row, stamp, manual_evidence_stamp(root, folder, row) if row['mode'] == 'manual' else None), 'expected': row['expected']}
         if row.get('dependencies'):
             item['dependencies'] = row['dependencies']
             item['scope_reason'] = row['scope_reason']
@@ -359,7 +387,7 @@ def render(folder):
     lines = ['# Verification checklist', '', 'Generated view; manual observation and automated checks are distinct.', '']
     for row in doc['items']:
         lines += ['## ' + row['id'], '', 'Mode: ' + row['mode'], 'Expected: ' + str(row['expected']),
-                  'Status: ' + (state(row, stamp) if stamp else 'stale — synchronize sources'), '']
+                  'Status: ' + (state(row, stamp, manual_evidence_stamp(root, folder, row) if row['mode'] == 'manual' else None) if stamp else 'stale — synchronize sources'), '']
         if row.get('dependencies'):
             lines += ['Dependencies: ' + ', '.join(row['dependencies']), 'Scope rationale: ' + row['scope_reason'], '']
         if row['history']:
