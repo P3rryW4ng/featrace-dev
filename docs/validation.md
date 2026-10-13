@@ -4,6 +4,8 @@
 
 ## 当前发布与检查
 
+0.11.1 源码候选只更改 Skill/流程说明，不改 Python 脚本、JSON schema 或现有质量门。Technical Test 与 Verify 的分责沿用 `quality-report.json`、`verification.json`；隔离 home 安装为 0.11.1、89 个运行文件，新增参考文件在清单内且 SHA-256 一致。`PYTHONPATH=tests python3 -m unittest test_verification test_workflow -q` 实跑 **41/41 通过（38.5 秒）**。最初用模块路径直接调用这两组测试时因测试目录未加到 Python 导入路径，2 个模块导入失败；改用仓库测试布局所需的 `PYTHONPATH=tests` 后通过，未更改测试或脚本。2026-10-13 本机 Claude Code 已从 0.11.0 更新到 0.11.1；安装标记、安装副本与当前源码的 **89 个运行文件** SHA-256 逐项相等，原 0.11.0 完整备份。尚未观察 0.11.1 安装版 Agent 在真实需求中自然执行此分责，也未测上下文、漏验和成本收益。
+
 [CASE-05 真实需求复核](reviews/2026-10-12-case-05.md)：0.10.0 自然链完成代码、自动检查、真机发现与修复，却把一接口和不同语言组合的证据写为三接口/指定组合通过并错误标 complete。两轮更正后一度为 12 unavailable、14 passed、provisional；后续插桩覆盖三接口并发现 FIX-002，定向补测后最终 27/27 passed、complete。最终正确不取消初次误结项，GAP-28 的自然场景收益仍未证明；没有真实净耗时、Token 或 0.10.1 设备自动化收益数据。
 
 0.11.0 的定向复核源码：完整 `python3 -m unittest discover -s tests -q` 为 **313/313 通过**（129.4 秒）；新增三项夹具覆盖缺失/部分结论阻断、全项记录放行、来源/代码证据过期及不匹配豁免，CLI 入口另经定向测试 3/3 通过。测试证明绑定和阻断逻辑，**没有**让真实独立 Agent 复核 OGFR-7700 错误快照与最终快照，也未测审查耗时/Token；不得据此宣称已降低真实误结项率。

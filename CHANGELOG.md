@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.11.1 — 2026-10-13
+
+- Split ordinary Verify's **responsibilities** into an on-demand Technical Test step and a separate evidence assessment. Test investigates actual assertions, selects/runs feature-bound checks and leaves per-claim coverage plus command results in the existing `verification.json` and `quality-report.json`; Verify checks whether that evidence supports each full claim before delivery.
+- Keep the same `/dev check` entry, six stages, Agent context, record schemas and completion gates. Current results do not rerun merely because the handoff is named; `check --independent` remains read-only, and the v6 fresh-context claim review remains a separate pre-completion gate. A failed or partial objective check returns to Test/Repair without a false pass.
+- This is a compatible workflow-instruction change, so the patch version advances. It does not add an independent Test Skill, prove context savings, or establish a fully automatic testing capability; compare omissions, duplicate reads, time and cost on the next real feature before deciding on extraction.
+
 ## 0.11.0 — 2026-10-12
 
 - New workflow v6 features require a focused fresh-context claim-to-evidence review before `complete`. The review covers every active requirement/impact acceptance row against its full parent statement, original authority, exact preconditions, actual assertion or observation and a concrete counterexample. Partial/unknown findings stop closure; no unrelated build or test is repeated solely for this review.
