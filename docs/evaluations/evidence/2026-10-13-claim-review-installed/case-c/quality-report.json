@@ -1,0 +1,41 @@
+{
+  "tested_at": "2026-10-13T02:37:25.956518+00:00",
+  "project_snapshot": {
+    "version": 2,
+    "evidence": {
+      "AGENTS.md": null,
+      "CLAUDE.md": null
+    },
+    "profile": "generic",
+    "git_head": "b9360076c9789ba4123ac5c6d81dc2eed0d54ddd",
+    "files": {}
+  },
+  "quality_selection": {
+    "feature_id": "FEAT-001",
+    "digest": "ab30e44609c1609d0bd9689135f4794f4307b57ef8259cd63e0724fa5b91a74c"
+  },
+  "results": [
+    {
+      "name": "unit",
+      "command": [
+        "/Library/Developer/CommandLineTools/usr/bin/python3",
+        "-m",
+        "unittest",
+        "-v",
+        "test_language"
+      ],
+      "test_ids": [
+        "UT-1"
+      ],
+      "returncode": 0,
+      "status": "passed",
+      "stdout": "",
+      "stderr": "test_nearby_pair_on_one_api (test_language.LanguageTests) ... ok\n\n----------------------------------------------------------------------\nRan 1 test in 0.000s\n\nOK\n"
+    }
+  ],
+  "feature_baseline": {
+    "feature_id": "FEAT-001",
+    "version": null,
+    "digest": null
+  }
+}

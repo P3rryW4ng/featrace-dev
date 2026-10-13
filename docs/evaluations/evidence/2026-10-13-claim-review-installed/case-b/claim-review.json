@@ -1,0 +1,25 @@
+{
+  "feature_id": "FEAT-001",
+  "input_digest": "f2ace71b747044a7a342fb25ac39a38097afcf6d880b51ac01c0bf0cad9b5845",
+  "reviewer": "claude-opus-5-5 fresh-context read-only claim-evidence reviewer",
+  "findings": [
+    {
+      "id": "requirement:R-1:1:9521c0a89221",
+      "verdict": "supported",
+      "source_basis": "sources/prd-original.txt:1 (sha256 347413d5... matches capture) says getHostUserInfo, getHostUserInfoAll and getUserInfoAll must return systemLanguages [\"de-DE\", \"en-GB\"] when passed exactly the ordered input [\"de-DE\", \"en-GB\"]. spec/requirements.json R-1 (confirmed) has the same acceptance criterion.",
+      "required_scope": "Three named APIs: getHostUserInfo, getHostUserInfoAll and getUserInfoAll. Precondition: each is called with exactly the ordered list [\"de-DE\", \"en-GB\"]. Outcome: each result's systemLanguages equals exactly [\"de-DE\", \"en-GB\"], in that order, with no extra or missing elements.",
+      "observed_scope": "Runtime execution: test_language.py:5-8 loops over all three imported APIs (getHostUserInfo, getHostUserInfoAll, getUserInfoAll). For each, inside its own subTest, it calls api([\"de-DE\", \"en-GB\"]) and uses assertEqual to compare the systemLanguages list with [\"de-DE\", \"en-GB\"]. List equality checks order, length and exact string values. quality-report.json shows the unit gate ran `python3 -m unittest -v test_language` at git_head fde141967a79 (the same as code_revision and tested_revision). It returned 0 with output 'test_exact_pair_on_all_three_apis ... ok' and 'Ran 1 test'. A failed subTest would have failed the test, so all three APIs ran and passed. Code check (consistent with the run, not used in place of it): convert.py:1-8 shows each API returns {\"systemLanguages\": list(device_languages)}, which is deterministic and preserves order.",
+      "evidence_ref": "test_language.py:5-8; convert.py:1-8; .agent-workflow/project-baseline/quality-report.json results[0] (tested_at 2026-10-13T02:18:54Z, git_head fde141967a798e95cf2dd7d6bb8058438f28ae9e); .agent-workflow/features/FEAT-001/verification.json items[0] and gate:unit:ae58977f2f47",
+      "counterexample_check": "I looked for an implementation that passes this evidence but breaks the claim: for example, one API returning the pair reversed or with an extra tag, or the test leaving one API out. Each of these would fail the executed assertEqual for that API's subTest, and the test covers all three names. Inputs other than the specified pair, such as a reversed pair or one or three tags, are not tested, but the claim does not cover them. No counterexample within scope remains."
+    },
+    {
+      "id": "impact:B-1:1d54a44d7ec0",
+      "verdict": "supported",
+      "source_basis": "impact.json behavior B-1 (kind change, basis R-1): 'All three API entry points preserve the exact specified system language pair'. Its source is the PRD sentence in sources/prd-original.txt:1.",
+      "required_scope": "Every one of the three API entry points in convert.py (getHostUserInfo, getHostUserInfoAll, getUserInfoAll), given the specified pair [\"de-DE\", \"en-GB\"], returns that exact pair as systemLanguages, in the same order and unchanged.",
+      "observed_scope": "Runtime execution: the same run at fde141967a79 of test_language.py:test_exact_pair_on_all_three_apis applied assertEqual to each of the three entry points with input [\"de-DE\", \"en-GB\"] and expected [\"de-DE\", \"en-GB\"]. Result: passed (quality-report.json returncode 0). Code inspection: convert.py contains only these three entry points, and none of them uses the shared state in state.py (state.py holds only the string 'shared' and nothing imports it). So no other entry point or shared-state path needs to preserve the pair.",
+      "evidence_ref": "convert.py:1-8; state.py:1; test_language.py:5-8; .agent-workflow/project-baseline/quality-report.json results[0]; .agent-workflow/features/FEAT-001/impact.json behaviors[0]",
+      "counterexample_check": "I checked whether an entry point could reorder, drop, deduplicate or alter the pair and still pass. The executed per-API assertEqual rules this out for all three entry points. I also checked whether another caller or a shared-state path could change the result. No caller or state dependency exists at this revision. The specified pair has no remaining counterexample."
+    }
+  ]
+}

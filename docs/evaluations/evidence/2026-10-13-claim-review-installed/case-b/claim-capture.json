@@ -1,0 +1,44 @@
+{
+  "feature_id": "FEAT-001",
+  "input_digest": "f2ace71b747044a7a342fb25ac39a38097afcf6d880b51ac01c0bf0cad9b5845",
+  "code_revision": "fde141967a798e95cf2dd7d6bb8058438f28ae9e",
+  "source_hashes": {
+    "sources/prd-original.txt": "347413d5d7e981ed94a6b017fbe5a95c9b04e3a26509189173c020a87c33219d"
+  },
+  "claims": [
+    {
+      "id": "requirement:R-1:1:9521c0a89221",
+      "requirement_statement": "All three APIs return the exact two system language tags for the specified device language pair",
+      "expected": "Given exactly the ordered input [\"de-DE\", \"en-GB\"], getHostUserInfo, getHostUserInfoAll and getUserInfoAll each return systemLanguages exactly [\"de-DE\", \"en-GB\"]",
+      "mode": "manual",
+      "result_status": "passed",
+      "result": {
+        "status": "passed",
+        "digest": "dc07c9c9aa30ca08f08d4e5e261a4bda41b74a4a4cec1026425747d3e3d51992",
+        "tested_revision": "fde141967a798e95cf2dd7d6bb8058438f28ae9e",
+        "actual": "Claim marked passed",
+        "evidence": "test_language.py:test_exact_pair_on_all_three_apis ran on current commit and asserted each API with [de-DE,en-GB]",
+        "method": "manual",
+        "at": "2026-10-13T02:18:55.497275+00:00",
+        "evidence_digest": "82ccf0c4b6b65a1c4d3ec7e06c1d4a19ef65baacf82dc7138b15988f26838622"
+      }
+    },
+    {
+      "id": "impact:B-1:1d54a44d7ec0",
+      "requirement_statement": "",
+      "expected": "All three API entry points preserve the exact specified system language pair",
+      "mode": "manual",
+      "result_status": "passed",
+      "result": {
+        "status": "passed",
+        "digest": "dc07c9c9aa30ca08f08d4e5e261a4bda41b74a4a4cec1026425747d3e3d51992",
+        "tested_revision": "fde141967a798e95cf2dd7d6bb8058438f28ae9e",
+        "actual": "Claim marked passed",
+        "evidence": "test_language.py:test_exact_pair_on_all_three_apis ran on current commit and asserted each API with [de-DE,en-GB]",
+        "method": "manual",
+        "at": "2026-10-13T02:18:55.799147+00:00",
+        "evidence_digest": "3d1018c38b2f2ab0e490f701c05d68184379274e6363887c9204b252170a141f"
+      }
+    }
+  ]
+}

@@ -1,0 +1,96 @@
+{
+  "schema_version": 1,
+  "feature_id": "FEAT-001",
+  "items": [
+    {
+      "id": "requirement:R-1:1:9521c0a89221",
+      "source": "requirement:R-1:1",
+      "expected": "Given exactly the ordered input [\"de-DE\", \"en-GB\"], getHostUserInfo, getHostUserInfoAll and getUserInfoAll each return systemLanguages exactly [\"de-DE\", \"en-GB\"]",
+      "mode": "manual",
+      "gates": [],
+      "coverage": "",
+      "history": [
+        {
+          "status": "passed",
+          "digest": "dc07c9c9aa30ca08f08d4e5e261a4bda41b74a4a4cec1026425747d3e3d51992",
+          "tested_revision": "fde141967a798e95cf2dd7d6bb8058438f28ae9e",
+          "actual": "Claim marked passed",
+          "evidence": "test_language.py:test_exact_pair_on_all_three_apis ran on current commit and asserted each API with [de-DE,en-GB]",
+          "method": "manual",
+          "at": "2026-10-13T02:18:55.497275+00:00",
+          "evidence_digest": "82ccf0c4b6b65a1c4d3ec7e06c1d4a19ef65baacf82dc7138b15988f26838622"
+        }
+      ]
+    },
+    {
+      "id": "impact:B-1:1d54a44d7ec0",
+      "source": "impact:B-1",
+      "expected": "All three API entry points preserve the exact specified system language pair",
+      "mode": "manual",
+      "gates": [],
+      "coverage": "",
+      "history": [
+        {
+          "status": "passed",
+          "digest": "dc07c9c9aa30ca08f08d4e5e261a4bda41b74a4a4cec1026425747d3e3d51992",
+          "tested_revision": "fde141967a798e95cf2dd7d6bb8058438f28ae9e",
+          "actual": "Claim marked passed",
+          "evidence": "test_language.py:test_exact_pair_on_all_three_apis ran on current commit and asserted each API with [de-DE,en-GB]",
+          "method": "manual",
+          "at": "2026-10-13T02:18:55.799147+00:00",
+          "evidence_digest": "3d1018c38b2f2ab0e490f701c05d68184379274e6363887c9204b252170a141f"
+        }
+      ]
+    },
+    {
+      "id": "gate:unit:ae58977f2f47",
+      "source": "gate:unit",
+      "expected": "Command succeeds: unit",
+      "mode": "automatic",
+      "gates": [
+        "unit"
+      ],
+      "coverage": "configured command result only",
+      "history": [
+        {
+          "status": "passed",
+          "digest": "dc07c9c9aa30ca08f08d4e5e261a4bda41b74a4a4cec1026425747d3e3d51992",
+          "tested_revision": "fde141967a798e95cf2dd7d6bb8058438f28ae9e",
+          "actual": "[{\"name\": \"unit\", \"command\": [\"/Library/Developer/CommandLineTools/usr/bin/python3\", \"-m\", \"unittest\", \"-v\", \"test_language\"], \"test_ids\": [\"UT-1\"], \"returncode\": 0, \"status\": \"passed\", \"stdout\": \"\", \"stderr\": \"test_exact_pair_on_all_three_apis (test_language.LanguageTests) ... ok\\n\\n----------------------------------------------------------------------\\nRan 1 test in 0.000s\\n\\nOK\\n\"}]",
+          "evidence": "quality-report executed at 2026-10-13T02:18:54.940075+00:00",
+          "method": "automatic",
+          "at": "2026-10-13T02:18:55.007752+00:00"
+        }
+      ]
+    }
+  ],
+  "retired": [
+    {
+      "id": "requirement:R-1:1:5418d1630003",
+      "source": "requirement:R-1:1",
+      "expected": "abc becomes ABC",
+      "mode": "manual",
+      "gates": [],
+      "coverage": "",
+      "history": []
+    },
+    {
+      "id": "impact:B-1:e6e32d4c2286",
+      "source": "impact:B-1",
+      "expected": "Convert input",
+      "mode": "manual",
+      "gates": [],
+      "coverage": "",
+      "history": []
+    },
+    {
+      "id": "impact:B-2:3c91ed1e9cb5",
+      "source": "impact:B-2",
+      "expected": "Keep shared state",
+      "mode": "manual",
+      "gates": [],
+      "coverage": "",
+      "history": []
+    }
+  ]
+}
