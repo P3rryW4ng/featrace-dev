@@ -56,6 +56,12 @@ def main():
                 if not run.stdout.strip() and run.stderr.strip():
                     print(label + ': ' + run.stderr.strip())
         return 0
+    if feature.get('workflow_version', 1) >= 6:
+        from claim_review import validate as validate_claim_review
+        review_errors = validate_claim_review(root, folder)
+        if review_errors:
+            print('CLOSURE_ROUTE_CLAIM_REVIEW_REQUIRED: ' + '; '.join(review_errors))
+            return 0
     print('CLOSURE_ROUTE_DELIVER_ELIGIBLE: structural checks current; review full claim-to-evidence meaning before Deliver')
     return 0
 

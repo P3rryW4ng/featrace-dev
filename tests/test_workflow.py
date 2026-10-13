@@ -51,7 +51,7 @@ class WorkflowTests(unittest.TestCase):
         requirements = json.loads((self.folder / 'spec/requirements.json').read_text())
         self.assertTrue(requirements['feature']['history_regression_required'])
         self.assertTrue(requirements['feature']['task_review_required'])
-        self.assertEqual(requirements['feature']['workflow_version'], 5)
+        self.assertEqual(requirements['feature']['workflow_version'], 6)
         self.assertEqual(requirements['feature']['module_scope']['status'], 'pending')
         before = (self.folder / 'spec/requirements.json').read_bytes()
         self.run_script(CORE / 'init-feature.py', 'FEAT-001', self.prd, self.root, expected=1)

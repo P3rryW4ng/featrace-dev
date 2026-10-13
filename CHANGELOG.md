@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.11.0 — 2026-10-12
+
+- New workflow v6 features require a focused fresh-context claim-to-evidence review before `complete`. The review covers every active requirement/impact acceptance row against its full parent statement, original authority, exact preconditions, actual assertion or observation and a concrete counterexample. Partial/unknown findings stop closure; no unrelated build or test is repeated solely for this review.
+- `claim_review.py capture/check` binds the review to current requirements, sources, impact and recorded results; `closure-route.py` reports a missing/stale review, and complete-stage validation blocks without a current supported review. Earlier v5 records remain compatible. Deterministic validation checks the review's identity and coverage, not the truth of the reviewer's reasoning; natural-project cost and false-complete reduction remain unproven.
+- CASE-05 now records OGFR-7700's later targeted tests and final complete state while retaining the initial false complete. This release does not declare the second-stage continuous-delivery milestone complete.
+
 ## 0.10.1 — 2026-10-12
 
 - Ordinary Verify now separates reversible device preparation from application observations and product judgment. On a named test device, the Agent first uses available project tools for safe setup, confirms the effective system/app state, and restores the original setting afterward; only inaccessible or subjective steps are sent to the user.

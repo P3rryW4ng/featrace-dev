@@ -11,6 +11,7 @@ from design_index import validate_index
 from revisions import validate_revisions
 from impact import validate_impact
 from verification import validate_verification
+from claim_review import validate as validate_claim_review
 from module_context import validate_modules
 from feature_scope import validate_scope
 from regression_review import validate_review as validate_regression_review
@@ -213,6 +214,8 @@ def main():
     if (args.stage == "check" and feature.get("status") == "complete"
             and isinstance(feature.get("workflow_version"), int)
             and feature["workflow_version"] >= 4 and not errors):
+        if feature["workflow_version"] >= 6:
+            errors.extend(validate_claim_review(pathlib.Path(args.root).resolve(), feature_dir))
         delivery_report = feature_dir / "delivery-report.md"
         if not delivery_report.is_file() or not delivery_report.read_text().strip():
             errors.append("complete requires a nonempty feature delivery report")
