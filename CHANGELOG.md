@@ -7,7 +7,7 @@
 
 ## 0.13.2 — 2026-10-14
 
-- Show explicit validated archive/index annotation links in acceptance status, generated verification views and scoped Test/Verify starting views. Separate current receipts, historical notes and unapplied row assessments; do not infer loose notes or mutate original results, tested revisions, freshness or completion. This compatible display repair is included in the same unreleased patch candidate, not a new increment per development turn.
+- Show explicit validated archive/index annotation links in acceptance status, generated verification views and scoped Test/Verify starting views. Separate current receipts, historical notes and unapplied row assessments; do not infer loose notes or mutate original results, tested revisions, freshness or completion. This compatible display repair is included in 0.13.2 together with the output privacy checks.
 
 - Add bounded read-only checks for new reviewer returns/receipts/reports and explicit staged added lines. Optional private known markers and limited credential/identifier patterns report only target order and locations, never raw values/context; unreadable/changed inputs remain unavailable.
 - Link checks at private-output import and local record commit boundaries without hooks, history sweeps, automatic redaction, acceptance changes or a safety certificate. This is a compatible GAP-35 data-handling repair, so advances the patch number. Daily Claude Code was held at 0.13.1 during the business run; update to 0.13.2 after its completed delivery.

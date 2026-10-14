@@ -8,9 +8,9 @@
 
 FeatraceDev helps coding agents understand requirements, investigate impact, implement changes, repair defects, and verify delivery in existing codebases. It connects original sources, confirmed requirements, tasks, historical fixes, and test evidence so future changes can build on recorded facts and completion claims have a clear verification scope.
 
-Works with Claude Code and Codex. Includes a generic workflow and an Android adapter. Current source version: **0.10.0**. Check the installed version on the device where you use it.
+Works with Claude Code and Codex. Includes a generic workflow and an Android adapter. Current source version: **0.13.3**. Check the installed version on the device where you use it.
 
-> This is a developer-assisted delivery tool. It surfaces missing decisions and evidence, but cannot guarantee complete PRD understanding, discover every dependency, or replace device testing and subjective acceptance.
+> This is a developer-assisted delivery tool. It surfaces missing decisions and evidence, but cannot guarantee complete PRD understanding, discover every dependency, or automate every device and business path. With suitable tools and authorization, the Agent can perform device operations and objective tests; subjective experience still requires human judgment.
 
 ## Name and principles
 
@@ -36,7 +36,7 @@ python3 scripts/install.py
 
 By default, the installer installs for both Claude Code and Codex under the current user. Use `--agent claude` or `--agent codex` to install for just one. Open a **new session** after installation to load the updated skill.
 
-Optional independent review: `/dev check OGFR-1234 --independent`. Requires a host that can create a fresh Agent context. It reviews existing evidence read-only; it does not build, run tests, or approve delivery. Ordinary `check` is unchanged.
+Optional independent review: `/dev check OGFR-1234 --independent`. Requires a host that can create a fresh Agent context. It reviews existing evidence read-only; it does not build, run tests, or approve delivery. This differs from the mandatory fresh-context evidence review before completing a newly created v6 workflow. Without host support or a valid review, that workflow remains incomplete.
 
 ## Start here
 
