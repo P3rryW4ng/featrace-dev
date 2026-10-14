@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.13.1 — 2026-10-14
+
+- Repair the sequential-revision false block: an explicitly linked proposal may continue the current applied-but-undelivered baseline. Preserve immutable proposals and the applied chain, require approved decisions, exact base/before values and one pending proposal; append a new provisional baseline without inventing an intermediate delivery.
+- Keep current-baseline quality/acceptance/report checks mandatory and show the continuation in generated history. Existing delivered revisions and legacy histories remain compatible. This fixes a blocker in the existing revision workflow, so advances the patch number rather than adding a new stage/capability release.
+
 ## 0.13.0 — 2026-10-14
 
 - Add read-only Test/Verify starting views selected by task/item, preserving full linked requirements, shared/uncertain authority, current result identity and global unresolved claim/decision/fix states. Bind all canonical inputs and code/source/Skill currency; old histories, proof bodies and raw output remain at explicit readback references. No execution, acceptance mutation or new independent Test Skill.

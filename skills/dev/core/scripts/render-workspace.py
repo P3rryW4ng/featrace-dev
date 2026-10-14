@@ -53,6 +53,8 @@ def main():
         for rid, revision in revisions.items():
             state = 'applied v' + str(applied[rid]['version']) if rid in applied else ('cancelled' if rid in cancelled else 'pending')
             lines += ['## ' + rid + ' — ' + state, '', revision['reason'], '', 'Impact: ' + revision['impact_review'], '', '```json', json.dumps(revision['changes'], ensure_ascii=False, indent=2), '```', '']
+            if revision.get('continues_revision'):
+                lines += ['Continues unverified ' + revision['continues_revision'] + ': ' + revision['continuation_reason'], '']
             correction = next((x for x in baseline.get('coverage_corrections', []) if x['revision_id'] == rid), None)
             if correction:
                 lines += ['Coverage classification corrected (proposal unchanged): ' + correction['reason'],

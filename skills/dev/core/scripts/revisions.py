@@ -81,9 +81,51 @@ def validate_proposal(doc, feature_id):
             raise ValueError("revision " + field + " must be a unique string array")
     if not doc["evidence"] or not nonempty(doc.get("preserved_behavior")):
         raise ValueError("revision needs evidence and preserved_behavior")
+    if any(k in doc for k in ('continues_revision', 'continuation_reason')) and not all(
+            nonempty(doc.get(k)) for k in ('continues_revision', 'continuation_reason')):
+        raise ValueError('Continuation needs continues_revision and continuation_reason')
     if not isinstance(doc.get("changes"), list) or not doc['changes']:
         raise ValueError("revision needs changes")
 
+
+
+
+def continuation_test_ids(record, baseline, records):
+    """Carry test obligations for prior undelivered semantic fields still current."""
+    accepted = max((x['version'] for x in baseline['deliveries']
+                    if x['version'] <= baseline['version']), default=0)
+    chain = [records[x['id']] for x in baseline['applied'] if x['version'] > accepted]
+    needed = set()
+    for index, earlier in enumerate(chain):
+        later = [c for r in chain[index + 1:] + [record] for c in r['changes']]
+        replaced = {(c['requirement_id'], c['field']) for c in later}
+        final_status = {c['requirement_id']: c['after'] for c in later if c['field'] == 'status'}
+        retired = {rid for rid, status in final_status.items() if status == 'deprecated'}
+        if any(c['requirement_id'] not in retired and
+               (c['requirement_id'], c['field']) not in replaced for c in earlier['changes']):
+            needed.update(earlier['test_ids'])
+    return needed
+
+def validate_continuation(record, baseline, records, *, required=False):
+    """Name the current unverified applied tip; never cancel an applied proposal."""
+    fields = ('continues_revision', 'continuation_reason')
+    present = any(k in record for k in fields)
+    unverified = baseline['version'] > 1 and not any(
+        x['version'] == baseline['version'] for x in baseline['deliveries'])
+    if required and unverified and not present:
+        raise ValueError('Current baseline is unverified; supply continues_revision and continuation_reason to revise it without a fictitious delivery')
+    if not present:
+        return
+    if not all(nonempty(record.get(k)) for k in fields):
+        raise ValueError('Continuation needs continues_revision and continuation_reason')
+    if not unverified or not baseline['applied']:
+        raise ValueError('Continuation only references the current unverified applied revision')
+    latest = baseline['applied'][-1]
+    if record['continues_revision'] != latest['id'] or latest['version'] != baseline['version']:
+        raise ValueError('Continuation must name the latest applied revision of the current baseline')
+    missing = continuation_test_ids(record, baseline, records) - set(record['test_ids'])
+    if missing:
+        raise ValueError('Continuation must carry tests for surviving unverified changes: ' + ', '.join(sorted(missing)))
 
 def proposals(folder, feature_id):
     directory = folder / "revisions"
@@ -124,6 +166,10 @@ def inspect(folder, doc):
         if (event.get('proposal_digest') != digest(record) or record['base_version'] != version
                 or record['base_digest'] != digest(reconstructed)):
             raise ValueError("applied revision modified or history chain broken")
+        validate_continuation(record, {'version': version, 'applied': b['applied'][:len(handled)],
+                                       'deliveries': b['deliveries']}, records)
+        if event.get('continues_revision') != record.get('continues_revision'):
+            raise ValueError('Applied continuation differs from its immutable proposal')
         reconstructed = semantics(apply_changes(reconstructed, record['changes']))
         version += 1
         if event.get('version') != version or event.get('result_digest') != digest(reconstructed):
@@ -176,6 +222,8 @@ def inspect(folder, doc):
                 or any(not nonempty(delivery.get(k)) for k in ('code_revision', 'evidence', 'evidence_sha256', 'at'))):
             raise ValueError("invalid baseline delivery evidence")
     pending = [v for k, v in records.items() if k not in handled]
+    for record in pending:
+        validate_continuation(record, b, records)
     if len(pending) > 1:
         raise ValueError("multiple open revisions; resolve explicitly")
     return b, records, pending

@@ -94,7 +94,7 @@ class RevisionTests(unittest.TestCase):
         self.run_script('validate-feature.py','--stage','develop',self.root,'FEAT-001',expected=1) # stale semantic PRD review
         self.review()
         self.run_script('validate-feature.py','--stage','develop',self.root,'FEAT-001')
-        self.propose(expected=1) # another implementation must wait for this delivery
+        self.propose(expected=1) # unchanged/no-op input is still refused; explicit continuation is tested separately
 
     def test_stale_version_or_before_rejected_without_changes(self):
         for field in ('base_version','base_digest','before'):

@@ -11,7 +11,7 @@ import subprocess
 import sys
 import tempfile
 from feature_lifecycle import read_record, require_active
-from revisions import apply_changes, digest, inspect, nonempty, semantics, validate_proposal
+from revisions import apply_changes, digest, inspect, nonempty, semantics, validate_proposal, validate_continuation
 
 
 def now():
@@ -110,8 +110,7 @@ def main():
             if comparable(old) == comparable(record) and not args.source:
                 print('REVISION_ALREADY_RECORDED: ' + old['id']); return 0
         if pending: raise ValueError('One open revision at a time; apply or cancel it first')
-        if b['version'] > 1 and not any(x['version'] == b['version'] for x in b['deliveries']):
-            raise ValueError('Finish and verify the current revision before proposing another')
+        validate_continuation(record, b, records, required=True)
         record['source_files'] = []
         sources = []
         for source in args.source:
@@ -148,6 +147,7 @@ def main():
         else:
             if record['base_version'] != b['version'] or record['base_digest'] != b['digest']:
                 raise ValueError('Stale revision; cancel and create a reviewed replacement')
+            validate_continuation(record, b, records, required=True)
             decisions = confirmations(folder, record)
             for source in record.get('source_files', []):
                 target = folder/source['path']
@@ -158,6 +158,8 @@ def main():
             b['digest'] = digest(semantics(doc['requirements']))
             b['applied'].append({'id': record['id'], 'version': b['version'], 'proposal_digest': digest(record),
                                  'result_digest': b['digest'], 'decision_digest': digest(decisions), 'at': now()})
+            if 'continues_revision' in record:
+                b['applied'][-1]['continues_revision'] = record['continues_revision']
             doc['feature']['status'] = 'provisional'
     elif args.action == 'correct-coverage':
         if args.input is None or not args.revision:
