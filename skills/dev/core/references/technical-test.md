@@ -13,6 +13,25 @@ Start from the selected feature ID, reviewed requirement/AC and impact rows, cur
 3. Where an existing safe test seam allows it, add or strengthen focused executable assertions for missing objective behavior. Such code/test edits return to the normal Build/Repair scope, review and task commit rules; Test does not silently widen production code, invent a dependency, or run destructive setup merely to obtain a green result. For device/instrumented checks, first confirm device, account, installed build and restoration capability under the Android profile. A build, screenshot or successful setup command is not a behavior assertion.
 4. Run `python3 core/scripts/verification.py run <PROJECT> <ID>` against the final applicable code state and retain the generated `quality-report.json`, `verification.json`/view, test output or XML references and exact exit codes. A failure must remain failed; investigate it through Repair, then rerun affected checks. An unavailable environment stays unavailable. Reuse a current result only with its original tested revision and an explicit relevance check; do not relabel it as freshly run.
 
+## Coverage classification before execution/revision (0.13.3)
+
+Describe two separate facts in the existing row `coverage`/actual/evidence text and report, without adding a new registry:
+
+- Execution method: automatic assertions (JVM/device/CI), Agent runtime observation, user observation, static inspection or unavailable.
+- Delivery evidence channel: selected passed quality gate; current reviewed device execution receipt; external/runtime observation; or static reasoning with its limits.
+
+A device test with executable assertions is automatic even when run outside the daily gates. Legacy row `mode: manual` and revision `manual_coverage` identify a non-gate assessment route; they do not mean a human executed the test. Do not call all non-gate rows “manual tests” or turn static review into runtime observation. Conversely, a device screenshot or successful instrumentation setup without behavior assertions is not an automatic behavior test.
+
+Before submitting an immutable revision draft, compare its planned `test_ids` with applicable reviewed gate commands and their explicit IDs. New draft `test_ids` designate intended gate-backed checks; put non-gate device IDs, actual observations and their target criteria in the existing report/coverage explanation, not that array merely because they have a TEST name. Planned gates may still need to be configured/executed; an ID match is not proof of execution. A device check belongs in this array if it really will run as a selected applicable gate. Missing resources mean unavailable, never a new gate invented solely to satisfy the array. See revision-workflow.md.
+
+## Asynchronous absence/removal assertions (0.13.3)
+
+When an assertion says an event never occurred or an object was removed, distinguish a real negative outcome from the trigger never running, delayed arrival, the wrong object, skipped execution or observing too early. Inspect the affected test, not every unrelated test.
+
+For removal, establish the exact object's arrival/presence through a positive observation or independently bound event trace, then observe the required removal. Use a bounded wait and the behavior's required timing window; wait timeout is failure/unavailable, not absence proof. For “must not appear,” confirm the triggering action/input and observer are active and monitor the relevant specified interval; do not demand an object appear when the requirement forbids it. A fixed sleep alone does not establish these premises. Do not change product timing to make a test pass or infer permanent absence from a short window.
+
+Where feasible, try a focused counterexample: disable removal while preserving arrival, suppress the trigger, or break the observer. A meaningful test rejects those cases. Use an isolated fixture or existing safe seam, not an unapproved production edit/device action. Mutation need not be a new always-on gate; if infeasible, document the examined counterexample and remaining uncertainty. Skipped/zero-executed cases and assumed waits are not passes. Return only an affected gap to Build/Repair, preserve genuine prior results and rerun affected checks; no unrelated whole-matrix retry.
+
 ## Handoff to Verify
 
 The two existing artifacts are the handoff, not a new canonical JSON: project-level `quality-report.json` contains selected commands, exit codes, time and tested revision; feature-level `verification.json` contains each claim's execution mapping, coverage explanation, results and gaps. Pass their exact paths and current Git/worktree identity plus a concise list of uncovered claims. Original test files, output and source remain inspectable by reference; a narrative summary cannot replace them.

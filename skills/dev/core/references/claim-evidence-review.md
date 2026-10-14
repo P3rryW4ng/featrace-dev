@@ -11,3 +11,5 @@ The router reconciles each finding with the canonical verification rows. If unsu
 Only newly initialized workflow v6 features require this record for `complete`. Existing v5 and older deliveries are not migrated.
 
 Before importing a new reviewer return/receipt that can repeat private provenance, follow [output-privacy.md](output-privacy.md). Check the selected new return without dumping it; resolve only the affected privacy candidates and then recheck normal freshness. Do not scan/rewrite old evidence or use no_matches as semantic approval.
+
+For changed asynchronous absence/removal claims, inspect trigger and observer evidence, assertion order, object identity and observation window. Try whether “never arrived,” “removal disabled,” “wrong object” or skipped execution would still pass. Removal requires witnessed presence or an independently bound event trace; a never-appear claim requires a real trigger and active observer rather than forbidden prior presence. Missing premises are partial/unknown, not automatic approval. Follow technical-test.md for the bounded scope; do not reopen unrelated accepted behavior.

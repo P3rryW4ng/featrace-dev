@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.13.3 — 2026-10-14
+
+- Clarify execution method versus delivery evidence channel before Test/revision preparation. Device automation outside daily gates remains automatic execution; new revision drafts keep intended gate-backed IDs distinct from non-gate coverage. Preserve existing immutable proposals, continuation obligations and correction rules.
+- Strengthen affected asynchronous negative-assertion review: prove trigger/observer and, for removal, prior presence; inspect identity/timing and focused disabled-removal or absent-trigger counterexamples. Skipped/zero-run cases are not passes. No new schema, command, gate, broad retest or production mutation. This repairs existing Test/Verify decision guidance, so advances the patch number; real v6 accuracy and cost remain unproven.
+
 ## 0.13.2 — 2026-10-14
 
 - Show explicit validated archive/index annotation links in acceptance status, generated verification views and scoped Test/Verify starting views. Separate current receipts, historical notes and unapplied row assessments; do not infer loose notes or mutate original results, tested revisions, freshness or completion. This compatible display repair is included in the same unreleased patch candidate, not a new increment per development turn.
