@@ -125,6 +125,7 @@ def collect(root, feature_id, stage, task_ids, item_ids, base=None):
             continue
         contract = {k: value for k, value in row.items() if k not in ('history', 'retention')}
         claims.append(dict(contract, effective_state=status, latest_result=result,
+                           annotation_links=v.annotation_links(plan, row, status),
                            history_ref=prefix + 'verification.json#items/' + row['id'] + '/history',
                            history_entries=len(row['history']), provenance_readback_required=bool(latest and latest.get('retention_kind'))))
     revision_index = []

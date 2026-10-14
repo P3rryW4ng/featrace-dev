@@ -42,6 +42,8 @@ Read `core/references/requirement-schema.md` when editing feature records, `core
 
 ## Boundaries that apply across stages
 
+For newly authored review returns, receipts or delivery reports that can repeat private evidence, load `core/references/output-privacy.md` before displaying/importing or sharing them. Check selected outputs and staged new record lines; no source/history sweep, raw-value echo or automatic evidence edits. This does not replace evidence/acceptance checks.
+
 Before Agent-authored temporary writes, read `core/references/write-scope.md`: ordinary stages use ignored project-local scratch; independent review and isolated workers retain only their explicitly authorized locations. Pass the exact write scope and scratch path at handoff; never use a system-temp fallback to escape a restricted scope.
 
 Before any parallel Build, first load `orchestration.md` and complete the normal Scope route using `workflow.md`, `impact-review.md`, `task-semantic-review.md` and `historical-regression.md`. Then use `parallel-build.md`; a supplied plan or green legacy validator does not replace current Scope reviews. Missing reviews with writes disallowed mean stop before prepare/dispatch.

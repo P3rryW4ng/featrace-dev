@@ -59,3 +59,5 @@ The new entry is a relevance judgment, **not** a freshly executed pass. Later pr
 For a subsequent explicit index/annotation-only correction while these results remain current, use [evidence-annotations.md](evidence-annotations.md): freeze before editing and review the bounded patch in one fresh context. Do not redo every full carry or exclude all text files from hashes. Raw artifact or claim changes stay subject to ordinary evidence investigation.
 
 0.12.2 also permits explicit addition of backed-up originals together with index edits through `evidence-annotations.md`. Existing raw bytes remain unchanged; only supported current rows get amendment receipts, while affected/unknown rows stay stale. This is not automatic file exclusion or fresh testing.
+
+Before importing a new reviewer return/receipt that can repeat private provenance, follow [output-privacy.md](output-privacy.md). Check the selected new return without dumping it; resolve only the affected privacy candidates and then recheck normal freshness. Do not scan/rewrite old evidence or use no_matches as semantic approval.

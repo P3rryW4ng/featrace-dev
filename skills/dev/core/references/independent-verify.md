@@ -47,3 +47,5 @@ Independently inspect each finding's cited file/locator and classify it as confi
 Keep one reviewer per eligible attempt. Reconcile precise citations rather than doing another full independent investigation, while expanding reads when a finding requires it. Avoid automatically retrying an unchanged review or sending duplicate full rule/source text in the dispatch message; pass the bound paths and the specialist path. These reduce avoidable work without lowering evidence obligations or changing the model.
 
 Record the measured review time (including preparation and reconciliation), meaningful findings, false positives, handoff gaps and token usage when exposed by the host. Current pilot demonstrates mechanics only; no claim of fewer omissions or lower cost without comparative evidence across real work.
+
+Before importing a new reviewer return/receipt that can repeat private provenance, follow [output-privacy.md](output-privacy.md). Check the selected new return without dumping it; resolve only the affected privacy candidates and then recheck normal freshness. Do not scan/rewrite old evidence or use no_matches as semantic approval.

@@ -411,6 +411,41 @@ def impact_results(root, folder):
     return results
 
 
+def annotation_links(doc, row, effective_status):
+    """Read only explicit validated receipt links; never infer a note from prose."""
+    events = {event['id']: event for event in doc.get('annotation_reviews', [])}
+    links = []
+    for index, entry in enumerate(row['history']):
+        if entry.get('retention_kind') != 'annotation_amend':
+            continue
+        receipt = entry['annotation_receipt']  # load_plan already validates this binding.
+        event = events[receipt['review_id']]
+        verdict = next(r for r in event['review']['items'] if r['item_id'] == row['id'])
+        inputs = event['inputs']
+        current = index == len(row['history']) - 1 and effective_status == 'retained'
+        links.append({
+            'review_id': event['id'], 'result_history_index': index, 'history_index_basis': 'zero_based',
+            'source_result_hash': receipt['source_result_hash'],
+            'applicability': 'current_receipt' if current else 'historical_only',
+            'scope': [{'path': m['path'], 'role': m['role']} for m in inputs['metadata']],
+            'archive_additions': [r['path'] for r in inputs.get('archive_additions', [])],
+            'item_assessment': verdict['evidence'],
+            'shared_scope_reason': event['review']['classification_evidence'],
+            'reviewed_revision': inputs['reviewed_revision'],
+            'boundary': 'Linked archive/index review, not a new observation or status override; historical-only notes cannot establish current acceptance. Investigate changed inputs and evidence applicability first; this label alone does not require a new observation or full retest.',
+        })
+    # An explicit adverse/unknown row verdict has no applied receipt, so is not a correction approval.
+    linked = {r['review_id'] for r in links}
+    for event in events.values():
+        verdict = next((r for r in event['review']['items'] if r['item_id'] == row['id']), None)
+        if verdict and event['id'] not in linked:
+            links.append({'review_id': event['id'], 'applicability': 'needs_review',
+                          'scope': [{'path': m['path'], 'role': m['role']} for m in event['inputs']['metadata']],
+                          'item_assessment': verdict['evidence'],
+                          'boundary': 'Explicit row assessment has no applied receipt; do not infer an accepted correction or change acceptance state.'})
+    return links
+
+
 def summary(root, folder):
     doc = load_plan(folder)
     stamp, head = context(root, folder, doc)
@@ -424,6 +459,7 @@ def summary(root, folder):
             last = row['history'][-1]
             item.update(tested_revision=last['tested_revision'], reviewed_revision=last['reviewed_revision'],
                         changed_paths=last['changed_paths'], reason=last['reason'])
+        item['annotation_links'] = annotation_links(doc, row, item['status'])
         items.append(item)
     print(json.dumps({'digest': stamp, 'tested_revision': head, 'items': items}, ensure_ascii=False, indent=2))
     return 0 if all(r['status'] in ('passed', 'waived', 'retained') for r in items) else 2
@@ -440,12 +476,18 @@ def render(folder):
         stamp = None
     lines = ['# Verification checklist', '', 'Generated view; manual observation and automated checks are distinct.', '']
     for row in doc['items']:
+        effective = state(row, stamp, manual_evidence_stamp(root, folder, row) if row['mode'] == 'manual' else None) if stamp else 'stale'
         lines += ['## ' + row['id'], '', 'Mode: ' + row['mode'], 'Expected: ' + str(row['expected']),
-                  'Status: ' + (state(row, stamp, manual_evidence_stamp(root, folder, row) if row['mode'] == 'manual' else None) if stamp else 'stale — synchronize sources'), '']
+                  'Status: ' + (effective if stamp else 'stale — synchronize sources'), '']
         if row.get('dependencies'):
             lines += ['Dependencies: ' + ', '.join(row['dependencies']), 'Scope rationale: ' + row['scope_reason'], '']
         if row['history']:
             lines += ['Latest recorded evidence (not necessarily current):', '```json', json.dumps(row['history'][-1], ensure_ascii=False, indent=2), '```', '']
+        links = annotation_links(doc, row, effective)
+        if links:
+            lines += ['Linked archive/index notes (original result and test identity unchanged):', '```json', json.dumps(links, ensure_ascii=False, indent=2), '```', '']
+        elif doc.get('annotation_reviews'):
+            lines += ['Annotation link: none; free-text notes are not inferred. Check an explicitly cited note separately when needed.', '']
     (folder / 'verification.md').write_text('\n'.join(lines))
 
 
