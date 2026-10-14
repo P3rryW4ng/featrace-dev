@@ -63,3 +63,5 @@ The helper's return JSON, exact patch and check logs are the evidence. After ins
 - **Next:** exact return directory and the router action needed. Never tell the user a candidate is delivered or complete.
 
 Use one line per label, no table or nested list; add lines only when distinct material blockers require them. Do not paste the full diff, JSON, command logs, chronological tool narration or repeated project background into this message. The router must read those artifacts directly and must not treat this short text as proof. Do not compress away a failure, an unreviewed hunk, or a changed interface; point to its exact evidence location and state the blocker plainly. Measured time/token use can be one additional line when exposed, otherwise omit it.
+
+For material non-obvious contracts, follow `<SKILL>/core/references/code-comments.md` within assigned paths. Preserve why/invariant/test references; do not turn an assumption into a factual platform comment or expand ownership just to document another file.

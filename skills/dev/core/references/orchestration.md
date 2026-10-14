@@ -4,6 +4,8 @@ Use this contract for feature mutations and `/dev next`. It keeps one user entry
 
 ## Router boundary
 
+Before substantive routing in an unfamiliar or changed project configuration, apply `project-compatibility.md`. Carry only relevant project standards, workflow ownership and execution limits into the chosen stage/specialist. A selected router does not disable project hooks or authorize changes to another workflow.
+
 The router may read the selected feature identity, `feature-status.py` output, unresolved decisions/fixes, source freshness, task state, impact state, verification state and the user's current request. It chooses one stage or an explicit short chain, announces that route, then loads only that stage's required references plus any direct prerequisite named below.
 
 The router must not reread every source, code file and test result merely to choose a stage. It must not summarize its way around a failed gate. `help`, `list`, `status` and delivery-mode activation remain read-only and do not require a stage handoff.
@@ -62,3 +64,5 @@ For the independent Build pair, the router passes task identity and frozen input
 Stop the current stage when product authority is required, evidence cannot be accessed, permission is missing, a deterministic gate fails, or only a person can perform the remaining observation. Continue independent authorized work that is outside the blocker. Report the stage result, saved evidence, one focused blocker and the next eligible action.
 
 Never call a stage complete because its document exists. Requirement needs semantic review, Scope needs evidence-backed boundaries, Build needs actual code and tests appropriate to the slice, Verify needs executed evidence, Repair needs regression protection or an explicit waiver, and Deliver needs evidence current for the delivered revision.
+
+For large feature histories or scoped Test/Verify reading, use `stage-inputs.md` and validate the derived snapshot at handoff; after Test writes results, prepare a fresh Verify view. Small features may use direct canonical references. Under an evaluation request, optional `stage-cost.md` separates stage/wait/record intervals without blocking delivery. Build/Repair use `code-comments.md` only at material non-obvious contract lines. None of these adds a user command, independent Test Skill or relaxed completion condition.

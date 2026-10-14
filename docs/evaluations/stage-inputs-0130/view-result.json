@@ -1,0 +1,106 @@
+{
+  "input_identity": {
+    "project": "/private/tmp/featrace-stage-pilot/project",
+    "installed_skill": "/private/tmp/featrace-0130-isolation/.claude/skills/dev",
+    "skill_version": "0.13.0 (dispatch identity; not independently established by a version manifest)",
+    "base_revision": "2b2edb423a33a61abf2aaac925c8bea4f8d58b04",
+    "code_revision": "0ccd683f8535474055124409861c60790d65f103",
+    "git_head": "0ccd683f8535474055124409861c60790d65f103",
+    "source_snapshot_digest": "11089919d47fa67a57cbb1ecd5c8b871b199bb63d3e4a9852b4db34c62066aac",
+    "views": [
+      {
+        "path": "/private/tmp/featrace-stage-pilot/project/.agent-workflow/scratch/DEMO-PREVIEW/test-view.json",
+        "stage": "test",
+        "view_digest": "955250821dce347e6f650fa5dccaa7812cf4a67af99e0da41a8836300582baaa",
+        "validation": "STAGE_VIEW_CURRENT: read-only starting inputs; no delivery approval",
+        "exit_code": 0
+      },
+      {
+        "path": "/private/tmp/featrace-stage-pilot/project/.agent-workflow/scratch/DEMO-PREVIEW/verify-view.json",
+        "stage": "verify",
+        "view_digest": "2cb47ee1d68912a7e0cfb66db7b49e822fd302e37a8cc95dfe4f9084e9f58167",
+        "validation": "STAGE_VIEW_CURRENT: read-only starting inputs; no delivery approval",
+        "exit_code": 0
+      }
+    ],
+    "read_file_sha256": {
+      "/private/tmp/featrace-stage-pilot/project/.agent-workflow/scratch/DEMO-PREVIEW/test-view.json": "6a180130451f3369d8491003f6a4efa52dc4ae307ea532b7583d5f688c23332b",
+      "/private/tmp/featrace-stage-pilot/project/.agent-workflow/scratch/DEMO-PREVIEW/verify-view.json": "2e24bc0730cdd1419fdf542b0fbb0c5efd81e9b697befd48196062479c555fe8",
+      "/private/tmp/featrace-stage-pilot/project/formatting.py": "569f65f7076277b28563b8b286a1536554c6dc270deb73120b79648813a447c9",
+      "/private/tmp/featrace-stage-pilot/project/preview.py": "dcf8c8c79b625fd8a87f3bdd8f0e98e1642c51864b820e17ca844043d2df1377",
+      "/private/tmp/featrace-stage-pilot/project/receipt.py": "15a1a35fceffed7257bc6d29971d527ee9c7bbadea390bdbeba79fef5f0819c3",
+      "/private/tmp/featrace-stage-pilot/project/test_preview.py": "a805ff2018ead5a5345b4e611a54d052b5819cba793fcf796cb3a79dca9e9ad0",
+      "/private/tmp/featrace-stage-pilot/project/.agent-workflow/features/DEMO-PREVIEW/sources/prd.txt": "fb3f42fc6aa4193113a6ea5e2109df401f8a6d6e3dc143f41d689c5aa6968611",
+      "/private/tmp/featrace-stage-pilot/project/.agent-workflow/features/DEMO-PREVIEW/spec/requirements.json": "d277543be09ff8847052cb3222f0996e00998f79a65b941d9f89e0964e49b9a3",
+      "/private/tmp/featrace-stage-pilot/project/.agent-workflow/features/DEMO-PREVIEW/spec/prd-intake.json": "e3ccc36b75f32dbafca034f7a81bef2883bc7294e7bdac9a64dade02ce3ece71",
+      "/private/tmp/featrace-stage-pilot/project/.agent-workflow/features/DEMO-PREVIEW/tasks.json": "43c3ff4671dde2aee7aba5212c4a75282b10075e051d56ddc027f5d1f9765f97",
+      "/private/tmp/featrace-stage-pilot/project/.agent-workflow/features/DEMO-PREVIEW/impact.json": "9a1711db0cbe9faba7a1ee9ba1cdf56642b2f3e4bd5b8e70e6307c74f0b38ead",
+      "/private/tmp/featrace-stage-pilot/project/.agent-workflow/features/DEMO-PREVIEW/traceability.json": "6620d83d4d4957a7c70b89965373ebbc160b574cbca5f58b5b53ce904c9bdce3",
+      "/private/tmp/featrace-stage-pilot/project/.agent-workflow/features/DEMO-PREVIEW/decisions.json": "ffc083800fae94efcfa04f652947a28624d833572cc9758defe8522c7af73d79",
+      "/private/tmp/featrace-stage-pilot/project/.agent-workflow/features/DEMO-PREVIEW/fixes.json": "050b029332b548480fda50d4a83b47de413a96ae2d0af7ca525bba8bd4b742b0",
+      "/private/tmp/featrace-stage-pilot/project/.agent-workflow/features/DEMO-PREVIEW/verification.json": "d0fcf82a7069bdda0171179b0c0fe3789319f0b939ed829f05596bad714d61d4",
+      "/private/tmp/featrace-stage-pilot/project/.agent-workflow/project-baseline/quality-report.json": "743a06ba8d23af0be13115cbb27565d154e35b5c07bf7028d20d9023909f081b",
+      "/private/tmp/featrace-stage-pilot/project/.agent-workflow/project-baseline/quality-gates.json": "75faf9fb98d29a73bc508202abc1d066362d3b04cbe0de7eb88e6d91447fcb79",
+      "/private/tmp/featrace-0130-isolation/.claude/skills/dev/SKILL.md": "1f0b7a9f93b99b0c6cdbeb92def0230bb7eebab78ebab3f9dfc1511a9cff14e9",
+      "/private/tmp/featrace-0130-isolation/.claude/skills/dev/core/references/stage-inputs.md": "d39546f149afc75bb36e4807c6f6680638685a77b533bf289ac8fd28159fce1d",
+      "/private/tmp/featrace-0130-isolation/.claude/skills/dev/core/references/technical-test.md": "45a51d6d8eb2583f4f0f336d4e27b8621362cb3aabced78f30f0f9eeca47b7ac",
+      "/private/tmp/featrace-0130-isolation/.claude/skills/dev/core/references/verification-workflow.md": "a45924562eee8294801b828f6db1cb9131802441336a2e8a3d14a1d82b83428a",
+      "/private/tmp/featrace-0130-isolation/.claude/skills/dev/core/references/project-compatibility.md": "36dab20d29d821694710d058e8a8c1a29a449cc921ec872a295ee2f786e73edb",
+      "/private/tmp/featrace-0130-isolation/.claude/skills/dev/core/references/write-scope.md": "a6a8d2136917065c557619a3df92010392f1af5151db117b5137cf60827773ac"
+    }
+  },
+  "findings": [
+    {
+      "severity": "high",
+      "claim": "Receipt identifier remains 12 characters",
+      "verdict": "contradicted by actual current sample and code",
+      "expected": "receipt(\"abcdefghijkl\") == \"abcdefghijkl\" with length 12",
+      "actual": "\"abcdefgh\" with length 8",
+      "cause": "Shared formatting.LIMIT now equals 8, used by receipt as well as preview.",
+      "record_issue": "Current manual passed state is semantically unsupported and masks an observed regression. No record was changed in this evaluation."
+    },
+    {
+      "severity": "medium",
+      "claim": "Long preview label is truncated to 8 characters",
+      "verdict": "existing passed evidence is insufficient; static code and new limited local samples support the intended behavior",
+      "counterexample_permitted_by_existing_test": "An implementation that returns its input unchanged would pass preview(\"abc\") while violating the long-input criterion.",
+      "record_issue": "Do not treat the short-input test as whole-criterion coverage."
+    },
+    {
+      "severity": "medium",
+      "claim": "Scope and TEST-RECEIPT traceability",
+      "verdict": "actual shared consumer omitted from reviewed path account; required test exists only as a label",
+      "needed": "Expand caller/dependency investigation to receipt.py and add an executable receipt preservation regression."
+    }
+  ],
+  "exact_read_paths": [
+    "/private/tmp/featrace-stage-pilot/project/.agent-workflow/scratch/DEMO-PREVIEW/test-view.json",
+    "/private/tmp/featrace-stage-pilot/project/.agent-workflow/scratch/DEMO-PREVIEW/verify-view.json",
+    "/private/tmp/featrace-stage-pilot/project/formatting.py",
+    "/private/tmp/featrace-stage-pilot/project/preview.py",
+    "/private/tmp/featrace-stage-pilot/project/receipt.py",
+    "/private/tmp/featrace-stage-pilot/project/test_preview.py",
+    "/private/tmp/featrace-stage-pilot/project/.agent-workflow/features/DEMO-PREVIEW/sources/prd.txt",
+    "/private/tmp/featrace-stage-pilot/project/.agent-workflow/features/DEMO-PREVIEW/spec/requirements.json",
+    "/private/tmp/featrace-stage-pilot/project/.agent-workflow/features/DEMO-PREVIEW/spec/prd-intake.json",
+    "/private/tmp/featrace-stage-pilot/project/.agent-workflow/features/DEMO-PREVIEW/tasks.json",
+    "/private/tmp/featrace-stage-pilot/project/.agent-workflow/features/DEMO-PREVIEW/impact.json",
+    "/private/tmp/featrace-stage-pilot/project/.agent-workflow/features/DEMO-PREVIEW/traceability.json",
+    "/private/tmp/featrace-stage-pilot/project/.agent-workflow/features/DEMO-PREVIEW/decisions.json",
+    "/private/tmp/featrace-stage-pilot/project/.agent-workflow/features/DEMO-PREVIEW/fixes.json",
+    "/private/tmp/featrace-stage-pilot/project/.agent-workflow/features/DEMO-PREVIEW/verification.json",
+    "/private/tmp/featrace-stage-pilot/project/.agent-workflow/project-baseline/quality-report.json",
+    "/private/tmp/featrace-stage-pilot/project/.agent-workflow/project-baseline/quality-gates.json",
+    "/private/tmp/featrace-0130-isolation/.claude/skills/dev/SKILL.md",
+    "/private/tmp/featrace-0130-isolation/.claude/skills/dev/core/references/stage-inputs.md",
+    "/private/tmp/featrace-0130-isolation/.claude/skills/dev/core/references/technical-test.md",
+    "/private/tmp/featrace-0130-isolation/.claude/skills/dev/core/references/verification-workflow.md",
+    "/private/tmp/featrace-0130-isolation/.claude/skills/dev/core/references/project-compatibility.md",
+    "/private/tmp/featrace-0130-isolation/.claude/skills/dev/core/references/write-scope.md",
+    "/private/tmp/featrace-0130-isolation/.claude/skills/dev/core/scripts/stage_view.py"
+  ],
+  "elapsed_seconds": 153.906,
+  "usage": null,
+  "completion_approval": false,
+  "raw_report_sha256": "58ec7afdd2a42b06ac9122235b235a4418f0a47e52bc12b693e4878e2b1f9a34"
+}

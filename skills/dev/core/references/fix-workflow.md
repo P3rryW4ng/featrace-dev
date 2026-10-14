@@ -44,6 +44,8 @@ For `verified`, `regression_test_ids` is a string array of tests declared in req
 
 This is an explicit coverage assertion, not proof of execution or semantic adequacy. Keep actual run results in `verification` (string array) and the tested code identifier in `tested_revision`. Existing in-scope verified fixes remain compatible; older unrelated references now require review and an appropriate link or explanation. Do not automatically add a reason solely to clear validation.
 
+For a regression actually executed on a selected device but absent from routine gates, use [device-regression.md](device-regression.md). Preserve FIX-to-TEST IDs and bind archived execution/identity evidence; inability to run a daily gate does not waive this delivery's regression. This helper does not run or authorize device actions.
+
 ## Close a report without claiming a repair
 
 Keep the original report and set `status: closed` with a `closure` object. A closed report is separate from a verified repair. All closures require `outcome`, a non-empty `reason`, and a non-empty string array `evidence` containing actual findings or references:
@@ -66,3 +68,5 @@ Keep the original report and set `status: closed` with a `closure` object. A clo
 Use investigating/blocked for insufficient evidence or inability to reproduce; those are not terminal outcomes. A closed report does not require invented root cause, repair or regression fields. Render after edits, run validation, and review remaining work; closing alone never restores feature complete. Summaries count recorded closed and verified separately and do not certify evidence. New evidence after closure may be registered as a new report referencing the previous one, preserving history. Historical records are editable JSON, not an enforced immutable event log.
 
 The fix record is not an automatic PRD version manager or source-diff engine. The validator checks fields and links, not whether root cause, approval, code, or test outcomes are truthful. Keep raw PRD/API/HTML artifacts immutable and apply existing review freshness rules whenever requirement semantics change.
+
+During authorized implementation follow `code-comments.md` for material invariants, fallback reasons and historical repair boundaries. Keep comments within actual scope; no comment-count gate or new record is required.

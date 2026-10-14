@@ -10,6 +10,7 @@ import sys
 import tempfile
 import os
 import hashlib
+from functools import wraps
 
 from impact import digest, git, snapshot as impact_snapshot, validate_impact
 from project import validate_gates
@@ -26,6 +27,32 @@ def save(path, doc):
         json.dump(doc, f, ensure_ascii=False, indent=2)
         f.write('\n')
     os.replace(f.name, path)
+
+
+def plan_mutation(function):
+    """Serialize helper-authored result mutations; refuse rather than wait on a busy plan."""
+    @wraps(function)
+    def wrapped(root, folder, *args, **kwargs):
+        scratch = root / '.agent-workflow/scratch'
+        if scratch.is_symlink() or (root / '.agent-workflow').is_symlink():
+            raise ValueError('unsafe verification lock location')
+        scratch.mkdir(exist_ok=True)
+        lock = scratch / ('verification-' + folder.name + '.lock')
+        if lock.is_symlink():
+            raise ValueError('unsafe verification lock')
+        with lock.open('a') as stream:
+            try:
+                if os.name == 'nt':
+                    import msvcrt
+                    stream.seek(0); stream.write('0'); stream.flush(); stream.seek(0)
+                    msvcrt.locking(stream.fileno(), msvcrt.LK_NBLCK, 1)
+                else:
+                    import fcntl
+                    fcntl.flock(stream, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            except OSError as exc:
+                raise ValueError('verification plan busy; preserve input and retry after active operation') from exc
+            return function(root, folder, *args, **kwargs)
+    return wrapped
 
 
 def sources(root, folder):
@@ -66,6 +93,9 @@ def load_plan(folder):
     doc = read(folder / 'verification.json')
     if not isinstance(doc, dict) or doc.get('schema_version') != 1 or doc.get('feature_id') != folder.name or not isinstance(doc.get('items'), list) or not isinstance(doc.get('retired'), list):
         raise ValueError('invalid verification identity/schema')
+    if 'annotation_reviews' in doc:
+        from evidence_annotations import validated_reviews
+        validated_reviews(doc)
     ids = set()
     for item in doc['items']:
         if not isinstance(item, dict) or not isinstance(item.get('id'), str) or item['id'] in ids:
@@ -93,6 +123,18 @@ def load_plan(folder):
                 raise ValueError('verification result lacks evidence or tested identity')
             if 'evidence_digest' in result and (not isinstance(result['evidence_digest'], str) or not result['evidence_digest']):
                 raise ValueError('invalid manual evidence digest')
+            if result.get('retention_kind') == 'annotation_amend':
+                from evidence_annotations import validate_receipt
+                if result['status'] != 'retained' or item['mode'] != 'manual':
+                    raise ValueError('annotation only applies to retained manual evidence')
+                validate_receipt(result, item['history'][index - 1] if index else None, item, doc)
+                continue
+            if result.get('retention_kind') == 'reviewed_carry':
+                from evidence_carry import validate_receipt
+                if result['status'] != 'retained' or item['mode'] != 'manual':
+                    raise ValueError('carry receipt only belongs to retained manual evidence')
+                validate_receipt(result, item['history'][index - 1] if index else None, item)
+                continue
             if result['status'] == 'retained' and (not isinstance(result.get('scope_files'), dict) or not isinstance(result.get('changed_paths'), list)
                                                    or not result['changed_paths'] or not all(isinstance(result.get(k), str) and result[k].strip() for k in ('reviewed_revision', 'reason', 'source_result_digest', 'semantic_digest'))):
                 raise ValueError('retained evidence lacks reviewed scope and prior identity')
@@ -144,12 +186,18 @@ def legacy_semantic_stamp(root, folder, row):
                    'config': config, 'impact_contract': impact_contract, 'item': contract})
 
 
-def manual_evidence_stamp(root, folder, row):
+def manual_evidence_stamp(root, folder, row, *, carry_sources=None):
     """Bind a manual observation to its meaning and project scope, not gate prose."""
     req, _, impact = sources(root, folder)
     contract = {k: v for k, v in row.items() if k not in ('history', 'retention')}
-    return digest({'requirements': req['requirements'], 'decisions': read(folder / 'decisions.json'),
-                   'impact': impact_snapshot(root, impact)['digest'], 'item': contract})
+    content = {'requirements': req['requirements'], 'decisions': read(folder / 'decisions.json'),
+               'impact': impact_snapshot(root, impact)['digest'], 'item': contract}
+    if row.get('history') and row['history'][-1].get('retention_kind') in ('reviewed_carry', 'annotation_amend'):
+        from evidence_carry import project_files, source_identity
+        content['carry_project'] = project_files(root)
+        content['carry_sources'] = source_identity(root, folder) if carry_sources is None else carry_sources
+        content['carry_authority'] = {name: read(folder / name) for name in ('traceability.json', 'spec/prd-intake.json')}
+    return digest(content)
 
 
 def scope_files(root, folder):
@@ -169,6 +217,7 @@ def scope_files(root, folder):
     return files
 
 
+@plan_mutation
 def sync(root, folder):
     req, config, impact = sources(root, folder)
     from feature_lifecycle import require_active
@@ -185,6 +234,8 @@ def sync(root, folder):
     active = {r['id'] for r in rows}
     doc = {'schema_version': 1, 'feature_id': folder.name, 'items': rows,
            'retired': old['retired'] + [r for r in old['items'] if r['id'] not in active]}
+    if 'annotation_reviews' in old:
+        doc['annotation_reviews'] = old['annotation_reviews']
     save(folder / 'verification.json', doc)
     req['feature']['verification_required'] = True
     save(folder / 'spec/requirements.json', req)
@@ -211,6 +262,7 @@ def result(status, stamp, head, actual, evidence, method, *, semantic=None, file
     return row
 
 
+@plan_mutation
 def run(root, folder):
     doc = load_plan(folder)
     stamp, head = context(root, folder, doc)
@@ -255,6 +307,7 @@ def doc_without_new_results(doc):
     return old
 
 
+@plan_mutation
 def record(root, folder, item_id, status, stamp, tested, actual, evidence):
     doc = load_plan(folder)
     current, head = context(root, folder, doc)
@@ -271,12 +324,13 @@ def record(root, folder, item_id, status, stamp, tested, actual, evidence):
     entry = result(status, stamp, tested, actual, evidence, 'manual',
                    semantic=semantic_stamp(root, folder, row) if scoped else None,
                    files=scope_files(root, folder) if scoped else None)
-    entry['evidence_digest'] = manual_evidence_stamp(root, folder, row)
     row['history'].append(entry)
+    entry['evidence_digest'] = manual_evidence_stamp(root, folder, row)
     save(folder / 'verification.json', doc)
     render(folder)
 
 
+@plan_mutation
 def retain(root, folder, item_id, stamp, changed, reason, evidence):
     """Carry a prior pass only after a scoped, current-input relevance review."""
     doc = load_plan(folder)

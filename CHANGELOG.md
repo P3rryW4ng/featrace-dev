@@ -1,5 +1,36 @@
 # Changelog
 
+## 0.13.0 — 2026-10-14
+
+- Add read-only Test/Verify starting views selected by task/item, preserving full linked requirements, shared/uncertain authority, current result identity and global unresolved claim/decision/fix states. Bind all canonical inputs and code/source/Skill currency; old histories, proof bodies and raw output remain at explicit readback references. No execution, acceptance mutation or new independent Test Skill.
+- Add optional ignored interval timing for test, verify, waiting and record maintenance with its own lock. Unknown usage remains null; account/session/context scopes are not interval measurements. Payload byte comparisons are not real token or net-efficiency claims.
+- Add scoped necessary-comment guidance for invariants, fallbacks and historical protection; no comment-count gate. Clarify historical maintenance summaries and centralize the currently authorized queue.
+- This implements a new stage-reading/handoff capability, so advances the middle version; existing acceptance data/gates remain unchanged, daily 0.12.2 installs are not migrated by isolated testing.
+
+## 0.12.2 — 2026-10-13
+
+- Repair the interaction between durable device provenance and carry freshness: explicitly declared new archived originals can be reviewed together with index/annotation corrections. Freeze ignored-scratch origin hashes before writing, bind final artifact identities and require faithful copy/extraction/redaction review; existing raw files, authority, code and claims remain protected.
+- Append amendment receipts only for currently supported rows; affected/partial/unknown rows remain stale. Later amendments list already-stale rows as excluded, never revive them, and report excluded counts. Constrain original result identity and refuse edited snapshots that manufacture current predecessors.
+- Preserve 0.12.1 metadata-only receipts and ordinary gates. This is a scoped compatibility repair of the existing archive/carry workflow, without a new user stage, reference-only hash exclusions or automatic completion; advance the patch number.
+
+## 0.12.1 — 2026-10-13
+
+- Correct two friction points exposed by the 0.12.0 real carry exercise: preserve declared FIX-to-TEST links for executed device regressions outside routine gates, with archived assertions/package identity and a current reviewed execution receipt; ordinary quality checks remain mandatory. Compilation/skips do not establish regression execution.
+- Add a bounded index/annotation correction path for current reviewed carry results. Freeze before editing, reject raw/authority/code/claim changes, review the exact patch in one fresh context and append shared-review receipts preserving original test identity. No blanket README exclusion, new observation or completion mutation.
+- Enforce metadata-only result wording and recheck all device receipt inputs before saving. This is a scoped compatible correction to existing regression/carry contracts, not a new delivery stage or broader automatic test runner; advance the patch number. Existing records remain valid under their prior rules until explicitly using the new paths.
+
+## 0.12.0 — 2026-10-13
+
+- Add explicit reviewed carry-forward for stale manual requirement/impact results, including older observations without the strict preserve-only `retain` receipts. Freeze the original result, unchanged full parent/row contracts, historical/current records, changed paths and source/evidence identities; require a fresh-context supported relevance assessment before appending a retained result.
+- Keep original test identity and history; record current review identity separately. Changed claims/dependencies, withdrawn evidence, unknown/partial assessment and stale inputs are rejected. Later code/source/evidence changes stale the new receipt. Automatic gates and delivery checks remain unchanged.
+- This changes the accepted evidence contract and adds an internal helper, so it advances the middle version. Existing results are not migrated or silently made current. Includes the unreleased 0.11.2 compatibility instructions below.
+
+## 0.11.2 — unreleased candidate included in 0.12.0 (2026-10-13)
+
+- Add an on-demand project compatibility review before substantive operations: distinguish project standards, workflow ownership and enforced hooks; honor existing scoped authorization and report concrete conflicts without disabling other workflows or duplicating their state.
+- Reuse baseline conventions/coverage and evidence registration during authorized scan; mode-only activation, help and read-only status remain lightweight. Inspect only relevant configuration, excluding nested worktrees and private settings dumps.
+- Compatible instruction hardening uses the patch version. No new script, schema, host configuration switch or automatic conflict detection; Agent adoption and real conflict-resolution accuracy remain to be verified.
+
 ## 0.11.1 — 2026-10-13
 
 - Split ordinary Verify's **responsibilities** into an on-demand Technical Test step and a separate evidence assessment. Test investigates actual assertions, selects/runs feature-bound checks and leaves per-claim coverage plus command results in the existing `verification.json` and `quality-report.json`; Verify checks whether that evidence supports each full claim before delivery.

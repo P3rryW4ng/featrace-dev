@@ -68,6 +68,12 @@ def audit(root, feature_id):
             continue
         for test in regression:
             if test not in selected:
+                try:
+                    from regression_execution import current_evidence
+                    if current_evidence(root, feature, fix, test):
+                        continue
+                except (OSError, ValueError, TypeError, KeyError) as exc:
+                    errors.append('%s invalid device regression evidence: %s' % (fix.get('id', '?'), exc))
                 errors.append('%s regression test not selected by a passed check: %s' % (fix.get('id', '?'), test))
     errors.extend(validate_verification(root, feature, req, 'check'))
     return errors
@@ -85,7 +91,7 @@ def main():
         print('ERROR: ' + error)
     if errors:
         return 1
-    print('DELIVERY_EVIDENCE_CURRENT: selected checks passed and verified-fix test IDs were selected')
+    print('DELIVERY_EVIDENCE_CURRENT: selected checks passed and verified-fix tests have current gate/device execution evidence')
     print('Scope: manifests, tracked content outside .agent-workflow and registered evidence only; check task meaning, test assertions, uncommitted code and delivery report manually')
     return 0
 

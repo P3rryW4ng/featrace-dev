@@ -39,3 +39,5 @@ After a serial task is implemented or a parallel candidate is adopted into the p
 After the last task in an authorized implementation continuation, proceed to ordinary Verify and eligible Deliver under `verification-workflow.md` without waiting for a separate user command. Missing acceptance or failed checks keep the feature provisional and are reported as precise blockers; later user evidence resumes the same chain. A read-only progress question or explicit check-only request does not authorize closure.
 
 Parallel execution does not skip the develop Scope steps above. Before prepare, read `impact-review.md`, `task-semantic-review.md` and `historical-regression.md`, reuse current evidence or complete the authorized existing review flows. The pilot requires both review records even for legacy features; if writing them is outside this request, stop with Scope blocked, without worktrees or workers.
+
+During authorized implementation follow `code-comments.md` for material invariants, fallback reasons and historical repair boundaries. Keep comments within actual scope; no comment-count gate or new record is required.

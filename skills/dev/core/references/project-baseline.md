@@ -4,6 +4,8 @@ Since 0.5.4, module-context.md defines scoped dossier review. Plain scan still u
 
 ## Scan contract
 
+Apply `project-compatibility.md` during authorized setup/review. Keep applicable project policy, workflow ownership and execution constraints in the existing draft conventions/coverage notes with source references; register relied-on project-local rules and hooks as evidence. Do not copy personal settings or create a second compatibility state store. Scan never disables competing workflows or grants build permissions.
+
 `scan` is also project setup: read `.agent-workflow/config.yaml` when present, otherwise copy `core/assets/config.yaml` as Agent guidance. Read the Android or Generic profile for the actual target; in mixed repositories choose the feature's module rather than assuming a root build applies. On a fresh clone reuse shared notes and verify their evidence instead of reinitializing feature records.
 
 `project.py scan-prepare <PROJECT>` prepares an isolated baseline draft, inventories build manifests and chooses android or generic. For Android, it also refreshes `.agent-workflow/modules/candidates.json` and `.md` from supported static Gradle declarations. These are review inputs outside the baseline draft: they do not modify the formal module catalog or certify module semantics. Edit the printed `baseline-draft/baseline` directory, never the current baseline during scan review. Before declaring the scan ready, the Agent must:

@@ -81,6 +81,18 @@ def validate_regression_scope(item, requirements, tasks):
     for test in regression:
         if test not in scoped and not nonempty(notes.get(test)):
             errors.append(label + ': regression test outside affected requirements/tasks needs coverage reason: ' + test)
+    executions = item.get('regression_execution_history', [])
+    if not isinstance(executions, list):
+        errors.append(label + ': invalid regression execution history')
+    else:
+        from regression_execution import validate_receipt
+        for execution in executions:
+            try:
+                validate_receipt(execution)
+                if execution['inputs']['fix_id'] != item['id']:
+                    errors.append(label + ': device execution must retain the FIX-to-TEST association')
+            except (ValueError, TypeError, KeyError) as exc:
+                errors.append(label + ': invalid device execution: ' + str(exc))
     if not regression and not nonempty(item.get('regression_waiver')):
         errors.append(label + ': regression test or explicit waiver required')
     return errors
@@ -218,5 +230,6 @@ def render_fixes(folder, feature_id):
                   '- Regression tests: ' + ', '.join(fix.get('regression_test_ids', [])),
                   '- Cross-scope coverage: ' + '; '.join(test + ': ' + reason for test, reason in fix.get('regression_scope_notes', {}).items()),
                   '- Regression waiver: ' + fix.get('regression_waiver', ''),
+                  '- Device regression receipts: ' + str(len(fix.get('regression_execution_history', []))),
                   '- Tested revision: ' + fix.get('tested_revision', ''), '']
     (folder / 'fixes.md').write_text('\n'.join(lines) + '\n')
