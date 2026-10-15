@@ -8,6 +8,20 @@ The latest result must still be passed/retained, not failed/unavailable/waived. 
 
 Inspect actual before/current implementation, imports, consumers, state, navigation, tests and authority. A filename or grep miss does not prove independence. Declared dependency files must be existing unchanged regular Git files at both revisions, including transitive behavior paths. Dynamic, ignored, submodule or external dependencies require explicit environment/authority investigation; if their relevance or identity cannot be established, return unknown and perform the affected observation. Do not simplify an acceptance criterion or substitute interface tests for a container/UI result to fit this path.
 
+## When the original result was committed after testing (0.13.4)
+
+Do not change tested_revision to a later record commit. If the tested commit lacks the historical records, explicitly investigate Git history and select the full commit that saved the original contract/result:
+
+```text
+python3 core/scripts/evidence_carry.py capture <PROJECT> <ID> --item <row-id> --contract-revision <full-record-commit>
+```
+
+This optional internal argument is never inferred from the latest green row. The tested commit must precede the record commit, which must precede current HEAD. Every commit in that ancestry interval must have the same non-workflow Git tree as the tested commit (content, paths and modes); an implementation change followed by a revert is rejected. The selected record must contain the exact original result as the row's latest entry, and its full parent/row must match the current claim. Available parent authority at the tested commit must also agree. Missing, changed or withdrawn results are not repaired by this option.
+
+The snapshot and receipt separately bind `source_revision` (original tested code) and `contract_record.revision` (saved contract), including original result and record digests. The fresh reviewer must also return `contract_record` with `revision`, `tested_revision` and a specific `explanation`: explain the actual observation/record chronology, the original authority, and why this saved contract applies to the observation. Git tree equality alone does not prove an ignored source, dirty build or observed APK identity. Original archived identity evidence and the ordinary complete-claim/dependency review remain mandatory. Unknown chronology or coverage stays unknown.
+
+Apply takes the record revision from the frozen snapshot, recomputes it and binds it in the new receipt; do not pass a new revision at apply. Ordinary capture and older receipts remain unchanged. This is a compatible locator correction, not automatic mass carry, exemption for missing evidence, or fresh execution.
+
 ## Freeze and fresh review
 
 For each eligible row, capture to the authorized project-local ignored scratch directory:

@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.13.4 — 2026-10-15
+
+- Repair carry capture when an original observation was saved in Git after its tested code commit. Accept an explicit full contract-record revision, require tested/record/current ancestry and an unchanged business tree at every intervening commit, and match the latest saved original result and complete current contract. Existing test-time parent authority must agree.
+- Freeze and persist the record revision separately from tested_revision; require the fresh reviewer to explain observation/record chronology and still prove original package/worktree identity and current relevance. Recompute before apply; reject missing/withdrawn results, changed claims, uncertain identity and stale snapshots. Default capture and existing receipts stay compatible.
+- This narrowly repairs the existing carry locator, so advances the patch number. No automatic acceptance of real stale rows, gate reuse or business state changes. Installation updates remain explicit; native CC adoption remains unverified.
+
 ## 0.13.3 — 2026-10-14
 
 - Clarify execution method versus delivery evidence channel before Test/revision preparation. Device automation outside daily gates remains automatic execution; new revision drafts keep intended gate-backed IDs distinct from non-gate coverage. Preserve existing immutable proposals, continuation obligations and correction rules.

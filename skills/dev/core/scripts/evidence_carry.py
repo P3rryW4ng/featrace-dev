@@ -86,7 +86,7 @@ def source_identity(root, folder):
             'source_status_claims': inventory['source_status_claims']}
 
 
-def input_snapshot(root, folder, item_id):
+def input_snapshot(root, folder, item_id, contract_revision=None):
     from feature_lifecycle import require_active
     root = root.resolve()
     if folder.is_symlink():
@@ -110,20 +110,45 @@ def input_snapshot(root, folder, item_id):
     if git(root, 'rev-parse', base + '^{commit}').decode().strip() != base:
         raise ValueError('original tested_revision must be an available full commit')
     git(root, 'merge-base', '--is-ancestor', base, head)
-    old_req = historical(root, folder, base, 'spec/requirements.json')
-    old_impact = historical(root, folder, base, 'impact.json')
+    records_at = contract_revision or base
+    if contract_revision is not None:
+        if git(root, 'rev-parse', records_at + '^{commit}').decode().strip() != records_at:
+            raise ValueError('contract_revision must be an available full commit')
+        git(root, 'merge-base', '--is-ancestor', base, records_at)
+        git(root, 'merge-base', '--is-ancestor', records_at, head)
+        tested_tree = project_files(root, base)
+        # Check the interval too: a changed-and-reverted implementation is not
+        # a record-only history. Do not pick a convenient later green contract.
+        interval = git(root, 'rev-list', '--ancestry-path', base + '..' + records_at).decode().splitlines()
+        if any(project_files(root, rev) != tested_tree for rev in interval):
+            raise ValueError('business tree changed before contract was recorded; obtain current evidence')
+    old_req = historical(root, folder, records_at, 'spec/requirements.json')
+    old_impact = historical(root, folder, records_at, 'impact.json')
     old_parent, new_parent = parent(old_req, old_impact, row), parent(req, impact, row)
     if old_parent is None or old_parent != new_parent:
         raise ValueError('full parent claim changed or is unavailable; obtain evidence for the current claim')
-    old_plan = historical(root, folder, base, 'verification.json')
+    old_plan = historical(root, folder, records_at, 'verification.json')
     old_row = next((r for r in old_plan['items'] if r['id'] == item_id), None)
     contract = lambda r: {k: value for k, value in r.items() if k != 'history'}
     if old_row is None or contract(old_row) != contract(row):
         raise ValueError('row contract changed or unavailable; obtain current evidence')
+    if contract_revision is not None:
+        if not old_row.get('history') or previous != old_row['history'][-1]:
+            raise ValueError('recorded contract does not contain the exact original result')
+        # Existing authority at the tested revision must not be replaced by a
+        # later matching contract. Missing records need explicit review below.
+        for name, later in [('spec/requirements.json', old_req), ('impact.json', old_impact)]:
+            rel = (folder / name).relative_to(root).as_posix()
+            exists = git(root, 'ls-tree', base, '--', rel)
+            if exists:
+                earlier = historical(root, folder, base, name)
+                pair = (earlier, old_impact) if name.startswith('spec/') else (old_req, earlier)
+                if parent(*pair, row) != new_parent:
+                    raise ValueError('parent claim at tested revision differs from recorded contract')
     before, now = project_files(root, base), project_files(root)
     changed = sorted(p for p in before.keys() | now.keys() if before.get(p) != now.get(p))
     paths = ['spec/requirements.json', 'decisions.json', 'impact.json', 'spec/prd-intake.json', 'traceability.json']
-    old_records = {p: historical(root, folder, base, p) for p in paths}
+    old_records = {p: historical(root, folder, records_at, p) for p in paths}
     current_records = {p: v.read(folder / p) for p in paths}
     # Bind ignored registered sources too. Missing authority must be investigated, not carried.
     source_inputs = source_identity(root, folder)
@@ -137,6 +162,11 @@ def input_snapshot(root, folder, item_id):
                'changed_paths': changed, 'before_project_digest': digest(before), 'current_project_digest': digest(now),
                'changed_records': sorted(p for p in paths if old_records[p] != current_records[p]),
                'source_inputs': source_inputs}
+    if contract_revision is not None:
+        payload['contract_record'] = {'revision': records_at, 'tested_revision': base,
+                                      'source_result_hash': digest(previous),
+                                      'records_digest': digest(old_records),
+                                      'row_contract_digest': digest(contract(old_row))}
     payload['input_digest'] = digest(payload)
     return payload
 
@@ -171,12 +201,15 @@ def validate_assessment(review, item_id, input_digest, changed_paths, changed_re
 @v.plan_mutation
 def apply(root, folder, snapshot, review):
     frozen = v.read(snapshot)
-    fresh = input_snapshot(root, folder, frozen['item_id'])
+    records_at = frozen.get('contract_record', {}).get('revision')
+    fresh = input_snapshot(root, folder, frozen['item_id'], records_at)
     if fresh != frozen:
         raise ValueError('carry inputs stale; preserve review and recapture')
     verdict = v.read(review)
     paths = validate_assessment(verdict, fresh['item_id'], fresh['input_digest'], fresh['changed_paths'], fresh['changed_records'])
     validate_origin(verdict, fresh['source_revision'], fresh['source_inputs'])
+    if 'contract_record' in fresh:
+        validate_contract_record(fresh['contract_record'], verdict, previous_hash=fresh['source_result_hash'])
     before, now = project_files(root, fresh['source_revision']), project_files(root)
     for name in paths:
         path_name(name)
@@ -192,6 +225,8 @@ def apply(root, folder, snapshot, review):
                'parent_claim_digest': digest(fresh['parent_claim']), 'item_id': fresh['item_id'],
                'reviewed_revision': fresh['reviewed_revision'], 'source_inputs': fresh['source_inputs'],
                'changed_paths': fresh['changed_paths'], 'changed_records': fresh['changed_records']}
+    if 'contract_record' in fresh:
+        receipt['contract_record'] = fresh['contract_record']
     entry = v.result('retained', fresh['current_digest'], previous['tested_revision'],
                      'Original observation retained; no new execution: ' + previous['actual'],
                      'Fresh-context relevance review at ' + fresh['reviewed_revision'] + ': ' + verdict['claim_evidence'],
@@ -203,7 +238,8 @@ def apply(root, folder, snapshot, review):
     row['history'].append(entry)
     entry['evidence_digest'] = v.manual_evidence_stamp(root, folder, row)
     # Do not use a review completed against a moving project/plan.
-    if input_snapshot_from_previous(root, folder, fresh['item_id']) != fresh:
+    if (input_snapshot(root, folder, fresh['item_id'], records_at) if records_at else
+            input_snapshot_from_previous(root, folder, fresh['item_id'])) != fresh:
         raise ValueError('inputs changed before save')
     if v.load_plan(folder) != original_plan:
         raise ValueError('verification plan/results changed during carry review; no results applied')
@@ -215,6 +251,21 @@ def apply(root, folder, snapshot, review):
 def input_snapshot_from_previous(root, folder, item_id):
     # The appended entry is still only in memory; disk remains the frozen source.
     return input_snapshot(root, folder, item_id)
+
+
+def validate_contract_record(binding, review, previous_hash):
+    import re
+    if (not isinstance(binding, dict) or binding.get('source_result_hash') != previous_hash
+            or any(not isinstance(binding.get(k), str) or not re.fullmatch(r'[0-9a-f]{40,64}', binding[k])
+                   for k in ('revision', 'tested_revision'))
+            or any(not isinstance(binding.get(k), str) or not re.fullmatch(r'[0-9a-f]{64}', binding[k])
+                   for k in ('records_digest', 'row_contract_digest'))):
+        raise ValueError('invalid historical contract binding')
+    assessment = review.get('contract_record')
+    if (not isinstance(assessment, dict) or assessment.get('revision') != binding['revision']
+            or assessment.get('tested_revision') != binding['tested_revision']
+            or not isinstance(assessment.get('explanation'), str) or not assessment['explanation'].strip()):
+        raise ValueError('review the recorded contract chronology and original observation explicitly')
 
 
 def validate_origin(review, source_revision, source_inputs):
@@ -238,6 +289,11 @@ def validate_receipt(entry, previous, item):
     review = receipt.get('review', {})
     validate_assessment(review, item['id'], receipt.get('input_digest'), receipt.get('changed_paths'), receipt.get('changed_records'))
     validate_origin(review, previous['tested_revision'], receipt.get('source_inputs', {}))
+    if 'contract_record' in receipt:
+        binding = receipt['contract_record']
+        validate_contract_record(binding, review, digest(previous))
+        if binding['tested_revision'] != previous['tested_revision']:
+            raise ValueError('record binding changed original tested identity')
     if receipt.get('item_id') != item['id'] or entry.get('changed_paths') != receipt.get('changed_paths') or entry.get('reviewed_revision') != receipt.get('reviewed_revision'):
         raise ValueError('carry receipt does not match row/review identity')
     if entry.get('actual') != 'Original observation retained; no new execution: ' + previous['actual'] or entry.get('method') != 'reviewed carry-forward; not re-executed':
@@ -257,6 +313,7 @@ def main():
     p.add_argument('feature_id')
     p.add_argument('--item')
     p.add_argument('--snapshot', type=Path)
+    p.add_argument('--contract-revision', help='Explicit full commit storing the original contract/result; capture only')
     p.add_argument('--review', type=Path)
     args = p.parse_args()
     if not re_feature(args.feature_id):
@@ -264,10 +321,12 @@ def main():
     root = args.root.resolve()
     folder = root / '.agent-workflow/features' / args.feature_id
     try:
+        if args.action != 'capture' and args.contract_revision:
+            p.error('--contract-revision is capture-only; apply uses the frozen binding')
         if args.action == 'capture':
             if not args.item:
                 p.error('capture requires --item')
-            print(json.dumps(input_snapshot(root, folder, args.item), ensure_ascii=False, indent=2))
+            print(json.dumps(input_snapshot(root, folder, args.item, args.contract_revision), ensure_ascii=False, indent=2))
         else:
             if not args.snapshot or not args.review:
                 p.error('apply requires --snapshot and --review')

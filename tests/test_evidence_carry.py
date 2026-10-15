@@ -204,3 +204,166 @@ class EvidenceCarryTests(unittest.TestCase):
             record(root, folder, self.item, 'passed', stamp, head, 'new observation', 'new evidence')
         with self.assertRaisesRegex(ValueError, 'plan busy'):
             attempt(self.root, self.folder)
+
+
+class DelayedContractTests(unittest.TestCase):
+    """Real ordering: code commit -> observation -> record commit -> unrelated change."""
+    def setUp(self):
+        self.helper = test_verification.VerificationTests(methodName='test_generate_defaults_and_idempotence')
+        self.helper.setUp()
+        self.addCleanup(self.helper.doCleanups)
+        self.root, self.folder = self.helper.root, self.helper.folder
+        (self.root / 'other.py').write_text('unrelated = 1\n')
+        self.helper.doc['allowed_paths'].append('other.py'); self.helper.save()
+        self.helper.git('add', '-A')
+        self.commit('code and authority')
+        self.base = self.helper.git('rev-parse', 'HEAD').strip()
+        # No verification plan in the tested commit, as in the reported defect.
+        self.helper.git('rm', str((self.folder / 'verification.json').relative_to(self.root)))
+        self.commit('code checkpoint before observations')
+        self.base = self.helper.git('rev-parse', 'HEAD').strip()
+        from verification import sync
+        sync(self.root, self.folder)
+        doc = load_plan(self.folder); self.item = doc['items'][0]['id']
+        stamp, head = context(self.root, self.folder, doc)
+        record(self.root, self.folder, self.item, 'passed', stamp, head,
+               'Observed abc becomes ABC', 'Original fixture observation')
+        self.original = copy.deepcopy(load_plan(self.folder)['items'][0]['history'][-1])
+        (self.folder / 'evidence').mkdir()
+        (self.folder / 'evidence/origin.txt').write_text('Archived synthetic observation and code identity ' + self.base)
+        self.helper.git('add', '.agent-workflow'); self.commit('first saved original contract and observation')
+        self.records = self.helper.git('rev-parse', 'HEAD').strip()
+        self.make_stale()
+
+    def commit(self, message):
+        self.helper.git('-c', 'user.name=Fixture', '-c', 'user.email=test@example.invalid', 'commit', '-m', message)
+
+    def make_stale(self):
+        decisions = json.loads((self.folder / 'decisions.json').read_text())
+        decisions['decisions'].append({'id': 'D-2', 'status': 'approved', 'question': 'unrelated', 'chosen': 'yes', 'approval_ref': 'fixture'})
+        (self.folder / 'decisions.json').write_text(json.dumps(decisions))
+        (self.root / 'other.py').write_text('unrelated = 2\n')
+        self.helper.git('add', '-A'); self.commit('later unrelated change')
+
+    def prepare(self):
+        snap = input_snapshot(self.root, self.folder, self.item, self.records)
+        review = {'input_digest': snap['input_digest'], 'item_id': self.item, 'status': 'supported',
+                  'independent_context': True, 'reviewer': 'synthetic reviewer', 'method': 'archived evidence review',
+                  'claim_evidence': 'Original exact uppercase observation',
+                  'dependency_evidence': 'Inspected unchanged convert.py, no relationship to other.py',
+                  'contract_evidence': 'Full parent and row match, unrelated decision only',
+                  'environment_evidence': 'Same synthetic runtime',
+                  'counterexample': 'A later contract could invent an observation; exact result is in the record commit',
+                  'original_identity': {'revision': self.base, 'worktree_verified': True,
+                                        'evidence_refs': ['evidence/origin.txt'], 'explanation': 'Archived synthetic clean tree identity'},
+                  'contract_record': {'revision': self.records, 'tested_revision': self.base,
+                                      'explanation': 'Original result was saved after execution, code unchanged across interval'},
+                  'dependencies': ['convert.py'],
+                  'changes': [{'path': p, 'relationship': 'unaffected', 'evidence': 'Inspected unrelated diff'} for p in snap['changed_paths']],
+                  'record_changes': [{'path': p, 'relationship': 'unaffected', 'evidence': 'Unrelated decision'} for p in snap['changed_records']]}
+        a = self.root / '.agent-workflow/snapshot.json'; b = self.root / '.agent-workflow/review.json'
+        a.write_text(json.dumps(snap)); b.write_text(json.dumps(review))
+        return snap, review, a, b
+
+    def test_explicit_record_revision_carries_and_keeps_test_identity(self):
+        with self.assertRaisesRegex(ValueError, 'historical contract unavailable'):
+            input_snapshot(self.root, self.folder, self.item)
+        snap, _, a, b = self.prepare()
+        entry = apply(self.root, self.folder, a, b)
+        self.assertEqual(entry['tested_revision'], self.base)
+        self.assertEqual(entry['carry_receipt']['contract_record']['revision'], self.records)
+        self.assertEqual(load_plan(self.folder)['items'][0]['history'][0], self.original)
+        row = load_plan(self.folder)['items'][0]
+        stamp, _ = context(self.root, self.folder, load_plan(self.folder))
+        self.assertEqual(state(row, stamp, manual_evidence_stamp(self.root, self.folder, row)), 'retained')
+        self.assertNotEqual(snap['contract_record']['revision'], snap['source_revision'])
+
+    def test_cli_explicit_record_revision(self):
+        snap, _, _, _ = self.prepare()
+        out = self.helper.run_script('evidence_carry.py', 'capture', self.root, 'FEAT-001',
+                                     '--item', self.item, '--contract-revision', self.records)
+        self.assertEqual(json.loads(out), snap)
+
+    def test_later_business_tree_or_short_revision_rejected(self):
+        for rev in (self.records[:8], self.helper.git('rev-parse', 'HEAD').strip()):
+            with self.assertRaisesRegex(ValueError, 'full commit|business tree changed'):
+                input_snapshot(self.root, self.folder, self.item, rev)
+
+    def test_changed_and_reverted_business_tree_rejected(self):
+        self.helper.git('reset', '--hard', self.records)
+        (self.root / 'convert.py').write_text('different implementation')
+        self.helper.git('add', 'convert.py'); self.commit('temporary business change')
+        self.helper.git('checkout', self.base, '--', 'convert.py')
+        self.commit('restore implementation')
+        self.records = self.helper.git('rev-parse', 'HEAD').strip(); self.make_stale()
+        with self.assertRaisesRegex(ValueError, 'business tree changed'):
+            self.prepare()
+
+    def test_result_not_in_record_commit_and_changed_claim_rejected(self):
+        self.helper.git('reset', '--hard', self.records)
+        data = load_plan(self.folder); data['items'][0]['history'] = []
+        (self.folder / 'verification.json').write_text(json.dumps(data))
+        self.helper.git('add', '.agent-workflow'); self.commit('contract without observation')
+        self.records = self.helper.git('rev-parse', 'HEAD').strip()
+        data['items'][0]['history'] = [self.original]
+        (self.folder / 'verification.json').write_text(json.dumps(data))
+        self.make_stale()
+        with self.assertRaisesRegex(ValueError, 'exact original result'):
+            self.prepare()
+        req = json.loads((self.folder / 'spec/requirements.json').read_text())
+        req['requirements'][0]['statement'] += ' changed claim'
+        (self.folder / 'spec/requirements.json').write_text(json.dumps(req))
+        with self.assertRaisesRegex(ValueError, 'parent claim changed'):
+            self.prepare()
+
+    def test_unreviewed_binding_or_stale_snapshot_no_writes(self):
+        _, review, a, b = self.prepare()
+        before = (self.folder / 'verification.json').read_bytes()
+        review.pop('contract_record'); b.write_text(json.dumps(review))
+        with self.assertRaisesRegex(ValueError, 'chronology'):
+            apply(self.root, self.folder, a, b)
+        self.assertEqual((self.folder / 'verification.json').read_bytes(), before)
+        _, review, a, b = self.prepare()
+        p = self.folder / 'evidence/origin.txt'; p.write_text('changed archived identity')
+        with self.assertRaisesRegex(ValueError, 'stale'):
+            apply(self.root, self.folder, a, b)
+        self.assertEqual((self.folder / 'verification.json').read_bytes(), before)
+
+    def test_withdrawal_cannot_be_revived(self):
+        data = load_plan(self.folder); stamp, head = context(self.root, self.folder, data)
+        record(self.root, self.folder, self.item, 'unavailable', stamp, head, 'Withdrawn observation', 'No coverage')
+        with self.assertRaisesRegex(ValueError, 'latest passed'):
+            self.prepare()
+
+    def test_existing_test_time_claim_cannot_be_replaced_by_later_contract(self):
+        self.helper.git('reset', '--hard', self.records)
+        req = json.loads((self.folder / 'spec/requirements.json').read_text())
+        req['requirements'][0]['statement'] += ' invented after testing'
+        (self.folder / 'spec/requirements.json').write_text(json.dumps(req))
+        self.helper.git('add', '.agent-workflow'); self.commit('changed authority after test')
+        self.records = self.helper.git('rev-parse', 'HEAD').strip(); self.make_stale()
+        with self.assertRaisesRegex(ValueError, 'tested revision differs'):
+            self.prepare()
+
+    def test_record_with_later_withdrawal_is_rejected(self):
+        self.helper.git('reset', '--hard', self.records)
+        data = load_plan(self.folder)
+        data['items'][0]['history'].append(dict(self.original, status='unavailable', actual='Withdrawn'))
+        (self.folder / 'verification.json').write_text(json.dumps(data))
+        self.helper.git('add', '.agent-workflow'); self.commit('withdraw old observation')
+        self.records = self.helper.git('rev-parse', 'HEAD').strip()
+        data['items'][0]['history'].pop()
+        (self.folder / 'verification.json').write_text(json.dumps(data)); self.make_stale()
+        with self.assertRaisesRegex(ValueError, 'exact original result'):
+            self.prepare()
+
+    def test_forged_snapshot_record_binding_rejected(self):
+        snap, _, a, b = self.prepare()
+        before = (self.folder / 'verification.json').read_bytes()
+        snap['contract_record']['records_digest'] = '0' * 64
+        from impact import digest
+        snap.pop('input_digest'); snap['input_digest'] = digest(snap)
+        a.write_text(json.dumps(snap))
+        with self.assertRaisesRegex(ValueError, 'stale'):
+            apply(self.root, self.folder, a, b)
+        self.assertEqual((self.folder / 'verification.json').read_bytes(), before)
