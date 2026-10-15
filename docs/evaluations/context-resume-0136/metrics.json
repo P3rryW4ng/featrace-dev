@@ -1,0 +1,63 @@
+{
+  "reference_files": [
+    {
+      "file": "SKILL.md",
+      "bytes": 13936
+    },
+    {
+      "file": "core/references/orchestration.md",
+      "bytes": 14162
+    },
+    {
+      "file": "core/references/workflow.md",
+      "bytes": 7471
+    },
+    {
+      "file": "core/references/technical-test.md",
+      "bytes": 8607
+    },
+    {
+      "file": "core/references/verification-workflow.md",
+      "bytes": 32862
+    },
+    {
+      "file": "core/references/stage-inputs.md",
+      "bytes": 3437
+    }
+  ],
+  "small_view_metrics": {
+    "canonical_record_bytes": 14094,
+    "projected_payload_bytes": 9674,
+    "tokens": null,
+    "cost": null,
+    "basis": "serialized view before metrics/signature versus loaded canonical JSON file bytes; not actual Agent read or token usage"
+  },
+  "history_heavy_view_metrics": {
+    "canonical_record_bytes": 542099,
+    "projected_payload_bytes": 9676,
+    "tokens": null,
+    "cost": null,
+    "basis": "serialized view before metrics/signature versus loaded canonical JSON file bytes; not actual Agent read or token usage"
+  },
+  "history_added_entries": 120,
+  "metric_scope": "serialized bytes only; not actual reads, context, tokens, cost or net benefit",
+  "review_history_probe": {
+    "before": {
+      "canonical_record_bytes": 14094,
+      "projected_payload_bytes": 9675,
+      "tokens": null,
+      "cost": null,
+      "basis": "serialized view before metrics/signature versus loaded canonical JSON file bytes; not actual Agent read or token usage"
+    },
+    "after": {
+      "canonical_record_bytes": 399812,
+      "projected_payload_bytes": 396363,
+      "tokens": null,
+      "cost": null,
+      "basis": "serialized view before metrics/signature versus loaded canonical JSON file bytes; not actual Agent read or token usage"
+    },
+    "task_review_history_embedded": true,
+    "regression_history_embedded": true,
+    "scope": "synthetic optional history field probe; capture readability is not schema/audit validity or measured runtime cost"
+  }
+}

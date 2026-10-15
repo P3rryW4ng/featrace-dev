@@ -1,0 +1,12 @@
+{
+  "alpha": {
+    "canonical_and_business_unchanged": true,
+    "head_matches_starting_view": true,
+    "unexpected_scratch_files": []
+  },
+  "beta": {
+    "canonical_and_business_unchanged": true,
+    "head_matches_starting_view": true,
+    "unexpected_scratch_files": []
+  }
+}
