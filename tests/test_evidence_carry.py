@@ -367,3 +367,166 @@ class DelayedContractTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'stale'):
             apply(self.root, self.folder, a, b)
         self.assertEqual((self.folder / 'verification.json').read_bytes(), before)
+
+
+class CarryContinuityTests(unittest.TestCase):
+    setUp = DelayedContractTests.setUp
+    commit = DelayedContractTests.commit
+    make_stale = DelayedContractTests.make_stale
+    prepare = DelayedContractTests.prepare
+
+    def seed(self):
+        _, _, a, b = self.prepare()
+        return apply(self.root, self.folder, a, b)
+
+    def next_change(self, text='unrelated = 3\n'):
+        (self.root / 'other.py').write_text(text)
+        self.helper.git('add', 'other.py'); self.commit('later independent change')
+
+    def test_dirty_status_is_stale_without_mutating_history_or_head(self):
+        self.seed()
+        before = (self.folder / 'verification.json').read_bytes()
+        head = self.helper.git('rev-parse', 'HEAD')
+        (self.root / 'other.py').write_text('uncommitted = 3\n')
+        for staged in (False, True):
+            if staged:
+                self.helper.git('add', 'other.py')
+            status = json.loads(self.helper.run_script('verification.py', 'status', self.root, 'FEAT-001', expected=2))
+            self.assertEqual(status['items'][0]['status'], 'stale')
+            self.assertEqual((self.folder / 'verification.json').read_bytes(), before)
+            self.assertEqual(self.helper.git('rev-parse', 'HEAD'), head)
+        with self.assertRaisesRegex(ValueError, 'before carry capture'):
+            input_snapshot(self.root, self.folder, self.item)
+
+    def test_dirty_tree_allows_actual_gates_and_new_manual_result(self):
+        self.seed()
+        (self.root / 'other.py').write_text('uncommitted = 3\n')
+        self.helper.run_checks()
+        doc = load_plan(self.folder)
+        self.assertEqual(doc['items'][-1]['history'][-1]['status'], 'passed')
+        self.assertEqual(doc['items'][0]['history'][-1]['status'], 'retained')
+        stamp, head = context(self.root, self.folder, doc)
+        other = doc['items'][1]['id']
+        record(self.root, self.folder, other, 'passed', stamp, head, 'New fixture observation', 'Newly executed fixture')
+        self.assertEqual(load_plan(self.folder)['items'][1]['history'][-1]['actual'], 'New fixture observation')
+        row = load_plan(self.folder)['items'][0]
+        self.assertEqual(state(row, stamp, manual_evidence_stamp(self.root, self.folder, row)), 'stale')
+
+    def test_untracked_file_and_dirty_after_freeze_do_not_allow_carry(self):
+        self.seed(); self.next_change()
+        _, _, a, b = self.prepare()
+        before = (self.folder / 'verification.json').read_bytes()
+        (self.root / 'untracked.py').write_text('new business file')
+        status = json.loads(self.helper.run_script('verification.py', 'status', self.root, 'FEAT-001', expected=2))
+        self.assertEqual(status['items'][0]['status'], 'stale')
+        with self.assertRaisesRegex(ValueError, 'before carry capture'):
+            apply(self.root, self.folder, a, b)
+        self.assertEqual((self.folder / 'verification.json').read_bytes(), before)
+
+    def test_three_carries_keep_original_observation_and_record_locator(self):
+        self.seed()
+        for count in range(3, 6):
+            self.next_change('unrelated = ' + str(count) + '\n')
+            snap, _, a, b = self.prepare()
+            inherited = input_snapshot(self.root, self.folder, self.item)
+            self.assertEqual(snap, inherited)
+            self.assertEqual(snap['original_observation'], self.original)
+            entry = apply(self.root, self.folder, a, b)
+            self.assertEqual(entry['tested_revision'], self.base)
+            self.assertEqual(entry['carry_receipt']['contract_record']['revision'], self.records)
+            self.assertEqual(entry['carry_receipt']['original_observation'], self.original)
+            row = load_plan(self.folder)['items'][0]; stamp, _ = context(self.root, self.folder, load_plan(self.folder))
+            self.assertEqual(state(row, stamp, manual_evidence_stamp(self.root, self.folder, row)), 'retained')
+        self.assertEqual(load_plan(self.folder)['items'][0]['history'][0], self.original)
+
+    def test_old_review_not_reused_for_new_carry(self):
+        self.seed(); self.next_change()
+        _, _, a, b = self.prepare()
+        self.next_change('unrelated = 4\n')
+        before = (self.folder / 'verification.json').read_bytes()
+        with self.assertRaisesRegex(ValueError, 'stale'):
+            apply(self.root, self.folder, a, b)
+        self.assertEqual((self.folder / 'verification.json').read_bytes(), before)
+
+    def test_repeat_carry_rejects_changed_dependency_and_claim(self):
+        self.seed()
+        (self.root / 'convert.py').write_text('changed dependency')
+        self.helper.git('add', 'convert.py'); self.commit('changed converter')
+        _, _, a, b = self.prepare()
+        with self.assertRaisesRegex(ValueError, 'dependency changed'):
+            apply(self.root, self.folder, a, b)
+        req = json.loads((self.folder / 'spec/requirements.json').read_text())
+        req['requirements'][0]['statement'] += ' changed'
+        (self.folder / 'spec/requirements.json').write_text(json.dumps(req))
+        with self.assertRaisesRegex(ValueError, 'parent claim changed'):
+            self.prepare()
+
+    def test_failure_after_carry_cannot_be_skipped(self):
+        self.seed(); self.next_change()
+        doc = load_plan(self.folder); stamp, head = context(self.root, self.folder, doc)
+        record(self.root, self.folder, self.item, 'unavailable', stamp, head, 'Withdrawn', 'Coverage insufficient')
+        with self.assertRaisesRegex(ValueError, 'latest passed'):
+            self.prepare()
+
+    def test_corrupted_original_chain_is_rejected_even_with_new_receipt_hash(self):
+        from impact import digest
+        self.seed(); self.next_change()
+        _, _, a, b = self.prepare(); apply(self.root, self.folder, a, b)
+        doc = load_plan(self.folder); entry = doc['items'][0]['history'][-1]
+        entry['carry_receipt']['original_observation']['actual'] = 'Invented original observation'
+        entry['carry_receipt_digest'] = digest(entry['carry_receipt'])
+        (self.folder / 'verification.json').write_text(json.dumps(doc))
+        with self.assertRaisesRegex(ValueError, 'original observation chain'):
+            load_plan(self.folder)
+
+    def test_0134_receipt_without_new_origin_field_can_continue(self):
+        from impact import digest
+        self.seed()
+        doc = load_plan(self.folder); entry = doc['items'][0]['history'][-1]
+        # The 0.13.4 receipt binds its immediate passed predecessor, with no
+        # separate original_observation field; do not migrate that old receipt.
+        entry['carry_receipt'].pop('original_observation')
+        entry['carry_receipt_digest'] = digest(entry['carry_receipt'])
+        (self.folder / 'verification.json').write_text(json.dumps(doc))
+        original_legacy = copy.deepcopy(entry)
+        self.next_change()
+        _, _, a, b = self.prepare(); apply(self.root, self.folder, a, b)
+        self.assertEqual(load_plan(self.folder)['items'][0]['history'][1], original_legacy)
+
+    def test_repeat_partial_review_stays_stale_without_writes(self):
+        self.seed(); self.next_change()
+        _, review, a, b = self.prepare()
+        before = (self.folder / 'verification.json').read_bytes()
+        review['status'] = 'partial'; b.write_text(json.dumps(review))
+        with self.assertRaisesRegex(ValueError, 'partial/unknown'):
+            apply(self.root, self.folder, a, b)
+        self.assertEqual((self.folder / 'verification.json').read_bytes(), before)
+
+    def test_annotation_between_carries_keeps_same_original_observation(self):
+        import evidence_annotations as annotations
+        p = self.folder / 'evidence/README.md'; p.write_text('Index of original fixture evidence.\n')
+        self.seed()
+        frozen = annotations.capture(self.root, self.folder, [{'path': 'evidence/README.md', 'role': 'index'}])
+        a = self.folder / 'amend-snapshot.json'; a.write_text(json.dumps(frozen))
+        p.write_text('Index: original fixture observation, not a fresh execution.\n')
+        inputs = annotations.amend_inputs(self.root, self.folder, frozen)
+        review = {'input_digest': inputs['input_digest'], 'status': 'supported', 'independent_context': True,
+                  'reviewer': 'synthetic annotation reviewer', 'classification_evidence': 'Only index explanation changed',
+                  'raw_evidence_unchanged': 'Original identity file unchanged', 'claim_meaning_unchanged': 'Same uppercase claim',
+                  'counterexample': 'Raw result edits would invalidate; this patch only changes the index',
+                  'items': [{'item_id': x['item_id'], 'status': 'supported', 'evidence': 'Index has no new observation'} for x in inputs['items']]}
+        b = self.folder / 'amend-review.json'; b.write_text(json.dumps(review))
+        annotations.apply(self.root, self.folder, a, b)
+        self.next_change()
+        snap, _, a, b = self.prepare()
+        self.assertEqual(snap['original_observation'], self.original)
+        apply(self.root, self.folder, a, b)
+        self.assertEqual(load_plan(self.folder)['items'][0]['history'][-1]['tested_revision'], self.base)
+
+    def test_non_dirty_git_errors_are_not_silenced(self):
+        from unittest.mock import patch
+        import evidence_carry
+        self.seed(); row = load_plan(self.folder)['items'][0]
+        with patch.object(evidence_carry, 'project_files', side_effect=ValueError('Git unavailable')):
+            with self.assertRaisesRegex(ValueError, 'Git unavailable'):
+                manual_evidence_stamp(self.root, self.folder, row)

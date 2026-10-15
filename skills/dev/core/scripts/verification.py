@@ -193,8 +193,13 @@ def manual_evidence_stamp(root, folder, row, *, carry_sources=None):
     content = {'requirements': req['requirements'], 'decisions': read(folder / 'decisions.json'),
                'impact': impact_snapshot(root, impact)['digest'], 'item': contract}
     if row.get('history') and row['history'][-1].get('retention_kind') in ('reviewed_carry', 'annotation_amend'):
-        from evidence_carry import project_files, source_identity
-        content['carry_project'] = project_files(root)
+        from evidence_carry import project_files, source_identity, UncommittedBusinessChanges
+        try:
+            content['carry_project'] = project_files(root)
+        except UncommittedBusinessChanges as exc:
+            # A dirty tree cannot match a clean retained receipt, but must not
+            # prevent status, ordinary checks or recording fresh test evidence.
+            content['carry_project'] = {'uncommitted_business_paths': exc.paths}
         content['carry_sources'] = source_identity(root, folder) if carry_sources is None else carry_sources
         content['carry_authority'] = {name: read(folder / name) for name in ('traceability.json', 'spec/prd-intake.json')}
     return digest(content)

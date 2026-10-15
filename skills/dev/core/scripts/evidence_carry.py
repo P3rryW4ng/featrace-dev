@@ -10,6 +10,14 @@ from impact import digest, git, path_name
 import verification as v
 
 
+class UncommittedBusinessChanges(ValueError):
+    """Capture requires clean code; freshness queries only mark it stale."""
+    def __init__(self, paths):
+        self.paths = paths
+        super().__init__('commit/review business worktree changes before carry capture: ' + ', '.join(paths))
+
+
+
 def project_files(root, revision=None):
     """Content and mode identities, reconstructed from Git, not old receipts."""
     if revision:
@@ -31,7 +39,7 @@ def project_files(root, revision=None):
     dirty = sorted({raw.decode('utf-8', 'surrogateescape') for group in groups
                     for raw in group.split(b'\0') if raw and not raw.startswith(b'.agent-workflow/')})
     if dirty:
-        raise ValueError('commit/review business worktree changes before carry capture: ' + ', '.join(dirty))
+        raise UncommittedBusinessChanges(dirty)
     return project_files(root, git(root, 'rev-parse', 'HEAD').decode().strip())
 
 
@@ -86,6 +94,21 @@ def source_identity(root, folder):
             'source_status_claims': inventory['source_status_claims']}
 
 
+def original_observation(row, previous):
+    """Follow the validated contiguous retention chain, never skip a withdrawal."""
+    index = row['history'].index(previous)
+    revision = previous['tested_revision']
+    while row['history'][index]['status'] == 'retained':
+        if index == 0 or row['history'][index]['tested_revision'] != revision:
+            raise ValueError('retention chain lacks the original tested observation')
+        index -= 1
+    origin = row['history'][index]
+    if origin['status'] != 'passed' or origin['tested_revision'] != revision:
+        raise ValueError('retention chain cannot bypass a withdrawal or changed tested identity')
+    return origin
+
+
+
 def input_snapshot(root, folder, item_id, contract_revision=None):
     from feature_lifecycle import require_active
     root = root.resolve()
@@ -106,6 +129,15 @@ def input_snapshot(root, folder, item_id, contract_revision=None):
         raise ValueError('only the latest passed/retained result may be reviewed; do not revive withdrawn evidence')
     if v.state(row, stamp, v.manual_evidence_stamp(root, folder, row)) != 'stale':
         raise ValueError('only stale evidence needs carry review')
+    observation = original_observation(row, previous)
+    if contract_revision is None and previous['status'] == 'retained':
+        # Reuse only a locator in an already validated receipt, never search for
+        # a convenient green commit or reuse a prior relevance verdict.
+        for entry in row['history'][row['history'].index(observation) + 1:]:
+            binding = entry.get('carry_receipt', {}).get('contract_record')
+            if binding is not None and binding.get('source_result_hash') == digest(observation):
+                contract_revision = binding['revision']
+                break
     base = previous['tested_revision']
     if git(root, 'rev-parse', base + '^{commit}').decode().strip() != base:
         raise ValueError('original tested_revision must be an available full commit')
@@ -133,7 +165,7 @@ def input_snapshot(root, folder, item_id, contract_revision=None):
     if old_row is None or contract(old_row) != contract(row):
         raise ValueError('row contract changed or unavailable; obtain current evidence')
     if contract_revision is not None:
-        if not old_row.get('history') or previous != old_row['history'][-1]:
+        if not old_row.get('history') or observation != old_row['history'][-1]:
             raise ValueError('recorded contract does not contain the exact original result')
         # Existing authority at the tested revision must not be replaced by a
         # later matching contract. Missing records need explicit review below.
@@ -162,9 +194,11 @@ def input_snapshot(root, folder, item_id, contract_revision=None):
                'changed_paths': changed, 'before_project_digest': digest(before), 'current_project_digest': digest(now),
                'changed_records': sorted(p for p in paths if old_records[p] != current_records[p]),
                'source_inputs': source_inputs}
+    if contract_revision is not None or previous['status'] == 'retained':
+        payload['original_observation'] = copy.deepcopy(observation)
     if contract_revision is not None:
         payload['contract_record'] = {'revision': records_at, 'tested_revision': base,
-                                      'source_result_hash': digest(previous),
+                                      'source_result_hash': digest(observation),
                                       'records_digest': digest(old_records),
                                       'row_contract_digest': digest(contract(old_row))}
     payload['input_digest'] = digest(payload)
@@ -209,7 +243,7 @@ def apply(root, folder, snapshot, review):
     paths = validate_assessment(verdict, fresh['item_id'], fresh['input_digest'], fresh['changed_paths'], fresh['changed_records'])
     validate_origin(verdict, fresh['source_revision'], fresh['source_inputs'])
     if 'contract_record' in fresh:
-        validate_contract_record(fresh['contract_record'], verdict, previous_hash=fresh['source_result_hash'])
+        validate_contract_record(fresh['contract_record'], verdict, previous_hash=digest(fresh['original_observation']))
     before, now = project_files(root, fresh['source_revision']), project_files(root)
     for name in paths:
         path_name(name)
@@ -225,6 +259,8 @@ def apply(root, folder, snapshot, review):
                'parent_claim_digest': digest(fresh['parent_claim']), 'item_id': fresh['item_id'],
                'reviewed_revision': fresh['reviewed_revision'], 'source_inputs': fresh['source_inputs'],
                'changed_paths': fresh['changed_paths'], 'changed_records': fresh['changed_records']}
+    if 'original_observation' in fresh:
+        receipt['original_observation'] = fresh['original_observation']
     if 'contract_record' in fresh:
         receipt['contract_record'] = fresh['contract_record']
     entry = v.result('retained', fresh['current_digest'], previous['tested_revision'],
@@ -289,9 +325,14 @@ def validate_receipt(entry, previous, item):
     review = receipt.get('review', {})
     validate_assessment(review, item['id'], receipt.get('input_digest'), receipt.get('changed_paths'), receipt.get('changed_records'))
     validate_origin(review, previous['tested_revision'], receipt.get('source_inputs', {}))
+    observation = previous
+    if 'original_observation' in receipt:
+        observation = original_observation(item, previous)
+        if receipt['original_observation'] != observation:
+            raise ValueError('carry receipt changed the original observation chain')
     if 'contract_record' in receipt:
         binding = receipt['contract_record']
-        validate_contract_record(binding, review, digest(previous))
+        validate_contract_record(binding, review, digest(observation))
         if binding['tested_revision'] != previous['tested_revision']:
             raise ValueError('record binding changed original tested identity')
     if receipt.get('item_id') != item['id'] or entry.get('changed_paths') != receipt.get('changed_paths') or entry.get('reviewed_revision') != receipt.get('reviewed_revision'):

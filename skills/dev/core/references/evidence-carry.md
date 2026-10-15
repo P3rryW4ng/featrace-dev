@@ -22,6 +22,14 @@ The snapshot and receipt separately bind `source_revision` (original tested code
 
 Apply takes the record revision from the frozen snapshot, recomputes it and binds it in the new receipt; do not pass a new revision at apply. Ordinary capture and older receipts remain unchanged. This is a compatible locator correction, not automatic mass carry, exemption for missing evidence, or fresh execution.
 
+## Continued carry and active development (0.13.5)
+
+During development, staged, unstaged or untracked business changes make existing carry/annotation evidence stale; they do not impose the clean-capture restriction on status, ordinary checks or recording genuinely new results. Missing/invalid Git or source inputs still surface as errors. This does not make the old evidence current or authorize completion. A fresh carry capture/apply still requires clean committed business inputs.
+
+For a stale retained row, use the same capture/apply workflow. The helper follows the validated contiguous retained history back to its original passed observation, never past a failure, withdrawal or new actual observation. If a prior receipt already bound that original observation to a contract-record revision, capture may reuse that locator (or accept the same explicit contract-revision); it never reuses the review verdict. Original-record tree/contract checks remain in force. The snapshot exposes `original_observation` separately from `source_result` (the immediate retained predecessor), and the new receipt binds both. Original tested_revision stays unchanged.
+
+Give the new reviewer the current frozen snapshot and original evidence; investigate all actual changes and the full claim again, using related rows together when appropriate. A prior supported review is not proof of current independence. Related, partial or unknown results need targeted evidence. An actual new passed result starts a new original observation; do not skip withdrawals to revive an older pass. Existing 0.13.4 receipts are not rewritten; all readers/writers must update to 0.13.5 before using the new continued-receipt format.
+
 ## Freeze and fresh review
 
 For each eligible row, capture to the authorized project-local ignored scratch directory:

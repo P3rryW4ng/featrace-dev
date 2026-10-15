@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.13.5 — 2026-10-15
+
+- Keep uncommitted business changes stale for reviewed carry and annotation receipts without raising the capture-only clean-tree error during status, ordinary check execution or recording new actual evidence. Capture/apply still require clean committed business inputs; unrelated Git/source errors remain errors.
+- Continue reviewed carry through a validated contiguous retained history to the original passed observation. Bind the immediate predecessor and original observation separately; reuse only an existing validated original-record locator. Require a new current-input independent relevance review, unchanged contracts and dependencies, original identity evidence and strict capture freshness. Withdrawals, altered origin/receipts and partial/unknown coverage remain blocking.
+- This fixes continuity of existing evidence workflows, so advances the patch number. Older receipts stay readable and unchanged; readers/writers of the new continued receipts must use 0.13.5. No automatic mass retention, gate reuse, business changes or install migration.
+
 ## 0.13.4 — 2026-10-15
 
 - Repair carry capture when an original observation was saved in Git after its tested code commit. Accept an explicit full contract-record revision, require tested/record/current ancestry and an unchanged business tree at every intervening commit, and match the latest saved original result and complete current contract. Existing test-time parent authority must agree.
