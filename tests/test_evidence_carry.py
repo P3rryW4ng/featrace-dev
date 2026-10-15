@@ -434,7 +434,8 @@ class CarryContinuityTests(unittest.TestCase):
             entry = apply(self.root, self.folder, a, b)
             self.assertEqual(entry['tested_revision'], self.base)
             self.assertEqual(entry['carry_receipt']['contract_record']['revision'], self.records)
-            self.assertEqual(entry['carry_receipt']['original_observation'], self.original)
+            self.assertEqual(entry['carry_receipt']['original_observation_ref']['result_hash'], __import__('impact').digest(self.original))
+            self.assertNotIn('original_observation', entry['carry_receipt'])
             row = load_plan(self.folder)['items'][0]; stamp, _ = context(self.root, self.folder, load_plan(self.folder))
             self.assertEqual(state(row, stamp, manual_evidence_stamp(self.root, self.folder, row)), 'retained')
         self.assertEqual(load_plan(self.folder)['items'][0]['history'][0], self.original)
@@ -473,10 +474,10 @@ class CarryContinuityTests(unittest.TestCase):
         self.seed(); self.next_change()
         _, _, a, b = self.prepare(); apply(self.root, self.folder, a, b)
         doc = load_plan(self.folder); entry = doc['items'][0]['history'][-1]
-        entry['carry_receipt']['original_observation']['actual'] = 'Invented original observation'
+        entry['carry_receipt']['original_observation_ref']['result_hash'] = '0' * 64
         entry['carry_receipt_digest'] = digest(entry['carry_receipt'])
         (self.folder / 'verification.json').write_text(json.dumps(doc))
-        with self.assertRaisesRegex(ValueError, 'original observation chain'):
+        with self.assertRaisesRegex(ValueError, 'original observation reference'):
             load_plan(self.folder)
 
     def test_0134_receipt_without_new_origin_field_can_continue(self):
@@ -485,7 +486,8 @@ class CarryContinuityTests(unittest.TestCase):
         doc = load_plan(self.folder); entry = doc['items'][0]['history'][-1]
         # The 0.13.4 receipt binds its immediate passed predecessor, with no
         # separate original_observation field; do not migrate that old receipt.
-        entry['carry_receipt'].pop('original_observation')
+        entry['carry_receipt'].pop('original_observation_ref')
+        entry['actual'] = 'Original observation retained; no new execution: ' + self.original['actual']
         entry['carry_receipt_digest'] = digest(entry['carry_receipt'])
         (self.folder / 'verification.json').write_text(json.dumps(doc))
         original_legacy = copy.deepcopy(entry)
@@ -530,3 +532,104 @@ class CarryContinuityTests(unittest.TestCase):
         with patch.object(evidence_carry, 'project_files', side_effect=ValueError('Git unavailable')):
             with self.assertRaisesRegex(ValueError, 'Git unavailable'):
                 manual_evidence_stamp(self.root, self.folder, row)
+
+
+class CarryCopyPrivacyTests(unittest.TestCase):
+    setUp = EvidenceCarryTests.setUp
+    prepare = EvidenceCarryTests.prepare
+    def make_legacy(self):
+        from impact import digest
+        _, _, a, b = self.prepare()
+        apply(self.root, self.folder, a, b)
+        doc = load_plan(self.folder)
+        entry = doc['items'][0]['history'][-1]
+        entry['carry_receipt'].pop('original_observation_ref')
+        entry['carry_receipt']['original_observation'] = copy.deepcopy(self.original)
+        entry['actual'] = 'Original observation retained; no new execution: ' + self.original['actual']
+        entry['carry_receipt_digest'] = digest(entry['carry_receipt'])
+        (self.folder / 'verification.json').write_text(json.dumps(doc))
+        load_plan(self.folder)
+        return doc
+
+    def test_new_receipt_does_not_repeat_private_origin(self):
+        from impact import digest
+        doc = load_plan(self.folder)
+        row = doc['items'][0]
+        row['history'][0]['evidence'] += ' device serial: SYNTHETIC_DEVICE_123'
+        row['history'][0]['actual'] += ' SYNTHETIC_DEVICE_123'
+        (self.folder / 'verification.json').write_text(json.dumps(doc))
+        self.helper.git('add', '.agent-workflow')
+        self.helper.git('-c', 'user.name=Fixture', '-c', 'user.email=test@example.invalid', 'commit', '-m', 'private fixture origin')
+        # Historical observation was originally saved before this fixture edit;
+        # ordinary capture still binds that original tested contract.
+        _, _, a, b = self.prepare()
+        entry = apply(self.root, self.folder, a, b)
+        self.assertNotIn('SYNTHETIC_DEVICE_123', json.dumps(entry))
+        self.assertEqual(entry['carry_receipt']['original_observation_ref']['result_hash'], digest(row['history'][0]))
+
+    def test_minimize_only_uncommitted_copy_and_preserve_state(self):
+        from evidence_carry import minimize_copies
+        doc = self.make_legacy()
+        original = copy.deepcopy(doc['items'][0]['history'][0])
+        previous = copy.deepcopy(doc['items'][0]['history'][-1])
+        self.assertEqual(minimize_copies(self.root, self.folder, [self.item]), 1)
+        after = load_plan(self.folder)
+        entry = after['items'][0]['history'][-1]
+        self.assertEqual(after['items'][0]['history'][0], original)
+        for key in ('tested_revision', 'at', 'evidence_digest', 'digest', 'evidence', 'reason'):
+            self.assertEqual(entry[key], previous[key])
+        stamp, _ = context(self.root, self.folder, after)
+        self.assertEqual(state(after['items'][0], stamp, manual_evidence_stamp(self.root, self.folder, after['items'][0])), 'retained')
+
+    def test_minimize_refuses_committed_copy_and_tampered_copy(self):
+        from evidence_carry import minimize_copies
+        doc = self.make_legacy()
+        self.helper.git('add', '.agent-workflow')
+        self.helper.git('-c', 'user.name=Fixture', '-c', 'user.email=test@example.invalid', 'commit', '-m', 'committed legacy receipt')
+        before = (self.folder / 'verification.json').read_bytes()
+        with self.assertRaisesRegex(ValueError, 'no uncommitted'):
+            minimize_copies(self.root, self.folder, [self.item])
+        self.assertEqual(before, (self.folder / 'verification.json').read_bytes())
+        doc['items'][0]['history'][-1]['actual'] = 'Changed observation'
+        (self.folder / 'verification.json').write_text(json.dumps(doc))
+        with self.assertRaises(ValueError):
+            minimize_copies(self.root, self.folder, [self.item])
+
+
+    def test_minimize_chain_rebinds_only_immediate_copy_and_is_idempotent(self):
+        from evidence_carry import minimize_copies
+        from impact import digest
+        doc = self.make_legacy()
+        # Another legacy carry can follow the uncommitted original copy.
+        previous = copy.deepcopy(doc['items'][0]['history'][-1])
+        entry = copy.deepcopy(previous)
+        entry['actual'] = 'Original observation retained; no new execution: ' + previous['actual']
+        entry['carry_receipt']['source_result_hash'] = digest(previous)
+        entry['source_result_digest'] = previous['digest']
+        entry['carry_receipt_digest'] = digest(entry['carry_receipt'])
+        doc['items'][0]['history'].append(entry)
+        (self.folder / 'verification.json').write_text(json.dumps(doc))
+        self.assertEqual(minimize_copies(self.root, self.folder, [self.item]), 2)
+        after = load_plan(self.folder)
+        first, second = after['items'][0]['history'][-2:]
+        self.assertEqual(second['carry_receipt']['source_result_hash'], digest(first))
+        self.assertEqual(first['carry_receipt']['original_observation_ref'], second['carry_receipt']['original_observation_ref'])
+        before = (self.folder / 'verification.json').read_bytes()
+        with self.assertRaisesRegex(ValueError, 'no uncommitted'):
+            minimize_copies(self.root, self.folder, [self.item])
+        self.assertEqual(before, (self.folder / 'verification.json').read_bytes())
+
+    def test_bad_second_selection_does_not_save_first_change(self):
+        from evidence_carry import minimize_copies
+        self.make_legacy()
+        before = (self.folder / 'verification.json').read_bytes()
+        with self.assertRaises(ValueError):
+            minimize_copies(self.root, self.folder, [self.item, 'missing'])
+        self.assertEqual(before, (self.folder / 'verification.json').read_bytes())
+
+    def test_cli_minimize_does_not_upgrade_withdrawn_row(self):
+        self.make_legacy()
+        doc = load_plan(self.folder); stamp, head = context(self.root, self.folder, doc)
+        record(self.root, self.folder, self.item, 'unavailable', stamp, head, 'Coverage withdrawn', 'Missing evidence')
+        self.helper.run_script('evidence_carry.py', 'minimize-copies', self.root, 'FEAT-001', '--item', self.item)
+        self.assertEqual(load_plan(self.folder)['items'][0]['history'][-1]['status'], 'unavailable')

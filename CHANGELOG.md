@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.13.6 — 2026-10-15
+
+- Reference original carry observations by row, history index, digest and tested revision instead of duplicating private prose in new receipts and actual summaries. Legacy receipts remain readable. New reference receipts require 0.13.6 readers.
+- Add explicitly selected minimize-copies for validated, uncommitted helper copies only; preserve committed history, original observations, review verdicts, timestamps and evidence freshness. Refuse unsupported downstream bindings before saving; refresh affected final-review/report/delivery bindings afterward.
+- Clarify authorized exact-field descriptive privacy corrections and inspected false positives without disabling staged privacy checks, rewriting Git history or re-running business tests. This repairs an existing output-copy defect, so advances the patch version. No automatic cleanup, publication or business acceptance.
+
 ## 0.13.5 — 2026-10-15
 
 - Keep uncommitted business changes stale for reviewed carry and annotation receipts without raising the capture-only clean-tree error during status, ordinary check execution or recording new actual evidence. Capture/apply still require clean committed business inputs; unrelated Git/source errors remain errors.

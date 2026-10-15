@@ -10,6 +10,14 @@ from impact import digest, git, path_name
 import verification as v
 
 
+REFERENCE_ACTUAL = 'Original observation retained by reference; no new execution.'
+
+
+def observation_ref(row, observation):
+    return {'item_id': row['id'], 'history_index': row['history'].index(observation),
+            'result_hash': digest(observation), 'tested_revision': observation['tested_revision']}
+
+
 class UncommittedBusinessChanges(ValueError):
     """Capture requires clean code; freshness queries only mark it stale."""
     def __init__(self, paths):
@@ -259,12 +267,11 @@ def apply(root, folder, snapshot, review):
                'parent_claim_digest': digest(fresh['parent_claim']), 'item_id': fresh['item_id'],
                'reviewed_revision': fresh['reviewed_revision'], 'source_inputs': fresh['source_inputs'],
                'changed_paths': fresh['changed_paths'], 'changed_records': fresh['changed_records']}
-    if 'original_observation' in fresh:
-        receipt['original_observation'] = fresh['original_observation']
+    receipt['original_observation_ref'] = observation_ref(row, original_observation(row, previous))
     if 'contract_record' in fresh:
         receipt['contract_record'] = fresh['contract_record']
     entry = v.result('retained', fresh['current_digest'], previous['tested_revision'],
-                     'Original observation retained; no new execution: ' + previous['actual'],
+                     REFERENCE_ACTUAL,
                      'Fresh-context relevance review at ' + fresh['reviewed_revision'] + ': ' + verdict['claim_evidence'],
                      'reviewed carry-forward; not re-executed')
     entry.update(retention_kind='reviewed_carry', reviewed_revision=fresh['reviewed_revision'],
@@ -330,6 +337,10 @@ def validate_receipt(entry, previous, item):
         observation = original_observation(item, previous)
         if receipt['original_observation'] != observation:
             raise ValueError('carry receipt changed the original observation chain')
+    if 'original_observation_ref' in receipt:
+        observation = original_observation(item, previous)
+        if receipt['original_observation_ref'] != observation_ref(item, observation):
+            raise ValueError('carry receipt changed the original observation reference')
     if 'contract_record' in receipt:
         binding = receipt['contract_record']
         validate_contract_record(binding, review, digest(observation))
@@ -337,7 +348,8 @@ def validate_receipt(entry, previous, item):
             raise ValueError('record binding changed original tested identity')
     if receipt.get('item_id') != item['id'] or entry.get('changed_paths') != receipt.get('changed_paths') or entry.get('reviewed_revision') != receipt.get('reviewed_revision'):
         raise ValueError('carry receipt does not match row/review identity')
-    if entry.get('actual') != 'Original observation retained; no new execution: ' + previous['actual'] or entry.get('method') != 'reviewed carry-forward; not re-executed':
+    expected_actual = REFERENCE_ACTUAL if 'original_observation_ref' in receipt else 'Original observation retained; no new execution: ' + previous['actual']
+    if entry.get('actual') != expected_actual or entry.get('method') != 'reviewed carry-forward; not re-executed':
         raise ValueError('carry changed original observation or execution claim')
     if review.get('status') != 'supported' or review.get('independent_context') is not True or review.get('input_digest') != receipt.get('input_digest'):
         raise ValueError('invalid carry review')
@@ -347,12 +359,71 @@ def validate_receipt(entry, previous, item):
         raise ValueError('carry lacks current review identity')
 
 
+@v.plan_mutation
+def minimize_copies(root, folder, item_ids):
+    """Replace only uncommitted helper copies, never original observations/prose."""
+    doc = v.load_plan(folder)
+    before = copy.deepcopy(doc)
+    head = git(root, 'rev-parse', 'HEAD').decode().strip()
+    committed = historical(root, folder, head, 'verification.json')
+    if not item_ids or len(item_ids) != len(set(item_ids)):
+        raise ValueError('select distinct carry rows')
+    changed = 0
+    for item_id in item_ids:
+        row = next((r for r in doc['items'] if r['id'] == item_id), None)
+        old = next((r for r in committed['items'] if r['id'] == item_id), None)
+        if row is None or old is None or row['history'][:len(old['history'])] != old['history']:
+            raise ValueError('committed history must remain unchanged')
+        old_history = copy.deepcopy(row['history'])
+        for index in range(len(old['history']), len(row['history'])):
+            entry = row['history'][index]
+            if entry.get('retention_kind') == 'annotation_amend':
+                raise ValueError('annotation-bound history needs separate review; no copies changed')
+            if entry.get('retention_kind') != 'reviewed_carry':
+                continue
+            previous = row['history'][index - 1]
+            receipt = entry['carry_receipt']
+            if ('original_observation' not in receipt and entry['actual'] == REFERENCE_ACTUAL
+                    and receipt['source_result_hash'] == digest(previous)):
+                continue
+            old_result_hash = digest(old_history[index])
+            old_receipt_hash = old_history[index]['carry_receipt_digest']
+            origin = original_observation(row, previous)
+            # Rebind an immediate predecessor only after validating the complete
+            # old plan. All review prose and all observation facts stay identical.
+            receipt['source_result_hash'] = digest(previous)
+            receipt.pop('original_observation', None)
+            receipt['original_observation_ref'] = observation_ref(row, origin)
+            entry['actual'] = REFERENCE_ACTUAL
+            receipt['copy_minimization'] = {'previous_result_hash': old_result_hash,
+                                             'previous_receipt_digest': old_receipt_hash,
+                                             'reason': 'Remove redundant helper copies; original observation unchanged'}
+            entry['carry_receipt_digest'] = digest(receipt)
+            if entry != old_history[index]:
+                changed += 1
+    if not changed:
+        raise ValueError('no uncommitted helper copies to minimize')
+    # Existing other receipt families/shared reviews may bind a changed result.
+    # Validate the complete candidate before saving; never recalculate those binds.
+    import tempfile
+    with tempfile.TemporaryDirectory() as temp:
+        candidate = Path(temp) / folder.name
+        candidate.mkdir()
+        v.save(candidate / 'verification.json', doc)
+        v.load_plan(candidate)
+    if v.load_plan(folder) != before or git(root, 'rev-parse', 'HEAD').decode().strip() != head:
+        raise ValueError('plan or HEAD changed before save')
+    v.save(folder / 'verification.json', doc)
+    v.render(folder)
+    return changed
+
+
 def main():
     p = argparse.ArgumentParser(description=__doc__)
-    p.add_argument('action', choices=['capture', 'apply'])
+    p.add_argument('action', choices=['capture', 'apply', 'minimize-copies'])
     p.add_argument('root', type=Path)
     p.add_argument('feature_id')
-    p.add_argument('--item')
+    p.add_argument('--item', action='append')
     p.add_argument('--snapshot', type=Path)
     p.add_argument('--contract-revision', help='Explicit full commit storing the original contract/result; capture only')
     p.add_argument('--review', type=Path)
@@ -367,7 +438,11 @@ def main():
         if args.action == 'capture':
             if not args.item:
                 p.error('capture requires --item')
-            print(json.dumps(input_snapshot(root, folder, args.item, args.contract_revision), ensure_ascii=False, indent=2))
+            if len(args.item) != 1: p.error('capture requires one --item')
+            print(json.dumps(input_snapshot(root, folder, args.item[0], args.contract_revision), ensure_ascii=False, indent=2))
+        elif args.action == 'minimize-copies':
+            count = minimize_copies(root, folder, args.item)
+            print('EVIDENCE_COPIES_MINIMIZED: %d; no new execution; refresh affected review/delivery bindings' % count)
         else:
             if not args.snapshot or not args.review:
                 p.error('apply requires --snapshot and --review')

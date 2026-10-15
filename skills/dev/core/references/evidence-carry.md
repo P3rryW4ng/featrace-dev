@@ -83,3 +83,18 @@ For a subsequent explicit index/annotation-only correction while these results r
 0.12.2 also permits explicit addition of backed-up originals together with index edits through `evidence-annotations.md`. Existing raw bytes remain unchanged; only supported current rows get amendment receipts, while affected/unknown rows stay stale. This is not automatic file exclusion or fresh testing.
 
 Before importing a new reviewer return/receipt that can repeat private provenance, follow [output-privacy.md](output-privacy.md). Check the selected new return without dumping it; resolve only the affected privacy candidates and then recheck normal freshness. Do not scan/rewrite old evidence or use no_matches as semantic approval.
+
+
+## Redundant private copies (0.13.6)
+
+New carry receipts reference the original row/history index, canonical result hash and tested revision instead of copying original_observation or repeating prior actual prose. The original stays in its existing history; private disposable snapshots still expose original facts for investigation and must stay ignored. Review prose is independently authored and still needs the output privacy check. This is not anonymization of original history.
+
+For explicitly authorized cleanup of helper-generated copies that have not been committed, use:
+
+```text
+python3 core/scripts/evidence_carry.py minimize-copies <PROJECT> <ID> --item <exact-row-id> [--item <another-row-id>]
+```
+
+First preserve the original candidate privately in ignored scratch. The helper validates the old plan, requires each committed history prefix to remain byte-content equivalent as JSON, replaces only uncommitted carry copies and their helper-generated actual summary with references, and records prior result/receipt hashes. It validates the entire candidate before saving; annotation/shared bindings it cannot preserve are refused without saving. Source observation, tested_revision, timestamps, review prose, coverage verdict and evidence freshness are not upgraded or re-executed. It does not edit old commits, raw evidence, arbitrary descriptions or newly leaked reviewer prose. Existing committed receipts remain readable and unchanged.
+
+After minimization, regenerate the view, scan exact staged paths again, and refresh affected claim-review/report/delivery bindings. A prior final-review digest must not be manually recalculated or reused as if unchanged. Keep unrelated actual test runs; changed storage is not a reason to replay business tests. Reference receipts require 0.13.6 readers. Old frozen snapshots should be recaptured rather than silently changed.
