@@ -130,6 +130,7 @@
   "B1_or_stage_visibility_included": false,
   "project_and_audit_unchanged": true,
   "real_business_operations": false,
-  "installed": false,
-  "isolated_install_smoke": true
+  "installed": true,
+  "isolated_install_smoke": true,
+  "actual_install": "actual-install.json"
 }
