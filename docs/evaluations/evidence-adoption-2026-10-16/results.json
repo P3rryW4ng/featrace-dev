@@ -1,0 +1,54 @@
+{
+  "checked_at": "2026-10-16T10:44:24.386397+00:00",
+  "kind": "synthetic protocol and isolated runtime validation; not native semantic review",
+  "git_head": "bf348c9171225d6310773f28c369f144dc1a5845",
+  "source_uncommitted": true,
+  "source_full_suite": {
+    "tests": 482,
+    "elapsed_seconds": 897.395,
+    "exit_code": 0,
+    "skipped": 0,
+    "input_files_at_freeze": 148,
+    "all_inputs_unchanged_at_completion": true
+  },
+  "isolated_candidate_suite": {
+    "tests": 17,
+    "elapsed_seconds": 118.434,
+    "exit_code": 0,
+    "runtime_files": 106,
+    "excludes_B1_and_stage_visibility": true,
+    "automatic_project_audit_bytes_unchanged": true,
+    "verification_run_ast_unchanged": true
+  },
+  "post_test_source_changes": [
+    "skills/dev/core/references/evidence-adoption.md"
+  ],
+  "post_test_changes_documentation_only": true,
+  "python_and_test_bytes_unchanged": true,
+  "daily_installation": {
+    "version": "0.14.0",
+    "files": 104,
+    "mismatches": [],
+    "modified": false
+  },
+  "real_project_modified": false,
+  "device_or_server_operations": false,
+  "installed_or_published": false,
+  "committed_or_pushed": false,
+  "real_observations_adopted": 0,
+  "real_fresh_context_semantic_review": false,
+  "cost_limits": "No model billing, human labor, overall wall time or net savings measured; test processes overlap.",
+  "artifacts": {
+    "final-full-482.txt": "5844318b56861e434effe48f2067d7398830d77f2b429a4d561d1047497ac60c",
+    "intermediate-full-480.txt": "0021c9f117c112c5c2229de92327dd3dd110528098955f754aad92f42559c837",
+    "isolated-candidate-17.txt": "e25a96e5e5b73d8804d0df30a3546c791be63af9547eec54aa678fc26f5ab2f6",
+    "isolated-candidate-after-docs.json": "2741074b6e5dd1507c31700d3c4d9c15f397539d06bc24620e47ead263e1a9cf",
+    "isolated-candidate.json": "5bc5c1ec16445dcb3cfeae1d50bd18d30c3a863de788c64b34591f7527f0fed3",
+    "old-reader.json": "ffb534d72dde4f417287525337b6d4ce280e0ee39db40daaa51414da1be1accf",
+    "preserve-existing.txt": "13ec5b00260e58a346358e9e3c5ebe8877070a3800261d26ab5e12d65a92cf92",
+    "source-input-hashes.json": "8b04de9d17d78a3eaa6370f8a7e34ea3aac43c2510da14e8205a1431bad3ad7d",
+    "stopped-intermediate.txt": "2cb1f21904baa05f07fbbf053a87840291c1abbcdce27f939fd1af00dbd40bcd",
+    "target-15.txt": "9738ae5014fb0cb84e6e72282595a6a8b2f527122df1228ce7f436e75d2f7ce3",
+    "target-16.txt": "7e4e5201f931214a932860d7616daa3a455fef8a6fc95a6f47f98c50c00b467a"
+  }
+}

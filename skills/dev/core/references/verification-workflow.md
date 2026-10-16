@@ -118,3 +118,9 @@ One canonical list plus one generated view per feature; attempts and retired row
 For large/scoped starting inputs or a Test-to-Verify handoff, load `stage-inputs.md`. Preserve full linked claims and unresolved/shared authority; inspect original assertions and retained provenance as needed. View freshness is not a semantic verdict. Optional `stage-cost.md` measurement stays outside acceptance gates.
 
 When a row has reviewed archive/index corrections, read its `annotation_links` in verification status or verification.md alongside the original evidence. `current_receipt`, `historical_only` and `needs_review` distinguish current applied receipt, historical explanation and unapplied assessment. Notes never override row state or create missing observations. Do not infer loose report notes onto unrelated rows; see [evidence-annotations.md](evidence-annotations.md).
+
+
+For corrections to an already-recorded manual actual/evidence description, use the result-description procedure in evidence-annotations.md. Preserve the original result and tested identity; an explanatory correction is not a new execution or a retained result, and it does not repair stale or insufficient coverage. Read explicit result_corrections alongside original evidence; check supporting-file state and current final-review bindings. Do not withhold a factual correction merely to keep an old review digest current.
+
+
+For an approved correction of interpretation that changed a parent or replaced a row, read `evidence-adoption.md` before deciding a new execution is required. It separately binds original latest observations, recovered historical contracts, archived package identity and a fresh complete-claim judgment; no automatic conversion from stale/not_run to pass is allowed. Failed/withdrawn evidence cannot be skipped. A supported adoption is retained evidence with original execution identity, followed by the normal final claim review.

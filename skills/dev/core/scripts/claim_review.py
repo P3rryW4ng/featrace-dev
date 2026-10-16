@@ -38,7 +38,18 @@ def identity(root, folder):
         claims.append({'id': row['id'], 'requirement_statement': parent.get('statement', ''),
                        'expected': row['expected'], 'mode': row['mode'], 'result_status': outcome,
                        'result': row['history'][-1] if row['history'] else None})
+    if plan.get('result_correction_reviews'):
+        from result_corrections import links
+        for claim in claims:
+            row = next(r for r in active if r['id'] == claim['id'])
+            corrections = links(root, plan, row)
+            if corrections:
+                claim['result_corrections'] = corrections
     impact = json.loads((folder / 'impact.json').read_text())
+    if plan.get('adoption_reviews'):
+        from evidence_adoption import links as adoption_links
+        for claim in claims:
+            claim['evidence_adoptions'] = adoption_links(plan, next(r for r in active if r['id'] == claim['id']))
     binding = digest({'requirements': req['requirements'], 'sources': sources,
                       'intake': json.loads(intake_path.read_text()) if intake_path.is_file() else None,
                       'impact': impact_snapshot(root, impact)['digest'],

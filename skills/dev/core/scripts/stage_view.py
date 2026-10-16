@@ -128,6 +128,17 @@ def collect(root, feature_id, stage, task_ids, item_ids, base=None):
                            annotation_links=v.annotation_links(plan, row, status),
                            history_ref=prefix + 'verification.json#items/' + row['id'] + '/history',
                            history_entries=len(row['history']), provenance_readback_required=bool(latest and latest.get('retention_kind'))))
+    if plan and plan.get('result_correction_reviews'):
+        from result_corrections import links
+        for claim in claims:
+            row = next(r for r in rows if r['id'] == claim['id'])
+            corrections = links(root, plan, row)
+            if corrections:
+                claim['result_corrections'] = corrections
+    if plan and plan.get('adoption_reviews'):
+        from evidence_adoption import links as adoption_links
+        for claim in claims:
+            claim['evidence_adoptions'] = adoption_links(plan, next(r for r in rows if r['id'] == claim['id']))
     revision_index = []
     if req['feature'].get('baseline') is not None:
         from revisions import inspect

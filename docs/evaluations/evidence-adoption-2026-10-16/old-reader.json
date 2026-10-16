@@ -1,0 +1,7 @@
+{
+  "reader": "installed 0.14.0, read only",
+  "synthetic_schema": 3,
+  "exit_code": 2,
+  "stdout": "invalid verification identity/schema",
+  "stderr": ""
+}

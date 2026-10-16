@@ -91,7 +91,7 @@ def candidates(req, config, impact):
 
 def load_plan(folder):
     doc = read(folder / 'verification.json')
-    if not isinstance(doc, dict) or doc.get('schema_version') != 1 or doc.get('feature_id') != folder.name or not isinstance(doc.get('items'), list) or not isinstance(doc.get('retired'), list):
+    if not isinstance(doc, dict) or doc.get('schema_version') not in (1, 2, 3) or doc.get('feature_id') != folder.name or not isinstance(doc.get('items'), list) or not isinstance(doc.get('retired'), list):
         raise ValueError('invalid verification identity/schema')
     if 'annotation_reviews' in doc:
         from evidence_annotations import validated_reviews
@@ -123,6 +123,10 @@ def load_plan(folder):
                 raise ValueError('verification result lacks evidence or tested identity')
             if 'evidence_digest' in result and (not isinstance(result['evidence_digest'], str) or not result['evidence_digest']):
                 raise ValueError('invalid manual evidence digest')
+            if result.get('retention_kind') == 'interpretation_adoption':
+                from evidence_adoption import validate_receipt
+                validate_receipt(doc, item, result)
+                continue
             if result.get('retention_kind') == 'annotation_amend':
                 from evidence_annotations import validate_receipt
                 if result['status'] != 'retained' or item['mode'] != 'manual':
@@ -142,6 +146,16 @@ def load_plan(folder):
                 previous = item['history'][index - 1] if index else None
                 if previous is None or previous['status'] not in ('passed', 'retained') or result['source_result_digest'] != previous['digest'] or result['tested_revision'] != previous['tested_revision']:
                     raise ValueError('retained evidence lacks a matching prior pass')
+    if doc.get('schema_version') == 2 and not doc.get('result_correction_reviews'):
+        raise ValueError('schema 2 requires result corrections')
+    if 'result_correction_reviews' in doc:
+        if doc.get('schema_version') not in (2, 3):
+            raise ValueError('result corrections require schema 2 readers')
+        from result_corrections import validate_events
+        validate_events(doc)
+    if doc.get('schema_version') == 3:
+        from evidence_adoption import validate_events
+        validate_events(doc)
     return doc
 
 
@@ -192,7 +206,7 @@ def manual_evidence_stamp(root, folder, row, *, carry_sources=None):
     contract = {k: v for k, v in row.items() if k not in ('history', 'retention')}
     content = {'requirements': req['requirements'], 'decisions': read(folder / 'decisions.json'),
                'impact': impact_snapshot(root, impact)['digest'], 'item': contract}
-    if row.get('history') and row['history'][-1].get('retention_kind') in ('reviewed_carry', 'annotation_amend'):
+    if row.get('history') and row['history'][-1].get('retention_kind') in ('reviewed_carry', 'annotation_amend', 'interpretation_adoption'):
         from evidence_carry import project_files, source_identity, UncommittedBusinessChanges
         try:
             content['carry_project'] = project_files(root)
@@ -202,6 +216,15 @@ def manual_evidence_stamp(root, folder, row, *, carry_sources=None):
             content['carry_project'] = {'uncommitted_business_paths': exc.paths}
         content['carry_sources'] = source_identity(root, folder) if carry_sources is None else carry_sources
         content['carry_authority'] = {name: read(folder / name) for name in ('traceability.json', 'spec/prd-intake.json')}
+        if row['history'][-1].get('retention_kind') == 'interpretation_adoption':
+            content['adoption_receipt'] = row['history'][-1]['adoption_receipt']
+            plan = read(folder / 'verification.json')
+            # During apply the event is not saved yet; the source reference is
+            # supplied below through the staged row, never by loading recursively.
+            ref = row['history'][-1]['adoption_source']
+            content['adoption_origin_history'] = [
+                [e for e in r['history'] if e.get('retention_kind') != 'interpretation_adoption']
+                for r in plan['items'] + plan['retired'] if r['id'] == ref['item_id']]
     return digest(content)
 
 
@@ -237,10 +260,14 @@ def sync(root, folder):
                 if key in previous[row['id']]:
                     row[key] = previous[row['id']][key]
     active = {r['id'] for r in rows}
-    doc = {'schema_version': 1, 'feature_id': folder.name, 'items': rows,
+    doc = {'schema_version': old.get('schema_version', 1), 'feature_id': folder.name, 'items': rows,
            'retired': old['retired'] + [r for r in old['items'] if r['id'] not in active]}
     if 'annotation_reviews' in old:
         doc['annotation_reviews'] = old['annotation_reviews']
+    if 'result_correction_reviews' in old:
+        doc['result_correction_reviews'] = old['result_correction_reviews']
+    if 'adoption_reviews' in old:
+        doc['adoption_reviews'] = old['adoption_reviews']
     save(folder / 'verification.json', doc)
     req['feature']['verification_required'] = True
     save(folder / 'spec/requirements.json', req)
@@ -413,6 +440,9 @@ def impact_results(root, folder):
             last = row['history'][-1]
             results[row['source'][7:]] = {'status': 'passed' if last['status'] == 'retained' else last['status'], 'method': last['method'],
                                        'evidence': last['actual'] + '\n' + last['evidence'], 'digest': impact_stamp}
+            if doc.get('result_correction_reviews'):
+                from result_corrections import links
+                results[row['source'][7:]]['result_corrections'] = links(root, doc, row)
     return results
 
 
@@ -465,6 +495,12 @@ def summary(root, folder):
             item.update(tested_revision=last['tested_revision'], reviewed_revision=last['reviewed_revision'],
                         changed_paths=last['changed_paths'], reason=last['reason'])
         item['annotation_links'] = annotation_links(doc, row, item['status'])
+        if doc.get('adoption_reviews'):
+            from evidence_adoption import links as adoption_links
+            item['evidence_adoptions'] = adoption_links(doc, row)
+        if doc.get('result_correction_reviews'):
+            from result_corrections import links
+            item['result_corrections'] = links(root, doc, row)
         items.append(item)
     print(json.dumps({'digest': stamp, 'tested_revision': head, 'items': items}, ensure_ascii=False, indent=2))
     return 0 if all(r['status'] in ('passed', 'waived', 'retained') for r in items) else 2
@@ -488,6 +524,16 @@ def render(folder):
             lines += ['Dependencies: ' + ', '.join(row['dependencies']), 'Scope rationale: ' + row['scope_reason'], '']
         if row['history']:
             lines += ['Latest recorded evidence (not necessarily current):', '```json', json.dumps(row['history'][-1], ensure_ascii=False, indent=2), '```', '']
+        if doc.get('adoption_reviews'):
+            from evidence_adoption import links as adoption_links
+            adopted = adoption_links(doc, row)
+            if adopted:
+                lines += ['Reviewed interpretation adoption (original execution preserved):', '```json', json.dumps(adopted, ensure_ascii=False, indent=2), '```', '']
+        if doc.get('result_correction_reviews'):
+            from result_corrections import links as correction_links
+            notes = correction_links(root, doc, row)
+            if notes:
+                lines += ['Reviewed description corrections (read alongside original evidence; no new execution):', '```json', json.dumps(notes, ensure_ascii=False, indent=2), '```', '']
         links = annotation_links(doc, row, effective)
         if links:
             lines += ['Linked archive/index notes (original result and test identity unchanged):', '```json', json.dumps(links, ensure_ascii=False, indent=2), '```', '']

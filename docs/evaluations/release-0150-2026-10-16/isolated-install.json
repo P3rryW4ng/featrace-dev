@@ -1,0 +1,11 @@
+{
+  "home": "/private/tmp/featrace-0150-install-smoke-9gy9w332",
+  "version": "0.15.0",
+  "files": 106,
+  "source_and_installed_hashes_equal": true,
+  "backup_version": "0.14.0",
+  "backup_files": 104,
+  "backup_hashes_equal": true,
+  "help_smoke_exit_code": 0,
+  "stdout": "INSTALLED: /private/tmp/featrace-0150-install-smoke-9gy9w332/.claude/skills/dev\nBACKUP: /private/tmp/featrace-0150-install-smoke-9gy9w332/.feature-delivery/backups/20261016T105808-claude-9c6db1ec\nFeatraceDev by Perry Wang | Claude: /dev scan | Codex: $dev scan. Open a new agent session if not discovered.\n"
+}

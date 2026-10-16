@@ -1,5 +1,7 @@
 # Bounded evidence-index, annotation and archive addition review (0.12.2)
 
+For ordinary recorded `actual`/`evidence` wording corrections, including stale passed rows, use the result-description path below; do not manufacture retained status. The existing index/archive workflow remains separate.
+
 Use for correcting an explicit evidence index/annotation, or adding backed-up original artifacts, while the selected reviewed carry results are current. Already-stale carried rows are listed as excluded and never revived by this path; they remain separate Verify work. Do not automatically exclude Markdown, README files or any directory from freshness. A file role is an explicit scope declaration reviewed against the actual patch, not an extension-based permission.
 
 An index can narrow an overstated description to match already-recorded evidence limits, correct navigation or clarify test-package versus app-package build wording. It cannot add a missing observation, silently change a claim, convert a truncated hash into full equality or rewrite raw commands/outputs. If the correction exposes insufficient original coverage or identity, stop and return the affected row for ordinary Verify. Whole carried claims must remain supported.
@@ -90,3 +92,32 @@ For a note-only read request, begin with `python3 -B core/scripts/verification.p
 The view shows the review explanation and declared source paths, not a full copied patch or every note body. Existing shared receipt validation and freshness remain unchanged; viewing requires no gate rerun, result re-registration or fresh whole-carry review. Check privacy under output-privacy.md before sharing newly authored summaries of these notes.
 
 A historical-only link is a freshness/navigation signal, not an instruction to repeat the observation. Investigate the actual changed inputs first; a supported ordinary applicability/carry review may preserve the old evidence. Execute targeted tests only when the behavior is affected or existing evidence is insufficient. Do not turn merely viewing a stale note into a mandatory fresh observation or full retest.
+
+
+## Recorded result-description corrections (0.14.0)
+
+Use `result_corrections.py` for a factual description or durable evidence-path correction to a recorded manual passed/retained result, even if currently stale. It appends a reviewed note in verification.json; it never overwrites actual/evidence, appends an observation, changes timestamps/tested_revision, changes coverage/contracts/approval/status, or makes stale evidence current. A later withdrawal stays withdrawn. Do not turn a passed row into retained to use the older index workflow. Wrong coverage/status needs ordinary Verify, not this path.
+
+Read the exact row ID with verification status; history indexes are zero-based. Prepare an explicit JSON list in authorized ignored scratch:
+
+```json
+[{"item_id":"<exact-row-id>","history_index":0,"field":"evidence",
+  "replacement":"Original observation is archived at evidence/run.txt; not re-executed",
+  "reason":"Correct the obsolete temporary path",
+  "support_refs":[".agent-workflow/features/<ID>/evidence/run.txt"]}]
+```
+
+Only `actual` and `evidence` are allowed. Supporting paths are project-relative existing regular source/code or this feature's evidence/sources; no private scratch, derived records or symlinks. Select an existing result, not a desired new test revision. A batch can cover multiple fields/results; one target appears once. For a subsequent correction, the helper binds the prior note as well as the original result. Original histories may remain private; snapshots/review prose follow output-privacy.md.
+
+```text
+python3 core/scripts/result_corrections.py capture <PROJECT> <ID> --changes <changes.json>
+python3 core/scripts/result_corrections.py apply <PROJECT> <ID> --snapshot <snapshot.json> --review <review.json>
+```
+
+Save capture stdout to authorized ignored scratch. It freezes code, source/record/Skill identities, exact original-result/field hashes, supporting file hashes and the proposed correction. Give a fresh read-only reviewer the project, snapshot, this rule and exact output write scope, without an intended verdict. They must read the actual target history, complete claim and supporting originals, check that correction is factual and full coverage/identity are unchanged, and try a concrete counterexample. It is not a repeated whole-feature applicability review and cannot resolve a pending product decision. Missing/changed coverage, a new observation, or uncertainty means partial/unknown: refuse this correction and handle that exact gap in ordinary Verify.
+
+The review requires matching `input_digest`, `status: supported`, `independent_context: true`, nonempty `reviewer`, `scope_evidence`, `coverage_unchanged`, `identity_unchanged`, `counterexample`, and `corrections` matching each `{item_id, history_index, field}` exactly once with `status: metadata_only` and specific `evidence`. These attestations do not authenticate an Agent or prove semantic truth; actually dispatch and inspect the reviewer. Capture/apply runs no business tests/gates and does not resolve product authority.
+
+Application rechecks frozen inputs and saves one shared hash-bound event, keeping all original result entries and freshness unchanged. Status, generated views and task Test/Verify views display corrections alongside originals; `current_note` versus `superseded_note` concerns note order, while `latest_record`/`historical_record` concerns the target result. Neither means current acceptance. `support_current: false` exposes missing/changed supporting files. A final claim review binds these notes and supporting state, so an old final-review digest cannot silently cover a new correction. Check actual affected bindings after applying; renew only required review/report/delivery steps, never relabel the old review or rerun tests merely for wording.
+
+The first applied note upgrades only this feature's verification.json to schema 2, so old readers fail closed rather than ignore corrections. All readers of that shared record must be at least 0.14.0. New readers still accept schema 1; no other feature is migrated. Sync preserves the events and original targets when moved to retired. Do not downgrade schema, remove notes to regain green, or manually recalculate hashes.

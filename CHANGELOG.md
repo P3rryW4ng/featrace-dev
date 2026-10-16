@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.15.0 — 2026-10-16
+
+- Adopt original manual observations after approved interpretation corrections, including retired rows and recovered uncommitted contracts. Batch freezing and fresh-context full-claim review preserve original results and test identity; failures, skipped withdrawals, unknown identity and expanded claims are refused.
+- Schema 3 stores shared adoption reviews and original-observation references; sync, corrections, views and final review understand the new contract. Schema 1/2 remain readable; old readers reject schema 3. This shared record-contract change uses a minor version.
+- Recovered contracts can be frozen as ignored inputs with existing durable provenance, then archived in the review event without adding duplicate evidence files. Actual execution times must come from originals, not result-registration timestamps.
+- Preserve 0.14.0 automatic execution/audit behavior. This release excludes the local B1 identity prototype and lightweight stage-visibility instructions. No automatic business acceptance, device operation or gate rerun.
+
+## 0.14.0 — 2026-10-16
+
+- Append independently reviewed corrections to recorded manual actual/evidence descriptions, including stale passes, without rewriting original histories, tested revisions or acceptance freshness. Corrections are exact result/hash-bound notes; coverage, requirements, approvals and result status cannot be changed by this path.
+- Expose linked corrections in status, generated views, scoped Test/Verify inputs and final claim-review bindings. Missing/changed supporting artifacts remain visible and expire bound final review; no gate run, result re-registration, retained conversion or completion is performed.
+- Only an applied correction upgrades verification.json to schema 2. New readers keep schema 1 support; previous readers reject schema 2 instead of silently ignoring a correction. Sync preserves correction chains and retired targets. This explicit record-format/read-contract change uses the minor number; it does not indicate phase-two completion. No automatic migration or installation.
+
+
 ## 0.13.6 — 2026-10-15
 
 - Reference original carry observations by row, history index, digest and tested revision instead of duplicating private prose in new receipts and actual summaries. Legacy receipts remain readable. New reference receipts require 0.13.6 readers.

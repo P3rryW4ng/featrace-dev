@@ -1,5 +1,7 @@
 # Reviewed continuity of old manual evidence (0.12.0)
 
+For human-approved interpretation corrections that replace a row or change its parent, the separate 0.15.0 path in [evidence-adoption.md](evidence-adoption.md) can investigate latest original observations, including retired rows and archived uncommitted workflow contracts. Ordinary carry below remains unchanged; new behavior, unknown provenance and partial support are not eligible.
+
 Use only when ordinary Verify finds previously passed manual requirement/impact evidence stale after a local change or unrelated decision. Existing `retain` remains unchanged: it needs prior complete dependency provenance and a preserved impact row. This alternative reconstructs a Git comparison and requires a fresh-context relevance review; it does not claim the old row had file provenance, does not supply a missing observation, and never runs automatic gates or marks complete.
 
 ## Eligibility and investigation

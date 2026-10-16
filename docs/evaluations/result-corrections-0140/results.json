@@ -1,0 +1,19 @@
+{
+  "installed_version": "0.14.0",
+  "installed_files": 104,
+  "partial_review_exit": 1,
+  "supported_review_exit": 0,
+  "original_history_unchanged": true,
+  "stale_preserved": "stale",
+  "schema": 2,
+  "old_reader_refuses": true,
+  "support_drift_changes_claim_review": true,
+  "stage_exposes_drift": true,
+  "review_kind": "synthetic fixture only; not a native Agent semantic review",
+  "gate_preservation_probe": {
+    "automatic_gates_preserved": 1,
+    "quality_report_bytes_unchanged": true,
+    "global_acceptance_digest_unchanged": true,
+    "no_gate_rerun_after_correction": true
+  }
+}
