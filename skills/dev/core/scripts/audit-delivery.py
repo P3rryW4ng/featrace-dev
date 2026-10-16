@@ -6,7 +6,7 @@ from pathlib import Path
 import re
 import sys
 
-from project import quality_selection, quality_snapshot_matches, snapshot, validate_gates
+from project import quality_selection, quality_comparison, quality_snapshot, validate_gates
 from revisions import binding
 from verification import validate_verification
 
@@ -33,11 +33,15 @@ def audit(root, feature_id):
     if selected_config.get('selection_feature_id') != feature_id or report.get('quality_selection') != quality_selection(selected_config):
         errors.append('quality report or selected gates are not bound to this feature; reselect applicable gates and rerun check')
     try:
-        current = snapshot(root)
+        current = quality_snapshot(root)
     except (OSError, ValueError, TypeError) as exc:
         return ['cannot inspect current project snapshot: ' + str(exc)]
-    if not quality_snapshot_matches(root, report.get('project_snapshot'), current):
-        errors.append('quality report is stale for the current project snapshot')
+    comparison = quality_comparison(root, report.get('project_snapshot'), current)
+    if comparison['state'] != 'same':
+        errors.append('quality report is stale or unknown for the current check inputs: ' + json.dumps(comparison, ensure_ascii=False))
+    execution_identity = report.get('input_comparison')
+    if not isinstance(execution_identity, dict) or execution_identity.get('state') != 'same':
+        errors.append('quality execution did not certify stable inputs; legacy/missing identity needs a fresh applicable check')
     if req.get('feature', {}).get('baseline') is not None:
         try:
             if report.get('feature_baseline') != binding(root, feature_id):
@@ -92,7 +96,7 @@ def main():
     if errors:
         return 1
     print('DELIVERY_EVIDENCE_CURRENT: selected checks passed and verified-fix tests have current gate/device execution evidence')
-    print('Scope: manifests, tracked content outside .agent-workflow and registered evidence only; check task meaning, test assertions, uncommitted code and delivery report manually')
+    print('Scope: Git business tree/index/worktree, nonignored untracked files, manifests and declared inputs; ignored/external inputs and runtime environment require explicit scope. Identity is not semantic coverage or package provenance.')
     return 0
 
 

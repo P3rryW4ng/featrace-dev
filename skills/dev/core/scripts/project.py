@@ -13,6 +13,7 @@ from pathlib import Path
 import subprocess
 import sys
 from datetime import datetime, timezone
+from check_identity import capture as capture_check_identity, compare as compare_check_identity, path_state
 
 SKIP = {'.git', '.agent-workflow', '.agents', '.claude', 'node_modules', 'build', '.gradle', '.venv', 'venv', 'vendor', 'Pods', 'DerivedData', '__pycache__'}
 NAMES = {'settings.gradle', 'settings.gradle.kts', 'build.gradle', 'build.gradle.kts', 'libs.versions.toml', 'gradle.lockfile', 'gradle-wrapper.properties', 'Package.swift', 'project.pbxproj', 'package.json', 'package-lock.json', 'pnpm-lock.yaml', 'yarn.lock', 'go.mod', 'go.sum', 'pyproject.toml', 'requirements.txt', 'pom.xml', 'Cargo.toml', 'Cargo.lock', 'Makefile', 'CMakeLists.txt'}
@@ -42,7 +43,7 @@ def worktree_paths(root):
         git_paths(root, 'ls-files', '--others', '--exclude-standard', '-z', '--'),
     ]
     if any(group is None for group in groups):
-        return []
+        raise ValueError('Git worktree paths unavailable; cannot certify baseline')
     return sorted(set(path for group in groups for path in group if not workflow_path(path)))
 
 
@@ -83,7 +84,10 @@ def baseline_diagnostics(root, recorded, current):
     if old_head != new_head:
         reasons.append('git_head')
         head_paths = committed_paths(root, old_head, new_head)
-    return reasons, head_paths, manifest_paths, evidence_paths, worktree_paths(root)
+    # Non-Git scan remains a manifest inventory; automatic check identity below
+    # requires a Git root. Never hide a failed worktree read for a Git baseline.
+    dirty = worktree_paths(root) if old_head or new_head else []
+    return reasons, head_paths, manifest_paths, evidence_paths, dirty
 
 
 def verify_baseline(root, recorded, current):
@@ -128,7 +132,8 @@ def snapshot(root, baseline=None):
     evidence = {}
     registry = (baseline or root / '.agent-workflow/project-baseline') / 'evidence-files.json'
     registered = []
-    if registry.exists():
+    if registry.exists() or registry.is_symlink():
+        path_state(root.resolve(), registry.relative_to(root).as_posix())
         record = json.loads(registry.read_text())
         if not isinstance(record, dict) or not isinstance(record.get('files'), list) or not all(isinstance(p, str) and p for p in record['files']):
             raise ValueError('evidence-files.json requires a files array of relative paths')
@@ -140,10 +145,41 @@ def snapshot(root, baseline=None):
         path.resolve().relative_to(root)
         if path.is_symlink() or path.is_dir():
             raise ValueError('evidence must be a regular project file: ' + rel)
-        evidence[rel] = hashlib.sha256(path.read_bytes()).hexdigest() if path.is_file() else None
+        checked = path_state(root.resolve(), rel)
+        evidence[rel] = checked.get('sha256')
     return {'version': 2, 'evidence': evidence, 'profile': 'android' if android else 'generic', 'git_head': git.stdout.strip() if git.returncode == 0 else '', 'files': files}
 
+def quality_snapshot(root):
+    """Automatic-check scope only; do not change scan fingerprint semantics."""
+    before = snapshot(root)
+    registry = root / '.agent-workflow/project-baseline/evidence-files.json'
+    required = json.loads(registry.read_text())['files'] if registry.is_file() else []
+    identity = capture_check_identity(root, required, ('AGENTS.md', 'CLAUDE.md'))
+    config = json.loads((root / '.agent-workflow/project-baseline/quality-gates.json').read_text())
+    validate_gates(root, config)
+    if before != snapshot(root):
+        identity = {'state': 'unknown', 'reason': 'project manifests changed during capture'}
+    return dict(before, check_inputs=identity, gate_contract=quality_selection(config))
+
+
+def quality_comparison(root, recorded, current):
+    comparison = compare_check_identity(
+        recorded.get('check_inputs') if isinstance(recorded, dict) else None,
+        current.get('check_inputs') if isinstance(current, dict) else None)
+    if comparison['state'] != 'same':
+        return comparison
+    old = {k: v for k, v in recorded.items() if k != 'check_inputs'}
+    new = {k: v for k, v in current.items() if k != 'check_inputs'}
+    if not legacy_snapshot_matches(root, old, new):
+        return dict(comparison, state='changed', reason='manifest, rules or revision changed')
+    return comparison
+
+
 def quality_snapshot_matches(root, recorded, current):
+    return quality_comparison(root, recorded, current)['state'] == 'same'
+
+
+def legacy_snapshot_matches(root, recorded, current):
     """Accept a later HEAD only when tracked changes are workflow records alone."""
     if recorded == current:
         return True
@@ -458,7 +494,11 @@ def main():
             raise ValueError('quality gate selection belongs to another feature or is unbound; select gates for ' + args.feature + ' before check')
         from revisions import binding
     before_baseline = binding(root, args.feature) if args.feature else None
-    before_check = snapshot(root)
+    before_check = quality_snapshot(root)
+    if before_check['check_inputs'].get('state') != 'identified':
+        raise ValueError('CHECK_INPUTS_UNKNOWN: ' + before_check['check_inputs'].get('reason', 'unavailable'))
+    if before_check['gate_contract'] != quality_selection(selected_config):
+        raise ValueError('CHECK_INPUTS_CHANGED: gate selection moved before execution')
     results = []
     for gate, cmd, cwd, timeout in prepared:
         try:
@@ -468,15 +508,30 @@ def main():
             result = {'name': gate.get('name', cmd[0]), 'command': cmd, 'test_ids': gate.get('test_ids', []), 'status': 'unavailable', 'error': str(exc)}
         results.append(result)
         print(result['name'] + ': ' + result['status'])
-    after_check = snapshot(root)
-    after_baseline = binding(root, args.feature) if args.feature else None
-    if after_check != before_check or after_baseline != before_baseline:
+    try:
+        after_check = quality_snapshot(root)
+    except (OSError, ValueError, TypeError, KeyError):
+        after_check = {'check_inputs': {'state': 'unknown'}}
+    baseline_unknown = False
+    try:
+        after_baseline = binding(root, args.feature) if args.feature else None
+    except (OSError, ValueError, TypeError, KeyError):
+        after_baseline = {'state': 'unknown'}
+        baseline_unknown = True
+    comparison = quality_comparison(root, before_check, after_check)
+    if after_baseline != before_baseline:
+        comparison = dict(comparison, state='unknown' if baseline_unknown else 'changed',
+                          reason='requirement baseline changed or unavailable during execution')
+    if comparison['state'] != 'same' or after_baseline != before_baseline:
         print('PROJECT_CHANGED_DURING_CHECK: results do not certify the final project snapshot')
     report = {'tested_at': datetime.now(timezone.utc).isoformat(), 'project_snapshot': before_check,
               'quality_selection': quality_selection(selected_config),
-              'results': results, 'feature_baseline': before_baseline}
+              'results': results, 'feature_baseline': before_baseline,
+              'input_comparison': comparison}
     (base / 'quality-report.json').write_text(json.dumps(report, indent=2) + '\n')
-    return 0 if after_check == before_check and after_baseline == before_baseline and all(x['status'] == 'passed' for x in results) else 1
+    if comparison['state'] == 'unknown':
+        return 2
+    return 0 if comparison['state'] == 'same' and after_baseline == before_baseline and all(x['status'] == 'passed' for x in results) else 1
 
 if __name__ == '__main__':
     try:

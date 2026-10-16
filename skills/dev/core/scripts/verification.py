@@ -319,6 +319,10 @@ def run(root, folder):
         outcome = 'failed' if 'failed' in statuses else ('unavailable' if 'unavailable' in statuses else 'passed')
         if (after, after_head) != (stamp, head):
             outcome = 'unavailable'
+        if outcome == 'passed' and execution.returncode != 0:
+            # A command can exit zero while the runner rejects moved/unknown
+            # input identity. Do not upgrade that diagnostic to a row pass.
+            outcome = 'unavailable'
         actual = json.dumps(selected, ensure_ascii=False) if fresh else (execution.stdout + execution.stderr).strip() or 'No new quality report'
         row['history'].append(result(outcome, stamp, head, actual, 'quality-report executed at ' + str(report.get('tested_at', 'unavailable')), 'automatic'))
     # Do not overwrite concurrent edits to the plan while checks were running.

@@ -1,8 +1,15 @@
 # 验证与评估索引
 
-更新：2026-10-15。本页只提供当前证据导航与结论边界。历次执行的完整记录保留在[验证历史](history/2026-09-30-validation.md)；其中版本、安装和“下一步”只代表当时。当前任务见 [ROADMAP](../ROADMAP.md)。
+更新：2026-10-17。本页只提供当前证据导航与结论边界。历次执行的完整记录保留在[验证历史](history/2026-09-30-validation.md)；其中版本、安装和“下一步”只代表当时。当前任务见 [ROADMAP](../ROADMAP.md)。
 
 ## 当前发布与检查
+
+[B1身份与动态工作清单整合提交核验](evaluations/2026-10-17-development-sync.md)：当前整合工作区482/482通过，0跳过，886.242秒；代码/测试SHA未变，运行中仅调整宿主进度措辞，未安装。
+
+[B1原始合成验证](evaluations/2026-10-16-b1-check-identity.md)和[动态原生工作清单](evaluations/2026-10-16-stage-progress-display.md)：前者含脚本回归，后者仅指令静态核对，宿主实际表现待验。
+
+[第二阶段反例](evaluations/2026-10-16-phase-two-counterexamples.md)、[指标字典](evaluations/2026-10-16-phase-two-metrics.md)、[FT-01/02设计](reviews/2026-10-16-ft01-ft02-design.md)和[最终收敛方案](reviews/2026-10-16-phase-two-final-plan.md)：设计/采集定义不等于运行实现或净收益。
+
 
 [0.15.0发布快照](evaluations/2026-10-16-release-0150.md)：与本地B1集成树分离，发布快照463/463（688.499秒）、隔离106文件升级与旧104文件备份校验通过；日常安装随后记录。不把原482项结果当作该快照新执行。
 

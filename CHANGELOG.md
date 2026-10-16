@@ -1,5 +1,14 @@
 # Changelog
 
+## Unreleased — lightweight stage visibility
+
+- Reuse a host-native feature task list with concrete work items derived from the current requirement, rather than fixed stage labels; update on meaningful work/result/blocker changes, reopen affected items after failures, and retain canonical evidence as authority. No percentage, new records, gates or execution authority; unsupported hosts fall back to short prose. Instruction-only, not installed or natively verified.
+
+## Unreleased — B1 local check identity
+
+- Share explicit same/changed/unknown local Git/index/worktree and declared-input identity between automatic execution and delivery audit; reject unstable execution even when commands exit zero. Preserve scan fingerprints and manual evidence contracts.
+- Legacy reports without this identity cannot certify current inputs. This source-only step does not implement feature/attempt isolation, change the daily installation, or establish a release version.
+
 ## 0.15.0 — 2026-10-16
 
 - Adopt original manual observations after approved interpretation corrections, including retired rows and recovered uncommitted contracts. Batch freezing and fresh-context full-claim review preserve original results and test identity; failures, skipped withdrawals, unknown identity and expanded claims are refused.
@@ -12,7 +21,6 @@
 - Append independently reviewed corrections to recorded manual actual/evidence descriptions, including stale passes, without rewriting original histories, tested revisions or acceptance freshness. Corrections are exact result/hash-bound notes; coverage, requirements, approvals and result status cannot be changed by this path.
 - Expose linked corrections in status, generated views, scoped Test/Verify inputs and final claim-review bindings. Missing/changed supporting artifacts remain visible and expire bound final review; no gate run, result re-registration, retained conversion or completion is performed.
 - Only an applied correction upgrades verification.json to schema 2. New readers keep schema 1 support; previous readers reject schema 2 instead of silently ignoring a correction. Sync preserves correction chains and retired targets. This explicit record-format/read-contract change uses the minor number; it does not indicate phase-two completion. No automatic migration or installation.
-
 
 ## 0.13.6 — 2026-10-15
 
