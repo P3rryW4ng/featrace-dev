@@ -1,0 +1,6 @@
+REGRESSION_EXECUTION_RECORDED: executed device coverage; routine gate unchanged
+DEVICE_CONTINUITY_RECORDED: reviewed applicability; no device execution
+Traceback (most recent call last):
+  File "/private/tmp/device-continuity-package-check.py", line 42, in <module>
+    assert proc.returncode!=0 and 'invalid regression execution receipt' in text,(version,proc.returncode,text)
+AssertionError: ('0.15.1', 1, 'WARNING: historical regression review missing; sync it before new business-code edits\nWARNING: task semantic review missing; sync and review tasks before business-code edits\nERROR: FIX-001: description required\nERROR: FIX-001: invalid kind\nERROR: unreviewed scope expansion: unrelated.py\nERROR: behavior needs actual regression evidence or explicit waiver: B-1\nERROR: behavior needs actual regression evidence or explicit waiver: B-2\nERROR: verification incomplete: requirement:R-1:1:5418d1630003 (not_run)\nERROR: verification incomplete: impact:B-1:e6e32d4c2286 (not_run)\nERROR: verification incomplete: impact:B-2:3c91ed1e9cb5 (not_run)\nERROR: verification incomplete: gate:unit:ae58977f2f47 (not_run)\n')

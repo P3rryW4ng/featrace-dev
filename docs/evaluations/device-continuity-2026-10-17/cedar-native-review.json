@@ -1,0 +1,28 @@
+{
+  "input_digest": "d54c93bc27a7bf25065e689b75af8418badfb99df4b643411e8b6ddf4a844d9f",
+  "context": "fresh",
+  "reviewer": "/root/receipt_fixture_cedar",
+  "findings": [
+    {
+      "id": "FIX-001:UT-1",
+      "verdict": "supported",
+      "assertion_evidence": "已读取原始及当前全部四个源码文件。regression_test.py 在两个 revision 中完全相同：ButtonRegression.test_enabled_and_zero 分别断言 button(10) 返回 enabled=True、solid-green、Confirm，以及 button(0) 返回 enabled=False、half-green、Confirm。当前只读执行 python3 -B regression_test.py 返回 0，1 个测试通过。原归档 run.txt 同样记录此测试通过。",
+      "original_identity_evidence": "原始 receipt 位于 fixes.json 的 regression_execution_history[0]，receipt_digest 为 2299eb7c6a791b2a21de8965655da02ffb4344b572800cf275fcc3ad283ce640，tested_revision 为 0d6e44665708a0e798145fae5ec2aa1182550f82。实际重算 run.txt SHA-256 为 ac1767ef09dbf5dcc0526a0c0de3f606aed2e16e708e4f117db46e58ecc8bffb，package-identity.json 为 ff66d764df8359f06fa0d8981b86badb2c4375000d45c54eff67e95216fc8542，均匹配冻结快照和原回执。身份文件中的 original_test_source_blob 为 dd1757b85620e5dfd0b746f543bb619a821572fe，与冻结快照一致。fixture-image.txt 实际 SHA-256 为 b4a6fa9f39530393f161d476eda8e7dc0ea42c9e1aa9c3f30030c079e4c6ede6，与身份文件一致。",
+      "dependency_evidence": "已检查完整 Git 源码树、原始源码、当前源码及使用 --no-ext-diff --no-textconv 的完整 revision 差异。HEAD 等于冻结 target_revision 4fa5a794d8a03d501d2efe783698ca9a4c8eda68。唯一已提交变更为 strings.json 新增 nickname 键。实际调用链为 regression_test.py → screen.button → theme.COLORS 及 json.loads 读取 strings.json；额外检查了请求未列出的 theme.py，其内容及全局初始化均未变化。screen.button 只取 strings['confirm']，不枚举键、不依赖字典长度或新增 nickname 值；正数/零分支和颜色映射均未改变。",
+      "authority_evidence": "已读取当前 FIX-001、原回执内 FIX 和 requirement、当前 R-1、tasks.json、decisions.json。FIX-001 和 R-1 均要求正数启用 solid-green Confirm、零禁用 half-green Confirm，并关联 UT-1，与原断言一致。tasks 和 decisions 均为空；source_authority 为 null，因此结论只依据本合成 fixture 明示的 FIX/R-1 契约，不推断其他产品授权或设备要求。",
+      "environment_evidence": "原执行命令为 Python -B regression_test.py，原回执明确说明 isolated synthetic device-receipt protocol fixture、无物理设备，并注明仅执行 Python fixture 断言。归档身份及 image 文本同样明确标记 synthetic。当前核查也仅运行该 Python 测试；新增资源键不改变 Python 导入、主题初始化、测试组装或执行命令。",
+      "counterexample_check": "检查了新增资源键可能通过键枚举、资源数量、动态初始化、颜色间接依赖、测试修改或新增构建入口影响断言的路径。全部源码仅有四个文件；screen.button 只读取 confirm，theme.py 为固定 COLORS 字典，测试固定调用 10 和 0，完整 Git 差异没有其他变更。新增 nickname 不满足任何影响原断言结果的条件，当前测试也再次通过。",
+      "limits": "仅支持该合成项目中 UT-1 的两个原始 Python 断言继续适用于冻结 target_revision；不证明真实 Android 安装、渲染、硬件运行或新设备包执行成功。正数行为以原测试输入 10、零以 0 实际覆盖；未扩展到负数、其他类型或完整产品行为。归档文件可核对身份与输出，但并非独立设备证明。未编辑文件、未调用 capture/apply、未操作业务仓库、设备、网络或其他会话。",
+      "changes": [
+        {
+          "path": "strings.json",
+          "effect": "unaffected",
+          "evidence": "完整差异仅从 {\"confirm\":\"Confirm\",\"amount\":\"Amount\"} 增加 \"nickname\":\"Nickname\"；confirm 和 amount 原值不变。screen.button 通过 strings['confirm'] 精确读取标签，不遍历资源，也不使用 nickname 或字典大小。其 enabled 和 color 由未修改的 amount > 0 及 theme.COLORS 决定。原测试断言及依赖源码未变化，当前只读运行通过。"
+        }
+      ]
+    }
+  ],
+  "apply_targets": [
+    "FIX-001:UT-1"
+  ]
+}

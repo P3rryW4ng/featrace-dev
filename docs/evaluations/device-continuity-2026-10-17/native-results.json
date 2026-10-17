@@ -1,0 +1,20 @@
+[
+  {
+    "case": "cedar",
+    "reviewer": "/root/receipt_fixture_cedar",
+    "verdict": "supported",
+    "input_digest": "d54c93bc27a7bf25065e689b75af8418badfb99df4b643411e8b6ddf4a844d9f",
+    "outcome": "applied; old execution unchanged; current applicability true",
+    "review_path": "/var/folders/d_/q6w_z5qx1vl939khdfl92b540000gn/T/device-continuity-native-fthzu7bw/cedar/.agent-workflow/native-review.json",
+    "review_sha256": "909597548314a3c2c01814dd89c6f971d5c362aeceffbc2fb278e5ac971d077f"
+  },
+  {
+    "case": "birch",
+    "reviewer": "/root/receipt_fixture_birch",
+    "verdict": "affected",
+    "input_digest": "d31e2ff64b2af02bd7e6466e0c6bfd3040d700c45c64228bad204649a19e7aa8",
+    "outcome": "affected rejected; no record mutation",
+    "review_path": "/var/folders/d_/q6w_z5qx1vl939khdfl92b540000gn/T/device-continuity-native-fthzu7bw/birch/.agent-workflow/native-review.json",
+    "review_sha256": "0e35dc34ecf2e621ac6be08a0abbc0122cbae0e33bc322f1dddc500ae5148dec"
+  }
+]

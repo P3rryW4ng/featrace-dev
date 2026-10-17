@@ -21,7 +21,11 @@ def read_fixes(folder, feature_id):
     path = folder / 'fixes.json'
     if not path.exists():
         return {'feature_id': feature_id, 'fixes': []}  # Legacy workspace.
-    return json.loads(path.read_text())
+    doc = json.loads(path.read_text())
+    from regression_continuity import present, validate_document
+    if present(doc):
+        validate_document(doc)
+    return doc
 
 
 def validate_closure(item, fixes_by_id, decisions_by_id):
@@ -200,6 +204,8 @@ def render_fixes(folder, feature_id):
     doc = read_fixes(folder, feature_id)
     if not isinstance(doc, dict) or not isinstance(doc.get('fixes'), list):
         raise ValueError('invalid fixes.json')
+    from regression_continuity import present, summaries
+    continuity = summaries(folder.resolve().parents[2], folder.resolve(), doc) if present(doc) else []
     lines = ['# Fixes', '', 'Generated from fixes.json; edit the JSON record.', '']
     for fix in doc['fixes']:
         closure = fix.get('closure', {})
@@ -231,5 +237,12 @@ def render_fixes(folder, feature_id):
                   '- Cross-scope coverage: ' + '; '.join(test + ': ' + reason for test, reason in fix.get('regression_scope_notes', {}).items()),
                   '- Regression waiver: ' + fix.get('regression_waiver', ''),
                   '- Device regression receipts: ' + str(len(fix.get('regression_execution_history', []))),
+                  '- Device executions: ' + str(sum(e.get('schema_version') == 1 for e in fix.get('regression_execution_history', []))),
+                  '- Reviewed device continuities (not executions): ' + str(sum(e.get('schema_version') == 2 for e in fix.get('regression_execution_history', []))),
                   '- Tested revision: ' + fix.get('tested_revision', ''), '']
+    if continuity:
+        lines += ['## Reviewed device applicability (no new execution)', '']
+        for item in continuity:
+            lines += ['- %s/%s: %s; original execution %s at %s; reviewed target %s; event %s' % (item['fix_id'], item['test_id'], item['status'], item['execution_identity']['tested_revision'], item['execution_identity']['executed_at'], item['reviewed_revision'], item['event_id'])]
+        lines.append('')
     (folder / 'fixes.md').write_text('\n'.join(lines) + '\n')

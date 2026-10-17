@@ -1,0 +1,51 @@
+test_capture_and_apply_drift_never_partially_save (test_regression_continuity.DeviceContinuityTests) ... ok
+test_changed_shared_file_needs_explicit_review_not_machine_whitelist (test_regression_continuity.DeviceContinuityTests) ... ok
+test_currentness_changes_but_workflow_only_commit_preserves_target (test_regression_continuity.DeviceContinuityTests) ... ERROR
+test_dependency_original_assertion_and_dirty_input_fail_closed (test_regression_continuity.DeviceContinuityTests) ... ok
+test_duplicate_and_multi_fix_partial_subset_are_explicit (test_regression_continuity.DeviceContinuityTests) ... ok
+test_events_references_and_original_tampering_are_not_ignored (test_regression_continuity.DeviceContinuityTests) ... ok
+test_every_changed_path_and_independence_evidence_required (test_regression_continuity.DeviceContinuityTests) ... ok
+test_latest_execution_only_withdrawn_or_invalid_source_rejected (test_regression_continuity.DeviceContinuityTests) ... ok
+test_new_evidence_can_be_reviewed_from_original_without_derived_chain (test_regression_continuity.DeviceContinuityTests) ... ok
+test_original_evidence_or_fix_expectation_changes_cannot_be_reused (test_regression_continuity.DeviceContinuityTests) ... ok
+test_render_and_old_receipt_reader_refuse_silent_upgrade (test_regression_continuity.DeviceContinuityTests) ... ok
+test_review_retains_original_identity_and_audit_requires_current_gates (test_regression_continuity.DeviceContinuityTests) ... ok
+
+======================================================================
+ERROR: test_currentness_changes_but_workflow_only_commit_preserves_target (test_regression_continuity.DeviceContinuityTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/mac/Entrepôt/featrace-dev/tests/test_regression_continuity.py", line 168, in test_currentness_changes_but_workflow_only_commit_preserves_target
+    self.assertFalse(current_evidence(self.root, self.folder, fix, 'UT-1'))
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/regression_execution.py", line 155, in current_evidence
+    return current(root, folder, read(folder / 'fixes.json'), fix, test_id, latest)
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/regression_continuity.py", line 273, in current
+    return semantic_identity(root, folder, inputs['requests'], inputs['target_revision']) == inputs
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/regression_continuity.py", line 154, in semantic_identity
+    raise ValueError('current target tree changed')
+ValueError: current target tree changed
+
+----------------------------------------------------------------------
+Ran 12 tests in 9.360s
+
+FAILED (errors=1)
+REGRESSION_EXECUTION_RECORDED: executed device coverage; routine gate unchanged
+REGRESSION_EXECUTION_RECORDED: executed device coverage; routine gate unchanged
+DEVICE_CONTINUITY_RECORDED: reviewed applicability; no device execution
+REGRESSION_EXECUTION_RECORDED: executed device coverage; routine gate unchanged
+DEVICE_CONTINUITY_RECORDED: reviewed applicability; no device execution
+REGRESSION_EXECUTION_RECORDED: executed device coverage; routine gate unchanged
+REGRESSION_EXECUTION_RECORDED: executed device coverage; routine gate unchanged
+DEVICE_CONTINUITY_RECORDED: reviewed applicability; no device execution
+REGRESSION_EXECUTION_RECORDED: executed device coverage; routine gate unchanged
+DEVICE_CONTINUITY_RECORDED: reviewed applicability; no device execution
+REGRESSION_EXECUTION_RECORDED: executed device coverage; routine gate unchanged
+REGRESSION_EXECUTION_RECORDED: executed device coverage; routine gate unchanged
+REGRESSION_EXECUTION_RECORDED: executed device coverage; routine gate unchanged
+DEVICE_CONTINUITY_RECORDED: reviewed applicability; no device execution
+DEVICE_CONTINUITY_RECORDED: reviewed applicability; no device execution
+REGRESSION_EXECUTION_RECORDED: executed device coverage; routine gate unchanged
+REGRESSION_EXECUTION_RECORDED: executed device coverage; routine gate unchanged
+DEVICE_CONTINUITY_RECORDED: reviewed applicability; no device execution
+REGRESSION_EXECUTION_RECORDED: executed device coverage; routine gate unchanged
+DEVICE_CONTINUITY_RECORDED: reviewed applicability; no device execution

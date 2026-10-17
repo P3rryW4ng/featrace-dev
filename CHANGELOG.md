@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.16.0 — 2026-10-17
+
+- Keep schema-1 executed-device receipts immutable; explicitly review a feature-scoped batch of latest original FIX/TEST runs against a clean current code target, every changed path and investigated shared dependencies.
+- Append a shared reviewed event plus typed version-2 references only for explicitly supported targets. Do not fabricate device execution, relabel old package identity, apply partial cases or reuse automatic gates. New audit/status/views/final review expose current/stale applicability and original execution separately; old receipt validators reject the new type.
+- This release does not change global manual evidence digests or automatically migrate business records. It excludes B1 check identity and dynamic progress instructions. Hashes do not prove reviewer independence, semantic completeness or actual device provenance. Unknown/affected cases still need targeted evidence.
+
 ## Unreleased — lightweight stage visibility
 
 - Reuse a host-native feature task list with concrete work items derived from the current requirement, rather than fixed stage labels; update on meaningful work/result/blocker changes, reopen affected items after failures, and retain canonical evidence as authority. No percentage, new records, gates or execution authority; unsupported hosts fall back to short prose. Instruction-only, not installed or natively verified.

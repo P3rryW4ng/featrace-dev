@@ -36,7 +36,12 @@ print("SOURCES: " + ", ".join(f"{key}={value}" for key, value in req["feature"].
 print("REQUIREMENTS: " + ", ".join(f"{key}={value}" for key, value in counts.items()))
 print(f"TASKS: done={done}/{len(tasks)}")
 print("REQUIREMENT_BLOCKERS: present" if counts["blocked"] else "REQUIREMENT_BLOCKERS: none")
-fixes = read_fixes(folder, feature_id).get('fixes', [])
+fix_doc = read_fixes(folder, feature_id)
+fixes = fix_doc.get('fixes', [])
+if fix_doc.get('regression_continuity_reviews'):
+    from regression_continuity import summaries
+    for item in summaries(root, folder, fix_doc):
+        print('DEVICE_CONTINUITY: %s/%s %s; original=%s; reviewed=%s; no new execution' % (item['fix_id'], item['test_id'], item['status'], item['execution_identity']['tested_revision'], item['reviewed_revision']))
 open_fixes = sum(fix.get('status') not in TERMINAL_STATUSES for fix in fixes if isinstance(fix, dict))
 print(f"FIXES: unresolved={open_fixes}/{len(fixes)}")
 verified = sum(fix.get('status') == 'verified' for fix in fixes if isinstance(fix, dict))
