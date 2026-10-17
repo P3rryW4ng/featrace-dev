@@ -1,0 +1,44 @@
+{
+  "version": "0.16.0",
+  "source_implementation_commit": "9a2c3abf17dfa09c835e7a35724bf25cd0aa929e",
+  "runtime_release_commit": "91f4ce5ff0087514611b9f3f99a3961162cb1f6f",
+  "runtime_files": 107,
+  "installed_commit_source_hashes_match": true,
+  "installed_runtime_file_modes_match": true,
+  "backup": "/Users/mac/.feature-delivery/backups/20261017T121748-claude-32bb582d",
+  "backup_version": "0.15.1",
+  "backup_files": 106,
+  "backup_original_marker_and_hashes_match": true,
+  "entrypoint_checks": [
+    {
+      "command": "regression_continuity.py --help",
+      "exit_code": 0
+    },
+    {
+      "command": "regression_execution.py --help",
+      "exit_code": 0
+    },
+    {
+      "command": "claim_review.py --help",
+      "exit_code": 0
+    }
+  ],
+  "B1_included": false,
+  "dynamic_progress_included": false,
+  "runtime_project_py_and_SKILL_unchanged": true,
+  "full_tests_repeated_this_release": false,
+  "prior_candidate_full_tests": 482,
+  "prior_integrated_full_tests": 501,
+  "release_runtime_difference_from_tested_candidate": [
+    "core/references/device-regression.md: three publish-status wording changes"
+  ],
+  "install_first_attempt": "sandbox rename denied; old install unchanged; authorized elevated installer then succeeded",
+  "privacy_review": {
+    "initial_scan": "77 targets exceeded helper limit64; not a completed scan",
+    "actual_scan": "two batches per tree; all77 scanned",
+    "candidates_per_tree": 2,
+    "candidate_assessment": "two Git identity strings for synthetic .invalid email in tests; not actual account identifiers"
+  },
+  "business_records_changed": false,
+  "device_server_operations": false
+}
