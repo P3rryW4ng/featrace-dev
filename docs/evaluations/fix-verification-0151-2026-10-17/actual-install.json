@@ -1,0 +1,15 @@
+{
+  "installed_version": "0.15.1",
+  "files": 106,
+  "release_commit": "e49038b0c6ef4238e85843d8836ef4bf4257e7cd",
+  "backup_version": "0.15.0",
+  "backup_files": 106,
+  "backup_path": "/Users/mac/.feature-delivery/backups/20261017T015605-claude-1b7cdede",
+  "source_commit_install_hashes_match": true,
+  "backup_original_manifest_and_files_match": true,
+  "cli_help_pass": 3,
+  "B1_installed": false,
+  "progress_installed": false,
+  "business_operations": false,
+  "native_effectiveness_verified": false
+}

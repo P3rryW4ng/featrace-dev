@@ -4,6 +4,9 @@
 
 ## 当前发布与检查
 
+[0.15.1最小验收准备修复](evaluations/2026-10-17-fix-verification-0151.md)：三reference静态核对及106文件隔离升级、备份/CLI核验；Python未变，不重跑完整回归，不含B1/进度，真实效果待Bug观察。
+
+
 [B1身份与动态工作清单整合提交核验](evaluations/2026-10-17-development-sync.md)：当前整合工作区482/482通过，0跳过，886.242秒；代码/测试SHA未变，运行中仅调整宿主进度措辞，未安装。
 
 [B1原始合成验证](evaluations/2026-10-16-b1-check-identity.md)和[动态原生工作清单](evaluations/2026-10-16-stage-progress-display.md)：前者含脚本回归，后者仅指令静态核对，宿主实际表现待验。

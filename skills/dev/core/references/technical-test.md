@@ -13,6 +13,12 @@ Start from the selected feature ID, reviewed requirement/AC and impact rows, cur
 3. Where an existing safe test seam allows it, add or strengthen focused executable assertions for missing objective behavior. Such code/test edits return to the normal Build/Repair scope, review and task commit rules; Test does not silently widen production code, invent a dependency, or run destructive setup merely to obtain a green result. For device/instrumented checks, first confirm device, account, installed build and restoration capability under the Android profile. A build, screenshot or successful setup command is not a behavior assertion.
 4. Run `python3 core/scripts/verification.py run <PROJECT> <ID>` against the final applicable code state and retain the generated `quality-report.json`, `verification.json`/view, test output or XML references and exact exit codes. A failure must remain failed; investigate it through Repair, then rerun affected checks. An unavailable environment stays unavailable. Reuse a current result only with its original tested revision and an explicit relevance check; do not relabel it as freshly run.
 
+## Stabilize inputs before final evidence capture
+
+Review the coverage account against actual assertions before registering whole-row passes: include required modes, input boundaries and negative outcomes; group shared execution without losing each claim's limits. Choose the least costly method that proves the required layer, not an obligatory JVM–simulator–device ladder. Existing rules or actual unproved behavior can still require device evidence.
+
+Finish affected source, tests, scope/mapping, selected gates and decisions before the final run/capture when practical. Privacy-check archived evidence before binding device receipts or review inputs. Do not postpone a necessary factual correction to preserve a digest; if inputs change, identify what changed and use the existing freshness/review rules. A stale digest is not by itself proof that the behavior failed or that every test must be re-executed. This instruction neither bypasses current helpers nor supplies an unimplemented reuse path. If a helper prevents justified reuse, report that precise block separately from the actual coverage gap.
+
 ## Coverage classification before execution/revision (0.13.3)
 
 Describe two separate facts in the existing row `coverage`/actual/evidence text and report, without adding a new registry:
