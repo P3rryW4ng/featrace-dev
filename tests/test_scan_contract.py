@@ -49,6 +49,11 @@ class ScanContractTests(unittest.TestCase):
         self.config([]); self.run_action('check', 2); self.assertFalse((self.root / 'executed').exists())
 
     def test_selected_only_runs(self):
+        # The sentinel is an output, not a newly generated source input.
+        (self.root / '.gitignore').write_text('/executed\n')
+        for args in (('init', '-q'), ('add', '.gitignore'),
+                     ('-c', 'user.name=Fixture', '-c', 'user.email=fixture@example.invalid', 'commit', '-qm', 'fixture')):
+            subprocess.run(['git', '-C', str(self.root), *args], check=True, capture_output=True)
         self.config([self.gate()]); self.run_action('check', 0)
         self.assertTrue((self.root / 'executed').exists())
 

@@ -200,7 +200,7 @@ def validate_receipt(doc, row, entry):
         raise ValueError('adoption review reference missing or ambiguous')
     receipt = receipts[0]
     if (entry.get('status') != 'retained' or row.get('mode') != 'manual'
-            or doc.get('schema_version') != 3
+            or doc.get('schema_version') not in (3, 4)
             or receipt.get('digest') != digest({k: val for k, val in receipt.items() if k != 'digest'})):
         raise ValueError('invalid adoption receipt/schema/digest')
     frozen = receipt.get('inputs', {})
@@ -280,7 +280,7 @@ def apply(root, folder, snapshot, review_path):
                 raise ValueError('adoption dependency changed or unavailable; obtain new evidence')
     doc = v.load_plan(folder)
     original = copy.deepcopy(doc)
-    doc['schema_version'] = 3  # Older readers must fail closed.
+    doc['schema_version'] = max(3, doc['schema_version'])  # Older readers must fail closed.
     receipt = {'inputs': fresh, 'review': review}
     # Do not embed the whole project snapshot or original observation prose.
     # Binding is hashed; semantic input and per-file provenance remain inspectable.

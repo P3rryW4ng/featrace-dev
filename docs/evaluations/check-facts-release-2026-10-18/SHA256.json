@@ -1,0 +1,9 @@
+{
+  "full-suite.txt": "7be264f61ccce40d4285a7c1fd4b11c9d90927e9f02490fdd0728965bf5546dd",
+  "isolated-cli-history.json": "c14827d6cac6fad8b4db83528f6d07f40ccd58cba149dd89cd74c6452ede3ad0",
+  "isolated-package.json": "ee722bc5d6c0364fd1b23bb28ebb9f36171a37365f7fa20f44de04a5bb9fb3f3",
+  "isolated-pilot.txt": "ee722bc5d6c0364fd1b23bb28ebb9f36171a37365f7fa20f44de04a5bb9fb3f3",
+  "old-reader.json": "38cb006c1179451c663a454d09073d5898539764fc8cf85fe62cd2df390fbe23",
+  "results.json": "a8a8a2001f2240cd1cf00009015e883571696ac85f5ecf4a74aa7e18ec9f8369",
+  "tested-inputs.json": "5d2d16f2394ea59956d0eb775f1a66a9dc34d151faf034e524a66e3165e6dee9"
+}

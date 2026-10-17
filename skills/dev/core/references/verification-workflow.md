@@ -2,6 +2,8 @@
 
 Use within `/dev check`, and after authorized develop/fix implementation when preparing acceptance. No new user-facing command. For ordinary check, load `technical-test.md` only if objective checks need selection, execution or repair. Technical Test owns selected commands and per-claim test coverage in existing records; this Verify responsibility inspects the resulting report, actual assertions and uncovered behavior before any acceptance/Deliver claim. They currently run in the same Agent context, so this is a responsibility boundary, not independent review. Ask the user only for remaining observations or business judgments. Respect requests for analysis-only or no execution.
 
+For an explicitly prepared `execution_contract: 2` workspace, load `check-execution.md` for feature-local attempts and exact current-claim mapping. Keep legacy workspaces unchanged. Reuse a matching complete execution only through that shared reader; record changes do not authorize old assertions to prove a new claim.
+
 For an explicit independent review request (`check --independent`), use `independent-verify.md` instead of the mutation/execution steps below. That pilot reviews existing evidence only; it does not replace ordinary check or prove delivery. If the user separately requests test execution, complete the authorized normal checks before capturing reviewer inputs.
 
 At the start of Verify, run the internal, read-only input inventory before relying on source or quality claims:

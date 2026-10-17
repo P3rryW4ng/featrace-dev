@@ -59,6 +59,8 @@ def sources(root, folder):
     req = read(folder / 'spec/requirements.json')
     config_path = root / '.agent-workflow/project-baseline/quality-gates.json'
     config = read(config_path) if config_path.exists() else {'gates': []}
+    from check_runs import enabled, selection
+    if config_path.exists() and enabled(root): config = selection(root, folder.name)
     validate_gates(root.resolve(), config)
     if config['gates'] and config.get('selection_feature_id') != folder.name:
         raise ValueError('quality gate selection belongs to another feature or is unbound; select gates for ' + folder.name + ' before verification')
@@ -91,8 +93,10 @@ def candidates(req, config, impact):
 
 def load_plan(folder):
     doc = read(folder / 'verification.json')
-    if not isinstance(doc, dict) or doc.get('schema_version') not in (1, 2, 3) or doc.get('feature_id') != folder.name or not isinstance(doc.get('items'), list) or not isinstance(doc.get('retired'), list):
+    if not isinstance(doc, dict) or doc.get('schema_version') not in (1, 2, 3, 4) or doc.get('feature_id') != folder.name or not isinstance(doc.get('items'), list) or not isinstance(doc.get('retired'), list):
         raise ValueError('invalid verification identity/schema')
+    if doc.get('schema_version') == 4 and doc.get('execution_contract') != 2:
+        raise ValueError('schema 4 requires explicit check attempts')
     if 'annotation_reviews' in doc:
         from evidence_annotations import validated_reviews
         validated_reviews(doc)
@@ -123,6 +127,15 @@ def load_plan(folder):
                 raise ValueError('verification result lacks evidence or tested identity')
             if 'evidence_digest' in result and (not isinstance(result['evidence_digest'], str) or not result['evidence_digest']):
                 raise ValueError('invalid manual evidence digest')
+            if 'check_attempt' in result:
+                ref = result['check_attempt']
+                if (doc.get('schema_version') != 4 or item['mode'] != 'automatic'
+                        or not isinstance(ref, dict) or set(ref) != {'id', 'digest'}
+                        or not re.fullmatch('[0-9a-f]{32}', str(ref.get('id')))
+                        or not re.fullmatch('[0-9a-f]{64}', str(ref.get('digest')))):
+                    raise ValueError('invalid explicit check execution reference')
+                if not item['source'].startswith('gate:') and not isinstance(result.get('mapping_review'), dict):
+                    raise ValueError('automatic claim requires inspected mapping review')
             if result.get('retention_kind') == 'interpretation_adoption':
                 from evidence_adoption import validate_receipt
                 validate_receipt(doc, item, result)
@@ -149,11 +162,11 @@ def load_plan(folder):
     if doc.get('schema_version') == 2 and not doc.get('result_correction_reviews'):
         raise ValueError('schema 2 requires result corrections')
     if 'result_correction_reviews' in doc:
-        if doc.get('schema_version') not in (2, 3):
+        if doc.get('schema_version') not in (2, 3, 4):
             raise ValueError('result corrections require schema 2 readers')
         from result_corrections import validate_events
         validate_events(doc)
-    if doc.get('schema_version') == 3:
+    if doc.get('schema_version') == 3 or 'adoption_reviews' in doc:
         from evidence_adoption import validate_events
         validate_events(doc)
     return doc
@@ -228,6 +241,23 @@ def manual_evidence_stamp(root, folder, row, *, carry_sources=None):
     return digest(content)
 
 
+def row_evidence_stamp(root, folder, row, check_view=None):
+    if row['mode'] == 'manual': return manual_evidence_stamp(root, folder, row)
+    from check_runs import enabled, view
+    if not enabled(root): return None
+    outcome = view(root, folder.name) if check_view is None else check_view
+    # Execution currentness and claim currentness are separate. Other rows' mapping
+    # prose is not this row's assertion, but semantic requirement changes still bind.
+    if outcome['state'] != 'current': return 'check-v2:' + digest(outcome)
+    return 'check-v2:' + digest({'semantic': semantic_stamp(root, folder, row),
+                                 'attempt_id': outcome['attempt_id'], 'attempt_digest': outcome['digest']})
+
+
+def check_currency(root, folder):
+    from check_runs import enabled, view
+    return view(root, folder.name) if enabled(root) else None
+
+
 def scope_files(root, folder):
     """Fingerprint every registered changed/inspected project file."""
     root = root.resolve()
@@ -262,6 +292,8 @@ def sync(root, folder):
     active = {r['id'] for r in rows}
     doc = {'schema_version': old.get('schema_version', 1), 'feature_id': folder.name, 'items': rows,
            'retired': old['retired'] + [r for r in old['items'] if r['id'] not in active]}
+    from check_runs import enabled
+    if enabled(root): doc.update(schema_version=4, execution_contract=2)
     if 'annotation_reviews' in old:
         doc['annotation_reviews'] = old['annotation_reviews']
     if 'result_correction_reviews' in old:
@@ -279,7 +311,9 @@ def state(row, stamp, evidence_stamp=None):
     if not row['history']:
         return 'not_run'
     result = row['history'][-1]
-    if row['mode'] == 'manual' and 'evidence_digest' in result and evidence_stamp is not None:
+    if isinstance(evidence_stamp, str) and evidence_stamp.startswith('check-v2:') and 'check_attempt' not in result:
+        return 'stale'
+    if 'evidence_digest' in result and evidence_stamp is not None:
         return result['status'] if result['evidence_digest'] == evidence_stamp else 'stale'
     return result['status'] if result['digest'] == stamp else 'stale'
 
@@ -303,6 +337,15 @@ def run(root, folder):
     preflight = subprocess.run([sys.executable, str(Path(__file__).with_name('validate-feature.py')), '--stage', 'develop', str(root), folder.name], capture_output=True, text=True)
     if preflight.returncode:
         raise ValueError('development eligibility failed before execution: ' + preflight.stdout + preflight.stderr)
+    from check_runs import enabled
+    if enabled(root):
+        preflight = subprocess.run([sys.executable, str(Path(__file__).with_name('validate-feature.py')), '--stage', 'develop', str(root), folder.name], capture_output=True, text=True)
+        if preflight.returncode: raise ValueError('development eligibility failed before execution: ' + preflight.stdout + preflight.stderr)
+        execution = subprocess.run([sys.executable, str(Path(__file__).with_name('project.py')), 'check', str(root), '--feature', folder.name], capture_output=True, text=True)
+        print(execution.stdout, end='')
+        if execution.returncode: return summary(root, folder)
+        adopt_checks(root, folder, locked=True, allow_claims=False)
+        return summary(root, folder)
     report_path = root / '.agent-workflow/project-baseline/quality-report.json'
     old_bytes = report_path.read_bytes() if report_path.exists() else None
     execution = subprocess.run([sys.executable, str(Path(__file__).with_name('project.py')), 'check', str(root), '--feature', folder.name], capture_output=True, text=True)
@@ -319,6 +362,10 @@ def run(root, folder):
         outcome = 'failed' if 'failed' in statuses else ('unavailable' if 'unavailable' in statuses else 'passed')
         if (after, after_head) != (stamp, head):
             outcome = 'unavailable'
+        if outcome == 'passed' and execution.returncode != 0:
+            # A command can exit zero while the runner rejects moved/unknown
+            # input identity. Do not upgrade that diagnostic to a row pass.
+            outcome = 'unavailable'
         actual = json.dumps(selected, ensure_ascii=False) if fresh else (execution.stdout + execution.stderr).strip() or 'No new quality report'
         row['history'].append(result(outcome, stamp, head, actual, 'quality-report executed at ' + str(report.get('tested_at', 'unavailable')), 'automatic'))
     # Do not overwrite concurrent edits to the plan while checks were running.
@@ -328,6 +375,85 @@ def run(root, folder):
     render(folder)
     print(execution.stdout, end='')
     return summary(root, folder)
+
+
+def check_mapping_snapshot(root, folder, item_ids):
+    from check_runs import current
+    doc = load_plan(folder); report = current(root, folder.name)
+    selected = [r for r in doc['items'] if r['id'] in item_ids]
+    if (not isinstance(item_ids, list) or not item_ids or len(item_ids) != len(set(item_ids))
+            or len(selected) != len(item_ids) or any(r['mode'] != 'automatic' for r in selected)):
+        raise ValueError('explicit distinct automatic claim targets required')
+    _, head = context(root, folder, doc)
+    body = {'feature_id': folder.name, 'attempt_id': report['attempt_id'], 'attempt_digest': report['attempt_digest'],
+            'target_revision': head, 'items': [{k: v for k, v in row.items() if k != 'history'} for row in selected],
+            'claim_stamps': {r['id']: row_evidence_stamp(root, folder, r, {'state':'current','attempt_id':report['attempt_id'],'digest':report['attempt_digest']}) for r in selected}, 'plan_digest': digest(doc)}
+    body['input_digest'] = digest(body)
+    return body
+
+
+def adopt_checks(root, folder, *, review=None, locked=False, allow_claims=True):
+    def action():
+        from check_runs import current
+        doc = load_plan(folder); original = read(folder / 'verification.json'); report = current(root, folder.name)
+        stamp, _ = context(root, folder, doc)
+        if review is None:
+            if allow_claims: raise ValueError('explicit current mapping review required for claim adoption')
+            selected = [r for r in doc['items'] if r['source'].startswith('gate:')]
+            binding = None
+        else:
+            ids = review.get('item_ids')
+            if isinstance(ids, list) and ids and len(ids) == len(set(ids)):
+                already = [r for r in doc['items'] if r['id'] in ids]
+                view = {'state':'current','attempt_id':report['attempt_id'],'digest':report['attempt_digest']}
+                if (len(already) == len(ids) and all(r['mode'] == 'automatic' and r['history']
+                        and r['history'][-1].get('mapping_review', {}).get('review') == review
+                        and state(r, stamp, row_evidence_stamp(root, folder, r, view)) == 'passed' for r in already)):
+                    if current(root, folder.name) != report or read(folder / 'verification.json') != original:
+                        raise ValueError('execution/plan changed during idempotent readback')
+                    print('CHECK_RESULTS_ADOPTED: 0; already applied; no commands executed')
+                    return doc
+            binding = check_mapping_snapshot(root, folder, ids)
+            if (review.get('input_digest') != binding['input_digest'] or not isinstance(review.get('reviewer'), str)
+                    or not review['reviewer'].strip() or review.get('status') != 'supported'):
+                raise ValueError('current exact-claim mapping review required; partial rejected')
+            findings = review.get('findings')
+            if not isinstance(findings, list) or len(findings) != len(ids) or {f.get('item_id') for f in findings} != set(ids):
+                raise ValueError('review every automatic claim')
+            for f in findings:
+                if f.get('verdict') != 'supported' or any(not isinstance(f.get(k), str) or not f[k].strip() for k in ('assertion_evidence','required_scope','counterexample_check')):
+                    raise ValueError('precise current assertion evidence required')
+            selected = [r for r in doc['items'] if r['id'] in ids]
+        results = {x['name']: x for x in report['results']}; changed = []
+        for row in selected:
+            evidence_stamp = row_evidence_stamp(root, folder, row, {'state':'current','attempt_id':report['attempt_id'],'digest':report['attempt_digest']})
+            if state(row, stamp, evidence_stamp) == 'passed': continue
+            gates = [results.get(g) for g in row['gates']]
+            if not gates or any(not g or g['status'] != 'passed' for g in gates): raise ValueError('mapped gate absent or failed')
+            if binding and not row['source'].startswith('gate:'):
+                finding = next(f for f in review['findings'] if f['item_id'] == row['id'])
+                test_ids = finding.get('test_ids')
+                if (not isinstance(test_ids, list) or not test_ids or len(test_ids) != len(set(test_ids))
+                        or not all(isinstance(t, str) and t for t in test_ids)
+                        or not set(test_ids) <= {t for g in gates for t in g.get('test_ids', [])}):
+                    raise ValueError('review must identify tests actually executed by the mapped gates')
+            if not row['source'].startswith('gate:') and not set(row.get('test_ids', [])) <= {t for g in gates for t in g.get('test_ids', [])}:
+                raise ValueError('claim test IDs not executed by mapped gates')
+            entry = result('passed', stamp, report['project_snapshot']['git_head'],
+                           json.dumps(gates, ensure_ascii=False), 'Check attempt ' + report['attempt_id'],
+                           'check-v2 execution referenced; no command re-executed')
+            entry.update(check_attempt={'id': report['attempt_id'], 'digest': report['attempt_digest']}, evidence_digest=evidence_stamp)
+            if binding: entry['mapping_review'] = {'inputs': binding, 'review': review}
+            row['history'].append(entry); changed.append(row['id'])
+        if current(root, folder.name) != report or read(folder / 'verification.json') != original:
+            raise ValueError('execution/plan changed before adoption; execution retained, not applied')
+        if binding and check_mapping_snapshot(root, folder, review['item_ids']) != binding:
+            raise ValueError('mapping changed before adoption')
+        if changed:
+            doc.update(schema_version=4, execution_contract=2); save(folder / 'verification.json', doc); render(folder)
+        print('CHECK_RESULTS_ADOPTED: ' + str(len(changed)) + '; no commands executed')
+        return doc
+    return action() if locked else plan_mutation(lambda root, folder: action())(root, folder)
 
 
 def doc_without_new_results(doc):
@@ -423,8 +549,9 @@ def validate_verification(root, folder, req, stage):
         if stage != 'check':
             return []
         stamp, _ = context(root, folder, doc)
-        return ['verification incomplete: ' + r['id'] + ' (' + state(r, stamp, manual_evidence_stamp(root, folder, r) if r['mode'] == 'manual' else None) + ')'
-                for r in doc['items'] if state(r, stamp, manual_evidence_stamp(root, folder, r) if r['mode'] == 'manual' else None) not in ('passed', 'waived', 'retained')]
+        execution_view = check_currency(root, folder)
+        return ['verification incomplete: ' + r['id'] + ' (' + state(r, stamp, row_evidence_stamp(root, folder, r, execution_view)) + ')'
+                for r in doc['items'] if state(r, stamp, row_evidence_stamp(root, folder, r, execution_view)) not in ('passed', 'waived', 'retained')]
     except (OSError, ValueError, TypeError, KeyError) as exc:
         return ['invalid verification: ' + str(exc)]
 
@@ -433,10 +560,11 @@ def impact_results(root, folder):
     """Read current checklist evidence without duplicating editable acceptance records."""
     doc = load_plan(folder)
     stamp, _ = context(root, folder, doc)
+    execution_view = check_currency(root, folder)
     impact_stamp = impact_snapshot(root, read(folder / 'impact.json'))['digest']
     results = {}
     for row in doc['items']:
-        if row['source'].startswith('impact:') and state(row, stamp, manual_evidence_stamp(root, folder, row)) in ('passed', 'waived', 'retained'):
+        if row['source'].startswith('impact:') and state(row, stamp, row_evidence_stamp(root, folder, row, execution_view)) in ('passed', 'waived', 'retained'):
             last = row['history'][-1]
             results[row['source'][7:]] = {'status': 'passed' if last['status'] == 'retained' else last['status'], 'method': last['method'],
                                        'evidence': last['actual'] + '\n' + last['evidence'], 'digest': impact_stamp}
@@ -484,9 +612,10 @@ def annotation_links(doc, row, effective_status):
 def summary(root, folder):
     doc = load_plan(folder)
     stamp, head = context(root, folder, doc)
+    execution_view = check_currency(root, folder)
     items = []
     for row in doc['items']:
-        item = {'id': row['id'], 'mode': row['mode'], 'status': state(row, stamp, manual_evidence_stamp(root, folder, row) if row['mode'] == 'manual' else None), 'expected': row['expected']}
+        item = {'id': row['id'], 'mode': row['mode'], 'status': state(row, stamp, row_evidence_stamp(root, folder, row, execution_view)), 'expected': row['expected']}
         if row.get('dependencies'):
             item['dependencies'] = row['dependencies']
             item['scope_reason'] = row['scope_reason']
@@ -515,9 +644,10 @@ def render(folder):
         stamp, _ = context(root, folder, doc)
     except (OSError, ValueError, TypeError, KeyError):
         stamp = None
+    execution_view = check_currency(root, folder) if stamp else None
     lines = ['# Verification checklist', '', 'Generated view; manual observation and automated checks are distinct.', '']
     for row in doc['items']:
-        effective = state(row, stamp, manual_evidence_stamp(root, folder, row) if row['mode'] == 'manual' else None) if stamp else 'stale'
+        effective = state(row, stamp, row_evidence_stamp(root, folder, row, execution_view)) if stamp else 'stale'
         lines += ['## ' + row['id'], '', 'Mode: ' + row['mode'], 'Expected: ' + str(row['expected']),
                   'Status: ' + (effective if stamp else 'stale — synchronize sources'), '']
         if row.get('dependencies'):
@@ -544,10 +674,11 @@ def render(folder):
 
 def main():
     p = argparse.ArgumentParser(description=__doc__)
-    p.add_argument('action', choices=['sync', 'run', 'status', 'record', 'retain'])
+    p.add_argument('action', choices=['sync', 'run', 'status', 'record', 'retain', 'capture-check-mapping', 'adopt-checks'])
     p.add_argument('root', type=Path)
     p.add_argument('feature_id')
     p.add_argument('--item'); p.add_argument('--status', choices=['passed', 'failed', 'unavailable', 'waived'])
+    p.add_argument('--items', nargs='+'); p.add_argument('--review', type=Path)
     p.add_argument('--digest'); p.add_argument('--tested-revision'); p.add_argument('--actual'); p.add_argument('--evidence')
     p.add_argument('--changed-path', action='append', default=[]); p.add_argument('--reason')
     args = p.parse_args()
@@ -557,6 +688,11 @@ def main():
     if not folder.resolve().is_relative_to(root) or folder.is_symlink():
         p.error('unsafe feature path')
     try:
+        if args.action == 'capture-check-mapping':
+            print(json.dumps(check_mapping_snapshot(root, folder, args.items), ensure_ascii=False, indent=2)); return 0
+        if args.action == 'adopt-checks':
+            if not args.review: raise ValueError('adopt-checks requires --review')
+            adopt_checks(root, folder, review=read(args.review)); return 0
         if args.action == 'sync':
             sync(root, folder); summary(root, folder); return 0
         if args.action == 'run':

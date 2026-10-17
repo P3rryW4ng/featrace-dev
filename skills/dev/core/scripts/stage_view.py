@@ -101,7 +101,15 @@ def collect(root, feature_id, stage, task_ids, item_ids, base=None):
                    or (r['source'].startswith('requirement:') and r['source'].split(':')[1] in selected)
                    or (r['source'].startswith('impact:') and r['source'].split(':')[1] in chosen_behaviors)]
     config = read('.agent-workflow/project-baseline/quality-gates.json', False, True)
-    report = read('.agent-workflow/project-baseline/quality-report.json', False, True)
+    from check_runs import enabled, view as check_run_view, records as check_records, selection as check_selection
+    isolated = enabled(root)
+    report = None if isolated else read('.agent-workflow/project-baseline/quality-report.json', False, True)
+    if isolated:
+        checked = check_run_view(root, feature_id)
+        if checked['state'] == 'current':
+            report = checked['report']; config = check_selection(root, feature_id)
+            for path in check_records(root, feature_id): read(path, True, True)
+        else: attention.append('quality_execution_unavailable: ' + checked.get('reason', ''))
     intake = read('spec/prd-intake.json', False)
     regression = read('regression-review.json', False)
     task_review = read('task-review.json', False)
@@ -109,6 +117,7 @@ def collect(root, feature_id, stage, task_ids, item_ids, base=None):
     if plan is not None:
         try: stamp, _ = v.context(root, root / prefix, plan)
         except (OSError, ValueError, KeyError, TypeError) as exc: attention.append('canonical_context_unavailable: ' + str(exc))
+    execution_view = v.check_currency(root, root / prefix)
     claims, global_states = [], []
     chosen_ids = {r["id"] for r in chosen_rows}
     for row in rows:
@@ -116,7 +125,7 @@ def collect(root, feature_id, stage, task_ids, item_ids, base=None):
         result = None if latest is None else {k: value for k, value in latest.items() if k not in ('carry_receipt', 'annotation_receipt')}
         status = 'unknown'
         if stamp is not None:
-            try: status = v.state(row, stamp, v.manual_evidence_stamp(root, root / prefix, row) if row['mode'] == 'manual' else None)
+            try: status = v.state(row, stamp, v.row_evidence_stamp(root, root / prefix, row, execution_view))
             except (OSError, ValueError, KeyError, TypeError) as exc: attention.append('row_currency_unknown: ' + row['id'] + ': ' + str(exc))
         global_states.append({'id': row['id'], 'source': row['source'], 'effective_state': status})
         if status not in ('passed', 'retained', 'waived'):
@@ -178,7 +187,7 @@ def collect(root, feature_id, stage, task_ids, item_ids, base=None):
             raise ValueError('quality report shape invalid; inspect canonical report before using stage inputs')
         quality_summary['project_revision'] = (report.get('project_snapshot') or {}).get('git_head')
         quality_summary['results'] = [{k: value for k, value in r.items() if k not in ('stdout', 'stderr', 'output')} for r in report.get('results', [])]
-        quality_summary['full_report_ref'] = '.agent-workflow/project-baseline/quality-report.json'
+        quality_summary['full_report_ref'] = checked['report_ref'] if isolated else '.agent-workflow/project-baseline/quality-report.json'
     view = {'schema_version': 1, 'kind': 'stage_starting_view', 'stage': stage, 'project': str(root), 'feature_id': feature_id,
             'selection': {'task_ids': task_ids, 'item_ids': item_ids}, 'base_revision': frozen['inputs']['base_revision'],
             'source_snapshot_digest': frozen['input_digest'], 'code_revision': info['git_head'],

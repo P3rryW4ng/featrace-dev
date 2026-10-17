@@ -279,6 +279,10 @@ class WorkflowTests(unittest.TestCase):
 
     def test_quality_reports_real_exit_and_unavailable(self):
         project = CORE / 'project.py'
+        subprocess.run(['git', 'init', str(self.root)], check=True, capture_output=True)
+        subprocess.run(['git', '-C', str(self.root), '-c', 'user.name=Fixture',
+                        '-c', 'user.email=fixture@example.invalid', 'commit', '--allow-empty', '-qm', 'fixture'],
+                       check=True, capture_output=True)
         self.run_script(project, 'scan', self.root)
         self.run_script(project, 'check', self.root, expected=2)
         base = self.root / '.agent-workflow/project-baseline'

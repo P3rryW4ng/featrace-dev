@@ -114,7 +114,11 @@ def build_report(root, folder, req, revision, diagnostics):
     trace = read_json(folder / 'traceability.json', {})
     fixes = read_json(folder / 'fixes.json', {}).get('fixes', [])
     regression = read_json(folder / 'regression-review.json', {})
-    quality = read_json(root / '.agent-workflow/project-baseline/quality-report.json', {})
+    from check_runs import enabled, view as check_run_view
+    if enabled(root):
+        checked = check_run_view(root, folder.name)
+        quality = checked.get('report', {})
+    else: quality = read_json(root / '.agent-workflow/project-baseline/quality-report.json', {})
     lines = [f"# Delivery report — {feature['id']}", '', ARCHIVE_DRAFT_MARKER,
              '', 'Status: **DRAFT — REVIEW REQUIRED**', '',
              'This draft is assembled from existing workflow records. Review every section, replace the draft status, and add no conclusion that the cited evidence does not support.', '',

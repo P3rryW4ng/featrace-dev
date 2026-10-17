@@ -102,9 +102,15 @@ def collect(root, feature_id):
             issues.append('source_unavailable')
         sources.append(row)
 
+    from check_runs import enabled, view as check_run_view
+    isolated = enabled(root)
     report_path = root / '.agent-workflow/project-baseline/quality-report.json'
     quality = {'state': 'missing'}
-    if report_path.is_symlink():
+    if isolated:
+        checked = check_run_view(root, feature_id)
+        quality = {k: value for k, value in checked.items() if k != 'report'}
+        if checked['state'] != 'current': issues.append('quality_execution_unavailable')
+    elif report_path.is_symlink():
         quality = {'state': 'invalid', 'reason': 'quality report is a symlink; refusing to follow it'}
         issues.append('quality_report_invalid')
     elif report_path.exists():
