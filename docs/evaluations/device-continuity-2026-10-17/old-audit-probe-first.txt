@@ -1,0 +1,1 @@
+Scratch probe preparation failure, not a product result: first probe used ContinuityReaderIntegrationTests without quality-report.json. audit-delivery.py stopped at missing report before reading receipt. Switched to the existing DeviceContinuityTests delivery-audit fixture and ran the actual old project.py check before old audit; explicit receipt rejection then observed.

@@ -1,0 +1,17 @@
+WARNING: historical regression review missing; sync it before new business-code edits
+WARNING: task semantic review missing; sync and review tasks before business-code edits
+ERROR: FIX-001: actual required before resolution
+ERROR: FIX-001: root_cause required before resolution
+ERROR: FIX-001: resolution required before resolution
+ERROR: FIX-001: reproduction or unreproducible_reason required
+ERROR: FIX-001: affected task_ids required
+ERROR: FIX-001: verification evidence required
+ERROR: FIX-001: invalid device execution: invalid regression execution receipt
+ERROR: FIX-001: tested_revision required
+ERROR: unreviewed scope expansion: unrelated.py
+ERROR: behavior needs actual regression evidence or explicit waiver: B-1
+ERROR: behavior needs actual regression evidence or explicit waiver: B-2
+ERROR: verification incomplete: requirement:R-1:1:5418d1630003 (not_run)
+ERROR: verification incomplete: impact:B-1:e6e32d4c2286 (not_run)
+ERROR: verification incomplete: impact:B-2:3c91ed1e9cb5 (not_run)
+ERROR: verification incomplete: gate:unit:ae58977f2f47 (not_run)

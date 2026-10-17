@@ -1,0 +1,6 @@
+REGRESSION_EXECUTION_RECORDED: executed device coverage; routine gate unchanged
+DEVICE_CONTINUITY_RECORDED: reviewed applicability; no device execution
+Traceback (most recent call last):
+  File "/private/tmp/device-continuity-package-check.py", line 41, in <module>
+    with tarfile.open(fileobj=io.BytesIO(raw)) as tar:tar.extractall(oldroot,filter='data')
+TypeError: extractall() got an unexpected keyword argument 'filter'

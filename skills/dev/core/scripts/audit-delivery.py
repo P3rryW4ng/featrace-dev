@@ -18,7 +18,8 @@ def audit(root, feature_id):
     try:
         req = json.loads((feature / 'spec' / 'requirements.json').read_text())
         fixes_path = feature / 'fixes.json'
-        fixes = json.loads(fixes_path.read_text()) if fixes_path.exists() else {'feature_id': feature_id, 'fixes': []}
+        from fixes import read_fixes
+        fixes = read_fixes(feature, feature_id)
         report = json.loads((baseline / 'quality-report.json').read_text())
         selected_config = json.loads((baseline / 'quality-gates.json').read_text())
         validate_gates(root, selected_config)

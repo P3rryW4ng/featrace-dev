@@ -1,0 +1,64 @@
+{
+  "scope": "read-only chronology audit; no raw session/business data copied",
+  "maintainer_base": "f38f34b25760af71add702d804d3d9ff3f5108ba",
+  "business_head": "1b536b2efc",
+  "session_sha256": "8b178c889bf231d964f5080ebcad967d02d8c3adc520156219f9680d6377061d",
+  "timezone": "Asia/Shanghai",
+  "observations": [
+    {
+      "line": 2699,
+      "time": "2026-10-17 10:08:33",
+      "fact": "tool output confirms version 0.15.1"
+    },
+    {
+      "line": 2708,
+      "time": "2026-10-17 10:08:56",
+      "fact": "tool output includes Plan the affected verification before implementation"
+    },
+    {
+      "line": 3233,
+      "time": "2026-10-17 10:28:05",
+      "fact": "existing FIX notes receive verification account and explicit message rewrite/localization fallback limitation"
+    },
+    {
+      "line": 3256,
+      "time": "2026-10-17 10:28:49",
+      "fact": "production ViewModel edit and comment records same matching limitation"
+    },
+    {
+      "line": 3429,
+      "time": "2026-10-17 10:36:06",
+      "fact": "technical-test reference read after business/test commit at 10:36:01"
+    }
+  ],
+  "costs": {
+    "source": "CC delivery report estimates, not independent timer or billing",
+    "total_minutes": 97,
+    "review_maintenance_minutes": 63,
+    "rework_within_review_minutes": 14,
+    "development_minutes": 11,
+    "testing_minutes": 11,
+    "environment_wait_minutes": 6,
+    "human_wait_minutes": 2,
+    "reported_categories_sum": 93,
+    "difference_from_total_unallocated_minutes": 4,
+    "agent_tokens_source_values": [
+      419859,
+      396997,
+      370137
+    ],
+    "billed_cost": null,
+    "main_agent_tokens": null
+  },
+  "limits": [
+    "No private thinking blocks inspected or copied",
+    "Tool/output chronology proves visible loading/writing, not hidden understanding or causal savings",
+    "No controlled comparison; single run cannot measure 0.15.1 net benefit",
+    "Local full session remains private; shared report retains only digest and selected metadata",
+    "Source tree identity check is not semantic affectedness or package provenance"
+  ],
+  "runtime_changed": false,
+  "business_mutations": false,
+  "device_operations": false,
+  "new_tests_executed": false
+}

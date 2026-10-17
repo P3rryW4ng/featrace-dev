@@ -50,7 +50,7 @@ For `verified`, `regression_test_ids` is a string array of tests declared in req
 
 This is an explicit coverage assertion, not proof of execution or semantic adequacy. Keep actual run results in `verification` (string array) and the tested code identifier in `tested_revision`. Existing in-scope verified fixes remain compatible; older unrelated references now require review and an appropriate link or explanation. Do not automatically add a reason solely to clear validation.
 
-For a regression actually executed on a selected device but absent from routine gates, use [device-regression.md](device-regression.md). Preserve FIX-to-TEST IDs and bind archived execution/identity evidence; inability to run a daily gate does not waive this delivery's regression. This helper does not run or authorize device actions.
+For a regression actually executed on a selected device but absent from routine gates, use [device-regression.md](device-regression.md). Preserve FIX-to-TEST IDs and bind archived execution/identity evidence; inability to run a daily gate does not waive this delivery's regression. This helper does not run or authorize device actions. If a trustworthy original device run becomes stale only after apparently unrelated changes, inspect the reviewed-applicability section there before assuming a full rerun is necessary; unknown or affected cases are not exempt.
 
 ## Close a report without claiming a repair
 

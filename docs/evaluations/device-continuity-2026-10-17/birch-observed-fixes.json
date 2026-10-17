@@ -1,0 +1,99 @@
+{
+  "feature_id": "FEAT-001",
+  "fixes": [
+    {
+      "id": "FIX-001",
+      "status": "verified",
+      "expected": "Positive=solid-green enabled Confirm; zero=half-green disabled Confirm",
+      "requirement_ids": [
+        "R-1"
+      ],
+      "regression_test_ids": [
+        "UT-1"
+      ],
+      "code_paths": [
+        "screen.py"
+      ],
+      "regression_execution_history": [
+        {
+          "schema_version": 1,
+          "inputs": {
+            "feature_id": "FEAT-001",
+            "fix_id": "FIX-001",
+            "test_id": "UT-1",
+            "fix": {
+              "id": "FIX-001",
+              "status": "verified",
+              "expected": "Positive=solid-green enabled Confirm; zero=half-green disabled Confirm",
+              "requirement_ids": [
+                "R-1"
+              ],
+              "regression_test_ids": [
+                "UT-1"
+              ],
+              "code_paths": [
+                "screen.py"
+              ]
+            },
+            "requirements": [
+              {
+                "id": "R-1",
+                "statement": "Positive amount enables solid-green Confirm; zero disables with half-green Confirm",
+                "tests": [
+                  "UT-1"
+                ]
+              }
+            ],
+            "decisions": {
+              "decisions": []
+            },
+            "code_digest": "5386dfab40b5ab704ffb010fac5ccbd5f5ec798279fdaf7ed66a91cec3828f42",
+            "execution": {
+              "kind": "device",
+              "status": "passed",
+              "returncode": 0,
+              "tested_revision": "e47c0cdd6e3d08d2ac2d329099c9d9c7f6e47a86",
+              "executed_at": "2026-10-17T00:00:00Z",
+              "command": [
+                "/Library/Developer/CommandLineTools/usr/bin/python3",
+                "-B",
+                "regression_test.py"
+              ],
+              "executed_cases": [
+                "ButtonRegression.test_enabled_and_zero"
+              ],
+              "failed_cases": [],
+              "skipped_cases": [],
+              "test_files": [
+                "regression_test.py"
+              ],
+              "evidence_refs": [
+                "evidence/run.txt"
+              ],
+              "package_identity_refs": [
+                "evidence/package-identity.json"
+              ],
+              "environment": "Isolated synthetic device-receipt protocol fixture; no physical device",
+              "coverage": "Actual Python fixture assertion ran for positive and zero; not real device rendering"
+            },
+            "artifacts": {
+              "evidence/package-identity.json": "e85d3450fa9be6b46ddfaf8c6bb1b06bc4eb9c49a62d879340facf04f76db957",
+              "evidence/run.txt": "ac1767ef09dbf5dcc0526a0c0de3f606aed2e16e708e4f117db46e58ecc8bffb"
+            },
+            "source_authority": null
+          },
+          "input_digest": "e8f22aba085d559dbce42615b08d8bf5ab6cb05a3fda10409a8a15cad7de1b5d",
+          "review": {
+            "input_digest": "e8f22aba085d559dbce42615b08d8bf5ab6cb05a3fda10409a8a15cad7de1b5d",
+            "status": "supported",
+            "reviewer": "fixture preparation: executed synthetic assertion; not independent native review",
+            "assertion_evidence": "evidence/run.txt actual fixture output",
+            "original_identity_evidence": "evidence/package-identity.json explicitly synthetic original tree/image digest",
+            "routine_check_reason": "exercise device-receipt protocol, no claim of real hardware"
+          },
+          "receipt_digest": "01f57156c0f5d0468e4913c59a3f8f5fce97a9ed0765821acd3a93b71d795b68"
+        }
+      ]
+    }
+  ]
+}

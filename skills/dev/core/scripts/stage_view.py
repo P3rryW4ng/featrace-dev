@@ -148,6 +148,12 @@ def collect(root, feature_id, stage, task_ids, item_ids, base=None):
             attention.extend('pending_revision: ' + r['id'] for r in pending)
         except (OSError, ValueError, KeyError, TypeError) as exc:
             attention.append('revision_inspection_unknown: ' + str(exc))
+    continuity = []
+    from regression_continuity import present
+    if present(fixes_doc):
+        from regression_continuity import summaries
+        continuity = summaries(root, root / prefix, fixes_doc)
+        attention.extend('device_continuity_' + c['status'] + ': ' + c['fix_id'] + ':' + c['test_id'] for c in continuity if c['status'] != 'current')
     info = inventory.collect(root, feature_id)
     attention.extend(info['issues_to_review'])
     for d in decisions:
@@ -186,6 +192,7 @@ def collect(root, feature_id, stage, task_ids, item_ids, base=None):
             'authority_refs': {'intake': prefix + 'spec/prd-intake.json', 'verification': prefix + 'verification.json',
                                'records': list(hashes), 'modules': '.agent-workflow/modules/'},
             'global_attention': sorted(set(attention)), 'unscoped_authority_included': unscoped,
+            'device_continuity': continuity,
             'fix_execution_readback_refs': [prefix + 'fixes.json#' + str(f.get('id')) + '/regression_execution_history' for f in relevant_fixes if f.get('regression_execution_history')],
             'omitted_requirements': sorted(req_known - selected), 'not_loaded': ['raw source contents', 'past verification history', 'full code/tests', 'raw quality output and full retention receipts'],
             'expand_when_needed': ['Read referenced originals and assertions; projection is not evidence of correctness.',

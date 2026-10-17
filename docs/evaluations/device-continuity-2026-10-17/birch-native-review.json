@@ -1,0 +1,26 @@
+{
+  "input_digest": "d31e2ff64b2af02bd7e6466e0c6bfd3040d700c45c64228bad204649a19e7aa8",
+  "context": "fresh",
+  "reviewer": "/root/receipt_fixture_birch",
+  "findings": [
+    {
+      "id": "FIX-001:UT-1",
+      "verdict": "affected",
+      "assertion_evidence": "原 regression_test.py 的 ButtonRegression.test_enabled_and_zero 同时断言 button(10) 返回 enabled=true、color=solid-green、label=Confirm，以及 button(0) 返回 enabled=false、color=half-green、label=Confirm。测试源码在原始和目标 revision 中均为 blob dd1757b85620e5dfd0b746f543bb619a821572fe。当前只读运行 python3 -B regression_test.py 返回 1，正数断言实际得到 color=transparent，因此原完整通过结论不适用于目标代码。",
+      "original_identity_evidence": "fixes.json 中唯一原始 schema-1 回执的 source_index=0、receipt_digest=01f57156c0f5d0468e4913c59a3f8f5fce97a9ed0765821acd3a93b71d795b68、tested_revision=e47c0cdd6e3d08d2ac2d329099c9d9c7f6e47a86，与快照一致。归档 run.txt 记录 1 个测试通过，其 SHA-256 为 ac1767ef09dbf5dcc0526a0c0de3f606aed2e16e708e4f117db46e58ecc8bffb；package-identity.json 的 SHA-256 为 e85d3450fa9be6b46ddfaf8c6bb1b06bc4eb9c49a62d879340facf04f76db957，两者均匹配快照和原回执。身份文件明确说明 synthetic，并绑定原 revision 和原测试 blob；fixture-image.txt 的实际 SHA-256 为 0a9a8f5c0c83cbd99ec776ca7cc5a981d8ad29ec31336ef25a4fb436c4b7aa07，与身份文件一致。",
+      "dependency_evidence": "检查两个 revision 的完整 Git 文件树和全部四个源码/资源文件。screen.py 在模块级 import theme，button(amount) 直接读取 theme.COLORS；因此未列入声明 dependencies 的 theme.py 是实际依赖。screen.py、strings.json、regression_test.py 的原始与目标 blob 均相同，工作区内容也匹配目标 blob。完整 git diff --no-ext-diff --no-textconv 仅包含 theme.py，但其变化直接进入原断言返回值。项目树中没有额外构建或测试装配文件。",
+      "authority_evidence": "原回执内的 FIX-001、R-1 和当前 fixes.json、spec/requirements.json 均要求正数使用 solid-green Confirm、零值使用 half-green disabled Confirm。当前 decisions.json 的 decisions 为空，tasks.json 的 tasks 为空；没有授权将正数颜色变为 transparent 的需求或决策。source_authority 为 null，只能在此明确合成协议项目范围内使用所存需求与原断言。",
+      "environment_evidence": "原回执明确记载 Isolated synthetic device-receipt protocol fixture; no physical device，coverage 明确排除真实设备渲染；package identity 和 fixture image 同样明确为 synthetic。原命令为 Python -B regression_test.py，归档输出确有 Python unittest 通过记录。本次仅执行相同测试文件的 Python -B 检查，没有设备、网络或真实 Android 行为主张。",
+      "counterexample_check": "实际反例为 button(10)：当前结果 {'enabled': True, 'color': 'transparent', 'label': 'Confirm'}，违反原断言要求的 solid-green。原因由完整调用链直接确认：theme.py 将 COLORS['enabled'] 从 solid-green 改为 transparent，screen.button 对正数直接返回该值。原测试在第一条断言即失败，所以本次测试输出不证明第二条零值断言已执行。",
+      "limits": "结论仅覆盖该 synthetic fixture 的 FIX-001:UT-1 原断言适用性，不表示真实设备安装、运行或渲染结果。原始历史执行没有被重签；本次核查不替代新的合格执行回执。只读检查未编辑文件，未调用 capture/apply，未接触业务仓库、设备、网络或其他会话。由于正数断言明确受影响，不请求应用连续性。",
+      "changes": [
+        {
+          "path": "theme.py",
+          "effect": "affected",
+          "evidence": "完整 revision diff 将 COLORS['enabled'] 从 solid-green 改为 transparent，disabled 仍为 half-green。screen.py 直接 import theme 并在 button(10) 返回该 enabled 颜色；原 regression_test.py 第 6 行要求 solid-green，本次 Python -B 运行明确在此失败。该路径虽未包含在声明依赖清单中，仍是原断言的直接依赖。"
+        }
+      ]
+    }
+  ],
+  "apply_targets": []
+}

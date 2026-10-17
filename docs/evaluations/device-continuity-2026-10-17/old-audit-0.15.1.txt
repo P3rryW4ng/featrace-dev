@@ -1,0 +1,2 @@
+ERROR: FIX-001 invalid device regression evidence: invalid regression execution receipt
+ERROR: FIX-001 regression test not selected by a passed check: UT-1

@@ -56,6 +56,9 @@ def identity(root, folder, fix_id, test_id, execution):
     folder = folder.resolve()
     validate_execution(execution)
     fixes = read(folder / 'fixes.json')
+    from regression_continuity import present, validate_document
+    if present(fixes):
+        validate_document(fixes)
     fix = next((f for f in fixes['fixes'] if f['id'] == fix_id), None)
     if not fix or test_id not in fix.get('regression_test_ids', []):
         raise ValueError('keep the declared FIX-to-TEST link before recording execution')
@@ -93,6 +96,9 @@ def capture(root, folder, fix_id, test_id, execution):
 
 
 def validate_receipt(entry):
+    if isinstance(entry, dict) and entry.get('schema_version') == 2:
+        from regression_continuity import validate_entry
+        return validate_entry(entry)
     if not isinstance(entry, dict) or entry.get('schema_version') != 1:
         raise ValueError('invalid regression execution receipt')
     body = {k: value for k, value in entry.items() if k != 'receipt_digest'}
@@ -147,6 +153,9 @@ def current_evidence(root, folder, fix, test_id):
             latest = entry
     if latest is None:
         return False
+    if latest.get('schema_version') == 2:
+        from regression_continuity import current
+        return current(root, folder, read(folder / 'fixes.json'), fix, test_id, latest)
     inputs = latest['inputs']
     if inputs.get('fix_id') != fix['id'] or inputs.get('feature_id') != folder.name:
         raise ValueError('regression execution belongs to another fix/feature')

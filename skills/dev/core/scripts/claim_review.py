@@ -50,12 +50,18 @@ def identity(root, folder):
         from evidence_adoption import links as adoption_links
         for claim in claims:
             claim['evidence_adoptions'] = adoption_links(plan, next(r for r in active if r['id'] == claim['id']))
+    fix_doc = json.loads((folder / 'fixes.json').read_text()) if (folder / 'fixes.json').is_file() else None
+    continuity = None
+    from regression_continuity import present
+    if present(fix_doc):
+        from regression_continuity import summaries
+        continuity = summaries(root, folder, fix_doc)
     binding = digest({'requirements': req['requirements'], 'sources': sources,
                       'intake': json.loads(intake_path.read_text()) if intake_path.is_file() else None,
                       'impact': impact_snapshot(root, impact)['digest'],
-                      'claims': claims})
+                      'claims': claims, **({'device_continuity': {'summary': continuity, 'events': fix_doc['regression_continuity_reviews']}} if continuity is not None else {})})
     return {'feature_id': folder.name, 'input_digest': binding, 'code_revision': head,
-            'source_hashes': sources, 'claims': claims}
+            'source_hashes': sources, 'claims': claims, **({'device_continuity': continuity} if continuity is not None else {})}
 
 
 def validate(root, folder):
@@ -73,7 +79,7 @@ def validate(root, folder):
         expected = {r['id'] for r in current['claims']}
         if not isinstance(rows, list) or len(rows) != len(expected) or {r.get('id') for r in rows if isinstance(r, dict)} != expected:
             return ['claim-to-evidence review must cover every active acceptance row exactly once']
-        errors = []
+        errors = ['device continuity stale: ' + c['fix_id'] + ':' + c['test_id'] for c in current.get('device_continuity', []) if c['status'] != 'current']
         current_rows = {r['id']: r for r in current['claims']}
         for item in rows:
             name = item['id']
