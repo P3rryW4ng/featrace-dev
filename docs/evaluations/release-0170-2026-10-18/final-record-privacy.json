@@ -1,0 +1,92 @@
+{
+  "files": [
+    "MAINTAINER.md",
+    "ROADMAP.md",
+    "docs/decisions/architecture.md",
+    "docs/usage.md",
+    "docs/validation.md",
+    "docs/evaluations/2026-10-18-release-0170.md",
+    "docs/evaluations/release-0170-2026-10-18/actual-install.json",
+    "docs/evaluations/release-0170-2026-10-18/preflight.json",
+    "docs/evaluations/release-0170-2026-10-18/release-staged-privacy.json",
+    "docs/evaluations/release-0170-2026-10-18/source-staged-privacy.json"
+  ],
+  "report": {
+    "status": "no_matches",
+    "targets": [
+      {
+        "target": 1,
+        "status": "scanned",
+        "scope": "file_text",
+        "findings": 0,
+        "positions_truncated": false
+      },
+      {
+        "target": 2,
+        "status": "scanned",
+        "scope": "file_text",
+        "findings": 0,
+        "positions_truncated": false
+      },
+      {
+        "target": 3,
+        "status": "scanned",
+        "scope": "file_text",
+        "findings": 0,
+        "positions_truncated": false
+      },
+      {
+        "target": 4,
+        "status": "scanned",
+        "scope": "file_text",
+        "findings": 0,
+        "positions_truncated": false
+      },
+      {
+        "target": 5,
+        "status": "scanned",
+        "scope": "file_text",
+        "findings": 0,
+        "positions_truncated": false
+      },
+      {
+        "target": 6,
+        "status": "scanned",
+        "scope": "file_text",
+        "findings": 0,
+        "positions_truncated": false
+      },
+      {
+        "target": 7,
+        "status": "scanned",
+        "scope": "file_text",
+        "findings": 0,
+        "positions_truncated": false
+      },
+      {
+        "target": 8,
+        "status": "scanned",
+        "scope": "file_text",
+        "findings": 0,
+        "positions_truncated": false
+      },
+      {
+        "target": 9,
+        "status": "scanned",
+        "scope": "file_text",
+        "findings": 0,
+        "positions_truncated": false
+      },
+      {
+        "target": 10,
+        "status": "scanned",
+        "scope": "file_text",
+        "findings": 0,
+        "positions_truncated": false
+      }
+    ],
+    "findings": [],
+    "note": "Target numbers follow --file order. Positions only; values, paths and context are omitted. No matches is not privacy approval; patterns/known values are bounded. No files were redacted or rewritten."
+  },
+  "exit_code": 0
+}
