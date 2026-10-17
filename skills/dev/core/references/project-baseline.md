@@ -62,3 +62,8 @@ This remains a full manifest walk plus Git path diagnostics, not semantic increm
 ## Sharing and fresh clones
 
 Follow [Git sharing](git-sharing.md) for selective tracking and local-state ignores. A missing fingerprint on a clone requires evidence review and draft publication while retaining valid shared notes. Never commit the HEAD-dependent fingerprint as a refresh loop.
+
+
+## Explicit feature-scoped check facts
+
+Only after project opt-in authorization, use `check-execution.md` to prepare feature choices from the existing command definitions. The config marker makes old tools reject the workspace, and each feature gets its own latest execution head/attempts. Do not overwrite the project-global legacy report or clear a newer failure to restore a green result. Definitions, feature mapping, execution and current acceptance have separate identities; unchanged command/input facts can support a newly inspected mapping without command rerun. Installing a newer Skill does not enable this mode.

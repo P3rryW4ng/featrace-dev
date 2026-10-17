@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.17.0 — 2026-10-18
+
+- Explicitly opt in to feature-local selections, immutable start/terminal attempts and a latest pointer; preserve failed/interrupted history and refuse legacy fallback, overlapping workspace execution, unresolved child processes and unknown inputs.
+- Bind current assertions to matching executed tests without rerunning commands after record changes; exact repeats are idempotent and unaffected mapping history stays unchanged. All audit/revision/status/stage/report/final-review readers use the same latest fact. Verification schema 4 and the project marker reject old readers.
+- Includes the previously implemented B1 identity in this development contract; manual/device freshness and full final review remain separate. POSIX only; no automatic crash recovery, cross-attempt assembly or project migration. The scoped release excludes dynamic progress instructions. Installing does not opt in projects; B1 also strengthens legacy currentness, so old reports without input identity require a newly authorized applicable check before current certification.
+
 ## 0.16.0 — 2026-10-17
 
 - Keep schema-1 executed-device receipts immutable; explicitly review a feature-scoped batch of latest original FIX/TEST runs against a clean current code target, every changed path and investigated shared dependencies.

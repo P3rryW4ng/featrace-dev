@@ -149,13 +149,13 @@ def snapshot(root, baseline=None):
         evidence[rel] = checked.get('sha256')
     return {'version': 2, 'evidence': evidence, 'profile': 'android' if android else 'generic', 'git_head': git.stdout.strip() if git.returncode == 0 else '', 'files': files}
 
-def quality_snapshot(root):
+def quality_snapshot(root, selected_config=None):
     """Automatic-check scope only; do not change scan fingerprint semantics."""
     before = snapshot(root)
     registry = root / '.agent-workflow/project-baseline/evidence-files.json'
     required = json.loads(registry.read_text())['files'] if registry.is_file() else []
     identity = capture_check_identity(root, required, ('AGENTS.md', 'CLAUDE.md'))
-    config = json.loads((root / '.agent-workflow/project-baseline/quality-gates.json').read_text())
+    config = selected_config if selected_config is not None else json.loads((root / '.agent-workflow/project-baseline/quality-gates.json').read_text())
     validate_gates(root, config)
     if before != snapshot(root):
         identity = {'state': 'unknown', 'reason': 'project manifests changed during capture'}
@@ -203,8 +203,10 @@ def validate_gates(root, config):
     """Validate all selected commands before executing any; never interpret prose conditions."""
     if not isinstance(config, dict) or not isinstance(config.get('gates'), list):
         raise ValueError('quality-gates.json requires a gates array')
-    if set(config) - {'gates', 'notes', 'selection_reason', 'known_gaps', 'selection_feature_id'}:
+    if set(config) - {'gates', 'notes', 'selection_reason', 'known_gaps', 'selection_feature_id', 'execution_contract'}:
         raise ValueError('unsupported quality configuration field; keep candidates separately')
+    if 'execution_contract' in config and (type(config['execution_contract']) is not int or config['execution_contract'] != 2):
+        raise ValueError('unsupported check execution contract')
     selected_for = config.get('selection_feature_id')
     if selected_for is not None and (not isinstance(selected_for, str) or not selected_for.strip()):
         raise ValueError('selection_feature_id must be a non-empty feature ID')
@@ -487,6 +489,10 @@ def main():
         if not prepared:
             print('SELECTION_REQUIRED: empty selection is not a passed quality check')
         return 0
+    from check_runs import enabled, run as run_attempt
+    if enabled(root):
+        if not args.feature: raise ValueError('feature required for isolated check execution')
+        return run_attempt(root, args.feature)
     if not prepared:
         print('QUALITY_UNAVAILABLE: no selected gates'); return 2
     if args.feature:

@@ -1,0 +1,18 @@
+{
+  "interrupted-full-idempotency.txt": "f3e094dedd28d9eb9746b5b2d03d694173bbee0d3be0c41eda8644f2d1fc6111",
+  "isolated-package.json": "f25d16e400fd02ff043a0128e130ec1792cc54b2b75d516e4ad58b6c9ab5b091",
+  "focused-readers-15-first.txt": "84d331eb30e4aa04af86356faa9366495b1804c29eaac11f4319e505291b955a",
+  "focused-readers-15.txt": "53e9edd77bb3d1bb1eca5251f49cbf55ca8981ede9a84cd0393382fd5950d32d",
+  "focused-first.txt": "da5985b7b8511d61929452ab8b47ce3cca6343646f96fcd6779928058f9fdd47",
+  "isolated-cli-history.json": "e4ba583aaed4aec2bc3eabfa123d400cb286198dbb8de469a5fd933c3e37aa2a",
+  "focused-second.txt": "137d5b55f27f6f5cdd81a31b906e9b67bf91506dde74150703bf1c9e3a41ad95",
+  "results.json": "6ebe32c2e4922ec94a8cf5638aed99a1a9bbc45b15f2bc194e11d68eee8536e7",
+  "interrupted-full-first.txt": "d942b0701850ffad46ded7191058e0d1aa1d8440c59b44223e75bc3e6e1af23f",
+  "full-final.txt": "9e0c2f6e4e2e747cc7497c79cf1f9729eb133ee402aec8682ec0f32898439038",
+  "isolated-pilot-final.txt": "f25d16e400fd02ff043a0128e130ec1792cc54b2b75d516e4ad58b6c9ab5b091",
+  "isolated-pilot-first.txt": "7b694fcce59b0c71941b93c9fb7e4a89014d445b6bf19f93c23404c1b66f960c",
+  "focused-expanded-13.txt": "cbcededd15dc3e0fe23d2e0ca769963d7a13499bfafe76c68a1409c2e32c215c",
+  "tested-inputs.json": "5dd3e748091cc3ec0373d2f127ee34bed124e3d03cc5cdfd7945d1857901294c",
+  "focused-message-mismatch.txt": "5fe7a360c3d8a12e303971db1f2b0e4762266dac84599645658e2af08878b14e",
+  "focused-final.txt": "7343567e0f78fa5a14adf9a9d7f82adc52fb7d8035b9a76ea03527067fe9aa63"
+}

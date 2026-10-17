@@ -77,14 +77,23 @@ if baseline:
     print("BASELINE: confirmed=%s, verified=%s, pending=%s" % (baseline["version"], max((x["version"] for x in baseline["deliveries"]), default=0), ",".join(x["id"] for x in pending) or "none"))
 print("COMPLETION: not evaluated; review decisions, source applicability, tasks and current quality evidence")
 if (folder / 'verification.json').exists():
-    from verification import load_plan, context, state
+    from verification import load_plan, context, state, row_evidence_stamp, check_currency
     try:
         plan = load_plan(folder)
         stamp, _ = context(root, folder, plan)
+        execution_view = check_currency(root, folder)
         counts = {}
         for row in plan['items']:
-            key = state(row, stamp)
+            key = state(row, stamp, row_evidence_stamp(root, folder, row, execution_view))
             counts[key] = counts.get(key, 0) + 1
         print('VERIFICATION: ' + ', '.join(f'{k}={v}' for k, v in sorted(counts.items())))
     except (OSError, ValueError, TypeError, KeyError) as exc:
         print('VERIFICATION: needs synchronization/review: ' + str(exc))
+
+from check_runs import enabled, view as check_run_view
+try:
+    if enabled(root):
+        checked = check_run_view(root, folder.name)
+        print('CHECK_EXECUTION: ' + checked['state'] + '; ' + checked.get('attempt_id', checked.get('reason', '')) + '; execution fact, not acceptance')
+except (OSError, ValueError, TypeError, KeyError) as exc:
+    print('CHECK_EXECUTION: unavailable; ' + str(exc))

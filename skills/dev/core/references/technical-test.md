@@ -2,6 +2,8 @@
 
 Use inside an authorized ordinary Verify after Build/Repair, or when a user asks to run applicable objective checks. This is an internal responsibility boundary, not a new user command, seventh stage, separate Agent, or independently installed Skill. The current router performs Test in the same context; extraction requires a later same-input accuracy/cost comparison. An explicit read-only or `check --independent` request does not run Test. Load only the applicable project profile, quality-selection rules in `project-baseline.md`, and source/impact records needed for this test scope; Deliver and completion rules stay with `verification-workflow.md` and the router.
 
+For an explicitly prepared `execution_contract: 2` workspace, load `check-execution.md` for feature-local attempts and exact current-claim mapping. Keep legacy workspaces unchanged. Reuse a matching complete execution only through that shared reader; record changes do not authorize old assertions to prove a new claim.
+
 ## Input boundary
 
 Start from the selected feature ID, reviewed requirement/AC and impact rows, current Git/worktree revision, actual implementation diff, changed and preserved behavior, historical-fix planned checks, project CI/profile/candidate commands, and available test environment. Inspect test files and their assertions, not merely test names or a green prior report. Investigate direct and transitive callers when deciding which existing behavior is exposed. Identify external configuration separately; do not compile the client for a task that changes no client code solely because it shares a feature.

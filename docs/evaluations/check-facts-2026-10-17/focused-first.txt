@@ -1,0 +1,152 @@
+test_execution_rebind_after_record_change_without_command_and_idempotent (test_check_runs.CheckRunTests) ... ERROR
+test_feature_isolation_and_workspace_lock (test_check_runs.CheckRunTests) ... ERROR
+test_input_change_and_selection_change_expire_execution_but_prose_does_not (test_check_runs.CheckRunTests) ... ERROR
+test_latest_failed_and_missing_terminal_never_search_old_green (test_check_runs.CheckRunTests) ... ERROR
+test_mapping_review_drift_partial_and_unaffected_row_history (test_check_runs.CheckRunTests) ... ERROR
+test_runner_and_adoption_cli_complete_without_borrowing_project_report (test_check_runs.CheckRunTests) ... ERROR
+test_tampered_fact_and_removed_mode_refuse_without_legacy_fallback (test_check_runs.CheckRunTests) ... ERROR
+
+======================================================================
+ERROR: test_execution_rebind_after_record_change_without_command_and_idempotent (test_check_runs.CheckRunTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/mac/Entrepôt/featrace-dev/tests/test_check_runs.py", line 17, in setUp
+    self.helper = test_verification.VerificationTests(); self.helper.setUp(); self.addCleanup(self.helper.doCleanups)
+  File "/Users/mac/Entrepôt/featrace-dev/tests/test_verification.py", line 19, in setUp
+    sync(self.root, self.folder)
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/verification.py", line 54, in wrapped
+    return function(root, folder, *args, **kwargs)
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/verification.py", line 275, in sync
+    req, config, impact = sources(root, folder)
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/verification.py", line 63, in sources
+    if config_path.exists() and enabled(root): config = selection(root, folder.name)
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/check_runs.py", line 69, in enabled
+    config_path = safe(root, base / 'quality-gates.json')
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/check_runs.py", line 30, in safe
+    if not path.is_relative_to(root): raise ValueError('check record outside workspace')
+ValueError: check record outside workspace
+
+======================================================================
+ERROR: test_feature_isolation_and_workspace_lock (test_check_runs.CheckRunTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/mac/Entrepôt/featrace-dev/tests/test_check_runs.py", line 17, in setUp
+    self.helper = test_verification.VerificationTests(); self.helper.setUp(); self.addCleanup(self.helper.doCleanups)
+  File "/Users/mac/Entrepôt/featrace-dev/tests/test_verification.py", line 19, in setUp
+    sync(self.root, self.folder)
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/verification.py", line 54, in wrapped
+    return function(root, folder, *args, **kwargs)
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/verification.py", line 275, in sync
+    req, config, impact = sources(root, folder)
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/verification.py", line 63, in sources
+    if config_path.exists() and enabled(root): config = selection(root, folder.name)
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/check_runs.py", line 69, in enabled
+    config_path = safe(root, base / 'quality-gates.json')
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/check_runs.py", line 30, in safe
+    if not path.is_relative_to(root): raise ValueError('check record outside workspace')
+ValueError: check record outside workspace
+
+======================================================================
+ERROR: test_input_change_and_selection_change_expire_execution_but_prose_does_not (test_check_runs.CheckRunTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/mac/Entrepôt/featrace-dev/tests/test_check_runs.py", line 17, in setUp
+    self.helper = test_verification.VerificationTests(); self.helper.setUp(); self.addCleanup(self.helper.doCleanups)
+  File "/Users/mac/Entrepôt/featrace-dev/tests/test_verification.py", line 19, in setUp
+    sync(self.root, self.folder)
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/verification.py", line 54, in wrapped
+    return function(root, folder, *args, **kwargs)
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/verification.py", line 275, in sync
+    req, config, impact = sources(root, folder)
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/verification.py", line 63, in sources
+    if config_path.exists() and enabled(root): config = selection(root, folder.name)
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/check_runs.py", line 69, in enabled
+    config_path = safe(root, base / 'quality-gates.json')
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/check_runs.py", line 30, in safe
+    if not path.is_relative_to(root): raise ValueError('check record outside workspace')
+ValueError: check record outside workspace
+
+======================================================================
+ERROR: test_latest_failed_and_missing_terminal_never_search_old_green (test_check_runs.CheckRunTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/mac/Entrepôt/featrace-dev/tests/test_check_runs.py", line 17, in setUp
+    self.helper = test_verification.VerificationTests(); self.helper.setUp(); self.addCleanup(self.helper.doCleanups)
+  File "/Users/mac/Entrepôt/featrace-dev/tests/test_verification.py", line 19, in setUp
+    sync(self.root, self.folder)
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/verification.py", line 54, in wrapped
+    return function(root, folder, *args, **kwargs)
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/verification.py", line 275, in sync
+    req, config, impact = sources(root, folder)
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/verification.py", line 63, in sources
+    if config_path.exists() and enabled(root): config = selection(root, folder.name)
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/check_runs.py", line 69, in enabled
+    config_path = safe(root, base / 'quality-gates.json')
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/check_runs.py", line 30, in safe
+    if not path.is_relative_to(root): raise ValueError('check record outside workspace')
+ValueError: check record outside workspace
+
+======================================================================
+ERROR: test_mapping_review_drift_partial_and_unaffected_row_history (test_check_runs.CheckRunTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/mac/Entrepôt/featrace-dev/tests/test_check_runs.py", line 17, in setUp
+    self.helper = test_verification.VerificationTests(); self.helper.setUp(); self.addCleanup(self.helper.doCleanups)
+  File "/Users/mac/Entrepôt/featrace-dev/tests/test_verification.py", line 19, in setUp
+    sync(self.root, self.folder)
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/verification.py", line 54, in wrapped
+    return function(root, folder, *args, **kwargs)
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/verification.py", line 275, in sync
+    req, config, impact = sources(root, folder)
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/verification.py", line 63, in sources
+    if config_path.exists() and enabled(root): config = selection(root, folder.name)
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/check_runs.py", line 69, in enabled
+    config_path = safe(root, base / 'quality-gates.json')
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/check_runs.py", line 30, in safe
+    if not path.is_relative_to(root): raise ValueError('check record outside workspace')
+ValueError: check record outside workspace
+
+======================================================================
+ERROR: test_runner_and_adoption_cli_complete_without_borrowing_project_report (test_check_runs.CheckRunTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/mac/Entrepôt/featrace-dev/tests/test_check_runs.py", line 17, in setUp
+    self.helper = test_verification.VerificationTests(); self.helper.setUp(); self.addCleanup(self.helper.doCleanups)
+  File "/Users/mac/Entrepôt/featrace-dev/tests/test_verification.py", line 19, in setUp
+    sync(self.root, self.folder)
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/verification.py", line 54, in wrapped
+    return function(root, folder, *args, **kwargs)
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/verification.py", line 275, in sync
+    req, config, impact = sources(root, folder)
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/verification.py", line 63, in sources
+    if config_path.exists() and enabled(root): config = selection(root, folder.name)
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/check_runs.py", line 69, in enabled
+    config_path = safe(root, base / 'quality-gates.json')
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/check_runs.py", line 30, in safe
+    if not path.is_relative_to(root): raise ValueError('check record outside workspace')
+ValueError: check record outside workspace
+
+======================================================================
+ERROR: test_tampered_fact_and_removed_mode_refuse_without_legacy_fallback (test_check_runs.CheckRunTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/mac/Entrepôt/featrace-dev/tests/test_check_runs.py", line 17, in setUp
+    self.helper = test_verification.VerificationTests(); self.helper.setUp(); self.addCleanup(self.helper.doCleanups)
+  File "/Users/mac/Entrepôt/featrace-dev/tests/test_verification.py", line 19, in setUp
+    sync(self.root, self.folder)
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/verification.py", line 54, in wrapped
+    return function(root, folder, *args, **kwargs)
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/verification.py", line 275, in sync
+    req, config, impact = sources(root, folder)
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/verification.py", line 63, in sources
+    if config_path.exists() and enabled(root): config = selection(root, folder.name)
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/check_runs.py", line 69, in enabled
+    config_path = safe(root, base / 'quality-gates.json')
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/check_runs.py", line 30, in safe
+    if not path.is_relative_to(root): raise ValueError('check record outside workspace')
+ValueError: check record outside workspace
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.278s
+
+FAILED (errors=7)

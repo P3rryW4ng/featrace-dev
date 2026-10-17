@@ -1,0 +1,39 @@
+test_execution_drift_and_ignored_declared_input_are_not_reusable (test_check_runs.CheckRunTests) ... ok
+test_execution_rebind_after_record_change_without_command_and_idempotent (test_check_runs.CheckRunTests) ... ok
+test_feature_isolation_and_workspace_lock (test_check_runs.CheckRunTests) ... ok
+test_input_change_and_selection_change_expire_execution_but_prose_does_not (test_check_runs.CheckRunTests) ... ok
+test_latest_failed_and_missing_terminal_never_search_old_green (test_check_runs.CheckRunTests) ... ok
+test_mapping_review_drift_partial_and_unaffected_row_history (test_check_runs.CheckRunTests) ... ok
+test_runner_and_adoption_cli_complete_without_borrowing_project_report (test_check_runs.CheckRunTests) ... ok
+test_schema_and_mode_reject_legacy_readers (test_check_runs.CheckRunTests) ... ok
+test_stale_mapping_review_no_writes_and_new_claim_not_automatically_covered (test_check_runs.CheckRunTests) ... ok
+test_successful_fact_survives_result_registration_failure (test_check_runs.CheckRunTests) ... ok
+test_tampered_fact_and_removed_mode_refuse_without_legacy_fallback (test_check_runs.CheckRunTests) ... ok
+test_terminal_save_crash_retains_start_blocks_retry_without_reexecution (test_check_runs.CheckRunTests) ... ok
+test_timeout_stops_owned_group_and_does_not_pass (test_check_runs.CheckRunTests) ... ok
+
+----------------------------------------------------------------------
+Ran 13 tests in 25.700s
+
+OK
+CHECK_ATTEMPT: 341e2aa2a59c4c97b76ff85269e17b92 unavailable
+CHECK_ATTEMPT: 2d6fd1711d904c97a28475af17f621aa passed
+CHECK_ATTEMPT: 44df8f2e4b9e4436a900e0b171986a6e passed
+CHECK_RESULTS_ADOPTED: 1; no commands executed
+CHECK_RESULTS_ADOPTED: 1; no commands executed
+CHECK_RESULTS_ADOPTED: 0; no commands executed
+CHECK_ATTEMPT: cb72e607f9fc4545aba854dea5e20ab8 passed
+CHECK_ATTEMPT: 5ad44f00f4c94654a0c9e6f56626bb40 passed
+CHECK_ATTEMPT: 50defb3ee29246abb474d202231edcf7 passed
+CHECK_ATTEMPT: 66d8314002d4491b9ff4f97b3db75f25 passed
+CHECK_ATTEMPT: 706fae63175d4db78bfc9c1d45395728 failed
+CHECK_ATTEMPT: f901ba2b92ba4d79bfc7d279df8b273d passed
+CHECK_RESULTS_ADOPTED: 1; no commands executed
+CHECK_RESULTS_ADOPTED: 1; no commands executed
+CHECK_RESULTS_ADOPTED: 1; no commands executed
+CHECK_ATTEMPT: d4f6c01fa6ca4c9a8c3ec84f4dd8930f passed
+CHECK_RESULTS_ADOPTED: 1; no commands executed
+CHECK_ATTEMPT: 4e7923f8b73946dba999359e97bb2cb6 passed
+CHECK_RESULTS_ADOPTED: 1; no commands executed
+CHECK_ATTEMPT: 90e6ac84dbae4183914042f322c6da4f passed
+CHECK_ATTEMPT: 42f22da457de4707b61e3badf7461c76 unavailable

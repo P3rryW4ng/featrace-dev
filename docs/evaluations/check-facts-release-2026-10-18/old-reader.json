@@ -1,0 +1,16 @@
+[
+  {
+    "old_version": "0.16.0",
+    "script": "verification.py",
+    "exit_code": 1,
+    "output": "ERROR: invalid verification identity/schema\n",
+    "explicit_rejection_verified": true
+  },
+  {
+    "old_version": "0.16.0",
+    "script": "project.py",
+    "exit_code": 2,
+    "output": "ERROR: unsupported quality configuration field; keep candidates separately\n",
+    "explicit_rejection_verified": true
+  }
+]

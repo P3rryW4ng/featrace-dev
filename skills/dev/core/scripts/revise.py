@@ -190,7 +190,8 @@ def main():
         if not content.strip(): raise ValueError('Empty delivery report')
         run_check(root, args.feature_id, 'validate-feature.py', '--stage', 'check')
         run_check(root, args.feature_id, 'audit-delivery.py')
-        quality = json.loads((root/'.agent-workflow/project-baseline/quality-report.json').read_text())
+        from check_runs import report as check_report
+        quality = check_report(root, args.feature_id)
         selected = {tid for item in quality['results'] if item.get('status') == 'passed'
                     for tid in item.get('test_ids', [])}
         if b['applied']:

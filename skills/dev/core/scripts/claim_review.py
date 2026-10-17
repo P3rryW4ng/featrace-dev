@@ -8,7 +8,7 @@ import re
 import sys
 
 from impact import digest, snapshot as impact_snapshot
-from verification import load_plan, state, context, manual_evidence_stamp
+from verification import load_plan, state, context, manual_evidence_stamp, row_evidence_stamp, check_currency
 
 
 def identity(root, folder):
@@ -29,12 +29,13 @@ def identity(root, folder):
             raise ValueError('unsafe source path in review input')
         sources[name] = hashlib.sha256(path.read_bytes()).hexdigest() if path.is_file() else None
     active = [r for r in plan['items'] if r['source'] != 'system:no-gates' and not r['source'].startswith('gate:')]
+    execution_view = check_currency(root, folder)
     claims = []
     by_id = {r['id']: r for r in req.get('requirements', [])}
     for row in active:
         rid = row['source'].split(':')[1] if row['source'].startswith('requirement:') else None
         parent = by_id.get(rid, {})
-        outcome = state(row, stamp, manual_evidence_stamp(root, folder, row) if row['mode'] == 'manual' else None)
+        outcome = state(row, stamp, row_evidence_stamp(root, folder, row, execution_view))
         claims.append({'id': row['id'], 'requirement_statement': parent.get('statement', ''),
                        'expected': row['expected'], 'mode': row['mode'], 'result_status': outcome,
                        'result': row['history'][-1] if row['history'] else None})

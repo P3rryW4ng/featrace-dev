@@ -1,0 +1,123 @@
+[
+  {
+    "script": "check_runs.py",
+    "args": [
+      "prepare",
+      "/private/var/folders/d_/q6w_z5qx1vl939khdfl92b540000gn/T/tmpu0wb4jd1",
+      "FEAT-001",
+      "--selection",
+      "/var/folders/d_/q6w_z5qx1vl939khdfl92b540000gn/T/check-facts-package-06pf9b87/selection.json",
+      "--reason",
+      "Synthetic explicitly prepared CLI pilot"
+    ],
+    "exit_code": 0,
+    "output": "CHECK_CONTRACT_PREPARED: no command executed\n"
+  },
+  {
+    "script": "verification.py",
+    "args": [
+      "sync",
+      "/private/var/folders/d_/q6w_z5qx1vl939khdfl92b540000gn/T/tmpu0wb4jd1",
+      "FEAT-001"
+    ],
+    "exit_code": 0,
+    "output": "{\n  \"digest\": \"1d0d3fb34e478a3d3878e813142f7e244cb27d3eeb1acac6c539dde66d8df11f\",\n  \"tested_revision\": \"955483923486df1d5ed018dcc6c87eec4bf7c540\",\n  \"items\": [\n    {\n      \"id\": \"requirement:R-1:1:5418d1630003\",\n      \"mode\": \"manual\",\n      \"status\": \"not_run\",\n      \"expected\": \"abc becomes ABC\",\n      \"annotation_links\": []\n    },\n    {\n      \"id\": \"impact:B-1:e6e32d4c2286\",\n      \"mode\": \"manual\",\n      \"status\": \"not_run\",\n      \"expected\": \"Convert input\",\n      \"annotation_links\": []\n    },\n    {\n      \"id\": \"impact:B-2:3c91ed1e9cb5\",\n      \"mode\": \"manual\",\n      \"status\": \"not_run\",\n      \"expected\": \"Keep shared state\",\n      \"annotation_links\": []\n    },\n    {\n      \"id\": \"gate:unit:ae58977f2f47\",\n      \"mode\": \"automatic\",\n      \"status\": \"not_run\",\n      \"expected\": \"Command succeeds: unit\",\n      \"annotation_links\": []\n    }\n  ]\n}\n"
+  },
+  {
+    "script": "verification.py",
+    "args": [
+      "run",
+      "/private/var/folders/d_/q6w_z5qx1vl939khdfl92b540000gn/T/tmpu0wb4jd1",
+      "FEAT-001"
+    ],
+    "exit_code": 2,
+    "output": "CHECK_ATTEMPT: f79a56ee68fb41dda7b9c8c6167a3761 passed\nCHECK_RESULTS_ADOPTED: 1; no commands executed\n{\n  \"digest\": \"1d0d3fb34e478a3d3878e813142f7e244cb27d3eeb1acac6c539dde66d8df11f\",\n  \"tested_revision\": \"955483923486df1d5ed018dcc6c87eec4bf7c540\",\n  \"items\": [\n    {\n      \"id\": \"requirement:R-1:1:5418d1630003\",\n      \"mode\": \"manual\",\n      \"status\": \"not_run\",\n      \"expected\": \"abc becomes ABC\",\n      \"annotation_links\": []\n    },\n    {\n      \"id\": \"impact:B-1:e6e32d4c2286\",\n      \"mode\": \"manual\",\n      \"status\": \"not_run\",\n      \"expected\": \"Convert input\",\n      \"annotation_links\": []\n    },\n    {\n      \"id\": \"impact:B-2:3c91ed1e9cb5\",\n      \"mode\": \"manual\",\n      \"status\": \"not_run\",\n      \"expected\": \"Keep shared state\",\n      \"annotation_links\": []\n    },\n    {\n      \"id\": \"gate:unit:ae58977f2f47\",\n      \"mode\": \"automatic\",\n      \"status\": \"passed\",\n      \"expected\": \"Command succeeds: unit\",\n      \"annotation_links\": []\n    }\n  ]\n}\n"
+  },
+  {
+    "script": "verification.py",
+    "args": [
+      "capture-check-mapping",
+      "/private/var/folders/d_/q6w_z5qx1vl939khdfl92b540000gn/T/tmpu0wb4jd1",
+      "FEAT-001",
+      "--items",
+      "gate:unit:ae58977f2f47"
+    ],
+    "exit_code": 0,
+    "output": "{\n  \"feature_id\": \"FEAT-001\",\n  \"attempt_id\": \"f79a56ee68fb41dda7b9c8c6167a3761\",\n  \"attempt_digest\": \"04df6c133997ad456cb74d410db279413b9296adb208bc382ae2b6a859dee0ae\",\n  \"target_revision\": \"955483923486df1d5ed018dcc6c87eec4bf7c540\",\n  \"items\": [\n    {\n      \"id\": \"gate:unit:ae58977f2f47\",\n      \"source\": \"gate:unit\",\n      \"expected\": \"Command succeeds: unit\",\n      \"mode\": \"automatic\",\n      \"gates\": [\n        \"unit\"\n      ],\n      \"coverage\": \"configured command result only\"\n    }\n  ],\n  \"claim_stamps\": {\n    \"gate:unit:ae58977f2f47\": \"check-v2:a08d55ef0b684c2728d9f992486f3499616acf03343cfa91cc4f5c1350473ccf\"\n  },\n  \"plan_digest\": \"dbdb15825dfb9902a209229d846dc4d9db21d60c76421610f6d2b7d490c06df6\",\n  \"input_digest\": \"23574b1e02537fd36e85a9766fad963aa21df34d42f8d7f716ce706b64e0643d\"\n}\n"
+  },
+  {
+    "script": "verification.py",
+    "args": [
+      "adopt-checks",
+      "/private/var/folders/d_/q6w_z5qx1vl939khdfl92b540000gn/T/tmpu0wb4jd1",
+      "FEAT-001",
+      "--review",
+      "/var/folders/d_/q6w_z5qx1vl939khdfl92b540000gn/T/check-facts-package-06pf9b87/mapping.json"
+    ],
+    "exit_code": 0,
+    "output": "CHECK_RESULTS_ADOPTED: 1; no commands executed\n"
+  },
+  {
+    "script": "verification.py",
+    "args": [
+      "adopt-checks",
+      "/private/var/folders/d_/q6w_z5qx1vl939khdfl92b540000gn/T/tmpu0wb4jd1",
+      "FEAT-001",
+      "--review",
+      "/var/folders/d_/q6w_z5qx1vl939khdfl92b540000gn/T/check-facts-package-06pf9b87/mapping.json"
+    ],
+    "exit_code": 0,
+    "output": "CHECK_RESULTS_ADOPTED: 0; already applied; no commands executed\n"
+  },
+  {
+    "script": "verification.py",
+    "args": [
+      "capture-check-mapping",
+      "/private/var/folders/d_/q6w_z5qx1vl939khdfl92b540000gn/T/tmpu0wb4jd1",
+      "FEAT-001",
+      "--items",
+      "gate:unit:ae58977f2f47"
+    ],
+    "exit_code": 0,
+    "output": "{\n  \"feature_id\": \"FEAT-001\",\n  \"attempt_id\": \"f79a56ee68fb41dda7b9c8c6167a3761\",\n  \"attempt_digest\": \"04df6c133997ad456cb74d410db279413b9296adb208bc382ae2b6a859dee0ae\",\n  \"target_revision\": \"955483923486df1d5ed018dcc6c87eec4bf7c540\",\n  \"items\": [\n    {\n      \"id\": \"gate:unit:ae58977f2f47\",\n      \"source\": \"gate:unit\",\n      \"expected\": \"Command succeeds: unit\",\n      \"mode\": \"automatic\",\n      \"gates\": [\n        \"unit\"\n      ],\n      \"coverage\": \"configured command result only\"\n    }\n  ],\n  \"claim_stamps\": {\n    \"gate:unit:ae58977f2f47\": \"check-v2:a08d55ef0b684c2728d9f992486f3499616acf03343cfa91cc4f5c1350473ccf\"\n  },\n  \"plan_digest\": \"e370095b16ceaf676efa6f67b844e0536d4a1ce24402598e226399fab792cb01\",\n  \"input_digest\": \"6adc7443527c683254865918f96f85b56e87690f76f0df983596610664e85979\"\n}\n"
+  },
+  {
+    "script": "verification.py",
+    "args": [
+      "adopt-checks",
+      "/private/var/folders/d_/q6w_z5qx1vl939khdfl92b540000gn/T/tmpu0wb4jd1",
+      "FEAT-001",
+      "--review",
+      "/var/folders/d_/q6w_z5qx1vl939khdfl92b540000gn/T/check-facts-package-06pf9b87/mapping.json"
+    ],
+    "exit_code": 0,
+    "output": "CHECK_RESULTS_ADOPTED: 0; no commands executed\n"
+  },
+  {
+    "script": "feature-status.py",
+    "args": [
+      "/private/var/folders/d_/q6w_z5qx1vl939khdfl92b540000gn/T/tmpu0wb4jd1",
+      "FEAT-001"
+    ],
+    "exit_code": 0,
+    "output": "FEATURE: FEAT-001\nARCHIVED: False\nMODULES: unclassified\nSOURCES: prd=present, api=not_applicable, figma=not_applicable\nREQUIREMENTS: inferred=0, confirmed=1, blocked=0, deprecated=0\nTASKS: done=1/1\nREQUIREMENT_BLOCKERS: none\nFIXES: unresolved=0/0\nFIX_OUTCOMES: recorded_verified=0, recorded_closed=0; run validation to check evidence\nCLARIFICATIONS: unresolved=0, confirmed_unapplied=0; recorded status, not semantic proof\nCOMPLETION: not evaluated; review decisions, source applicability, tasks and current quality evidence\nVERIFICATION: not_run=3, passed=1\nCHECK_EXECUTION: current; f79a56ee68fb41dda7b9c8c6167a3761; execution fact, not acceptance\n"
+  },
+  {
+    "script": "verify-inputs.py",
+    "args": [
+      "/private/var/folders/d_/q6w_z5qx1vl939khdfl92b540000gn/T/tmpu0wb4jd1",
+      "FEAT-001"
+    ],
+    "exit_code": 0,
+    "output": "{\n  \"feature_id\": \"FEAT-001\",\n  \"git_head\": \"955483923486df1d5ed018dcc6c87eec4bf7c540\",\n  \"worktree_changed_paths\": [\n    \".agent-workflow/features/FEAT-001/check-head.json\",\n    \".agent-workflow/features/FEAT-001/check-runs/f79a56ee68fb41dda7b9c8c6167a3761/result.json\",\n    \".agent-workflow/features/FEAT-001/check-runs/f79a56ee68fb41dda7b9c8c6167a3761/start.json\",\n    \".agent-workflow/features/FEAT-001/check-selection.json\",\n    \".agent-workflow/features/FEAT-001/decisions.json\",\n    \".agent-workflow/features/FEAT-001/impact.json\",\n    \".agent-workflow/features/FEAT-001/sources/prd-original.txt\",\n    \".agent-workflow/features/FEAT-001/spec/prd-intake.json\",\n    \".agent-workflow/features/FEAT-001/spec/requirements.json\",\n    \".agent-workflow/features/FEAT-001/tasks.json\",\n    \".agent-workflow/features/FEAT-001/traceability.json\",\n    \".agent-workflow/features/FEAT-001/verification.json\",\n    \".agent-workflow/features/FEAT-001/verification.md\",\n    \".agent-workflow/project-baseline/check-contract-v2-origin.json\",\n    \".agent-workflow/project-baseline/quality-gates.json\",\n    \".agent-workflow/scratch/check-execution.lock\",\n    \".agent-workflow/scratch/executions\",\n    \".agent-workflow/scratch/verification-FEAT-001.lock\"\n  ],\n  \"source_status_claims\": {\n    \"prd\": \"present\",\n    \"api\": \"not_applicable\",\n    \"figma\": \"not_applicable\"\n  },\n  \"sources\": [\n    {\n      \"path\": \"sources/prd-original.txt\",\n      \"indexed\": true,\n      \"state\": \"readable\",\n      \"bytes\": 28,\n      \"sha256\": \"1e0a3371ca2ccc50d51db4aea3e65511391f886e33898ba087892f07bea70a5f\"\n    }\n  ],\n  \"quality_report\": {\n    \"state\": \"current\",\n    \"attempt_id\": \"f79a56ee68fb41dda7b9c8c6167a3761\",\n    \"digest\": \"04df6c133997ad456cb74d410db279413b9296adb208bc382ae2b6a859dee0ae\",\n    \"report_ref\": \".agent-workflow/features/FEAT-001/check-runs/f79a56ee68fb41dda7b9c8c6167a3761/result.json\"\n  },\n  \"issues_to_review\": [\n    \"worktree_changed_paths_require_review\"\n  ],\n  \"status\": \"review_required\",\n  \"note\": \"Read-only input inventory; not semantic review, test execution, or delivery approval.\"\n}\n"
+  },
+  {
+    "script": "audit-delivery.py",
+    "args": [
+      "/private/var/folders/d_/q6w_z5qx1vl939khdfl92b540000gn/T/tmpu0wb4jd1",
+      "FEAT-001"
+    ],
+    "exit_code": 1,
+    "output": "ERROR: required feature record or quality report missing/invalid: check inputs changed or unknown\n"
+  }
+]

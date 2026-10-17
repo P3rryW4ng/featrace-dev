@@ -20,8 +20,10 @@ def audit(root, feature_id):
         fixes_path = feature / 'fixes.json'
         from fixes import read_fixes
         fixes = read_fixes(feature, feature_id)
-        report = json.loads((baseline / 'quality-report.json').read_text())
-        selected_config = json.loads((baseline / 'quality-gates.json').read_text())
+        from check_runs import report as check_report, enabled, selection
+        isolated = enabled(root)
+        report = check_report(root, feature_id)
+        selected_config = selection(root, feature_id) if isolated else json.loads((baseline / 'quality-gates.json').read_text())
         validate_gates(root, selected_config)
     except (OSError, ValueError) as exc:
         return ['required feature record or quality report missing/invalid: ' + str(exc)]
@@ -34,7 +36,7 @@ def audit(root, feature_id):
     if selected_config.get('selection_feature_id') != feature_id or report.get('quality_selection') != quality_selection(selected_config):
         errors.append('quality report or selected gates are not bound to this feature; reselect applicable gates and rerun check')
     try:
-        current = quality_snapshot(root)
+        current = quality_snapshot(root, selected_config)
     except (OSError, ValueError, TypeError) as exc:
         return ['cannot inspect current project snapshot: ' + str(exc)]
     comparison = quality_comparison(root, report.get('project_snapshot'), current)
@@ -43,7 +45,7 @@ def audit(root, feature_id):
     execution_identity = report.get('input_comparison')
     if not isinstance(execution_identity, dict) or execution_identity.get('state') != 'same':
         errors.append('quality execution did not certify stable inputs; legacy/missing identity needs a fresh applicable check')
-    if req.get('feature', {}).get('baseline') is not None:
+    if not isolated and req.get('feature', {}).get('baseline') is not None:
         try:
             if report.get('feature_baseline') != binding(root, feature_id):
                 errors.append('quality report is not bound to the current requirement baseline; rerun check --feature')
