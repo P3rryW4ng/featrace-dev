@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.15.1 — 2026-10-17
+
+- Prepare fix verification before implementation using existing records: triggering conditions, exact outcomes, assertion layers, preserved behavior and external side effects. Prefer deterministic response/clock seams when they prove the relevant production path; do not treat constant-string tests as mapping/presentation evidence.
+- Stabilize scope, mappings, selected gates and privacy-checked evidence before final capture. Explain concrete reasons for added checks and distinguish tool freshness blocks from behavior gaps; preserve current helper contracts and required independent final review.
+- Instruction-only patch based on the 0.15.0 runtime, changing three references. No Python/schema/gate change; excludes B1 and dynamic progress. Native efficiency remains to be observed on the quote-expiry bug.
+
 ## 0.15.0 — 2026-10-16
 
 - Adopt original manual observations after approved interpretation corrections, including retired rows and recovered uncommitted contracts. Batch freezing and fresh-context full-claim review preserve original results and test identity; failures, skipped withdrawals, unknown identity and expanded claims are refused.

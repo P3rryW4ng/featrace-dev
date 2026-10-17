@@ -4,6 +4,9 @@
 
 ## 当前发布与检查
 
+[0.15.1最小验收准备修复](evaluations/2026-10-17-fix-verification-0151.md)：三reference静态核对及106文件隔离升级、备份/CLI核验；Python未变，不重跑完整回归，不含B1/进度，真实效果待Bug观察。
+
+
 [0.15.0发布快照](evaluations/2026-10-16-release-0150.md)：与本地B1集成树分离，发布快照463/463（688.499秒）、隔离106文件升级与旧104文件备份校验通过；日常安装随后记录。不把原482项结果当作该快照新执行。
 
 [上下文读取审计](evaluations/2026-10-15-context-reading-audit.md)与[新上下文接续演练](evaluations/2026-10-15-context-resume.md)：0.13.6两个合成项目在无原会话的新上下文中识别撤回、过期视图、当前决策和追溯缺口；维护侧确认canonical/业务文件与HEAD不变。尺寸探针验证验收历史省略、task/regression历史透传；不是实际Token/费用或净收益测量。已整理[下一真实需求基线](reviews/2026-10-15-phase-two-baseline.md)，复用既有复盘，不改runtime/版本/安装或新增业务检查。
