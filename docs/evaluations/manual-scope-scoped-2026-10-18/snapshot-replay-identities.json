@@ -1,0 +1,14 @@
+{
+  "birch": {
+    "original_snapshot": "docs/evaluations/manual-scope-2026-10-18/birch/snapshot.json",
+    "current_capture": "docs/evaluations/manual-scope-scoped-2026-10-18/birch/capture.json",
+    "sha256": "5f812b4e54c39812f240215067b5bf78e0281327935d08897aa1f83ed27ed0d6",
+    "raw_bytes_identical": true
+  },
+  "cedar": {
+    "original_snapshot": "docs/evaluations/manual-scope-2026-10-18/cedar/snapshot.json",
+    "current_capture": "docs/evaluations/manual-scope-scoped-2026-10-18/cedar/capture.json",
+    "sha256": "be3a0757c92e271e29e9bb2c2d6839d7245c588afcf8e7e6ac02990b17831c14",
+    "raw_bytes_identical": true
+  }
+}

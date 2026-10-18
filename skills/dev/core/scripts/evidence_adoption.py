@@ -22,7 +22,7 @@ def text(value):
 
 
 def contract(row):
-    return {k: val for k, val in row.items() if k not in ('history', 'retention')}
+    return {k: val for k, val in row.items() if k not in ('history', 'retention', 'manual_scope_ref')}
 
 
 def locate(doc, ref):
@@ -200,7 +200,7 @@ def validate_receipt(doc, row, entry):
         raise ValueError('adoption review reference missing or ambiguous')
     receipt = receipts[0]
     if (entry.get('status') != 'retained' or row.get('mode') != 'manual'
-            or doc.get('schema_version') not in (3, 4)
+            or doc.get('schema_version') not in (3, 4, 5)
             or receipt.get('digest') != digest({k: val for k, val in receipt.items() if k != 'digest'})):
         raise ValueError('invalid adoption receipt/schema/digest')
     frozen = receipt.get('inputs', {})
@@ -298,6 +298,7 @@ def apply(root, folder, snapshot, review_path):
                      reviewed_revision=fresh['reviewed_revision'], adoption_receipt=receipt['digest'],
                      adoption_source=selected['source'],
                      changed_paths=selected['changed_paths'], reason='Approved interpretation correction; independently reviewed original observation.')
+        row.pop('manual_scope_ref', None)
         row['history'].append(entry)
         entry['evidence_digest'] = v.manual_evidence_stamp(root, folder, row)
         validate_receipt(doc, row, entry)

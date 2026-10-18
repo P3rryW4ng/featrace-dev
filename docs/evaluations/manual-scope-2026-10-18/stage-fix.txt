@@ -1,0 +1,13 @@
+test_cli_output_can_be_checked_without_mutating_canonical_records (test_stage_view.StageViewTests) ... ok
+test_cross_requirement_decision_expands_its_full_parent_authority (test_stage_view.StageViewTests) ... ok
+test_handoff_rejects_source_code_canonical_or_payload_drift (test_stage_view.StageViewTests) ... ok
+test_missing_uncertain_scope_and_no_projection_scope_do_not_hide_information (test_stage_view.StageViewTests) ... ok
+test_shared_preservation_expands_linked_requirement_instead_of_trimming_it (test_stage_view.StageViewTests) ... ok
+test_task_projection_preserves_full_parent_shared_rules_and_global_unknowns (test_stage_view.StageViewTests) ... ok
+test_unrelated_failed_claim_is_globally_visible_without_loading_its_history (test_stage_view.StageViewTests) ... ok
+test_verify_uses_effective_state_and_latest_result_not_only_passed_prose (test_stage_view.StageViewTests) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 23.321s
+
+OK

@@ -67,3 +67,6 @@ Follow [Git sharing](git-sharing.md) for selective tracking and local-state igno
 ## Explicit feature-scoped check facts
 
 Only after project opt-in authorization, use `check-execution.md` to prepare feature choices from the existing command definitions. The config marker makes old tools reject the workspace, and each feature gets its own latest execution head/attempts. Do not overwrite the project-global legacy report or clear a newer failure to restore a green result. Definitions, feature mapping, execution and current acceptance have separate identities; unchanged command/input facts can support a newly inspected mapping without command rerun. Installing a newer Skill does not enable this mode.
+
+
+Manual applicability may separately opt in per feature under [manual-scope.md](manual-scope.md). Schema 5 does not enable execution contract 2, and reviewed old observations do not certify new code/check inputs. Current quality results, device execution and final acceptance keep their separate responsibilities.

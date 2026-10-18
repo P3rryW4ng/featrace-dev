@@ -1,0 +1,64 @@
+{
+  "input_digest": "75c73739f7f6fd2978fd36ef83f29718b8546884006a0438565b10e4041def97",
+  "reviewer": "Codex fresh-context subagent /root/manual_scope_birch",
+  "independent_context": true,
+  "assessments": {
+    "project:5bd8195027408348901e7941af1280af12b18028:other.py": {
+      "evidence": "Read all four business files and the complete Git tested-to-record and record-to-current diffs. The only business change is other.py line 1, UNRELATED_THEME from light to dark. It is a literal assignment with no imports, callbacks or mutations. convert.py imports transform from state.py, which only returns value.upper(); catalog.py only assigns CURRENCY = GBP. Neither imports other.py or reads its variable. Authority, PRD source and archived evidence are unchanged from the saved contract. The tested-to-record interval adds only the original evidence and verification history/rendering. The automatic gate is merely assert 1 + 1 == 2 and supplies no additional product coverage. These are per-claim dependency findings, not an assumption based on the changed filename."
+    }
+  },
+  "findings": [
+    {
+      "item_id": "requirement:R-1:1:5418d1630003",
+      "verdict": "supported",
+      "assessment_refs": {
+        "project:5bd8195027408348901e7941af1280af12b18028:other.py": "unaffected"
+      },
+      "dependencies": ["convert.py", "state.py", "catalog.py", "other.py"],
+      "claim_evidence": "Old and current parent R-1 say Return uppercase text, with complete acceptance criterion abc becomes ABC. The complete original/current PRD says Uppercase supplied text: abc becomes ABC. Keep catalog default currency GBP. The original archived command imports convert, asserts convert(abc)==ABC and actually prints conversion ABC with returncode 0. Current convert delegates unchanged to state.transform, whose full body returns value.upper(). This retains applicability of the original abc observation within its original scope; it does not manufacture new observations for arbitrary inputs.",
+      "dependency_evidence": "Read the full local import closure convert.py -> state.py and all remaining business files, including catalog imported in the same original command. Both convert/state blobs are identical at tested and current revisions. other.py has only an unreferenced theme constant, so its light-to-dark change cannot alter the transform, import closure, shared state or original input. No UI, runtime plugin, external input or server is present in the supplied synthetic project.",
+      "contract_evidence": "Read original contract and passed history from Git e35b953d95960439f75fd4fb503e3ee28b9372d3 and current complete canonical records. R-1 title, statement, criterion, mapping, parent source and original result remain the same; no later failed/unavailable/withdrawn result exists. Git chronology is 5bd8195 -> e35b953 -> 0e2116c; the complete first interval changes only evidence/origin.json, verification.json and its generated view, preserving every business file. Current schema preparation adds no expanded behavior claim. B-1/B-2 and the automatic gate have no observations and this finding does not close them.",
+      "environment_evidence": "Read evidence/origin.json: local Python synthetic fixture, no device/server, clean tested worktree, explicit tested revision, Python -B command, source hashes for convert/state/catalog, returncode 0 and actual ABC/GBP output. Their bytes and import bodies match the inspected original Git sources and snapshot file identities. Snapshot actual inputs identify committed/index/current business identities; AGENTS.md and CLAUDE.md are absent. Snapshot observed_at remains null; archival execution timestamp 2026-10-18T06:23:28.210602+00:00 is only an investigated archive timestamp, while original_registered_at 2026-10-18T06:23:28.391493+00:00 is registration. No device or package equivalence is being asserted.",
+      "counterexample": "Investigated whether unchanged convert.py could conceal a changed transitive transform, whether the changed theme mutates shared state or runs through an import side effect, and whether the criterion or parent had broadened. Full state.py and other.py contents, all four-file inventory and authority comparisons exclude those mechanisms here. A changed transform, dynamic theme import or added external startup input would defeat support, but none exists in the supplied project. Evidence remains limited to this synthetic local context and original observation, with no fresh execution.",
+      "original_identity": {
+        "revision": "5bd8195027408348901e7941af1280af12b18028",
+        "worktree_verified": true,
+        "explanation": "Inspected archived origin.json rather than inferring identity from HEAD. It attests clean worktree and tested revision, records actual command/output/returncode and hashes of all imported product source files. Read original Git source contents and matching frozen original/current blob inventory; no changed imported bytes or unidentified package is involved. The changed other.py was not imported by the archived command.",
+        "evidence_refs": ["evidence/origin.json"]
+      },
+      "contract_record": {
+        "revision": "e35b953d95960439f75fd4fb503e3ee28b9372d3",
+        "tested_revision": "5bd8195027408348901e7941af1280af12b18028",
+        "explanation": "Read the exact R-1 passed entry in the saved contract commit, including original actual ABC/GBP output and evidence reference. It identifies tested 5bd8195, not saved-record e35b953. The entire tested-to-record diff only archives observations and renders verification; business files and requirement authority are unchanged. No later result supersedes it."
+      }
+    },
+    {
+      "item_id": "requirement:R-2:1:052d62f8890f",
+      "verdict": "supported",
+      "assessment_refs": {
+        "project:5bd8195027408348901e7941af1280af12b18028:other.py": "unaffected"
+      },
+      "dependencies": ["catalog.py", "convert.py", "state.py", "other.py"],
+      "claim_evidence": "Read complete old/current R-2 Catalog default: Keep catalog default currency GBP; criterion default currency is GBP. The PRD independently contains that complete currency requirement. Archived actual command imports catalog.CURRENCY, asserts GBP and prints currency GBP with returncode 0. Full original/current catalog.py consists solely of CURRENCY = GBP. This supports the same default claim with no new execution.",
+      "dependency_evidence": "catalog.py has no imports or initialization dependencies and its sole assignment is unchanged. Investigated all other business files and the entire original command: convert imports only state.transform, state returns upper(), and other contains only the theme assignment. No caller mutates catalog.CURRENCY, no theme import is executed, and no currency-from-theme relationship exists. Therefore the shared other.py change is independently unaffected for R-2.",
+      "contract_evidence": "Original/current parent R-2, criterion, PRD source, traceability, decisions, impact and task context are unchanged. R-2 latest history is its original passed fact; no later negative result or retired mapping exists. Saved contract e35b953 has exact original tested revision 5bd8195 and actual/evidence provenance. The entire tested-to-record interval adds observation records/evidence/rendering only, preserving business inputs. R-2 shares T-1 with R-1, but this claim has its own actual assertion; no unexecuted composite is assembled and unmapped source inventory details do not change the clear PRD requirement.",
+      "environment_evidence": "Archived evidence/origin.json explicitly identifies local Python without device/server, a clean worktree at 5bd8195027408348901e7941af1280af12b18028, catalog source hash, successful original assertion and printed GBP. Read the actual catalog Git content and current source/snapshot identities, alongside all source files imported in that command. No package/device provenance is needed for this local constant. Snapshot observed_at stays null; archive timestamp 2026-10-18T06:23:28.210602+00:00 is not substituted for registered_at 2026-10-18T06:23:28.975169+00:00. No new environment observation is claimed.",
+      "counterexample": "Investigated a theme-dependent currency default, catalog import side effects, another module reassigning CURRENCY and an expanded default contract. Full four-file source inventory contains no such path and old/current authority is unchanged. A new catalog dependency, startup mutation or requirement to dynamically choose currency would invalidate this finding; none is in the supplied synthetic context. This is retained original applicability only and does not establish full feature completion or automatic gate success.",
+      "original_identity": {
+        "revision": "5bd8195027408348901e7941af1280af12b18028",
+        "worktree_verified": true,
+        "explanation": "Read the archived actual assertion, GBP output, returncode 0, explicit tested revision, clean-worktree attestation and catalog/convert/state source hashes. Original Git source bodies and frozen project identities establish the same imported business inputs; the changed other.py has no catalog dependency or import side effect.",
+        "evidence_refs": ["evidence/origin.json"]
+      },
+      "contract_record": {
+        "revision": "e35b953d95960439f75fd4fb503e3ee28b9372d3",
+        "tested_revision": "5bd8195027408348901e7941af1280af12b18028",
+        "explanation": "Read exact original R-2 passed history, actual GBP output and origin.json reference in the saved commit. Git shows tested 5bd8195 is its parent; only observation evidence/history/rendering was added, with no intermediate business changes. The record commit is preserved as contract locator and is not relabeled as the tested revision."
+      }
+    }
+  ],
+  "apply_ids": [
+    "requirement:R-1:1:5418d1630003",
+    "requirement:R-2:1:052d62f8890f"
+  ]
+}

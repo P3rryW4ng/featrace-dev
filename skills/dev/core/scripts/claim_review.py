@@ -39,6 +39,10 @@ def identity(root, folder):
         claims.append({'id': row['id'], 'requirement_statement': parent.get('statement', ''),
                        'expected': row['expected'], 'mode': row['mode'], 'result_status': outcome,
                        'result': row['history'][-1] if row['history'] else None})
+    if plan.get('manual_scope_contract') == 1:
+        scope = (execution_view or {}).get('_manual_scope', {})
+        for claim in claims:
+            if claim['id'] in scope.get('items', {}): claim['manual_scope'] = scope['items'][claim['id']]
     if plan.get('result_correction_reviews'):
         from result_corrections import links
         for claim in claims:
@@ -60,9 +64,10 @@ def identity(root, folder):
     binding = digest({'requirements': req['requirements'], 'sources': sources,
                       'intake': json.loads(intake_path.read_text()) if intake_path.is_file() else None,
                       'impact': impact_snapshot(root, impact)['digest'],
-                      'claims': claims, **({'device_continuity': {'summary': continuity, 'events': fix_doc['regression_continuity_reviews']}} if continuity is not None else {})})
+                      'claims': claims, **({'manual_scope_reviews': plan['manual_scope_reviews']} if plan.get('manual_scope_contract') == 1 else {}), **({'device_continuity': {'summary': continuity, 'events': fix_doc['regression_continuity_reviews']}} if continuity is not None else {})})
+    scope_refs = [{'event_id': e['id'], 'path': '.agent-workflow/features/' + folder.name + '/verification.json#manual_scope_reviews/' + e['id']} for e in plan.get('manual_scope_reviews', [])]
     return {'feature_id': folder.name, 'input_digest': binding, 'code_revision': head,
-            'source_hashes': sources, 'claims': claims, **({'device_continuity': continuity} if continuity is not None else {})}
+            'source_hashes': sources, 'claims': claims, **({'manual_scope_review_refs': scope_refs} if scope_refs else {}), **({'device_continuity': continuity} if continuity is not None else {})}
 
 
 def validate(root, folder):

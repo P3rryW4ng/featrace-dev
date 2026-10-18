@@ -1,0 +1,123 @@
+{
+  "status": "local-development-validated-not-released",
+  "source_head": "db249bdb01db8c5f35194eda43feda75b17d77fa",
+  "source_version": "0.17.0",
+  "full": {
+    "tests": 539,
+    "elapsed_seconds": 674.344,
+    "skips": 0,
+    "returncode": 0,
+    "includes_new_tests": 20
+  },
+  "focused": {
+    "tests": 20,
+    "elapsed_seconds": 119.84,
+    "returncode": 0
+  },
+  "stage_fix": {
+    "tests": 8,
+    "elapsed_seconds": 23.321,
+    "returncode": 0
+  },
+  "first_full": {
+    "tests": 539,
+    "elapsed_seconds": 660.982,
+    "errors": 1,
+    "returncode": 1,
+    "reason": "missing verification plan stage view regression; fixed"
+  },
+  "second_full": "interrupted for mixed batch recapture idempotency fix, not a complete result",
+  "frozen_runtime_scripts_python_test_inputs": 157,
+  "frozen_input_hashes_unchanged": true,
+  "additional_immutable_head_inputs_verified": 12,
+  "native": [
+    {
+      "case": "birch",
+      "states": {
+        "requirement:R-1:1:5418d1630003": "retained",
+        "requirement:R-2:1:052d62f8890f": "retained"
+      },
+      "original_histories_unchanged": true,
+      "exact_repeat_byte_identical": true,
+      "events": 1,
+      "apply_and_repeat_and_status_seconds": 1.311,
+      "output": "MANUAL_SCOPE_APPLIED: original facts unchanged; no new execution",
+      "schema": 5,
+      "whole_feature_status_exit": 2,
+      "whole_feature_incomplete": true
+    },
+    {
+      "case": "cedar",
+      "states": {
+        "requirement:R-1:1:5418d1630003": "stale",
+        "requirement:R-2:1:052d62f8890f": "retained"
+      },
+      "original_histories_unchanged": true,
+      "exact_repeat_byte_identical": true,
+      "events": 1,
+      "apply_and_repeat_and_status_seconds": 1.276,
+      "output": "MANUAL_SCOPE_APPLIED: original facts unchanged; no new execution",
+      "schema": 5,
+      "whole_feature_status_exit": 2,
+      "whole_feature_incomplete": true
+    }
+  ],
+  "comparison": [
+    {
+      "case": "birch",
+      "comparison": "same original facts, current code, source/authority; capture only, no semantic adoption comparison",
+      "results": {
+        "old-0170": {
+          "capture_calls": 2,
+          "prepare_calls": 0,
+          "prepare_and_capture_seconds": 0.897,
+          "snapshot_bytes": 26754,
+          "code_unchanged": true,
+          "no_apply_or_new_observation": true
+        },
+        "candidate": {
+          "capture_calls": 1,
+          "prepare_calls": 1,
+          "prepare_and_capture_seconds": 1.209,
+          "snapshot_bytes": 8711,
+          "code_unchanged": true,
+          "no_apply_or_new_observation": true
+        }
+      }
+    },
+    {
+      "case": "cedar",
+      "comparison": "same original facts, current code, source/authority; capture only, no semantic adoption comparison",
+      "results": {
+        "old-0170": {
+          "capture_calls": 2,
+          "prepare_calls": 0,
+          "prepare_and_capture_seconds": 0.873,
+          "snapshot_bytes": 26754,
+          "code_unchanged": true,
+          "no_apply_or_new_observation": true
+        },
+        "candidate": {
+          "capture_calls": 1,
+          "prepare_calls": 1,
+          "prepare_and_capture_seconds": 1.258,
+          "snapshot_bytes": 8711,
+          "code_unchanged": true,
+          "no_apply_or_new_observation": true
+        }
+      }
+    }
+  ],
+  "candidate_installed_files": 112,
+  "daily_install_version": "0.17.0",
+  "daily_install_files": 110,
+  "daily_hashes_unchanged": true,
+  "business_records_modified": false,
+  "device_or_backend_operations": 0,
+  "published_or_pushed": false,
+  "python": "3.9.6 (default, Apr 30 2025, 02:07:17) \n[Clang 17.0.0 (clang-1700.0.13.5)]",
+  "model_usage": "not measured",
+  "actual_model_fees": "unavailable",
+  "real_project_time_benefit": "not measured",
+  "quick_skill_validator": "unavailable: PyYAML missing in both existing Python environments; no dependency installed"
+}

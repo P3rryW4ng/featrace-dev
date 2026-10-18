@@ -1,0 +1,4 @@
+ .../features/FEAT-001/evidence/origin.json         | 19 +++++++++++++
+ .../features/FEAT-001/verification.json            | 26 ++++++++++++++++--
+ .agent-workflow/features/FEAT-001/verification.md  | 32 ++++++++++++++++++++--
+ 3 files changed, 73 insertions(+), 4 deletions(-)

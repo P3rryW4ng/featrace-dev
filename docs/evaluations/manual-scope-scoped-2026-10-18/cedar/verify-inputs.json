@@ -1,0 +1,70 @@
+{
+  "manual_scope": {
+    "state": "readable",
+    "items": {
+      "requirement:R-1:1:5418d1630003": {
+        "state": "stale",
+        "event_id": "34e9acaca9c15bae3b6dd565070a825e0f5a4ca6511192d9b0ab327dcc66cf54",
+        "verdict": "affected",
+        "original": {
+          "item_id": "requirement:R-1:1:5418d1630003",
+          "history_index": 0,
+          "result_hash": "16ed1fc68e459f8f6d2054fc40dc7e0eca836e95055105cd57a85f406a05c841",
+          "tested_revision": "d10545de5b6ed49d28f0a666201111b96e3314ce"
+        },
+        "review_ref": ".agent-workflow/features/FEAT-001/verification.json#manual_scope_reviews/34e9acaca9c15bae3b6dd565070a825e0f5a4ca6511192d9b0ab327dcc66cf54",
+        "observed_at": null,
+        "original_registered_at": "2026-10-18T06:23:31.528836+00:00",
+        "reviewed_at": "2026-10-18T09:04:02.638809+00:00",
+        "reviewed_revision": "6c74cf52a8b6e3ae1c377917fc68afe2f9df20ae",
+        "reason": "scope inputs changed or claim not supported/adopted"
+      },
+      "requirement:R-2:1:052d62f8890f": {
+        "state": "current",
+        "event_id": "34e9acaca9c15bae3b6dd565070a825e0f5a4ca6511192d9b0ab327dcc66cf54",
+        "verdict": "supported",
+        "original": {
+          "item_id": "requirement:R-2:1:052d62f8890f",
+          "history_index": 0,
+          "result_hash": "4d2ee88c44192e38684378ef4ae9df49f17043ff20175bc0913a90b4dac0cf60",
+          "tested_revision": "d10545de5b6ed49d28f0a666201111b96e3314ce"
+        },
+        "review_ref": ".agent-workflow/features/FEAT-001/verification.json#manual_scope_reviews/34e9acaca9c15bae3b6dd565070a825e0f5a4ca6511192d9b0ab327dcc66cf54",
+        "observed_at": null,
+        "original_registered_at": "2026-10-18T06:23:32.132545+00:00",
+        "reviewed_at": "2026-10-18T09:04:02.638809+00:00",
+        "reviewed_revision": "6c74cf52a8b6e3ae1c377917fc68afe2f9df20ae",
+        "reason": "reviewed applicability; no new execution"
+      }
+    }
+  },
+  "feature_id": "FEAT-001",
+  "git_head": "6c74cf52a8b6e3ae1c377917fc68afe2f9df20ae",
+  "worktree_changed_paths": [
+    ".agent-workflow/features/FEAT-001/verification.json",
+    ".agent-workflow/features/FEAT-001/verification.md"
+  ],
+  "source_status_claims": {
+    "prd": "present",
+    "api": "not_applicable",
+    "figma": "not_applicable"
+  },
+  "sources": [
+    {
+      "path": "sources/prd-original.txt",
+      "indexed": true,
+      "state": "readable",
+      "bytes": 77,
+      "sha256": "b4368c1d80b7ab87b3816238969d6f0386c0118c3e8d13d9efe2724c1ce2965a"
+    }
+  ],
+  "quality_report": {
+    "state": "missing"
+  },
+  "issues_to_review": [
+    "quality_report_missing_before_run",
+    "worktree_changed_paths_require_review"
+  ],
+  "status": "review_required",
+  "note": "Read-only input inventory; not semantic review, test execution, or delivery approval."
+}

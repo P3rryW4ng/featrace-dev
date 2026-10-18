@@ -1,0 +1,32 @@
+[
+  {
+    "case": "birch",
+    "states": {
+      "requirement:R-1:1:5418d1630003": "retained",
+      "requirement:R-2:1:052d62f8890f": "retained"
+    },
+    "original_histories_unchanged": true,
+    "exact_repeat_byte_identical": true,
+    "events": 1,
+    "apply_and_repeat_and_status_seconds": 1.311,
+    "output": "MANUAL_SCOPE_APPLIED: original facts unchanged; no new execution",
+    "schema": 5,
+    "whole_feature_status_exit": 2,
+    "whole_feature_incomplete": true
+  },
+  {
+    "case": "cedar",
+    "states": {
+      "requirement:R-1:1:5418d1630003": "stale",
+      "requirement:R-2:1:052d62f8890f": "retained"
+    },
+    "original_histories_unchanged": true,
+    "exact_repeat_byte_identical": true,
+    "events": 1,
+    "apply_and_repeat_and_status_seconds": 1.276,
+    "output": "MANUAL_SCOPE_APPLIED: original facts unchanged; no new execution",
+    "schema": 5,
+    "whole_feature_status_exit": 2,
+    "whole_feature_incomplete": true
+  }
+]

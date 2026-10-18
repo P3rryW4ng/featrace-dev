@@ -1,0 +1,435 @@
+{
+  "schema_version": 1,
+  "kind": "stage_starting_view",
+  "stage": "verify",
+  "project": "/private/tmp/manual-scope-host-upxxx8ic/cases/cedar",
+  "feature_id": "FEAT-001",
+  "selection": {
+    "task_ids": [],
+    "item_ids": []
+  },
+  "base_revision": "3ba605b2656ad5e3ad41b351b67a4191735965d1",
+  "source_snapshot_digest": "d66510c1feb773f732ec509a416c86b7c81c9431338d39913a711f92e38d5b95",
+  "code_revision": "6c74cf52a8b6e3ae1c377917fc68afe2f9df20ae",
+  "feature": {
+    "id": "FEAT-001",
+    "status": "provisional",
+    "source_status": {
+      "prd": "present",
+      "api": "not_applicable",
+      "figma": "not_applicable"
+    },
+    "source_notes": {
+      "api": "local computation",
+      "figma": "no UI"
+    }
+  },
+  "pending_revisions": [],
+  "requirements": [
+    {
+      "id": "R-1",
+      "title": "Uppercase",
+      "statement": "Return uppercase text",
+      "status": "confirmed",
+      "sources": [
+        {
+          "type": "prd",
+          "ref": "sources/prd-original.txt"
+        }
+      ],
+      "acceptance_criteria": [
+        "abc becomes ABC"
+      ],
+      "tasks": [
+        "T-1"
+      ],
+      "tests": [
+        "UT-1"
+      ],
+      "assumptions": [],
+      "source_item_ids": [
+        "S-1"
+      ]
+    },
+    {
+      "id": "R-2",
+      "title": "Catalog default",
+      "statement": "Keep catalog default currency GBP",
+      "status": "confirmed",
+      "sources": [
+        {
+          "type": "prd",
+          "ref": "sources/prd-original.txt"
+        }
+      ],
+      "acceptance_criteria": [
+        "default currency is GBP"
+      ],
+      "tasks": [
+        "T-1"
+      ],
+      "tests": [
+        "UT-2"
+      ],
+      "assumptions": []
+    }
+  ],
+  "tasks": [
+    {
+      "id": "T-1",
+      "title": "Implement",
+      "status": "done",
+      "requirement_ids": [
+        "R-1",
+        "R-2"
+      ],
+      "test_evidence": [
+        "UT-1 passed in fixture"
+      ]
+    }
+  ],
+  "decisions": [],
+  "fixes": [],
+  "impact": {
+    "schema_version": 1,
+    "feature_id": "FEAT-001",
+    "base_revision": "3ba605b2656ad5e3ad41b351b67a4191735965d1",
+    "allowed_paths": [
+      "convert.py",
+      "state.py",
+      "catalog.py",
+      "other.py"
+    ],
+    "inspected_paths": [
+      "convert.py",
+      "state.py"
+    ],
+    "excluded_changes": {},
+    "mechanisms": {
+      "entry_points": {
+        "status": "reviewed",
+        "evidence": "convert.py and state.py inspected"
+      },
+      "callers": {
+        "status": "reviewed",
+        "evidence": "convert.py and state.py inspected"
+      },
+      "shared_state": {
+        "status": "reviewed",
+        "evidence": "convert.py and state.py inspected"
+      },
+      "navigation": {
+        "status": "reviewed",
+        "evidence": "convert.py and state.py inspected"
+      },
+      "lifecycle": {
+        "status": "reviewed",
+        "evidence": "convert.py and state.py inspected"
+      },
+      "legacy_behavior": {
+        "status": "reviewed",
+        "evidence": "convert.py and state.py inspected"
+      }
+    },
+    "behaviors": [
+      {
+        "id": "B-1",
+        "kind": "change",
+        "statement": "Convert input",
+        "basis": "R-1",
+        "requirement_ids": [
+          "R-1"
+        ]
+      },
+      {
+        "id": "B-2",
+        "kind": "preserve",
+        "statement": "Keep shared state",
+        "basis": "state.py existing contract",
+        "requirement_ids": [
+          "R-1"
+        ]
+      }
+    ]
+  },
+  "traceability": [
+    {
+      "requirement_id": "R-1",
+      "task_id": "T-1",
+      "code": [
+        "convert.py"
+      ],
+      "tests": [
+        "UT-1"
+      ]
+    },
+    {
+      "requirement_id": "R-2",
+      "task_id": "T-1",
+      "code": [
+        "catalog.py"
+      ],
+      "tests": [
+        "UT-2"
+      ]
+    }
+  ],
+  "claims": [
+    {
+      "id": "requirement:R-1:1:5418d1630003",
+      "source": "requirement:R-1:1",
+      "expected": "abc becomes ABC",
+      "mode": "manual",
+      "gates": [],
+      "coverage": "",
+      "manual_scope_ref": {
+        "event_id": "34e9acaca9c15bae3b6dd565070a825e0f5a4ca6511192d9b0ab327dcc66cf54",
+        "item_id": "requirement:R-1:1:5418d1630003"
+      },
+      "effective_state": "stale",
+      "latest_result": {
+        "status": "passed",
+        "digest": "a7d1970e887d63a4cb2fbac08e4a91743fef4b811d025efda011bcc462c1c096",
+        "tested_revision": "d10545de5b6ed49d28f0a666201111b96e3314ce",
+        "actual": "Original actual output: {\"conversion\": \"ABC\", \"currency\": \"GBP\"}",
+        "evidence": "evidence/origin.json",
+        "method": "manual",
+        "at": "2026-10-18T06:23:31.528836+00:00",
+        "evidence_digest": "6e0eebcb38173f496b7070fadc3d23c555ca4bce94cb2ba6d603cb6376f33fa8"
+      },
+      "annotation_links": [],
+      "history_ref": ".agent-workflow/features/FEAT-001/verification.json#items/requirement:R-1:1:5418d1630003/history",
+      "history_entries": 1,
+      "provenance_readback_required": false,
+      "manual_scope": {
+        "state": "stale",
+        "event_id": "34e9acaca9c15bae3b6dd565070a825e0f5a4ca6511192d9b0ab327dcc66cf54",
+        "verdict": "affected",
+        "original": {
+          "item_id": "requirement:R-1:1:5418d1630003",
+          "history_index": 0,
+          "result_hash": "16ed1fc68e459f8f6d2054fc40dc7e0eca836e95055105cd57a85f406a05c841",
+          "tested_revision": "d10545de5b6ed49d28f0a666201111b96e3314ce"
+        },
+        "review_ref": ".agent-workflow/features/FEAT-001/verification.json#manual_scope_reviews/34e9acaca9c15bae3b6dd565070a825e0f5a4ca6511192d9b0ab327dcc66cf54",
+        "observed_at": null,
+        "original_registered_at": "2026-10-18T06:23:31.528836+00:00",
+        "reviewed_at": "2026-10-18T09:04:02.638809+00:00",
+        "reviewed_revision": "6c74cf52a8b6e3ae1c377917fc68afe2f9df20ae",
+        "reason": "scope inputs changed or claim not supported/adopted"
+      }
+    },
+    {
+      "id": "requirement:R-2:1:052d62f8890f",
+      "source": "requirement:R-2:1",
+      "expected": "default currency is GBP",
+      "mode": "manual",
+      "gates": [],
+      "coverage": "",
+      "manual_scope_ref": {
+        "event_id": "34e9acaca9c15bae3b6dd565070a825e0f5a4ca6511192d9b0ab327dcc66cf54",
+        "item_id": "requirement:R-2:1:052d62f8890f"
+      },
+      "effective_state": "retained",
+      "latest_result": {
+        "status": "passed",
+        "digest": "a7d1970e887d63a4cb2fbac08e4a91743fef4b811d025efda011bcc462c1c096",
+        "tested_revision": "d10545de5b6ed49d28f0a666201111b96e3314ce",
+        "actual": "Original actual output: {\"conversion\": \"ABC\", \"currency\": \"GBP\"}",
+        "evidence": "evidence/origin.json",
+        "method": "manual",
+        "at": "2026-10-18T06:23:32.132545+00:00",
+        "evidence_digest": "f32fe0d7b305ba3d03e36a83b4f6638e571cbe807eaf50e94ce3c19d502be108"
+      },
+      "annotation_links": [],
+      "history_ref": ".agent-workflow/features/FEAT-001/verification.json#items/requirement:R-2:1:052d62f8890f/history",
+      "history_entries": 1,
+      "provenance_readback_required": false,
+      "manual_scope": {
+        "state": "current",
+        "event_id": "34e9acaca9c15bae3b6dd565070a825e0f5a4ca6511192d9b0ab327dcc66cf54",
+        "verdict": "supported",
+        "original": {
+          "item_id": "requirement:R-2:1:052d62f8890f",
+          "history_index": 0,
+          "result_hash": "4d2ee88c44192e38684378ef4ae9df49f17043ff20175bc0913a90b4dac0cf60",
+          "tested_revision": "d10545de5b6ed49d28f0a666201111b96e3314ce"
+        },
+        "review_ref": ".agent-workflow/features/FEAT-001/verification.json#manual_scope_reviews/34e9acaca9c15bae3b6dd565070a825e0f5a4ca6511192d9b0ab327dcc66cf54",
+        "observed_at": null,
+        "original_registered_at": "2026-10-18T06:23:32.132545+00:00",
+        "reviewed_at": "2026-10-18T09:04:02.638809+00:00",
+        "reviewed_revision": "6c74cf52a8b6e3ae1c377917fc68afe2f9df20ae",
+        "reason": "reviewed applicability; no new execution"
+      }
+    },
+    {
+      "id": "impact:B-1:e6e32d4c2286",
+      "source": "impact:B-1",
+      "expected": "Convert input",
+      "mode": "manual",
+      "gates": [],
+      "coverage": "",
+      "effective_state": "not_run",
+      "latest_result": null,
+      "annotation_links": [],
+      "history_ref": ".agent-workflow/features/FEAT-001/verification.json#items/impact:B-1:e6e32d4c2286/history",
+      "history_entries": 0,
+      "provenance_readback_required": false
+    },
+    {
+      "id": "impact:B-2:3c91ed1e9cb5",
+      "source": "impact:B-2",
+      "expected": "Keep shared state",
+      "mode": "manual",
+      "gates": [],
+      "coverage": "",
+      "effective_state": "not_run",
+      "latest_result": null,
+      "annotation_links": [],
+      "history_ref": ".agent-workflow/features/FEAT-001/verification.json#items/impact:B-2:3c91ed1e9cb5/history",
+      "history_entries": 0,
+      "provenance_readback_required": false
+    },
+    {
+      "id": "gate:unit:ae58977f2f47",
+      "source": "gate:unit",
+      "expected": "Command succeeds: unit",
+      "mode": "automatic",
+      "gates": [
+        "unit"
+      ],
+      "coverage": "configured command result only",
+      "effective_state": "not_run",
+      "latest_result": null,
+      "annotation_links": [],
+      "history_ref": ".agent-workflow/features/FEAT-001/verification.json#items/gate:unit:ae58977f2f47/history",
+      "history_entries": 0,
+      "provenance_readback_required": false
+    }
+  ],
+  "global_claim_states": [
+    {
+      "id": "requirement:R-1:1:5418d1630003",
+      "source": "requirement:R-1:1",
+      "effective_state": "stale"
+    },
+    {
+      "id": "requirement:R-2:1:052d62f8890f",
+      "source": "requirement:R-2:1",
+      "effective_state": "retained"
+    },
+    {
+      "id": "impact:B-1:e6e32d4c2286",
+      "source": "impact:B-1",
+      "effective_state": "not_run"
+    },
+    {
+      "id": "impact:B-2:3c91ed1e9cb5",
+      "source": "impact:B-2",
+      "effective_state": "not_run"
+    },
+    {
+      "id": "gate:unit:ae58977f2f47",
+      "source": "gate:unit",
+      "effective_state": "not_run"
+    }
+  ],
+  "quality_selection": {
+    "selection_feature_id": "FEAT-001",
+    "gates": [
+      {
+        "name": "unit",
+        "command": [
+          "/Library/Developer/CommandLineTools/usr/bin/python3",
+          "-c",
+          "assert 1 + 1 == 2"
+        ],
+        "test_ids": [
+          "UT-1"
+        ]
+      }
+    ]
+  },
+  "quality_report": null,
+  "historical_regression": null,
+  "task_review": null,
+  "source_index": [
+    {
+      "path": "sources/prd-original.txt",
+      "indexed": true,
+      "state": "readable",
+      "bytes": 77,
+      "sha256": "b4368c1d80b7ab87b3816238969d6f0386c0118c3e8d13d9efe2724c1ce2965a"
+    }
+  ],
+  "source_readback_refs": [
+    [
+      {
+        "type": "prd",
+        "ref": "sources/prd-original.txt"
+      }
+    ],
+    [
+      {
+        "type": "prd",
+        "ref": "sources/prd-original.txt"
+      }
+    ]
+  ],
+  "authority_refs": {
+    "intake": ".agent-workflow/features/FEAT-001/spec/prd-intake.json",
+    "verification": ".agent-workflow/features/FEAT-001/verification.json",
+    "records": [
+      ".agent-workflow/features/FEAT-001/spec/requirements.json",
+      ".agent-workflow/features/FEAT-001/tasks.json",
+      ".agent-workflow/features/FEAT-001/decisions.json",
+      ".agent-workflow/features/FEAT-001/impact.json",
+      ".agent-workflow/features/FEAT-001/traceability.json",
+      ".agent-workflow/features/FEAT-001/verification.json",
+      ".agent-workflow/project-baseline/quality-gates.json",
+      ".agent-workflow/features/FEAT-001/spec/prd-intake.json"
+    ],
+    "modules": ".agent-workflow/modules/"
+  },
+  "global_attention": [
+    "historical_regression_missing",
+    "quality_report_missing",
+    "quality_report_missing_before_run",
+    "task_review_missing",
+    "unresolved_acceptance: gate:unit:ae58977f2f47: not_run",
+    "unresolved_acceptance: impact:B-1:e6e32d4c2286: not_run",
+    "unresolved_acceptance: impact:B-2:3c91ed1e9cb5: not_run",
+    "unresolved_acceptance: requirement:R-1:1:5418d1630003: stale",
+    "worktree_changed_paths_require_review"
+  ],
+  "unscoped_authority_included": {
+    "decisions": [],
+    "fixes": []
+  },
+  "device_continuity": [],
+  "fix_execution_readback_refs": [],
+  "omitted_requirements": [],
+  "not_loaded": [
+    "raw source contents",
+    "past verification history",
+    "full code/tests",
+    "raw quality output and full retention receipts"
+  ],
+  "expand_when_needed": [
+    "Read referenced originals and assertions; projection is not evidence of correctness.",
+    "Investigate consumers/shared state outside selected tasks; no omission proves independence.",
+    "Read canonical history/intake/revisions/modules when linkage or validity is uncertain.",
+    "Whole-feature completion still requires normal validation/audit and all active claims."
+  ],
+  "authority": "read-only derived starting view; not an execution plan, independent Agent, test result or delivery verdict",
+  "responsibility": "Compare whole claims with actual assertions/results, try counterexamples, inspect retained provenance and remaining gaps; do not trust Test prose.",
+  "metrics": {
+    "canonical_record_bytes": 26868,
+    "projected_payload_bytes": 13152,
+    "tokens": null,
+    "cost": null,
+    "basis": "serialized view before metrics/signature versus loaded canonical JSON file bytes; not actual Agent read or token usage"
+  },
+  "view_digest": "fc7fb266c5eaedc72a0c7ad8669a0ef9da2fc6124161f839eae293b13eeac56e"
+}

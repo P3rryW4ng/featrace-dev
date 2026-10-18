@@ -1,0 +1,118 @@
+test_actual_failure_or_unavailable_never_borrows_older_green (test_manual_scope.ManualScopeTests) ... ERROR
+test_audit_status_views_and_final_claim_review_bind_same_scope (test_manual_scope.ManualScopeTests) ... ERROR
+test_batch_keeps_original_history_and_exact_repeat_and_recapture_idempotent (test_manual_scope.ManualScopeTests) ... ERROR
+test_batch_save_failure_and_verification_lock_leave_original_bytes (test_manual_scope.ManualScopeTests) ... ERROR
+test_capture_and_save_drift_missing_assessments_and_self_review_refused (test_manual_scope.ManualScopeTests) ... ok
+test_cli_old_installed_reader_refuses_schema_and_sync_preserves_mode (test_manual_scope.ManualScopeTests) ... ok
+test_code_or_authority_or_archive_change_stales_scope_without_reexecution (test_manual_scope.ManualScopeTests) ... ERROR
+test_corrupt_event_cross_claim_reference_and_origin_mutation_rejected (test_manual_scope.ManualScopeTests) ... ERROR
+test_forty_six_claims_share_inputs_one_save_and_no_new_history (test_manual_scope.ManualScopeTests) ... ERROR
+test_missing_original_or_late_business_contract_record_refused (test_manual_scope.ManualScopeTests) ... ok
+test_mixed_supported_unknown_and_affected_only_adopts_selected_subset (test_manual_scope.ManualScopeTests) ... ERROR
+test_new_execution_mode_and_schema_five_survive_run_and_adoption (test_manual_scope.ManualScopeTests) ... ERROR
+test_new_negative_is_not_erased_by_fresh_reviewer_or_missing_pointer (test_manual_scope.ManualScopeTests) ... ERROR
+test_progress_and_other_row_outcome_do_not_resign_supported_fact (test_manual_scope.ManualScopeTests) ... ERROR
+test_schema_five_corrections_keep_history_and_need_scope_reassessment (test_manual_scope.ManualScopeTests) ... Traceback (most recent call last):
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/runpy.py", line 197, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/runpy.py", line 87, in _run_code
+    exec(code, run_globals)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/unittest/__main__.py", line 18, in <module>
+    main(module=None)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/unittest/main.py", line 101, in __init__
+    self.runTests()
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/unittest/main.py", line 271, in runTests
+    self.result = testRunner.run(self.test)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/unittest/runner.py", line 176, in run
+    test(result)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/unittest/suite.py", line 84, in __call__
+    return self.run(*args, **kwds)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/unittest/suite.py", line 122, in run
+    test(result)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/unittest/suite.py", line 84, in __call__
+    return self.run(*args, **kwds)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/unittest/suite.py", line 122, in run
+    test(result)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/unittest/suite.py", line 84, in __call__
+    return self.run(*args, **kwds)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/unittest/suite.py", line 122, in run
+    test(result)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/unittest/case.py", line 653, in __call__
+    return self.run(*args, **kwds)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/unittest/case.py", line 589, in run
+    self._callSetUp()
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/unittest/case.py", line 547, in _callSetUp
+    self.setUp()
+  File "/Users/mac/Entrepôt/featrace-dev/tests/test_manual_scope.py", line 17, in setUp
+    self.make_fixture()
+  File "/Users/mac/Entrepôt/featrace-dev/tests/test_manual_scope.py", line 44, in make_fixture
+    m.prepare(self.root,self.folder)
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/manual_scope.py", line 105, in prepare
+    return action(root, folder)
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/verification.py", line 54, in wrapped
+    return function(root, folder, *args, **kwargs)
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/manual_scope.py", line 103, in action
+    v.render(folder)
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/verification.py", line 672, in render
+    execution_view = check_currency(root, folder) if stamp else None
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/verification.py", line 273, in check_currency
+    outcome = dict(outcome or {}, _manual_scope=scope_view(root, folder, doc))
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/manual_scope.py", line 307, in view
+    current = guarded_inputs(root, folder, doc)
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/manual_scope.py", line 88, in guarded_inputs
+    return inputs(root, folder, doc)
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/manual_scope.py", line 70, in inputs
+    v.sources(root, folder)  # Keep ordinary scope/config eligibility.
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/verification.py", line 68, in sources
+    errors, _ = validate_impact(root, folder, req, 'develop')
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/impact.py", line 110, in validate_impact
+    current = snapshot(root, doc)
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/impact.py", line 41, in snapshot
+    git(root, 'rev-parse', '--verify', base + '^{commit}')
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/impact.py", line 17, in git
+    result = subprocess.run(['git', '-C', str(root), *args], capture_output=True)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/subprocess.py", line 507, in run
+    stdout, stderr = process.communicate(input, timeout=timeout)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/subprocess.py", line 1134, in communicate
+    stdout, stderr = self._communicate(input, endtime, timeout)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/subprocess.py", line 1979, in _communicate
+    ready = selector.select(timeout)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/selectors.py", line 416, in select
+    fd_event_list = self._selector.poll(timeout)
+KeyboardInterrupt
+CHECK_ATTEMPT: ca825e37f13f496e9789bf9f10fcea0e passed
+CHECK_RESULTS_ADOPTED: 1; no commands executed
+{
+  "digest": "4ea2f6d5835f2e845c298b46aabfaff6c6386049c62b36ed9562ac1efee16fc7",
+  "tested_revision": "74eee84f099f98dd1190f1b995f1b077bd5a1440",
+  "items": [
+    {
+      "id": "requirement:R-1:1:5418d1630003",
+      "mode": "manual",
+      "status": "stale",
+      "expected": "abc becomes ABC",
+      "annotation_links": []
+    },
+    {
+      "id": "impact:B-1:e6e32d4c2286",
+      "mode": "manual",
+      "status": "stale",
+      "expected": "Convert input",
+      "annotation_links": []
+    },
+    {
+      "id": "impact:B-2:3c91ed1e9cb5",
+      "mode": "manual",
+      "status": "stale",
+      "expected": "Keep shared state",
+      "annotation_links": []
+    },
+    {
+      "id": "gate:unit:ae58977f2f47",
+      "mode": "automatic",
+      "status": "passed",
+      "expected": "Command succeeds: unit",
+      "annotation_links": []
+    }
+  ]
+}

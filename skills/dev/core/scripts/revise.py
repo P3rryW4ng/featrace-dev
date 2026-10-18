@@ -202,13 +202,14 @@ def main():
             if any(tid not in selected for tid in automatic):
                 raise ValueError('Revision test IDs were not selected by passed checks; include manual-only coverage in the report, not test_ids')
             if correction:
-                from verification import load_plan, context, manual_evidence_stamp, state
+                from verification import load_plan, context, row_evidence_stamp, check_currency, state
                 plan = load_plan(folder)
                 stamp, head_now = context(root, folder, plan)
+                execution_view = check_currency(root, folder)
                 for item in correction['manual_coverage']:
                     for source in item['verification_sources']:
                         matches = [row for row in plan['items'] if row['source'] == source and row['mode'] == 'manual']
-                        if len(matches) != 1 or state(matches[0], stamp, manual_evidence_stamp(root, folder, matches[0])) != 'passed':
+                        if len(matches) != 1 or state(matches[0], stamp, row_evidence_stamp(root, folder, matches[0], execution_view)) != 'passed':
                             raise ValueError('Manual revision coverage missing/current pass: ' + item['test_id'] + ' / ' + source)
                         if matches[0]['history'][-1]['tested_revision'] != head_now:
                             raise ValueError('Manual revision coverage is not bound to current code: ' + source)

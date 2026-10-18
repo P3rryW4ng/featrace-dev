@@ -26,7 +26,7 @@ def changed_paths(root):
     return sorted({p.decode('utf-8', 'surrogateescape') for p in changed + untracked if p})
 
 
-def collect(root, feature_id):
+def collect(root, feature_id, *, include_acceptance=True):
     folder = root / '.agent-workflow' / 'features' / feature_id
     if folder.is_symlink() or not folder.is_dir() or not folder.resolve().is_relative_to(root):
         raise ValueError('feature directory missing or unsafe')
@@ -132,7 +132,14 @@ def collect(root, feature_id):
     else:
         issues.append('quality_report_missing_before_run')
 
-    return {'feature_id': feature_id, 'git_head': head, 'worktree_changed_paths': dirty,
+    applicability = None
+    if include_acceptance and (folder / 'verification.json').exists():
+        from verification import load_plan
+        plan = load_plan(folder)
+        if plan.get('manual_scope_contract') == 1:
+            from manual_scope import view
+            applicability = view(root, folder, plan)
+    return {**({'manual_scope': applicability} if applicability is not None else {}), 'feature_id': feature_id, 'git_head': head, 'worktree_changed_paths': dirty,
             'source_status_claims': feature.get('source_status', {}),
             'sources': sources, 'quality_report': quality,
             'issues_to_review': sorted(set(issues)),

@@ -117,7 +117,7 @@ def collect(root, feature_id, stage, task_ids, item_ids, base=None):
     if plan is not None:
         try: stamp, _ = v.context(root, root / prefix, plan)
         except (OSError, ValueError, KeyError, TypeError) as exc: attention.append('canonical_context_unavailable: ' + str(exc))
-    execution_view = v.check_currency(root, root / prefix)
+    execution_view = v.check_currency(root, root / prefix) if plan is not None else None
     claims, global_states = [], []
     chosen_ids = {r["id"] for r in chosen_rows}
     for row in rows:
@@ -137,6 +137,10 @@ def collect(root, feature_id, stage, task_ids, item_ids, base=None):
                            annotation_links=v.annotation_links(plan, row, status),
                            history_ref=prefix + 'verification.json#items/' + row['id'] + '/history',
                            history_entries=len(row['history']), provenance_readback_required=bool(latest and latest.get('retention_kind'))))
+    if plan and plan.get('manual_scope_contract') == 1:
+        scope = (execution_view or {}).get('_manual_scope', {})
+        for claim in claims:
+            if claim['id'] in scope.get('items', {}): claim['manual_scope'] = scope['items'][claim['id']]
     if plan and plan.get('result_correction_reviews'):
         from result_corrections import links
         for claim in claims:

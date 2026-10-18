@@ -1,0 +1,402 @@
+{
+  "schema_version": 5,
+  "feature_id": "FEAT-001",
+  "items": [
+    {
+      "id": "requirement:R-1:1:5418d1630003",
+      "source": "requirement:R-1:1",
+      "expected": "abc becomes ABC",
+      "mode": "manual",
+      "gates": [],
+      "coverage": "",
+      "history": [
+        {
+          "status": "passed",
+          "digest": "a7d1970e887d63a4cb2fbac08e4a91743fef4b811d025efda011bcc462c1c096",
+          "tested_revision": "d10545de5b6ed49d28f0a666201111b96e3314ce",
+          "actual": "Original actual output: {\"conversion\": \"ABC\", \"currency\": \"GBP\"}",
+          "evidence": "evidence/origin.json",
+          "method": "manual",
+          "at": "2026-10-18T06:23:31.528836+00:00",
+          "evidence_digest": "6e0eebcb38173f496b7070fadc3d23c555ca4bce94cb2ba6d603cb6376f33fa8"
+        }
+      ],
+      "manual_scope_ref": {
+        "event_id": "86a8d4d832b4be6ba0157e7bdb09e59025d968fb3ffc49f1fef2267a44643964",
+        "item_id": "requirement:R-1:1:5418d1630003"
+      }
+    },
+    {
+      "id": "requirement:R-2:1:052d62f8890f",
+      "source": "requirement:R-2:1",
+      "expected": "default currency is GBP",
+      "mode": "manual",
+      "gates": [],
+      "coverage": "",
+      "history": [
+        {
+          "status": "passed",
+          "digest": "a7d1970e887d63a4cb2fbac08e4a91743fef4b811d025efda011bcc462c1c096",
+          "tested_revision": "d10545de5b6ed49d28f0a666201111b96e3314ce",
+          "actual": "Original actual output: {\"conversion\": \"ABC\", \"currency\": \"GBP\"}",
+          "evidence": "evidence/origin.json",
+          "method": "manual",
+          "at": "2026-10-18T06:23:32.132545+00:00",
+          "evidence_digest": "f32fe0d7b305ba3d03e36a83b4f6638e571cbe807eaf50e94ce3c19d502be108"
+        }
+      ],
+      "manual_scope_ref": {
+        "event_id": "86a8d4d832b4be6ba0157e7bdb09e59025d968fb3ffc49f1fef2267a44643964",
+        "item_id": "requirement:R-2:1:052d62f8890f"
+      }
+    },
+    {
+      "id": "impact:B-1:e6e32d4c2286",
+      "source": "impact:B-1",
+      "expected": "Convert input",
+      "mode": "manual",
+      "gates": [],
+      "coverage": "",
+      "history": []
+    },
+    {
+      "id": "impact:B-2:3c91ed1e9cb5",
+      "source": "impact:B-2",
+      "expected": "Keep shared state",
+      "mode": "manual",
+      "gates": [],
+      "coverage": "",
+      "history": []
+    },
+    {
+      "id": "gate:unit:ae58977f2f47",
+      "source": "gate:unit",
+      "expected": "Command succeeds: unit",
+      "mode": "automatic",
+      "gates": [
+        "unit"
+      ],
+      "coverage": "configured command result only",
+      "history": []
+    }
+  ],
+  "retired": [],
+  "manual_scope_contract": 1,
+  "manual_scope_reviews": [
+    {
+      "snapshot": {
+        "schema_version": 1,
+        "feature_id": "FEAT-001",
+        "reviewed_revision": "6c74cf52a8b6e3ae1c377917fc68afe2f9df20ae",
+        "requests": [
+          {
+            "item_id": "requirement:R-1:1:5418d1630003",
+            "contract_revision": "ac71e50f626dd435c06856d6549b0619d796dc07"
+          },
+          {
+            "item_id": "requirement:R-2:1:052d62f8890f",
+            "contract_revision": "ac71e50f626dd435c06856d6549b0619d796dc07"
+          }
+        ],
+        "current": {
+          "records": {
+            "spec/requirements.json": "a29608c1d58b730e7b5daa3c8b799802d3ae5b93ec37dac1e92dc90e8d3d4230",
+            "decisions.json": "c8ee245e9342aa505d88f63385d686529acc59c03d94735014bc83c72d42d1f4",
+            "impact.json": "567402ddab6c724b9057ce39f66af2fda8b42abf489ccebd22b411805deac40b",
+            "spec/prd-intake.json": "3aca4067a9427cb5a9225f32f1e9b17215a8f750eecd612c90b066e0282ac95b",
+            "traceability.json": "ea851c5023d5b7e8e7baa70fa5e379861899c0e86da0527774f4e4d78c23b645",
+            "tasks.json": "e8805b9aae877466b4e4e6e39b4f5bf9f2b4e372437937f021b5ebcc90679757"
+          },
+          "project": {
+            "catalog.py": {
+              "mode": "100644",
+              "kind": "blob",
+              "blob": "0092794258d5c43407d658de929e6212368290b9"
+            },
+            "convert.py": {
+              "mode": "100644",
+              "kind": "blob",
+              "blob": "90988bd5588b8cae49572ad1a0d4854a6de240e3"
+            },
+            "other.py": {
+              "mode": "100644",
+              "kind": "blob",
+              "blob": "17fd3e2a5cc84d4dc3f5608e60b2724e15af8d9b"
+            },
+            "state.py": {
+              "mode": "100644",
+              "kind": "blob",
+              "blob": "aa94499b76c97768fc6608642e64c5520b71f135"
+            }
+          },
+          "actual_inputs": {
+            "schema_version": 1,
+            "scope": "git-business-worktree-and-declared-inputs",
+            "state": "identified",
+            "project": "/private/tmp/manual-scope-host-upxxx8ic/cases/cedar",
+            "committed": {
+              "catalog.py": {
+                "mode": "100644",
+                "oid": "0092794258d5c43407d658de929e6212368290b9"
+              },
+              "convert.py": {
+                "mode": "100644",
+                "oid": "90988bd5588b8cae49572ad1a0d4854a6de240e3"
+              },
+              "other.py": {
+                "mode": "100644",
+                "oid": "17fd3e2a5cc84d4dc3f5608e60b2724e15af8d9b"
+              },
+              "state.py": {
+                "mode": "100644",
+                "oid": "aa94499b76c97768fc6608642e64c5520b71f135"
+              }
+            },
+            "index": {
+              "catalog.py": {
+                "mode": "100644",
+                "oid": "0092794258d5c43407d658de929e6212368290b9"
+              },
+              "convert.py": {
+                "mode": "100644",
+                "oid": "90988bd5588b8cae49572ad1a0d4854a6de240e3"
+              },
+              "other.py": {
+                "mode": "100644",
+                "oid": "17fd3e2a5cc84d4dc3f5608e60b2724e15af8d9b"
+              },
+              "state.py": {
+                "mode": "100644",
+                "oid": "aa94499b76c97768fc6608642e64c5520b71f135"
+              }
+            },
+            "files": {
+              "catalog.py": {
+                "state": "file",
+                "sha256": "76170e10f3d3926f60d750b8c1f59ffa7d1ba994876331ca472ed77387fb9b06",
+                "executable": false
+              },
+              "convert.py": {
+                "state": "file",
+                "sha256": "f5d49ed6dec59ce552b6b7737c05592d53c36f8f376eb7095c16e5f8678000a3",
+                "executable": false
+              },
+              "other.py": {
+                "state": "file",
+                "sha256": "191128cda9f8e89be84df63b88b7a468e8224c921a6484018e29fcfab78f68e8",
+                "executable": false
+              },
+              "state.py": {
+                "state": "file",
+                "sha256": "d81a575a911f1b16e76ce1227c2851761b7242922b5b74b2ad8f52aedd935a52",
+                "executable": false
+              }
+            },
+            "declared": {
+              "AGENTS.md": {
+                "state": "missing"
+              },
+              "CLAUDE.md": {
+                "state": "missing"
+              }
+            }
+          },
+          "source_inputs": {
+            "sources": [
+              {
+                "path": "sources/prd-original.txt",
+                "indexed": true,
+                "state": "readable",
+                "bytes": 77,
+                "sha256": "b4368c1d80b7ab87b3816238969d6f0386c0118c3e8d13d9efe2724c1ce2965a"
+              }
+            ],
+            "evidence_files": [
+              {
+                "path": "evidence/origin.json",
+                "sha256": "5fe1fb4bd5bbc97da41666afb26a33166654511e5d1005cb9b3b42de6945fcbd"
+              }
+            ],
+            "source_status_claims": {
+              "prd": "present",
+              "api": "not_applicable",
+              "figma": "not_applicable"
+            }
+          },
+          "scope_kind": "complete-authority-and-project-change-review"
+        },
+        "before_projects": {
+          "d10545de5b6ed49d28f0a666201111b96e3314ce": {
+            "catalog.py": {
+              "mode": "100644",
+              "kind": "blob",
+              "blob": "0092794258d5c43407d658de929e6212368290b9"
+            },
+            "convert.py": {
+              "mode": "100644",
+              "kind": "blob",
+              "blob": "90988bd5588b8cae49572ad1a0d4854a6de240e3"
+            },
+            "other.py": {
+              "mode": "100644",
+              "kind": "blob",
+              "blob": "17fd3e2a5cc84d4dc3f5608e60b2724e15af8d9b"
+            },
+            "state.py": {
+              "mode": "100644",
+              "kind": "blob",
+              "blob": "6287cf8429e5ea0e34a95d69292f3556dbcb4066"
+            }
+          }
+        },
+        "before_records": {
+          "ac71e50f626dd435c06856d6549b0619d796dc07": {
+            "spec/requirements.json": "a29608c1d58b730e7b5daa3c8b799802d3ae5b93ec37dac1e92dc90e8d3d4230",
+            "decisions.json": "c8ee245e9342aa505d88f63385d686529acc59c03d94735014bc83c72d42d1f4",
+            "impact.json": "567402ddab6c724b9057ce39f66af2fda8b42abf489ccebd22b411805deac40b",
+            "spec/prd-intake.json": "3aca4067a9427cb5a9225f32f1e9b17215a8f750eecd612c90b066e0282ac95b",
+            "traceability.json": "ea851c5023d5b7e8e7baa70fa5e379861899c0e86da0527774f4e4d78c23b645",
+            "tasks.json": "e8805b9aae877466b4e4e6e39b4f5bf9f2b4e372437937f021b5ebcc90679757"
+          }
+        },
+        "targets": [
+          {
+            "item_id": "requirement:R-1:1:5418d1630003",
+            "contract_revision": "ac71e50f626dd435c06856d6549b0619d796dc07",
+            "original": {
+              "item_id": "requirement:R-1:1:5418d1630003",
+              "history_index": 0,
+              "result_hash": "16ed1fc68e459f8f6d2054fc40dc7e0eca836e95055105cd57a85f406a05c841",
+              "tested_revision": "d10545de5b6ed49d28f0a666201111b96e3314ce"
+            },
+            "original_registered_at": "2026-10-18T06:23:31.528836+00:00",
+            "observed_at": null,
+            "latest_hash": "16ed1fc68e459f8f6d2054fc40dc7e0eca836e95055105cd57a85f406a05c841",
+            "row_contract": {
+              "id": "requirement:R-1:1:5418d1630003",
+              "source": "requirement:R-1:1",
+              "expected": "abc becomes ABC",
+              "mode": "manual",
+              "gates": [],
+              "coverage": ""
+            },
+            "support_events": [],
+            "changes": [
+              "project:d10545de5b6ed49d28f0a666201111b96e3314ce:state.py"
+            ],
+            "contract_record": {
+              "revision": "ac71e50f626dd435c06856d6549b0619d796dc07",
+              "tested_revision": "d10545de5b6ed49d28f0a666201111b96e3314ce",
+              "source_result_hash": "16ed1fc68e459f8f6d2054fc40dc7e0eca836e95055105cd57a85f406a05c841",
+              "records_digest": "bb1055164ee4603276947f96213b4a252bb3495c69817638914613e2459783d3",
+              "row_contract_digest": "87fb5540663edcdec70626e26a425f9709f19432404b4da6bed70dd09cebf971"
+            }
+          },
+          {
+            "item_id": "requirement:R-2:1:052d62f8890f",
+            "contract_revision": "ac71e50f626dd435c06856d6549b0619d796dc07",
+            "original": {
+              "item_id": "requirement:R-2:1:052d62f8890f",
+              "history_index": 0,
+              "result_hash": "4d2ee88c44192e38684378ef4ae9df49f17043ff20175bc0913a90b4dac0cf60",
+              "tested_revision": "d10545de5b6ed49d28f0a666201111b96e3314ce"
+            },
+            "original_registered_at": "2026-10-18T06:23:32.132545+00:00",
+            "observed_at": null,
+            "latest_hash": "4d2ee88c44192e38684378ef4ae9df49f17043ff20175bc0913a90b4dac0cf60",
+            "row_contract": {
+              "id": "requirement:R-2:1:052d62f8890f",
+              "source": "requirement:R-2:1",
+              "expected": "default currency is GBP",
+              "mode": "manual",
+              "gates": [],
+              "coverage": ""
+            },
+            "support_events": [],
+            "changes": [
+              "project:d10545de5b6ed49d28f0a666201111b96e3314ce:state.py"
+            ],
+            "contract_record": {
+              "revision": "ac71e50f626dd435c06856d6549b0619d796dc07",
+              "tested_revision": "d10545de5b6ed49d28f0a666201111b96e3314ce",
+              "source_result_hash": "4d2ee88c44192e38684378ef4ae9df49f17043ff20175bc0913a90b4dac0cf60",
+              "records_digest": "bb1055164ee4603276947f96213b4a252bb3495c69817638914613e2459783d3",
+              "row_contract_digest": "225b4e7cf2fa69bbf027c1758ffecb26bb5275b2e371c5a9e45a8c1a169a7320"
+            }
+          }
+        ],
+        "plan_digest": "86fb6a1247ed68c10e62420719a9e0ba4a064614ac1ae072c84060b7f77ffec8",
+        "input_digest": "1441349ac325b5ae15e2d967dd0432bba08a7f40ed5d5cb339cde797c79e3ce5"
+      },
+      "review": {
+        "input_digest": "1441349ac325b5ae15e2d967dd0432bba08a7f40ed5d5cb339cde797c79e3ce5",
+        "reviewer": "Codex independent fresh-context reviewer /root/manual_scope_cedar",
+        "independent_context": true,
+        "method": "Read-only frozen-snapshot, complete Git diff, historical contract and archived original execution review; no project execution, check invocation, apply, canonical mutation, commit or push.",
+        "assessments": {
+          "project:d10545de5b6ed49d28f0a666201111b96e3314ce:state.py": {
+            "evidence": "Inspected full tested-to-current Git diff and all four business source files. state.py changes transform(value) from return value.upper() to return value.lower(); convert.py imports transform and delegates directly. catalog.py consists only of CURRENCY = \"GBP\"; other.py consists only of UNRELATED_THEME = \"light\". Those three files are unchanged. Tested-to-record ac71e50 changes only archived evidence and verification records/render; its business tree and all six authority records plus source PRD are unchanged. Current six authority identities equal the historical ones. The later business change is therefore a concrete conversion regression, while its dependency relationship to the catalog claim must be judged separately. No additional code/authority change was omitted from the frozen grouped inventory. Current verification schema preparation preserves both original histories and adds the manual-scope contract with no support event."
+          }
+        },
+        "findings": [
+          {
+            "item_id": "requirement:R-1:1:5418d1630003",
+            "verdict": "affected",
+            "assessment_refs": {
+              "project:d10545de5b6ed49d28f0a666201111b96e3314ce:state.py": "affected"
+            },
+            "dependencies": [
+              "convert.py",
+              "state.py",
+              "catalog.py",
+              "other.py"
+            ],
+            "claim_evidence": "Read both historical and current full R-1 parent: Return uppercase text; acceptance abc becomes ABC; no assumptions, gates or narrower coverage. The PRD says Uppercase supplied text: abc becomes ABC. Original archived actual output is {\"conversion\": \"ABC\", \"currency\": \"GBP\"}, returncode 0, with explicit assertion convert(\"abc\")==\"ABC\". Current convert delegates to changed lower(), which cannot preserve this acceptance or the uppercase parent claim.",
+            "dependency_evidence": "Traceability lists convert.py only, but reading its import reveals transitive dependency state.transform. Its changed implementation lower() is on the exact execution path; unchanged wrapper and unchanged catalog do not isolate the conversion claim. other.py has only a theme constant and no imports/calls. Full project diff shows no other business changes.",
+            "contract_evidence": "Historical d10545d and current requirements, PRD, intake, decisions, impact, traceability and tasks preserve the same uppercase authority. Impact B-1 Convert input and B-2 Keep shared state do not weaken R-1. Record ac71e50 contains exactly the saved original passed result for tested d10545d, not a later retest. Tested-to-record business and authority diff is empty. No later failed result or retention exists in this row, but this actual new implementation change invalidates applicability of the original pass.",
+            "environment_evidence": "Inspected evidence/origin.json: local Python synthetic fixture, no device/server, interpreter path and complete command archived, worktree_clean true, tested_revision d10545de5b6ed49d28f0a666201111b96e3314ce, source hashes for convert/state/catalog, explicit observed_at 2026-10-18T06:23:31.348180+00:00. Original source object state.py uses upper(); current uses lower(). Snapshot observed_at remains null and registration time 2026-10-18T06:23:31.528836+00:00 is not relabeled. No current execution was performed.",
+            "counterexample": "For the exact accepted input abc, current convert reaches value.lower(), so static evaluation gives abc rather than ABC. This directly refutes retained applicability even with the same Python environment; no rerun is needed to recognize the affected claim. This is source reasoning, not a newly observed result."
+          },
+          {
+            "item_id": "requirement:R-2:1:052d62f8890f",
+            "verdict": "supported",
+            "assessment_refs": {
+              "project:d10545de5b6ed49d28f0a666201111b96e3314ce:state.py": "unaffected"
+            },
+            "dependencies": [
+              "catalog.py",
+              "convert.py",
+              "state.py",
+              "other.py"
+            ],
+            "claim_evidence": "Read complete old/current R-2 parent Keep catalog default currency GBP and acceptance default currency is GBP, no assumptions/gates/narrower coverage. PRD explicitly says Keep catalog default currency GBP. Original archived command imports catalog.CURRENCY, asserts it equals GBP and outputs currency GBP with returncode 0. Current catalog.py still consists solely of CURRENCY = \"GBP\"; no import, dynamic lookup or initialization dependency exists.",
+            "dependency_evidence": "Inspected entire catalog.py and all other business modules rather than relying on traceability alone. catalog has no dependence on convert/state/other, and none writes or imports catalog. state.transform changing upper() to lower() affects only convert's delegated string behavior; no call/import/shared mutable state reaches the catalog constant. The original combined command supplies separate direct evidence for currency; retaining this row does not retain its conversion assertion or infer that the entire command would now pass.",
+            "contract_evidence": "Historical and current R-2, source PRD, all six authority records and row expected/mode/gates/coverage are unchanged. Shared task T-1 and R-1 impact links introduce no additional catalog condition. Historical record ac71e50 stores the original d10545d passed result with the same archived actual/evidence; current history has no later failed/unavailable/withdrawn/waived result. The tested-to-record complete business interval contains no business or authority change. R-1 is separately affected, so support is limited to this exact R-2 claim.",
+            "environment_evidence": "Inspected archived local Python command and output, tested_revision and worktree_clean declaration, original source hashes and Git catalog contents. Snapshot identifies committed/index/worktree business inputs with no declared external inputs (AGENTS.md/CLAUDE.md missing). Pure literal catalog initialization has no package, device, server, filesystem, locale or input-dependent mechanism. The explicit archive timestamp 2026-10-18T06:23:31.348180+00:00 describes the old observation; snapshot observed_at stays null and original_registered_at 2026-10-18T06:23:32.132545+00:00 remains registration. This is retained old fact applicability, not a new execution.",
+            "counterexample": "Investigated whether changed shared state could mutate or select currency, import side effects could reach catalog, or the original combined conversion assertion was a shared condition for default currency. All four complete files contain no such relation: catalog is a single unchanged literal. A dependency/import change, external selector, broader catalog authority or different catalog bytes would defeat this support; none is present in this isolated frozen project. The conversion command as a whole would fail, and is not being certified.",
+            "original_identity": {
+              "revision": "d10545de5b6ed49d28f0a666201111b96e3314ce",
+              "worktree_verified": true,
+              "explanation": "Original identity is grounded in inspected evidence/origin.json, not HEAD alone: exact tested revision, clean-worktree declaration, full interpreter command, successful output and source_hashes for original convert/state/catalog are archived. Read historical catalog.py literal GBP and original state.py upper(), and compared full tested-to-current source diff and snapshot object identities. Snapshot catalog sha256 76170e10f3d3926f60d750b8c1f59ffa7d1ba994876331ca472ed77387fb9b06 equals its archived source hash; unchanged convert also matches its archive hash. Archive and original historical result both bind the same tested revision and GBP output. No UI/package proof is needed for this local synthetic Python constant. This verifies available archived identity evidence; no original worktree was re-executed.",
+              "evidence_refs": [
+                "evidence/origin.json",
+                "sources/prd-original.txt"
+              ]
+            },
+            "contract_record": {
+              "revision": "ac71e50f626dd435c06856d6549b0619d796dc07",
+              "tested_revision": "d10545de5b6ed49d28f0a666201111b96e3314ce",
+              "explanation": "Read ac71e50 historical verification.json: R-2 history[0] is passed, exact tested revision d10545d, actual currency GBP in the original combined output, evidence/origin.json and registration 2026-10-18T06:23:32.132545+00:00. Git history places this record commit directly after tested d10545d; its full change stat/diff contains only origin archive and verification JSON/Markdown. Explicit tested-to-record diff of all four business files, six authority records and PRD is empty. Thus saved commit records the original observation after execution and never substitutes the recorded commit as tested revision. Current history preserves that exact result and its source-result binding."
+            }
+          }
+        ],
+        "apply_ids": [
+          "requirement:R-2:1:052d62f8890f"
+        ],
+        "limitations": "Isolated synthetic exercise only. Static and archived evidence review; no project code or checks were run, no apply was called, and no canonical acceptance records were modified. Does not certify automatic gates, impact rows, final feature completion or any current combined command execution."
+      },
+      "at": "2026-10-18T06:28:48.451912+00:00",
+      "id": "86a8d4d832b4be6ba0157e7bdb09e59025d968fb3ffc49f1fef2267a44643964"
+    }
+  ]
+}
