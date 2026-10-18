@@ -1,0 +1,75 @@
+{
+  "digest": "9c981f60d9222e80d67a4dbcd56d77a42f87153457ce035273f521807121d90c",
+  "tested_revision": "0e2116c95656b99641fb8ba3cf2246f4d4cb5983",
+  "items": [
+    {
+      "id": "requirement:R-1:1:5418d1630003",
+      "mode": "manual",
+      "status": "retained",
+      "expected": "abc becomes ABC",
+      "manual_scope": {
+        "state": "current",
+        "event_id": "e49825f1912d3c46789cfd2d5de341f045760d6aa3f3866f6eb33eb6738a8cce",
+        "verdict": "supported",
+        "original": {
+          "item_id": "requirement:R-1:1:5418d1630003",
+          "history_index": 0,
+          "result_hash": "856b4f367bd74f4611e15b3b145c3fe0ae35d7716dfa1d5abbc72691d62be4b4",
+          "tested_revision": "5bd8195027408348901e7941af1280af12b18028"
+        },
+        "review_ref": ".agent-workflow/features/FEAT-001/verification.json#manual_scope_reviews/e49825f1912d3c46789cfd2d5de341f045760d6aa3f3866f6eb33eb6738a8cce",
+        "observed_at": null,
+        "original_registered_at": "2026-10-18T06:23:28.391493+00:00",
+        "reviewed_at": "2026-10-18T06:27:56.576881+00:00",
+        "reviewed_revision": "0e2116c95656b99641fb8ba3cf2246f4d4cb5983",
+        "reason": "reviewed applicability; no new execution"
+      },
+      "annotation_links": []
+    },
+    {
+      "id": "requirement:R-2:1:052d62f8890f",
+      "mode": "manual",
+      "status": "retained",
+      "expected": "default currency is GBP",
+      "manual_scope": {
+        "state": "current",
+        "event_id": "e49825f1912d3c46789cfd2d5de341f045760d6aa3f3866f6eb33eb6738a8cce",
+        "verdict": "supported",
+        "original": {
+          "item_id": "requirement:R-2:1:052d62f8890f",
+          "history_index": 0,
+          "result_hash": "3ff46b285cc6903ea076bd1c1c1e4c6da19a758dad93f0822f6e6e636b967689",
+          "tested_revision": "5bd8195027408348901e7941af1280af12b18028"
+        },
+        "review_ref": ".agent-workflow/features/FEAT-001/verification.json#manual_scope_reviews/e49825f1912d3c46789cfd2d5de341f045760d6aa3f3866f6eb33eb6738a8cce",
+        "observed_at": null,
+        "original_registered_at": "2026-10-18T06:23:28.975169+00:00",
+        "reviewed_at": "2026-10-18T06:27:56.576881+00:00",
+        "reviewed_revision": "0e2116c95656b99641fb8ba3cf2246f4d4cb5983",
+        "reason": "reviewed applicability; no new execution"
+      },
+      "annotation_links": []
+    },
+    {
+      "id": "impact:B-1:e6e32d4c2286",
+      "mode": "manual",
+      "status": "not_run",
+      "expected": "Convert input",
+      "annotation_links": []
+    },
+    {
+      "id": "impact:B-2:3c91ed1e9cb5",
+      "mode": "manual",
+      "status": "not_run",
+      "expected": "Keep shared state",
+      "annotation_links": []
+    },
+    {
+      "id": "gate:unit:ae58977f2f47",
+      "mode": "automatic",
+      "status": "not_run",
+      "expected": "Command succeeds: unit",
+      "annotation_links": []
+    }
+  ]
+}

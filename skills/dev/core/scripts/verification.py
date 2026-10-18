@@ -93,10 +93,15 @@ def candidates(req, config, impact):
 
 def load_plan(folder):
     doc = read(folder / 'verification.json')
-    if not isinstance(doc, dict) or doc.get('schema_version') not in (1, 2, 3, 4) or doc.get('feature_id') != folder.name or not isinstance(doc.get('items'), list) or not isinstance(doc.get('retired'), list):
+    if not isinstance(doc, dict) or doc.get('schema_version') not in (1, 2, 3, 4, 5) or doc.get('feature_id') != folder.name or not isinstance(doc.get('items'), list) or not isinstance(doc.get('retired'), list):
         raise ValueError('invalid verification identity/schema')
     if doc.get('schema_version') == 4 and doc.get('execution_contract') != 2:
         raise ValueError('schema 4 requires explicit check attempts')
+    if doc.get('schema_version') == 5:
+        from manual_scope import validate_document
+        validate_document(doc)
+    elif 'manual_scope_contract' in doc or 'manual_scope_reviews' in doc or any('manual_scope_ref' in r for r in doc['items'] + doc['retired']):
+        raise ValueError('manual scope fields require schema 5 readers')
     if 'annotation_reviews' in doc:
         from evidence_annotations import validated_reviews
         validated_reviews(doc)
@@ -129,7 +134,7 @@ def load_plan(folder):
                 raise ValueError('invalid manual evidence digest')
             if 'check_attempt' in result:
                 ref = result['check_attempt']
-                if (doc.get('schema_version') != 4 or item['mode'] != 'automatic'
+                if (doc.get('schema_version') not in (4, 5) or doc.get('execution_contract') != 2 or item['mode'] != 'automatic'
                         or not isinstance(ref, dict) or set(ref) != {'id', 'digest'}
                         or not re.fullmatch('[0-9a-f]{32}', str(ref.get('id')))
                         or not re.fullmatch('[0-9a-f]{64}', str(ref.get('digest')))):
@@ -162,7 +167,7 @@ def load_plan(folder):
     if doc.get('schema_version') == 2 and not doc.get('result_correction_reviews'):
         raise ValueError('schema 2 requires result corrections')
     if 'result_correction_reviews' in doc:
-        if doc.get('schema_version') not in (2, 3, 4):
+        if doc.get('schema_version') not in (2, 3, 4, 5):
             raise ValueError('result corrections require schema 2 readers')
         from result_corrections import validate_events
         validate_events(doc)
@@ -185,7 +190,7 @@ def context(root, folder, doc):
         if row['source'].startswith('gate:') and (row['mode'] != 'automatic' or row['gates'] != expected[row['id']]['gates']):
             raise ValueError('generated gate rows must retain their command mapping')
     head = git(root, 'rev-parse', 'HEAD').decode().strip()
-    contract = [{k: v for k, v in row.items() if k != 'history'} for row in doc['items']]
+    contract = [{k: v for k, v in row.items() if k not in ('history', 'manual_scope_ref')} for row in doc['items']]
     # Ignore requirement workflow status/task progress; retain semantic requirements and decisions.
     decisions_path = folder / 'decisions.json'
     stamp = digest({'requirements': req['requirements'], 'decisions': read(decisions_path),
@@ -196,7 +201,7 @@ def context(root, folder, doc):
 def semantic_stamp(root, folder, row):
     """Meaning and execution contract, excluding mutable project file contents."""
     req, _, impact = sources(root, folder)
-    contract = {k: v for k, v in row.items() if k not in ('history', 'retention')}
+    contract = {k: v for k, v in row.items() if k not in ('history', 'retention', 'manual_scope_ref')}
     impact_contract = {k: v for k, v in impact.items() if k != 'behaviors'}
     impact_contract['behaviors'] = [{k: v for k, v in b.items() if k != 'verification'} for b in impact['behaviors']]
     return digest({'requirements': req['requirements'], 'decisions': read(folder / 'decisions.json'),
@@ -206,7 +211,7 @@ def semantic_stamp(root, folder, row):
 def legacy_semantic_stamp(root, folder, row):
     """Accept existing scoped observations only against their original config."""
     req, config, impact = sources(root, folder)
-    contract = {k: v for k, v in row.items() if k not in ('history', 'retention')}
+    contract = {k: v for k, v in row.items() if k not in ('history', 'retention', 'manual_scope_ref')}
     impact_contract = {k: v for k, v in impact.items() if k != 'behaviors'}
     impact_contract['behaviors'] = [{k: v for k, v in b.items() if k != 'verification'} for b in impact['behaviors']]
     return digest({'requirements': req['requirements'], 'decisions': read(folder / 'decisions.json'),
@@ -216,7 +221,7 @@ def legacy_semantic_stamp(root, folder, row):
 def manual_evidence_stamp(root, folder, row, *, carry_sources=None):
     """Bind a manual observation to its meaning and project scope, not gate prose."""
     req, _, impact = sources(root, folder)
-    contract = {k: v for k, v in row.items() if k not in ('history', 'retention')}
+    contract = {k: v for k, v in row.items() if k not in ('history', 'retention', 'manual_scope_ref')}
     content = {'requirements': req['requirements'], 'decisions': read(folder / 'decisions.json'),
                'impact': impact_snapshot(root, impact)['digest'], 'item': contract}
     if row.get('history') and row['history'][-1].get('retention_kind') in ('reviewed_carry', 'annotation_amend', 'interpretation_adoption'):
@@ -242,7 +247,13 @@ def manual_evidence_stamp(root, folder, row, *, carry_sources=None):
 
 
 def row_evidence_stamp(root, folder, row, check_view=None):
-    if row['mode'] == 'manual': return manual_evidence_stamp(root, folder, row)
+    if row['mode'] == 'manual':
+        if row.get('manual_scope_ref'):
+            from manual_scope import view
+            scoped = check_view.get('_manual_scope') if isinstance(check_view, dict) and '_manual_scope' in check_view else view(root, folder)
+            item = scoped.get('items', {}).get(row['id'], {}) if scoped else {}
+            return 'manual-scope:' + ('current' if item.get('state') == 'current' else 'stale')
+        return manual_evidence_stamp(root, folder, row)
     from check_runs import enabled, view
     if not enabled(root): return None
     outcome = view(root, folder.name) if check_view is None else check_view
@@ -255,7 +266,12 @@ def row_evidence_stamp(root, folder, row, check_view=None):
 
 def check_currency(root, folder):
     from check_runs import enabled, view
-    return view(root, folder.name) if enabled(root) else None
+    outcome = view(root, folder.name) if enabled(root) else None
+    doc = load_plan(folder)
+    if doc.get('manual_scope_contract') == 1:
+        from manual_scope import view as scope_view
+        outcome = dict(outcome or {}, _manual_scope=scope_view(root, folder, doc))
+    return outcome
 
 
 def scope_files(root, folder):
@@ -286,20 +302,22 @@ def sync(root, folder):
     for row in rows:
         if row['id'] in previous:
             row.update({k: previous[row['id']][k] for k in ('mode', 'gates', 'coverage', 'history')})
-            for key in ('dependencies', 'scope_reason'):
+            for key in ('dependencies', 'scope_reason', 'manual_scope_ref'):
                 if key in previous[row['id']]:
                     row[key] = previous[row['id']][key]
     active = {r['id'] for r in rows}
     doc = {'schema_version': old.get('schema_version', 1), 'feature_id': folder.name, 'items': rows,
            'retired': old['retired'] + [r for r in old['items'] if r['id'] not in active]}
     from check_runs import enabled
-    if enabled(root): doc.update(schema_version=4, execution_contract=2)
+    if enabled(root): doc.update(schema_version=max(4, doc['schema_version']), execution_contract=2)
     if 'annotation_reviews' in old:
         doc['annotation_reviews'] = old['annotation_reviews']
     if 'result_correction_reviews' in old:
         doc['result_correction_reviews'] = old['result_correction_reviews']
     if 'adoption_reviews' in old:
         doc['adoption_reviews'] = old['adoption_reviews']
+    for key in ('manual_scope_contract', 'manual_scope_reviews'):
+        if key in old: doc[key] = old[key]
     save(folder / 'verification.json', doc)
     req['feature']['verification_required'] = True
     save(folder / 'spec/requirements.json', req)
@@ -311,6 +329,8 @@ def state(row, stamp, evidence_stamp=None):
     if not row['history']:
         return 'not_run'
     result = row['history'][-1]
+    if row.get('manual_scope_ref'):
+        return 'retained' if evidence_stamp == 'manual-scope:current' and result['status'] in ('passed', 'retained') else 'stale'
     if isinstance(evidence_stamp, str) and evidence_stamp.startswith('check-v2:') and 'check_attempt' not in result:
         return 'stale'
     if 'evidence_digest' in result and evidence_stamp is not None:
@@ -386,7 +406,7 @@ def check_mapping_snapshot(root, folder, item_ids):
         raise ValueError('explicit distinct automatic claim targets required')
     _, head = context(root, folder, doc)
     body = {'feature_id': folder.name, 'attempt_id': report['attempt_id'], 'attempt_digest': report['attempt_digest'],
-            'target_revision': head, 'items': [{k: v for k, v in row.items() if k != 'history'} for row in selected],
+            'target_revision': head, 'items': [{k: v for k, v in row.items() if k not in ('history', 'manual_scope_ref')} for row in selected],
             'claim_stamps': {r['id']: row_evidence_stamp(root, folder, r, {'state':'current','attempt_id':report['attempt_id'],'digest':report['attempt_digest']}) for r in selected}, 'plan_digest': digest(doc)}
     body['input_digest'] = digest(body)
     return body
@@ -450,7 +470,7 @@ def adopt_checks(root, folder, *, review=None, locked=False, allow_claims=True):
         if binding and check_mapping_snapshot(root, folder, review['item_ids']) != binding:
             raise ValueError('mapping changed before adoption')
         if changed:
-            doc.update(schema_version=4, execution_contract=2); save(folder / 'verification.json', doc); render(folder)
+            doc.update(schema_version=max(4, doc['schema_version']), execution_contract=2); save(folder / 'verification.json', doc); render(folder)
         print('CHECK_RESULTS_ADOPTED: ' + str(len(changed)) + '; no commands executed')
         return doc
     return action() if locked else plan_mutation(lambda root, folder: action())(root, folder)
@@ -482,6 +502,7 @@ def record(root, folder, item_id, status, stamp, tested, actual, evidence):
     entry = result(status, stamp, tested, actual, evidence, 'manual',
                    semantic=semantic_stamp(root, folder, row) if scoped else None,
                    files=scope_files(root, folder) if scoped else None)
+    row.pop('manual_scope_ref', None)
     row['history'].append(entry)
     entry['evidence_digest'] = manual_evidence_stamp(root, folder, row)
     save(folder / 'verification.json', doc)
@@ -506,6 +527,8 @@ def retain(root, folder, item_id, stamp, changed, reason, evidence):
     behavior = next((b for b in impact['behaviors'] if b['id'] == row['source'][7:]), None)
     if behavior is None or behavior['kind'] != 'preserve':
         raise ValueError('only preserved behavior may retain prior evidence')
+    if row.get('manual_scope_ref'):
+        raise ValueError('manual scope references require batch review, not strict retain')
     previous = row['history'][-1]
     if previous['status'] not in ('passed', 'retained') or state(row, current, manual_evidence_stamp(root, folder, row)) != 'stale':
         raise ValueError('only a stale prior pass can be retained; failures and waivers need fresh disposition')
@@ -619,10 +642,12 @@ def summary(root, folder):
         if row.get('dependencies'):
             item['dependencies'] = row['dependencies']
             item['scope_reason'] = row['scope_reason']
-        if item['status'] == 'retained':
+        if item['status'] == 'retained' and not row.get('manual_scope_ref'):
             last = row['history'][-1]
             item.update(tested_revision=last['tested_revision'], reviewed_revision=last['reviewed_revision'],
                         changed_paths=last['changed_paths'], reason=last['reason'])
+        if row.get('manual_scope_ref'):
+            item['manual_scope'] = execution_view.get('_manual_scope', {}).get('items', {}).get(row['id'], {})
         item['annotation_links'] = annotation_links(doc, row, item['status'])
         if doc.get('adoption_reviews'):
             from evidence_adoption import links as adoption_links
@@ -650,6 +675,10 @@ def render(folder):
         effective = state(row, stamp, row_evidence_stamp(root, folder, row, execution_view)) if stamp else 'stale'
         lines += ['## ' + row['id'], '', 'Mode: ' + row['mode'], 'Expected: ' + str(row['expected']),
                   'Status: ' + (effective if stamp else 'stale — synchronize sources'), '']
+        if row.get('manual_scope_ref'):
+            scoped = (execution_view or {}).get('_manual_scope', {})
+            details = scoped.get('items', {}).get(row['id'], {'state': 'unavailable', 'reason': scoped.get('reason', 'scope review unavailable')})
+            lines += ['Manual applicability (original observation unchanged; no new execution):', '```json', json.dumps(details, ensure_ascii=False, indent=2), '```', '']
         if row.get('dependencies'):
             lines += ['Dependencies: ' + ', '.join(row['dependencies']), 'Scope rationale: ' + row['scope_reason'], '']
         if row['history']:

@@ -1,0 +1,244 @@
+{
+  "schema_version": 1,
+  "feature_id": "FEAT-001",
+  "reviewed_revision": "0e2116c95656b99641fb8ba3cf2246f4d4cb5983",
+  "requests": [
+    {
+      "item_id": "requirement:R-1:1:5418d1630003",
+      "contract_revision": "e35b953d95960439f75fd4fb503e3ee28b9372d3"
+    },
+    {
+      "item_id": "requirement:R-2:1:052d62f8890f",
+      "contract_revision": "e35b953d95960439f75fd4fb503e3ee28b9372d3"
+    }
+  ],
+  "current": {
+    "records": {
+      "spec/requirements.json": "a29608c1d58b730e7b5daa3c8b799802d3ae5b93ec37dac1e92dc90e8d3d4230",
+      "decisions.json": "c8ee245e9342aa505d88f63385d686529acc59c03d94735014bc83c72d42d1f4",
+      "impact.json": "4b333a246cad55f0d3d26d53e39a6bbb7c344d17ecd2892f9c5ac180040ad364",
+      "spec/prd-intake.json": "3aca4067a9427cb5a9225f32f1e9b17215a8f750eecd612c90b066e0282ac95b",
+      "traceability.json": "ea851c5023d5b7e8e7baa70fa5e379861899c0e86da0527774f4e4d78c23b645",
+      "tasks.json": "e8805b9aae877466b4e4e6e39b4f5bf9f2b4e372437937f021b5ebcc90679757"
+    },
+    "project": {
+      "catalog.py": {
+        "mode": "100644",
+        "kind": "blob",
+        "blob": "0092794258d5c43407d658de929e6212368290b9"
+      },
+      "convert.py": {
+        "mode": "100644",
+        "kind": "blob",
+        "blob": "90988bd5588b8cae49572ad1a0d4854a6de240e3"
+      },
+      "other.py": {
+        "mode": "100644",
+        "kind": "blob",
+        "blob": "e4eb6a370770c193ae1a6c060dcaa04736b677a0"
+      },
+      "state.py": {
+        "mode": "100644",
+        "kind": "blob",
+        "blob": "6287cf8429e5ea0e34a95d69292f3556dbcb4066"
+      }
+    },
+    "actual_inputs": {
+      "schema_version": 1,
+      "scope": "git-business-worktree-and-declared-inputs",
+      "state": "identified",
+      "project": "/private/tmp/manual-scope-host-upxxx8ic/cases/birch",
+      "committed": {
+        "catalog.py": {
+          "mode": "100644",
+          "oid": "0092794258d5c43407d658de929e6212368290b9"
+        },
+        "convert.py": {
+          "mode": "100644",
+          "oid": "90988bd5588b8cae49572ad1a0d4854a6de240e3"
+        },
+        "other.py": {
+          "mode": "100644",
+          "oid": "e4eb6a370770c193ae1a6c060dcaa04736b677a0"
+        },
+        "state.py": {
+          "mode": "100644",
+          "oid": "6287cf8429e5ea0e34a95d69292f3556dbcb4066"
+        }
+      },
+      "index": {
+        "catalog.py": {
+          "mode": "100644",
+          "oid": "0092794258d5c43407d658de929e6212368290b9"
+        },
+        "convert.py": {
+          "mode": "100644",
+          "oid": "90988bd5588b8cae49572ad1a0d4854a6de240e3"
+        },
+        "other.py": {
+          "mode": "100644",
+          "oid": "e4eb6a370770c193ae1a6c060dcaa04736b677a0"
+        },
+        "state.py": {
+          "mode": "100644",
+          "oid": "6287cf8429e5ea0e34a95d69292f3556dbcb4066"
+        }
+      },
+      "files": {
+        "catalog.py": {
+          "state": "file",
+          "sha256": "76170e10f3d3926f60d750b8c1f59ffa7d1ba994876331ca472ed77387fb9b06",
+          "executable": false
+        },
+        "convert.py": {
+          "state": "file",
+          "sha256": "f5d49ed6dec59ce552b6b7737c05592d53c36f8f376eb7095c16e5f8678000a3",
+          "executable": false
+        },
+        "other.py": {
+          "state": "file",
+          "sha256": "53882d39f9b76970e96c2230c809fb54e501dc5fab5582c7df57644154b73fdf",
+          "executable": false
+        },
+        "state.py": {
+          "state": "file",
+          "sha256": "3ec90350b6ca90d9ae79b3309dbc469f66596e3fe6f84cf7ee038f10a3d5d073",
+          "executable": false
+        }
+      },
+      "declared": {
+        "AGENTS.md": {
+          "state": "missing"
+        },
+        "CLAUDE.md": {
+          "state": "missing"
+        }
+      }
+    },
+    "source_inputs": {
+      "sources": [
+        {
+          "path": "sources/prd-original.txt",
+          "indexed": true,
+          "state": "readable",
+          "bytes": 77,
+          "sha256": "b4368c1d80b7ab87b3816238969d6f0386c0118c3e8d13d9efe2724c1ce2965a"
+        }
+      ],
+      "evidence_files": [
+        {
+          "path": "evidence/origin.json",
+          "sha256": "236b4503aed823f586709c7e3a96b5caffc69fb09a7de631e0d915386bc8f388"
+        }
+      ],
+      "source_status_claims": {
+        "prd": "present",
+        "api": "not_applicable",
+        "figma": "not_applicable"
+      }
+    },
+    "scope_kind": "complete-authority-and-project-change-review"
+  },
+  "before_projects": {
+    "5bd8195027408348901e7941af1280af12b18028": {
+      "catalog.py": {
+        "mode": "100644",
+        "kind": "blob",
+        "blob": "0092794258d5c43407d658de929e6212368290b9"
+      },
+      "convert.py": {
+        "mode": "100644",
+        "kind": "blob",
+        "blob": "90988bd5588b8cae49572ad1a0d4854a6de240e3"
+      },
+      "other.py": {
+        "mode": "100644",
+        "kind": "blob",
+        "blob": "17fd3e2a5cc84d4dc3f5608e60b2724e15af8d9b"
+      },
+      "state.py": {
+        "mode": "100644",
+        "kind": "blob",
+        "blob": "6287cf8429e5ea0e34a95d69292f3556dbcb4066"
+      }
+    }
+  },
+  "before_records": {
+    "e35b953d95960439f75fd4fb503e3ee28b9372d3": {
+      "spec/requirements.json": "a29608c1d58b730e7b5daa3c8b799802d3ae5b93ec37dac1e92dc90e8d3d4230",
+      "decisions.json": "c8ee245e9342aa505d88f63385d686529acc59c03d94735014bc83c72d42d1f4",
+      "impact.json": "4b333a246cad55f0d3d26d53e39a6bbb7c344d17ecd2892f9c5ac180040ad364",
+      "spec/prd-intake.json": "3aca4067a9427cb5a9225f32f1e9b17215a8f750eecd612c90b066e0282ac95b",
+      "traceability.json": "ea851c5023d5b7e8e7baa70fa5e379861899c0e86da0527774f4e4d78c23b645",
+      "tasks.json": "e8805b9aae877466b4e4e6e39b4f5bf9f2b4e372437937f021b5ebcc90679757"
+    }
+  },
+  "targets": [
+    {
+      "item_id": "requirement:R-1:1:5418d1630003",
+      "contract_revision": "e35b953d95960439f75fd4fb503e3ee28b9372d3",
+      "original": {
+        "item_id": "requirement:R-1:1:5418d1630003",
+        "history_index": 0,
+        "result_hash": "856b4f367bd74f4611e15b3b145c3fe0ae35d7716dfa1d5abbc72691d62be4b4",
+        "tested_revision": "5bd8195027408348901e7941af1280af12b18028"
+      },
+      "original_registered_at": "2026-10-18T06:23:28.391493+00:00",
+      "observed_at": null,
+      "latest_hash": "856b4f367bd74f4611e15b3b145c3fe0ae35d7716dfa1d5abbc72691d62be4b4",
+      "row_contract": {
+        "id": "requirement:R-1:1:5418d1630003",
+        "source": "requirement:R-1:1",
+        "expected": "abc becomes ABC",
+        "mode": "manual",
+        "gates": [],
+        "coverage": ""
+      },
+      "support_events": [],
+      "changes": [
+        "project:5bd8195027408348901e7941af1280af12b18028:other.py"
+      ],
+      "contract_record": {
+        "revision": "e35b953d95960439f75fd4fb503e3ee28b9372d3",
+        "tested_revision": "5bd8195027408348901e7941af1280af12b18028",
+        "source_result_hash": "856b4f367bd74f4611e15b3b145c3fe0ae35d7716dfa1d5abbc72691d62be4b4",
+        "records_digest": "08a9b07ac6932b53b638cbb18858c0182463e76ad44f269ea4a96e26170b7ef1",
+        "row_contract_digest": "87fb5540663edcdec70626e26a425f9709f19432404b4da6bed70dd09cebf971"
+      }
+    },
+    {
+      "item_id": "requirement:R-2:1:052d62f8890f",
+      "contract_revision": "e35b953d95960439f75fd4fb503e3ee28b9372d3",
+      "original": {
+        "item_id": "requirement:R-2:1:052d62f8890f",
+        "history_index": 0,
+        "result_hash": "3ff46b285cc6903ea076bd1c1c1e4c6da19a758dad93f0822f6e6e636b967689",
+        "tested_revision": "5bd8195027408348901e7941af1280af12b18028"
+      },
+      "original_registered_at": "2026-10-18T06:23:28.975169+00:00",
+      "observed_at": null,
+      "latest_hash": "3ff46b285cc6903ea076bd1c1c1e4c6da19a758dad93f0822f6e6e636b967689",
+      "row_contract": {
+        "id": "requirement:R-2:1:052d62f8890f",
+        "source": "requirement:R-2:1",
+        "expected": "default currency is GBP",
+        "mode": "manual",
+        "gates": [],
+        "coverage": ""
+      },
+      "support_events": [],
+      "changes": [
+        "project:5bd8195027408348901e7941af1280af12b18028:other.py"
+      ],
+      "contract_record": {
+        "revision": "e35b953d95960439f75fd4fb503e3ee28b9372d3",
+        "tested_revision": "5bd8195027408348901e7941af1280af12b18028",
+        "source_result_hash": "3ff46b285cc6903ea076bd1c1c1e4c6da19a758dad93f0822f6e6e636b967689",
+        "records_digest": "08a9b07ac6932b53b638cbb18858c0182463e76ad44f269ea4a96e26170b7ef1",
+        "row_contract_digest": "225b4e7cf2fa69bbf027c1758ffecb26bb5275b2e371c5a9e45a8c1a169a7320"
+      }
+    }
+  ],
+  "plan_digest": "d85cfcb3ca7f577b96814d5def697e840921aa81c43245eac63226b4aada31e7",
+  "input_digest": "75c73739f7f6fd2978fd36ef83f29718b8546884006a0438565b10e4041def97"
+}

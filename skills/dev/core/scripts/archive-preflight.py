@@ -157,6 +157,15 @@ def build_report(root, folder, req, revision, diagnostics):
         lines += ['', f"Superseded audit entries: {len(regression.get('history', [])) if isinstance(regression.get('history', []), list) else 'invalid'}."]
     else:
         lines += ['Historical regression review not adopted for this feature.']
+    if (folder / 'verification.json').exists():
+        from verification import load_plan
+        plan = load_plan(folder)
+        if plan.get('manual_scope_contract') == 1:
+            from manual_scope import view
+            scoped = view(root, folder, plan)
+            lines += ['', '## Reviewed manual applicability', '',
+                      'Original observations retained by reference; no new execution.',
+                      '```json', json.dumps(scoped, ensure_ascii=False, indent=2), '```', '']
     lines += ['', '## Archive preflight', '',
               f"- Structural check: {diagnostics['validation']['status']} (rc={diagnostics['validation']['returncode']})",
               f"- Delivery audit: {diagnostics['audit']['status']} (rc={diagnostics['audit']['returncode']})",

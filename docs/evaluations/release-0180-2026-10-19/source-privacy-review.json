@@ -1,0 +1,15 @@
+{
+  "scope": "155 explicit modified/new source files; split into <=64 per scan",
+  "initial_limit": "one 155-target call refused invalid_targets, then all targets scanned in three supported batches",
+  "confirmed_sensitive_values": 0,
+  "candidates": [
+    {
+      "path": "tests/test_manual_scope.py",
+      "line": 48,
+      "kind": "identifier_candidate",
+      "decision": "synthetic fixture Git identity with a fixed invalid example domain; not a real account or credential"
+    }
+  ],
+  "rules_changed": false,
+  "source_files_redacted": false
+}

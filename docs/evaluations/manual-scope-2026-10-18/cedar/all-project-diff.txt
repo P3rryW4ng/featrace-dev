@@ -1,0 +1,8 @@
+diff --git a/state.py b/state.py
+index 6287cf8..aa94499 100644
+--- a/state.py
++++ b/state.py
+@@ -1,2 +1,2 @@
+ def transform(value):
+-    return value.upper()
++    return value.lower()

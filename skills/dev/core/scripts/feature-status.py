@@ -87,6 +87,9 @@ if (folder / 'verification.json').exists():
             key = state(row, stamp, row_evidence_stamp(root, folder, row, execution_view))
             counts[key] = counts.get(key, 0) + 1
         print('VERIFICATION: ' + ', '.join(f'{k}={v}' for k, v in sorted(counts.items())))
+        if isinstance(execution_view, dict) and '_manual_scope' in execution_view:
+            scope = execution_view['_manual_scope']
+            print('MANUAL_APPLICABILITY: ' + json.dumps(scope, ensure_ascii=False))
     except (OSError, ValueError, TypeError, KeyError) as exc:
         print('VERIFICATION: needs synchronization/review: ' + str(exc))
 

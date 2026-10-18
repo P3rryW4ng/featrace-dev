@@ -1,0 +1,19 @@
+{
+  "observed_at": "2026-10-18T06:23:31.348180+00:00",
+  "tested_revision": "d10545de5b6ed49d28f0a666201111b96e3314ce",
+  "worktree_clean": true,
+  "command": [
+    "/Library/Developer/CommandLineTools/usr/bin/python3",
+    "-B",
+    "-c",
+    "import json;from convert import convert;from catalog import CURRENCY;assert convert(\"abc\")==\"ABC\";assert CURRENCY==\"GBP\";print(json.dumps({\"conversion\":convert(\"abc\"),\"currency\":CURRENCY}))"
+  ],
+  "returncode": 0,
+  "output": "{\"conversion\": \"ABC\", \"currency\": \"GBP\"}\n",
+  "source_hashes": {
+    "convert.py": "f5d49ed6dec59ce552b6b7737c05592d53c36f8f376eb7095c16e5f8678000a3",
+    "state.py": "3ec90350b6ca90d9ae79b3309dbc469f66596e3fe6f84cf7ee038f10a3d5d073",
+    "catalog.py": "76170e10f3d3926f60d750b8c1f59ffa7d1ba994876331ca472ed77387fb9b06"
+  },
+  "environment": "Local Python synthetic fixture; no device or server"
+}

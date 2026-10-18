@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.18.0 — 2026-10-19
+
+- Explicit feature-local schema 5 separates immutable original manual observations from reviewed current applicability. Share one frozen batch and change inventory, require independent claim-specific dependency/environment/counterexample findings, and atomically save one supported subset without re-signing history.
+- Preserve negative findings, original code/registration/available observation identities, idempotency, workspace/plan locks and concurrent-input refusal. All currentness readers and full final review bind the same events; old readers reject the new schema. Legacy/manual, automatic attempts and device receipts remain distinct.
+- Scoped release: whole source/evidence identities remain conservative, unknown dependencies require evidence, and complete final review remains mandatory. Explicit feature preparation is separate from installation; schema 5 cannot be read by 0.17.0. POSIX only, no automatic business migration or measured real-project savings. Dynamic progress instructions remain excluded.
+
 ## 0.17.0 — 2026-10-18
 
 - Explicitly opt in to feature-local selections, immutable start/terminal attempts and a latest pointer; preserve failed/interrupted history and refuse legacy fallback, overlapping workspace execution, unresolved child processes and unknown inputs.

@@ -1,0 +1,1 @@
+MANUAL_SCOPE_APPLIED: original facts unchanged; no new execution

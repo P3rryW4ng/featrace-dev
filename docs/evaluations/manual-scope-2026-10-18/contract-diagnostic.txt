@@ -1,0 +1,26 @@
+test_batch_keeps_original_history_and_exact_repeat_and_recapture_idempotent (test_manual_scope.ManualScopeTests) ... ERROR
+
+======================================================================
+ERROR: test_batch_keeps_original_history_and_exact_repeat_and_recapture_idempotent (test_manual_scope.ManualScopeTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/mac/Entrepôt/featrace-dev/tests/test_manual_scope.py", line 74, in test_batch_keeps_original_history_and_exact_repeat_and_recapture_idempotent
+    snap=self.capture();review=self.review(snap);self.apply(snap,review)
+  File "/Users/mac/Entrepôt/featrace-dev/tests/test_manual_scope.py", line 67, in apply
+    snap = snap or self.capture(); return m.apply(self.root,self.folder,snap,review or self.review(snap))
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/manual_scope.py", line 376, in apply
+    return action(root, folder)
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/verification.py", line 54, in wrapped
+    return function(root, folder, *args, **kwargs)
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/manual_scope.py", line 337, in action
+    selected = validate_review(snapshot, review)
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/manual_scope.py", line 249, in validate_review
+    validate_contract_record(target['contract_record'], f, target['original']['result_hash'])
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/evidence_carry.py", line 313, in validate_contract_record
+    raise ValueError('review the recorded contract chronology and original observation explicitly')
+ValueError: review the recorded contract chronology and original observation explicitly
+
+----------------------------------------------------------------------
+Ran 1 test in 3.123s
+
+FAILED (errors=1)

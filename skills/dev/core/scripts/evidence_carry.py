@@ -79,7 +79,7 @@ def source_identity(root, folder):
     spec = importlib.util.spec_from_file_location('carry_verify_inputs', Path(__file__).with_name('verify-inputs.py'))
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
-    inventory = module.collect(root.resolve(), folder.name)
+    inventory = module.collect(root.resolve(), folder.name, include_acceptance=False)
     fatal = [issue for issue in inventory['issues_to_review']
              if issue in ('feature_source_index_missing_or_invalid', 'prd_intake_missing',
                           'prd_intake_source_index_invalid', 'source_indices_disagree',
@@ -132,6 +132,8 @@ def input_snapshot(root, folder, item_id, contract_revision=None):
     row = next((r for r in doc['items'] if r['id'] == item_id), None)
     if row is None or row['mode'] != 'manual' or parent(req, impact, row) is None or not row['history']:
         raise ValueError('select an existing manual requirement/impact row')
+    if row.get('manual_scope_ref'):
+        raise ValueError('use batch manual scope for applicability references; legacy carry cannot replace them')
     previous = row['history'][-1]
     if previous['status'] not in ('passed', 'retained'):
         raise ValueError('only the latest passed/retained result may be reviewed; do not revive withdrawn evidence')
@@ -420,19 +422,32 @@ def minimize_copies(root, folder, item_ids):
 
 def main():
     p = argparse.ArgumentParser(description=__doc__)
-    p.add_argument('action', choices=['capture', 'apply', 'minimize-copies'])
+    p.add_argument('action', choices=['capture', 'apply', 'minimize-copies', 'prepare-batch', 'capture-batch', 'apply-batch'])
     p.add_argument('root', type=Path)
     p.add_argument('feature_id')
     p.add_argument('--item', action='append')
     p.add_argument('--snapshot', type=Path)
     p.add_argument('--contract-revision', help='Explicit full commit storing the original contract/result; capture only')
     p.add_argument('--review', type=Path)
+    p.add_argument('--requests', type=Path)
     args = p.parse_args()
     if not re_feature(args.feature_id):
         p.error('invalid feature ID')
     root = args.root.resolve()
     folder = root / '.agent-workflow/features' / args.feature_id
     try:
+        if args.action in ('prepare-batch', 'capture-batch', 'apply-batch'):
+            import manual_scope
+            if args.action == 'prepare-batch':
+                manual_scope.prepare(root, folder); print('MANUAL_SCOPE_PREPARED: no observation performed')
+            elif args.action == 'capture-batch':
+                if not args.requests: p.error('capture-batch requires --requests')
+                print(json.dumps(manual_scope.capture(root, folder, v.read(args.requests)), ensure_ascii=False, indent=2))
+            else:
+                if not args.snapshot or not args.review: p.error('apply-batch requires --snapshot and --review')
+                manual_scope.apply(root, folder, v.read(args.snapshot), v.read(args.review))
+                print('MANUAL_SCOPE_APPLIED: original facts unchanged; no new execution')
+            return 0
         if args.action != 'capture' and args.contract_revision:
             p.error('--contract-revision is capture-only; apply uses the frozen binding')
         if args.action == 'capture':
