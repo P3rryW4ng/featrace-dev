@@ -1,0 +1,18 @@
+{
+  "date": "2026-10-19",
+  "source_commit": "b3724b60341b00c318ca4e82370c2660375b2e7e",
+  "runtime_release_commit": "ed33c6d311ecb65f635b7f0f3c10170827a4f13c",
+  "release_branch": "release/0.18.0",
+  "release_worktree": "/private/tmp/featrace-release-0180-20261019",
+  "version": "0.18.0",
+  "runtime_files": 112,
+  "all_168_tested_inputs_match": true,
+  "runtime_matches_scoped_manifest": true,
+  "dynamic_progress_excluded": true,
+  "source_stage_privacy": "one reviewed synthetic fixture identity, zero confirmed actual sensitive values",
+  "release_staged_privacy": "same reviewed fixture identity, no additional candidate",
+  "original_archived_whitespace_preserved": [
+    "docs/evaluations/manual-scope-scoped-2026-10-18/birch/delivery-report-draft.md",
+    "docs/evaluations/manual-scope-scoped-2026-10-18/cedar/delivery-report-draft.md"
+  ]
+}
