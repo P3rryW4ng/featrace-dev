@@ -1,0 +1,9 @@
+{
+  "actual-install.json": "279a11e793ba139d955bcdc6d75653d4440e996c832feb2cfe376af4917adc0e",
+  "before-install.json": "ac1d36826a4f98cb977cbdf2aadeb8a6614aa823d86eb6fa99fd957f4382b7f0",
+  "install-output.txt": "7a1406c4f3555434dc4ca38f37f05f3e9c46bd1e623c718489a128ec484ef8d4",
+  "privacy-disposition.json": "a327c80dce2335e0578c7b24739c40d701675f1ae0d205e6caad14b732ed9f56",
+  "release-tree.json": "0ea33dcfcf9df974387066574a84056c45d6c0854657e08366e240d432622a08",
+  "source-staged-files.json": "d8d567dcc31a89ce356e0aab6cd900b9def96afce8c98c326c4c759c1494f45f",
+  "source-staged-privacy.json": "8f779023d429a47e9b31794a5ad053b992f29c845753c3fd5d57124c4f510d14"
+}
