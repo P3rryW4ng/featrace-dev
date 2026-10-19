@@ -1,0 +1,78 @@
+{
+  "synthetic_only": true,
+  "version": "0.18.2",
+  "runtime_files": 113,
+  "baseline": "196039f9c2bbf9d357e8a3964d7304923d3adf27",
+  "runtime_changes": [
+    "core/scripts/manual_scope.py",
+    "core/scripts/verification.py",
+    "core/scripts/feature-status.py",
+    "core/references/manual-scope.md",
+    "core/references/check-execution.md",
+    "core/references/orchestration.md"
+  ],
+  "preserved_entrypoint": "SKILL.md",
+  "preserved_orchestration_body": true,
+  "python_matches_tested_source": true,
+  "isolated_upgrade_backup_restore": true,
+  "installed_zero_adoption_and_status_gap": true,
+  "commands": [
+    {
+      "entry": "install.py",
+      "action": "--agent",
+      "returncode": 0
+    },
+    {
+      "entry": "install.py",
+      "action": "--agent",
+      "returncode": 0
+    },
+    {
+      "entry": "project.py",
+      "action": "--help",
+      "returncode": 0
+    },
+    {
+      "entry": "verification.py",
+      "action": "--help",
+      "returncode": 0
+    },
+    {
+      "entry": "evidence_carry.py",
+      "action": "--help",
+      "returncode": 0
+    },
+    {
+      "entry": "regression_continuity.py",
+      "action": "--help",
+      "returncode": 0
+    },
+    {
+      "entry": "evidence_carry.py",
+      "action": "capture-batch",
+      "returncode": 0
+    },
+    {
+      "entry": "evidence_carry.py",
+      "action": "apply-batch",
+      "returncode": 0
+    },
+    {
+      "entry": "verification.py",
+      "action": "status",
+      "returncode": 2
+    },
+    {
+      "entry": "install.py",
+      "action": "--agent",
+      "returncode": 0
+    },
+    {
+      "entry": "install.py",
+      "action": "--agent",
+      "returncode": 0
+    }
+  ],
+  "package_path": "/var/folders/d_/q6w_z5qx1vl939khdfl92b540000gn/T/ft-0182-scoped-h99ry6nw/candidate",
+  "daily_install_changed": false
+}

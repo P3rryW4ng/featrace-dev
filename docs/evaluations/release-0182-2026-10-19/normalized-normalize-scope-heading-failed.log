@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "/private/tmp/ft-8024-review/package_probe.py", line 15, in <module>
+    name='core/references/orchestration.md';heading='### Acceptance continuation (source candidate)';section=heading+(r/'skills/dev'/name).read_text().split(heading,1)[1];p=package/'skills/dev'/name;p.write_text(p.read_text()+'\n\n'+section);changed.append(name)
+IndexError: list index out of range
