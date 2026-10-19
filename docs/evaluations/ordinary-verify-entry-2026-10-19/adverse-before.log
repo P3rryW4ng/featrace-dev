@@ -1,0 +1,14 @@
+test_unknown_shared_consumer_or_environment_cannot_be_supported (test_acceptance_continuation.AcceptanceContinuationTests) ... FAIL
+
+======================================================================
+FAIL: test_unknown_shared_consumer_or_environment_cannot_be_supported (test_acceptance_continuation.AcceptanceContinuationTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/mac/Entrepôt/featrace-dev/tests/test_acceptance_continuation.py", line 105, in test_unknown_shared_consumer_or_environment_cannot_be_supported
+    self.assertNotIn(x.ids[0],guide['review_candidates']);self.assertIn(x.ids[0],guide['prior_negative_assessments'])
+AssertionError: 'requirement:R-1:1:5418d1630003' unexpectedly found in ['requirement:R-1:1:5418d1630003']
+
+----------------------------------------------------------------------
+Ran 1 test in 4.870s
+
+FAILED (failures=1)

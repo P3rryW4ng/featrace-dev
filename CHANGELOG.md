@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.18.3 — 2026-10-19
+
+- Surface the existing execution/acceptance continuation diagnostic at ordinary Verify input collection; separate manual review candidates, waiver-authority checks, new/adverse claims and saved negative assessments. No command executes and no project format is prepared.
+- Decide reuse before scheduling checks, remove an unconditional run instruction, and hand off the actual legacy report or contract-2 attempt. Preserve the minimal source inventory byte-equivalent to 0.18.2 output so guidance does not invalidate original source identities.
+- Reuse existing batch applicability rather than inventing dependency-based automatic passes. Synthetic 37-row parent revision retains 22 reviewed facts in one save, leaves 6 affected and 9 waivers for separate assessment; full final review remains mandatory with no fixed Agent count.
+- Scoped 113-file release preserves the formal entrypoint and excludes main progress instructions. No new persistent schema, automatic dependency inference, business migration or real-project efficiency claim.
+
 ## 0.18.2 — 2026-10-19
 
 - Persist complete manual-scope reviews with an explicit empty adoption subset; preserve negative gaps, latest assessment references, original facts and idempotence. Older schema-5 readers reject these new empty-subset events: update participating readers, never delete negative history to downgrade.

@@ -133,13 +133,28 @@ def collect(root, feature_id, *, include_acceptance=True):
         issues.append('quality_report_missing_before_run')
 
     applicability = None
+    continuation = None
     if include_acceptance and (folder / 'verification.json').exists():
         from verification import load_plan
         plan = load_plan(folder)
         if plan.get('manual_scope_contract') == 1:
             from manual_scope import view
             applicability = view(root, folder, plan)
-    return {**({'manual_scope': applicability} if applicability is not None else {}), 'feature_id': feature_id, 'git_head': head, 'worktree_changed_paths': dirty,
+        from verification import context, state, row_evidence_stamp, continuation_diagnostic
+        execution_view = checked if isolated else None
+        if applicability is not None:
+            execution_view = dict(execution_view or {}, _manual_scope=applicability)
+        try:
+            stamp, _ = context(root, folder, plan)
+            items = [{'id': row['id'], 'mode': row['mode'],
+                      'status': state(row, stamp, row_evidence_stamp(root, folder, row, execution_view))}
+                     for row in plan['items']]
+            continuation = continuation_diagnostic(root, folder, items, execution_view, plan=plan)
+        except (OSError, ValueError, TypeError, KeyError) as exc:
+            continuation = {'state': 'unavailable', 'reason': str(exc),
+                            'next_action': 'Resolve the reported plan/scope/configuration blocker within authorization; do not execute or borrow evidence to bypass it.'}
+            issues.append('acceptance_continuation_unavailable')
+    return {**({'continuation': continuation} if continuation is not None else {}),**({'manual_scope': applicability} if applicability is not None else {}), 'feature_id': feature_id, 'git_head': head, 'worktree_changed_paths': dirty,
             'source_status_claims': feature.get('source_status', {}),
             'sources': sources, 'quality_report': quality,
             'issues_to_review': sorted(set(issues)),

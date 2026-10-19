@@ -1,0 +1,25 @@
+test_ordinary_inventory_routes_matching_execution_without_running_it (test_acceptance_continuation.AcceptanceContinuationTests) ... ERROR
+test_ordinary_inventory_classifies_legacy_candidates_waivers_and_new_claims (test_acceptance_continuation.AcceptanceContinuationTests) ... ERROR
+
+======================================================================
+ERROR: test_ordinary_inventory_routes_matching_execution_without_running_it (test_acceptance_continuation.AcceptanceContinuationTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/mac/Entrepôt/featrace-dev/tests/test_acceptance_continuation.py", line 110, in test_ordinary_inventory_routes_matching_execution_without_running_it
+    inventory=self.inventory(x.root,x.folder);continuation=inventory['continuation']
+KeyError: 'continuation'
+
+======================================================================
+ERROR: test_ordinary_inventory_classifies_legacy_candidates_waivers_and_new_claims (test_acceptance_continuation.AcceptanceContinuationTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/mac/Entrepôt/featrace-dev/tests/test_acceptance_continuation.py", line 120, in test_ordinary_inventory_classifies_legacy_candidates_waivers_and_new_claims
+    before=(x.folder/'verification.json').read_bytes();inventory=self.inventory(x.root,x.folder);manual=inventory['continuation']['manual_applicability']
+KeyError: 'continuation'
+
+----------------------------------------------------------------------
+Ran 2 tests in 4.842s
+
+FAILED (errors=2)
+CHECK_ATTEMPT: 82d988c72de84f26be65e82fa46d268a passed
+CHECK_RESULTS_ADOPTED: 1; no commands executed

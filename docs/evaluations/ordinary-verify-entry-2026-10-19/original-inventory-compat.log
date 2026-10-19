@@ -1,0 +1,8 @@
+test_ordinary_inventory_routes_matching_execution_without_running_it (test_acceptance_continuation.AcceptanceContinuationTests) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 2.848s
+
+OK
+CHECK_ATTEMPT: 42ebda9b60c6462c8e985d892b516547 passed
+CHECK_RESULTS_ADOPTED: 1; no commands executed

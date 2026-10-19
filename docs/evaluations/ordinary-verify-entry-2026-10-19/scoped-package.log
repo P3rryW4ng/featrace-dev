@@ -1,0 +1,95 @@
+CHECK_ATTEMPT: 0d04ade941f949f896e43829b25db18f passed
+CHECK_RESULTS_ADOPTED: 1; no commands executed
+{
+  "synthetic_only": true,
+  "version": "0.18.3",
+  "runtime_files": 113,
+  "baseline": "4c61d353f12df904d8a7e826bc486c851dd29811",
+  "runtime_changes": [
+    "core/scripts/verification.py",
+    "core/scripts/verify-inputs.py",
+    "core/references/technical-test.md",
+    "core/references/verification-workflow.md",
+    "core/references/claim-evidence-review.md",
+    "core/references/orchestration.md"
+  ],
+  "preserved_SKILL": true,
+  "only_three_orchestration_edits_on_formal_body": true,
+  "python_matches_tested_source": true,
+  "isolated_upgrade_backup_restore": true,
+  "installed_ordinary_legacy_batch_negative_and_mode2_guidance": true,
+  "commands": [
+    {
+      "entry": "install.py",
+      "action": "--agent",
+      "returncode": 0
+    },
+    {
+      "entry": "install.py",
+      "action": "--agent",
+      "returncode": 0
+    },
+    {
+      "entry": "project.py",
+      "action": "--help",
+      "returncode": 0
+    },
+    {
+      "entry": "verification.py",
+      "action": "--help",
+      "returncode": 0
+    },
+    {
+      "entry": "evidence_carry.py",
+      "action": "--help",
+      "returncode": 0
+    },
+    {
+      "entry": "regression_continuity.py",
+      "action": "--help",
+      "returncode": 0
+    },
+    {
+      "entry": "verify-inputs.py",
+      "action": "/private/var/folders/d_/q6w_z5qx1vl939khdfl92b540000gn/T/tmpa3bcmuhp",
+      "returncode": 0
+    },
+    {
+      "entry": "evidence_carry.py",
+      "action": "prepare-batch",
+      "returncode": 0
+    },
+    {
+      "entry": "evidence_carry.py",
+      "action": "capture-batch",
+      "returncode": 0
+    },
+    {
+      "entry": "evidence_carry.py",
+      "action": "apply-batch",
+      "returncode": 0
+    },
+    {
+      "entry": "verify-inputs.py",
+      "action": "/private/var/folders/d_/q6w_z5qx1vl939khdfl92b540000gn/T/tmpa3bcmuhp",
+      "returncode": 0
+    },
+    {
+      "entry": "verify-inputs.py",
+      "action": "/private/var/folders/d_/q6w_z5qx1vl939khdfl92b540000gn/T/tmp7vpdbv72",
+      "returncode": 0
+    },
+    {
+      "entry": "install.py",
+      "action": "--agent",
+      "returncode": 0
+    },
+    {
+      "entry": "install.py",
+      "action": "--agent",
+      "returncode": 0
+    }
+  ],
+  "package_path": "/var/folders/d_/q6w_z5qx1vl939khdfl92b540000gn/T/ft-0183-scoped-65f53nhw/candidate",
+  "daily_install_changed": false
+}
