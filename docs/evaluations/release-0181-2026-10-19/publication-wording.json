@@ -1,0 +1,34 @@
+[
+  {
+    "path": "skills/dev/core/references/check-execution.md",
+    "before_sha256": "382d37835e2e10832a709c146ee4ba73db481471d42ee38f9cb373c83de8ef97",
+    "after_sha256": "1c8009800bc4d977a39f23a4b00d1c480fad00c24bc7b0a38f3e268433436cd6",
+    "changes": [
+      [
+        "Managed directory links (local compatibility candidate)",
+        "Managed directory links (0.18.1)"
+      ],
+      [
+        "This candidate is not yet the installed release.",
+        "This compatibility is included in 0.18.1."
+      ]
+    ],
+    "kind": "publication status only; no command, condition, data schema or code change"
+  },
+  {
+    "path": "skills/dev/core/references/device-regression.md",
+    "before_sha256": "0623b940a68b5e50e89de47f40a237388ebf0f81d75a3e9944bddc09bed8584e",
+    "after_sha256": "72b8ca1f2e72dc538c5de6495ac2b6cf24c5b0ea9180de177eb39b0f0e326e98",
+    "changes": [
+      [
+        "Managed directory links (local compatibility candidate)",
+        "Managed directory links (0.18.1)"
+      ],
+      [
+        "The compatibility code is a source candidate until separately released/installed.",
+        "This compatibility is included in 0.18.1."
+      ]
+    ],
+    "kind": "publication status only; no command, condition, data schema or code change"
+  }
+]
