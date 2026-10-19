@@ -632,6 +632,33 @@ def annotation_links(doc, row, effective_status):
     return links
 
 
+def continuation_diagnostic(root, folder, items, execution_view):
+    """Read-only routing from existing facts; never certify assertion coverage."""
+    from check_runs import enabled
+    automatic = [r for r in items if r['mode'] == 'automatic']
+    pending = [r['id'] for r in automatic if r['status'] not in ('passed', 'retained', 'waived')]
+    manual = [r['id'] for r in items if r['mode'] == 'manual' and r['status'] not in ('passed', 'retained', 'waived')]
+    result = {'automatic_pending': pending, 'manual_pending': manual,
+              'boundary': 'Read-only guidance, not coverage approval or permission to execute. Manual/device evidence, authority and final review remain separate.'}
+    if not enabled(root):
+        result.update(contract='legacy', execution_state='not_evaluated',
+                      reason='Legacy acceptance binds the global contract; this diagnostic does not establish why a particular result expired.',
+                      next_action='Inspect changed inputs and coverage under the existing contract. No adopt-checks path; project-wide contract preparation requires explicit scope/compatibility review, never automatic migration.')
+    elif not execution_view or execution_view.get('state') != 'current':
+        result.update(contract=2, execution_state='unavailable',
+                      reason=(execution_view or {}).get('reason', 'No current execution fact'),
+                      next_action='Investigate the latest attempt, input/selection identity and unresolved processes. Never borrow older success; run selected checks only within authorization after blockers are resolved.')
+    else:
+        claims = {r['id'] for r in load_plan(folder)['items'] if not r['source'].startswith('gate:')}
+        result.update(contract=2, execution_state='current', attempt_id=execution_view['attempt_id'],
+                      report_ref=execution_view['report_ref'],
+                      reason='Latest execution inputs and selection match. Pending acceptance is not proof that a command needs re-execution; all requirements/decisions still bind claim stamps.',
+                      next_action=('Inspect complete current claims against actual executed assertions; use capture-check-mapping and adopt-checks only for fully supported targets. Missing assertions require targeted tests. run always executes commands.' if pending else 'No pending automatic acceptance; resolve remaining manual/device/authority/final-review requirements without rerunning checks solely for a stage transition.'),
+                      claim_review_targets=[i for i in pending if i in claims],
+                      gate_binding_targets=[i for i in pending if i not in claims])
+    return result
+
+
 def summary(root, folder):
     doc = load_plan(folder)
     stamp, head = context(root, folder, doc)
@@ -656,7 +683,8 @@ def summary(root, folder):
             from result_corrections import links
             item['result_corrections'] = links(root, doc, row)
         items.append(item)
-    print(json.dumps({'digest': stamp, 'tested_revision': head, 'items': items}, ensure_ascii=False, indent=2))
+    print(json.dumps({'digest': stamp, 'tested_revision': head, 'items': items,
+                      'continuation': continuation_diagnostic(root, folder, items, execution_view)}, ensure_ascii=False, indent=2))
     return 0 if all(r['status'] in ('passed', 'waived', 'retained') for r in items) else 2
 
 

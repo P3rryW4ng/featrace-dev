@@ -76,3 +76,8 @@ Stop the current stage when product authority is required, evidence cannot be ac
 Never call a stage complete because its document exists. Requirement needs semantic review, Scope needs evidence-backed boundaries, Build needs actual code and tests appropriate to the slice, Verify needs executed evidence, Repair needs regression protection or an explicit waiver, and Deliver needs evidence current for the delivered revision.
 
 For large feature histories or scoped Test/Verify reading, use `stage-inputs.md` and validate the derived snapshot at handoff; after Test writes results, prepare a fresh Verify view. Small features may use direct canonical references. Under an evaluation request, optional `stage-cost.md` separates stage/wait/record intervals without blocking delivery. Build/Repair use `code-comments.md` only at material non-obvious contract lines. None of these adds a user command, independent Test Skill or relaxed completion condition.
+
+
+### Acceptance continuation (0.18.2)
+
+Before repeating checks solely because acceptance is stale, read the existing verification status continuation guidance. With a current contract-2 attempt, inspect current complete claims against its actual assertions and use the existing explicit mapping/adoption path for supported targets. Legacy mode has no such adoption path; never migrate it silently. New/missing assertions or changed execution inputs need appropriate testing. These read-only hints cannot grant coverage, override latest failures, waive manual/device evidence or replace final review. Save complete all-negative manual-scope reviews with an explicit empty apply_ids; leave those claims gaps, preserve history, and do not change reviewers to erase a negative on the same facts.

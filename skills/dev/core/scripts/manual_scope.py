@@ -248,9 +248,9 @@ def validate_review(snapshot, review):
             if 'contract_record' in target:
                 validate_contract_record(target['contract_record'], f, target['original']['result_hash'])
     selected = review.get('apply_ids')
-    if (not isinstance(selected, list) or not selected or len(selected) != len(set(selected))
+    if (not isinstance(selected, list) or len(selected) != len(set(selected))
             or not set(selected) <= {f['item_id'] for f in findings if f['verdict'] == 'supported'}):
-        raise ValueError('explicit nonempty supported subset required')
+        raise ValueError('explicit supported subset required (may be empty)')
     return selected
 
 
@@ -300,6 +300,15 @@ def validate_document(doc):
             raise ValueError('scope reference does not belong to claim')
 
 
+def assessment_matches(current, doc, row, event, target):
+    """Internal basis check, independent of a positive adoption verdict."""
+    return bool(current == event['snapshot']['current'] and row['history']
+                and row['history'][-1]['status'] in ('passed', 'retained')
+                and digest(row['history'][-1]) == target['latest_hash']
+                and contract(row) == target['row_contract']
+                and support_events(doc, row['id']) == target['support_events'])
+
+
 def view(root, folder, doc=None):
     import verification as v
     root, folder = workspace(root, folder)
@@ -314,11 +323,8 @@ def view(root, folder, doc=None):
             event = next(e for e in doc['manual_scope_reviews'] if e['id'] == ref['event_id'])
             target = next(t for t in event['snapshot']['targets'] if t['item_id'] == row['id'])
             finding = next(f for f in event['review']['findings'] if f['item_id'] == row['id'])
-            okay = (current == event['snapshot']['current'] and row['history']
-                    and row['history'][-1]['status'] in ('passed', 'retained')
-                    and digest(row['history'][-1]) == target['latest_hash']
-                    and contract(row) == target['row_contract'] and support_events(doc, row['id']) == target['support_events']
-                    and row['id'] in event['review']['apply_ids'] and finding['verdict'] == 'supported')
+            assessment_current = assessment_matches(current, doc, row, event, target)
+            okay = (assessment_current and row['id'] in event['review']['apply_ids'] and finding['verdict'] == 'supported')
             result[row['id']] = {'state': 'current' if okay else 'stale', 'event_id': event['id'],
                                   'verdict': finding['verdict'], 'original': target['original'],
                                   'review_ref': '.agent-workflow/features/' + folder.name + '/verification.json#manual_scope_reviews/' + event['id'],
@@ -340,8 +346,12 @@ def apply(root, folder, snapshot, review):
         selected = validate_review(snapshot, review)
         for event in doc.get('manual_scope_reviews', []):
             if event['review'] == review and event['snapshot'] == snapshot:
-                checked = view(root, folder, doc)
-                if all(checked and checked['items'].get(i, {}).get('state') == 'current' for i in selected):
+                current = guarded_inputs(root, folder, doc)
+                rows = {r['id']: r for r in doc['items']}
+                if all(t['item_id'] in rows
+                       and rows[t['item_id']].get('manual_scope_ref', {}).get('event_id') == event['id']
+                       and assessment_matches(current, doc, rows[t['item_id']], event, t)
+                       for t in snapshot['targets']):
                     if v.read(folder / 'verification.json') != doc: raise ValueError('plan changed during idempotent readback')
                     return doc
                 raise ValueError('already applied manual scope review is no longer current')
@@ -371,7 +381,7 @@ def apply(root, folder, snapshot, review):
             and all(next(r for r in doc['items'] if r['id'] == t['item_id']).get('manual_scope_ref', {}).get('event_id') == e['id']
                     for t in snapshot['targets'])
             for e in doc['manual_scope_reviews'])
-        if already and (same_mixed or all(f['verdict'] == 'supported' for f in review['findings'])):
+        if already and (same_mixed or (selected and all(f['verdict'] == 'supported' for f in review['findings']))):
             if v.read(folder / 'verification.json') != doc: raise ValueError('plan changed during recapture readback')
             return doc
         doc['manual_scope_reviews'].append(event)

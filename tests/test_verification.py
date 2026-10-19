@@ -240,3 +240,14 @@ class VerificationTests(unittest.TestCase):
         stamp, _ = context(self.root, self.folder, self.plan())
         with self.assertRaisesRegex(ValueError, 'dependency changed'):
             retain(self.root, self.folder, row['id'], stamp, ['state.py'], 'Unrelated', 'Reviewed')
+
+    def test_legacy_continuation_is_readonly_and_does_not_opt_in_or_run(self):
+        import io,contextlib
+        import verification as v
+        before=(self.folder/'verification.json').read_bytes();config=(self.base/'quality-gates.json').read_bytes()
+        stream=io.StringIO()
+        with contextlib.redirect_stdout(stream):v.summary(self.root,self.folder)
+        diagnostic=json.loads(stream.getvalue())['continuation']
+        self.assertEqual(diagnostic['contract'],'legacy');self.assertEqual(diagnostic['execution_state'],'not_evaluated')
+        self.assertEqual((self.folder/'verification.json').read_bytes(),before);self.assertEqual((self.base/'quality-gates.json').read_bytes(),config)
+        self.assertFalse((self.folder/'check-runs').exists());self.assertFalse((self.base/'quality-report.json').exists())

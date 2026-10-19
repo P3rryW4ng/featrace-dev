@@ -267,3 +267,97 @@ class ManualScopeTests(unittest.TestCase):
         first['assessment_refs'][key]='affected';first['verdict']='affected';review['apply_ids']=self.ids[1:]
         self.apply(snap,review)
         states=self.states();self.assertEqual(states[self.ids[0]],'stale');self.assertTrue(all(states[i]=='retained' for i in self.ids[1:]))
+
+    def negative_review(self, snap):
+        review=self.review(snap);review['apply_ids']=[]
+        for i,f in enumerate(review['findings']):f['verdict']=('unknown','affected','partial')[i % 3]
+        return review
+
+    def test_all_negative_persists_without_adopting_or_changing_originals(self):
+        snap=self.capture();review=self.negative_review(snap);before=v.load_plan(self.folder)
+        self.apply(snap,review);doc=v.load_plan(self.folder)
+        self.assertEqual(len(doc['manual_scope_reviews']),1)
+        self.assertTrue(all(self.states()[i]=='stale' for i in self.ids))
+        self.assertEqual([r['history'] for r in doc['items']],[r['history'] for r in before['items']])
+        scope=m.view(self.root,self.folder)['items']
+        self.assertTrue(all(scope[i]['verdict'] in ('unknown','affected','partial') for i in self.ids))
+        self.apply(snap,review);self.assertEqual(v.load_plan(self.folder),doc)
+        newer=self.capture();self.apply(newer,self.negative_review(newer));self.assertEqual(v.load_plan(self.folder),doc)
+        with self.assertRaisesRegex(ValueError,'negative assessment'):self.apply(self.capture(),self.review(self.capture()))
+        self.assertEqual(v.load_plan(self.folder),doc)
+        (self.root/'convert.py').write_text('changed after negative review')
+        with self.assertRaisesRegex(ValueError,'no longer current|business worktree'):self.apply(snap,review)
+
+    def test_negative_replaces_old_positive_and_all_readers_keep_gap(self):
+        self.h.run_script('verification.py','run',self.root,'FEAT-001',expected=2)
+        self.apply();before=v.load_plan(self.folder);snap=self.capture();review=self.negative_review(snap)
+        self.apply(snap,review);doc=v.load_plan(self.folder)
+        self.assertEqual(len(doc['manual_scope_reviews']),2)
+        self.assertTrue(all(self.states()[i]=='stale' for i in self.ids))
+        self.assertEqual([r['history'] for r in doc['items']],[r['history'] for r in before['items']])
+        self.h.run_script('audit-delivery.py',self.root,'FEAT-001',expected=1)
+        self.h.run_script('verification.py','status',self.root,'FEAT-001',expected=2)
+        out=self.h.run_script('feature-status.py',self.root,'FEAT-001');self.assertIn('stale',out)
+        inputs=json.loads(self.h.run_script('verify-inputs.py',self.root,'FEAT-001'))
+        self.assertTrue(all(inputs['manual_scope']['items'][i]['state']=='stale' for i in self.ids))
+        from claim_review import identity
+        self.assertTrue(all(c['result_status']=='stale' for c in identity(self.root,self.folder)['claims']))
+        import stage_view
+        self.assertIn('unknown',json.dumps(stage_view.capture(self.root,'FEAT-001','verify')))
+        self.h.run_script('archive-preflight.py',self.root,'FEAT-001')
+        self.assertIn('stale',(self.folder/'delivery-report.md').read_text())
+        bad=copy.deepcopy(doc);bad['items'][0]['manual_scope_ref']=before['items'][0]['manual_scope_ref']
+        v.save(self.folder/'verification.json',bad)
+        with self.assertRaisesRegex(ValueError,'latest assessment'):v.load_plan(self.folder)
+
+    def test_zero_adoption_supported_facts_stay_gaps_and_invalid_subset_refused(self):
+        snap=self.capture();review=self.review(snap);review['apply_ids']=[]
+        self.apply(snap,review);doc=v.load_plan(self.folder)
+        self.assertEqual(len(doc['manual_scope_reviews']),1)
+        self.assertTrue(all(self.states()[i]=='stale' for i in self.ids))
+        self.apply(snap,review);self.assertEqual(v.load_plan(self.folder),doc)
+        newer=self.capture();bad=self.negative_review(newer);bad['apply_ids']=[self.ids[0]]
+        with self.assertRaisesRegex(ValueError,'supported subset'):self.apply(newer,bad)
+        self.assertEqual(v.load_plan(self.folder),doc)
+
+    def test_all_negative_respects_save_failure_drift_and_concurrent_lock(self):
+        snap=self.capture();review=self.negative_review(snap);before=(self.folder/'verification.json').read_bytes()
+        with patch.object(v,'save',side_effect=OSError('Synthetic failure')):
+            with self.assertRaises(OSError):self.apply(snap,review)
+        self.assertEqual((self.folder/'verification.json').read_bytes(),before)
+        import fcntl
+        with (self.root/'.agent-workflow/scratch/verification-FEAT-001.lock').open('a') as stream:
+            fcntl.flock(stream,fcntl.LOCK_EX|fcntl.LOCK_NB)
+            with self.assertRaisesRegex(ValueError,'busy'):self.apply(snap,review)
+        self.assertEqual((self.folder/'verification.json').read_bytes(),before)
+        doc=v.load_plan(self.folder);doc['items'][0]['coverage']='Concurrent edit';v.save(self.folder/'verification.json',doc)
+        moved=(self.folder/'verification.json').read_bytes()
+        with self.assertRaises(ValueError):self.apply(snap,review)
+        self.assertEqual((self.folder/'verification.json').read_bytes(),moved)
+
+    def test_negative_cannot_be_replayed_over_newer_assessment_or_real_failure(self):
+        snap=self.capture();review=self.negative_review(snap);self.apply(snap,review)
+        newer=self.capture();changed=self.negative_review(newer);changed['findings'][0]['verdict']='partial'
+        self.apply(newer,changed);doc=v.load_plan(self.folder)
+        self.assertEqual(len(doc['manual_scope_reviews']),2)
+        with self.assertRaisesRegex(ValueError,'no longer current'):self.apply(snap,review)
+        stamp,head=v.context(self.root,self.folder,doc)
+        v.record(self.root,self.folder,self.ids[0],'failed',stamp,head,'New actual failure','Synthetic failure')
+        with self.assertRaisesRegex(ValueError,'latest passed'):self.capture([self.ids[0]])
+        self.assertEqual(self.states()[self.ids[0]],'failed')
+
+    def test_released_schema_five_reader_refuses_zero_adoption_instead_of_old_green(self):
+        self.apply();positive=m.view(self.root,self.folder)
+        import io,tarfile
+        raw=subprocess.check_output(['git','archive','196039f9c2','skills/dev'],cwd=Path(__file__).resolve().parents[1])
+        with tempfile.TemporaryDirectory() as work:
+            with tarfile.open(fileobj=io.BytesIO(raw)) as archive:
+                self.assertTrue(all(x.isfile() or x.isdir() for x in archive.getmembers()));archive.extractall(work)
+            core=Path(work)/'skills/dev/core/scripts'
+            code='import sys,json;from pathlib import Path;sys.path.insert(0,sys.argv[1]);import manual_scope;print(json.dumps(manual_scope.view(Path(sys.argv[2]),Path(sys.argv[3]))))'
+            old_view=subprocess.run([sys.executable,'-B','-c',code,str(core),str(self.root),str(self.folder)],capture_output=True,text=True)
+            self.assertEqual(old_view.returncode,0,old_view.stderr);self.assertEqual(json.loads(old_view.stdout),positive)
+            snap=self.capture();self.apply(snap,self.negative_review(snap))
+            p=subprocess.run([sys.executable,'-B',str(core/'verification.py'),'status',str(self.root),'FEAT-001'],capture_output=True,text=True)
+            self.assertNotEqual(p.returncode,0);self.assertIn('nonempty',p.stderr)
+        self.assertTrue(all(self.states()[i]=='stale' for i in self.ids))

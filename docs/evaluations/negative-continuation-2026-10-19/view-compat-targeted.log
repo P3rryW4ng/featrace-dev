@@ -1,0 +1,19 @@
+test_released_schema_five_reader_refuses_zero_adoption_instead_of_old_green (test_manual_scope.ManualScopeTests) ... ok
+test_all_negative_persists_without_adopting_or_changing_originals (test_manual_scope.ManualScopeTests) ... FAIL
+
+======================================================================
+FAIL: test_all_negative_persists_without_adopting_or_changing_originals (test_manual_scope.ManualScopeTests)
+----------------------------------------------------------------------
+evidence_carry.UncommittedBusinessChanges: commit/review business worktree changes before carry capture: convert.py
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/mac/Entrepôt/featrace-dev/tests/test_manual_scope.py", line 289, in test_all_negative_persists_without_adopting_or_changing_originals
+    with self.assertRaisesRegex(ValueError,'no longer current'):self.apply(snap,review)
+AssertionError: "no longer current" does not match "commit/review business worktree changes before carry capture: convert.py"
+
+----------------------------------------------------------------------
+Ran 2 tests in 13.639s
+
+FAILED (failures=1)

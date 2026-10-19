@@ -1,0 +1,23 @@
+test_clickable_copy_and_shared_code_dependencies_require_retest (test_verification.VerificationTests) ... ok
+test_drift_during_command_cannot_pass (test_verification.VerificationTests) ... ok
+test_explicit_mapping_automates_only_reviewed_items (test_verification.VerificationTests) ... ok
+test_failed_and_unavailable_commands (test_verification.VerificationTests) ... ok
+test_failure_history_and_removed_items_preserved (test_verification.VerificationTests) ... ok
+test_gate_selection_change_preserves_new_manual_evidence_only (test_verification.VerificationTests) ... ok
+test_generate_defaults_and_idempotence (test_verification.VerificationTests) ... ok
+test_legacy_continuation_is_readonly_and_does_not_opt_in_or_run (test_verification.VerificationTests) ... ok
+test_manual_completion_integrates_impact_gate_and_view (test_verification.VerificationTests) ... ok
+test_no_gates_and_unknown_mapping_do_not_execute (test_verification.VerificationTests) ... ok
+test_old_identity_and_automatic_manual_override_rejected (test_verification.VerificationTests) ... ok
+test_required_missing_and_legacy_compatibility (test_verification.VerificationTests) ... ok
+test_run_records_actual_commands_without_passing_ui_items (test_verification.VerificationTests) ... ok
+test_scoped_copy_change_retains_prior_navigation_observation_without_retest (test_verification.VerificationTests) ... ok
+test_scoped_relevance_unknown_or_semantic_change_cannot_carry_pass (test_verification.VerificationTests) ... ok
+test_source_and_mapping_changes_stale_results (test_verification.VerificationTests) ... ok
+test_stale_quality_report_cannot_be_reused (test_verification.VerificationTests) ... ok
+test_unbound_or_other_feature_gates_stop_before_execution (test_verification.VerificationTests) ... ok
+
+----------------------------------------------------------------------
+Ran 18 tests in 38.390s
+
+OK

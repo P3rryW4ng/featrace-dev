@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.18.2 — 2026-10-19
+
+- Persist complete manual-scope reviews with an explicit empty adoption subset; preserve negative gaps, latest assessment references, original facts and idempotence. Older schema-5 readers reject these new empty-subset events: update participating readers, never delete negative history to downgrade.
+- Add read-only continuation guidance to existing verification/feature status: current contract-2 execution can be mapped after inspecting actual assertions; missing coverage requires tests. Legacy projects are not migrated, and run still executes commands.
+- Preserve existing positive manual-scope view output and the formal entrypoint/body; no automatic semantic local invalidation, new Skill, business migration or reduced final review. Scoped release remains 113 files. Source and isolated-package evidence are recorded separately; no real-project efficiency claim.
+
 ## 0.18.1 — 2026-10-19
 
 - Compatibility fix for committed relative links directly to managed in-project directories. Bind link bytes and complete target membership/content using no-follow reads; keep outside, missing, nested, unmanaged and moving inputs unknown.
