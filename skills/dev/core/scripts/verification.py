@@ -632,14 +632,48 @@ def annotation_links(doc, row, effective_status):
     return links
 
 
-def continuation_diagnostic(root, folder, items, execution_view):
+def continuation_diagnostic(root, folder, items, execution_view, *, plan=None):
     """Read-only routing from existing facts; never certify assertion coverage."""
     from check_runs import enabled
+    plan = load_plan(folder) if plan is None else plan
     automatic = [r for r in items if r['mode'] == 'automatic']
     pending = [r['id'] for r in automatic if r['status'] not in ('passed', 'retained', 'waived')]
     manual = [r['id'] for r in items if r['mode'] == 'manual' and r['status'] not in ('passed', 'retained', 'waived')]
     result = {'automatic_pending': pending, 'manual_pending': manual,
               'boundary': 'Read-only guidance, not coverage approval or permission to execute. Manual/device evidence, authority and final review remain separate.'}
+    # These are investigation candidates, never a certificate of dependency
+    # completeness, source availability or unchanged authority.
+    candidates, waivers, gaps, negative, rejected = [], [], [], [], {}
+    from manual_scope import source_row
+    for row in plan['items']:
+        if row['id'] not in manual: continue
+        latest = row['history'][-1]['status'] if row['history'] else None
+        ref = row.get('manual_scope_ref')
+        prior = next((e for e in plan.get('manual_scope_reviews', []) if ref and e['id'] == ref['event_id']), None)
+        finding = next((f for f in prior['review']['findings'] if f['item_id'] == row['id']), None) if prior else None
+        if finding and finding['verdict'] != 'supported':
+            negative.append(row['id'])
+            gaps.append(row['id'])
+            continue
+        if latest == 'waived':
+            waivers.append(row['id'])
+        elif latest in ('passed', 'retained'):
+            try:
+                source_row(plan, row['id'])
+                candidates.append(row['id'])
+            except (ValueError, TypeError, KeyError) as exc:
+                rejected[row['id']] = str(exc)
+                gaps.append(row['id'])
+        else:
+            gaps.append(row['id'])
+    result['manual_applicability'] = {
+        'contract': 1 if plan.get('manual_scope_contract') == 1 else 'legacy',
+        'review_candidates': candidates, 'waiver_authority_checks': waivers,
+        'new_or_adverse_claims': gaps, 'prior_negative_assessments': negative, 'source_chain_refusals': rejected,
+        'next_action': ('Inspect complete claims, changes, original identity and shared/transitive dependencies before capture-batch; adopt only explicitly supported targets.'
+                        if plan.get('manual_scope_contract') == 1 else
+                        'Existing batch applicability may review unchanged active passed/retained rows even when a full parent changed. Before use, review format compatibility and obtain preparation authorization; do not enable it automatically. Legacy single-row carry is stricter.'),
+        'boundary': 'Candidates are not certified reusable. New/replaced claims, latest failure/unavailable, missing originals and unknown effects remain gaps. Saved negative assessments require new evidence/authority before reconsideration, not a new reviewer on identical facts. Waivers need original-authority scope review/current recording, never automatic conversion into retained evidence.'}
     if not enabled(root):
         result.update(contract='legacy', execution_state='not_evaluated',
                       reason='Legacy acceptance binds the global contract; this diagnostic does not establish why a particular result expired.',
@@ -649,7 +683,7 @@ def continuation_diagnostic(root, folder, items, execution_view):
                       reason=(execution_view or {}).get('reason', 'No current execution fact'),
                       next_action='Investigate the latest attempt, input/selection identity and unresolved processes. Never borrow older success; run selected checks only within authorization after blockers are resolved.')
     else:
-        claims = {r['id'] for r in load_plan(folder)['items'] if not r['source'].startswith('gate:')}
+        claims = {r['id'] for r in plan['items'] if not r['source'].startswith('gate:')}
         result.update(contract=2, execution_state='current', attempt_id=execution_view['attempt_id'],
                       report_ref=execution_view['report_ref'],
                       reason='Latest execution inputs and selection match. Pending acceptance is not proof that a command needs re-execution; all requirements/decisions still bind claim stamps.',
@@ -684,7 +718,7 @@ def summary(root, folder):
             item['result_corrections'] = links(root, doc, row)
         items.append(item)
     print(json.dumps({'digest': stamp, 'tested_revision': head, 'items': items,
-                      'continuation': continuation_diagnostic(root, folder, items, execution_view)}, ensure_ascii=False, indent=2))
+                      'continuation': continuation_diagnostic(root, folder, items, execution_view, plan=doc)}, ensure_ascii=False, indent=2))
     return 0 if all(r['status'] in ('passed', 'waived', 'retained') for r in items) else 2
 
 

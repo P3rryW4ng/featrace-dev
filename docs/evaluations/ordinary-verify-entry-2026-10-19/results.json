@@ -1,0 +1,21 @@
+{
+  "source_head": "ff9e2221eec4f67360c501169aa8b531a7c79ded",
+  "source_version_at_test": "0.18.2",
+  "full_tests": 577,
+  "full_seconds": 896.071,
+  "skipped": 0,
+  "input_files": 170,
+  "inputs_unchanged": true,
+  "ordinary_entry_before_fix": "2 tests failed: continuation absent",
+  "known_negative_route_before_fix": "failed: prior negative offered as review candidate",
+  "final_targeted": 7,
+  "source_inventory_equals_0182": true,
+  "scoped_runtime_files": 113,
+  "scoped_cli_calls": 14,
+  "interrupted_not_passed": [
+    "full-before-adverse-routing-interrupted.log"
+  ],
+  "new_business_contract": false,
+  "natural_agent_adoption": "not measured",
+  "official_skill_validator": "unavailable: PyYAML missing"
+}

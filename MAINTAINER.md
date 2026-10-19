@@ -6,11 +6,13 @@
 
 | 对象 | 当前事实 | 接手注意 |
 |---|---|---|
-| 源码 | main；VERSION 0.18.2；实现 c2c040d0d3 | main 不是本次正式安装来源 |
+| 源码 | main；VERSION 0.18.3（发布执行中）；实现 c2c040d0d3 | main 不是本次正式安装来源 |
 | 正式运行包 | release/0.18.2，运行发布 4c61d353f1，113 文件 | 具体清单与安装核验见[发布记录](docs/evaluations/2026-10-19-release-0182.md) |
 | 日常 Claude | 0.18.2 / 113，安装SHA/权限与正式树匹配 | 安装不等于业务项目启用新合同 |
 | main 未安装指令 | SKILL.md 与 orchestration.md 中的动态进度和额外入口提醒 | 不宣称用户已获得该功能；不直接从 main 更新日常安装 |
 | 本轮 | 零采用留存与只读接续指引已发布安装；最终源码570/570 | 正式113文件、隔离11次CLI、日常SHA/权限/备份通过；净收益未测 |
+
+本轮main新增候选：普通Verify入口接入执行/人工接续指导，纠正无条件run及legacy交接说明；未发布安装。现有批次已能处理合成换行父条款修订，暂不重构盖戳。[评审](docs/reviews/2026-10-19-local-display-acceptance.md)与[验证](docs/evaluations/2026-10-19-ordinary-verify-entry.md)分开记录。
 
 ## 已知问题与能力边界
 
