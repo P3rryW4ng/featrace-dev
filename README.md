@@ -8,7 +8,7 @@
 
 FeatraceDev 帮助 Coding Agent 在已有代码库中处理需求、调查影响、开发、修复和验收。它把原始资料、已确认的需求、开发任务、历史修复和测试证据连起来，让下一次改动有据可查，也让“完成”有明确的验证范围。
 
-适用于 Claude Code 和 Codex；目前提供通用工作流及 Android 适配。当前仓库源码版本为 **0.13.5**；请在使用设备上核对实际安装版本。
+适用于 Claude Code 和 Codex；目前提供通用工作流及 Android 适配。当前仓库源码版本为 **0.18.1**；请在使用设备上核对实际安装版本。
 
 > 当前是开发者参与的交付工具。它会提醒缺失的决策与证据，但不能保证自动理解所有 PRD、发现所有代码依赖，也不能保证所有设备与业务路径都能自动验证。具备工具和授权时，Agent 可以执行设备操作和客观测试；主观体验仍需人判断。
 
@@ -29,12 +29,14 @@ FeatraceDev 是品牌名，Dev 表示开发；Feature · Trace · Delivery 是�
 需要 Python 3.9+、Git，以及 Claude Code 或 Codex。Android 项目还需项目本身要求的 JDK 和 Android SDK。
 
 ```bash
-git clone https://github.com/P3rryW4ng/featrace-dev.git
+git clone --branch release/0.18.1 --single-branch https://github.com/P3rryW4ng/featrace-dev.git
 cd featrace-dev
 python3 scripts/install.py
 ```
 
 默认安装到当前用户的 Claude Code 和 Codex。只安装一个工具时使用 `--agent claude` 或 `--agent codex`。安装后打开**新会话**，使 Agent 加载新版本。
+
+正式安装来源为 `release/0.18.1`。`main` 含尚未发布的指令，不应直接用于日常更新；安装器复制当前检出的内容，并不强制验证发布来源。更新前核对发布分支、提交与清单；已有其他分支或本地改动时先调查，不直接覆盖。安装不启用业务项目的新数据合同。当前已知限制见 [维护总览](MAINTAINER.md)。
 
 ## 从这里开始
 
@@ -109,7 +111,7 @@ Skill 源码仓库与业务项目的 `.agent-workflow/` 是两处不同位置。
 
 ## 更新与卸载
 
-在已克隆的 Skill 仓库中：
+先确认当前克隆检出的是本次正式发布分支 `release/0.18.1`，且没有待保留的本地改动。以下命令只适用于该发布分支；在 `main` 或其他分支上不要直接执行安装更新：
 
 ```bash
 git pull --ff-only
@@ -120,13 +122,13 @@ python3 scripts/install.py --agent both --update
 
 ### 从旧仓库迁移
 
-原 `feature-delivery-skill` 用户在已有克隆中更新远端即可继续使用：
+原 `feature-delivery-skill` 用户可以更新已有克隆的远端；这一步只改地址，不代表已切到正式发布内容：
 
 ```bash
 git remote set-url origin https://github.com/P3rryW4ng/featrace-dev.git
-git pull --ff-only
-python3 scripts/install.py --agent both --update
 ```
+
+若当前分支不是正式发布分支，保留原克隆及本地改动，按上方“安装”方式另行克隆发布分支，再从该副本更新安装。不要直接在旧 main 上运行安装器。
 
 本地克隆目录可以自行改为 `featrace-dev`。安装器兼容旧包标记，更新前备份旧副本；`/dev`、`$dev`、`skills/dev` 与业务项目 `.agent-workflow/` 保持兼容。旧安装标记文件名和备份目录保留，避免现有用户搬迁记录。
 

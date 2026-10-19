@@ -1,0 +1,31 @@
+REGRESSION_EXECUTION_RECORDED: executed device coverage; routine gate unchanged
+DEVICE_CONTINUITY_RECORDED: reviewed applicability; no device execution
+CHECK_ATTEMPT: a2ed01bdb0db452d8fd81f1333d586ac passed
+CHECK_RESULTS_ADOPTED: 1; no commands executed
+CHECK_ATTEMPT: 4b348c5e8cb0466aacdaf058ad70223b failed
+CHECK_ATTEMPT: 2199921fcad14e00bec00f39ee77ec96 passed
+REGRESSION_EXECUTION_RECORDED: executed device coverage; routine gate unchanged
+{
+  "started_at": "2026-10-19T03:53:48.896132+00:00",
+  "ended_at": "2026-10-19T03:54:02.556339+00:00",
+  "elapsed_seconds": 13.66,
+  "tests": 26,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "candidate_test_inputs_unchanged": true,
+  "all_python_matches_source_full_test": true,
+  "source_full_test_reference": "docs/evaluations/2026-10-19-managed-symlink-compatibility.md; 560/560; not re-executed as candidate full suite",
+  "temporary_upgrade": "0.18.0/112 -> candidate 0.18.1/113",
+  "source_install_manifest_modes_match": true,
+  "old_backup_bytes_modes_marker_match": true,
+  "uninstalled_candidate_backup_matches": true,
+  "restored_old_install_matches": true,
+  "daily_install_unchanged": true,
+  "installed_legacy_14_link_check_audit_and_stale_refusal": true,
+  "installed_device_capture_apply_audit": true,
+  "device_review_kind": "synthetic protocol review, not native semantic review",
+  "new_business_contracts_enabled": false,
+  "source_version_unchanged": "0.18.0",
+  "cli_calls": 15
+}

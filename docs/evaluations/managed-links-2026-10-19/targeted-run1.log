@@ -1,0 +1,94 @@
+test_device_review_apply_references_original_and_detects_target_edit (test_managed_links.ManagedLinkIntegrationTests) ... ERROR
+test_feature_attempt_adoption_and_latest_failure_keep_their_contract (test_managed_links.ManagedLinkIntegrationTests) ... ERROR
+test_legacy_runner_keeps_schema_two_and_stales_on_target_changes (test_managed_links.ManagedLinkIntegrationTests) ... ok
+test_manual_scope_reader_reuses_same_identity_boundary (test_managed_links.ManagedLinkIntegrationTests) ... ERROR
+test_absolute_external_missing_root_control_and_file_targets_refused (test_managed_links.ManagedLinksTests) ... ok
+test_declared_inputs_and_workflow_paths_do_not_gain_link_permission (test_managed_links.ManagedLinksTests) ... ok
+test_fourteen_links_and_forty_six_files_are_bound_not_excluded (test_managed_links.ManagedLinksTests) ... ok
+test_hidden_target_changes_and_permissions_are_detected (test_managed_links.ManagedLinksTests) ... ok
+test_link_retarget_and_membership_changes_are_detected (test_managed_links.ManagedLinksTests) ... ok
+test_link_swap_during_read_never_produces_identified_input (test_managed_links.ManagedLinksTests) ... ok
+test_malformed_or_downgraded_link_records_are_unknown (test_managed_links.ManagedLinksTests) ... ok
+test_nested_links_and_cycles_are_never_followed (test_managed_links.ManagedLinksTests) ... ok
+test_old_reader_rejects_new_identity_and_live_links (test_managed_links.ManagedLinksTests) ... ok
+test_ordinary_projects_keep_schema_one_and_old_reader_compatibility (test_managed_links.ManagedLinksTests) ... ok
+test_sha256_git_objects_and_same_target_aliases (test_managed_links.ManagedLinksTests) ... ok
+test_target_edit_during_descriptor_read_is_unknown (test_managed_links.ManagedLinksTests) ... FAIL
+test_target_swap_before_open_never_reads_replacement (test_managed_links.ManagedLinksTests) ... ok
+test_uncommitted_or_replaced_links_are_not_certified (test_managed_links.ManagedLinksTests) ... ok
+test_unmanaged_ignored_missing_and_submodule_members_refused (test_managed_links.ManagedLinksTests) ... ok
+
+======================================================================
+ERROR: test_device_review_apply_references_original_and_detects_target_edit (test_managed_links.ManagedLinkIntegrationTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/mac/Entrepôt/featrace-dev/tests/test_managed_links.py", line 255, in test_device_review_apply_references_original_and_detects_target_edit
+    self.assertFalse(test_regression_continuity.current_evidence(h.root,h.folder,doc['fixes'][0],'UT-1'))
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/regression_execution.py", line 158, in current_evidence
+    return current(root, folder, read(folder / 'fixes.json'), fix, test_id, latest)
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/regression_continuity.py", line 340, in current
+    return semantic_identity(root, folder, inputs['requests'], inputs['target_revision']) == inputs
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/regression_continuity.py", line 197, in semantic_identity
+    check_worktree(root, current)
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/regression_continuity.py", line 156, in check_worktree
+    links, members = inspect(root, entries, entries, clean=True)
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/managed_links.py", line 149, in inspect
+    found = members(folder, resolved, expected, clean)
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/managed_links.py", line 105, in members
+    found[name] = read_member(parent, leaf, info, expected[name], clean)
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/managed_links.py", line 85, in read_member
+    raise ValueError('actual input differs from committed continuity target')
+ValueError: actual input differs from committed continuity target
+
+======================================================================
+ERROR: test_feature_attempt_adoption_and_latest_failure_keep_their_contract (test_managed_links.ManagedLinkIntegrationTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/mac/Entrepôt/featrace-dev/tests/test_managed_links.py", line 237, in test_feature_attempt_adoption_and_latest_failure_keep_their_contract
+    ident=h.map_claim(); report=h.execute();h.adopt(ident)
+  File "/Users/mac/Entrepôt/featrace-dev/tests/test_check_runs.py", line 38, in adopt
+    frozen=v.check_mapping_snapshot(self.root,self.folder,[ident])
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/verification.py", line 407, in check_mapping_snapshot
+    _, head = context(root, folder, doc)
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/verification.py", line 181, in context
+    req, config, impact = sources(root, folder)
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/verification.py", line 70, in sources
+    raise ValueError('; '.join(errors))
+ValueError: invalid impact checklist: symlink/outside path needs manual handling: .claude/skills/fixture-00
+
+======================================================================
+ERROR: test_manual_scope_reader_reuses_same_identity_boundary (test_managed_links.ManagedLinkIntegrationTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/mac/Entrepôt/featrace-dev/tests/test_managed_links.py", line 261, in test_manual_scope_reader_reuses_same_identity_boundary
+    snap=h.capture();h.apply(snap)
+  File "/Users/mac/Entrepôt/featrace-dev/tests/test_manual_scope.py", line 51, in capture
+    return m.capture(self.root,self.folder,[{'item_id':i,'contract_revision':self.records_at} for i in (ids or self.ids)])
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/manual_scope.py", line 141, in capture
+    current = guarded_inputs(root, folder, doc)
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/manual_scope.py", line 88, in guarded_inputs
+    return inputs(root, folder, doc)
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/manual_scope.py", line 70, in inputs
+    v.sources(root, folder)  # Keep ordinary scope/config eligibility.
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/verification.py", line 70, in sources
+    raise ValueError('; '.join(errors))
+ValueError: invalid impact checklist: symlink/outside path needs manual handling: .claude/skills/fixture-00
+
+======================================================================
+FAIL: test_target_edit_during_descriptor_read_is_unknown (test_managed_links.ManagedLinksTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/mac/Entrepôt/featrace-dev/tests/test_managed_links.py", line 175, in test_target_edit_during_descriptor_read_is_unknown
+    self.assertEqual(self.check()['state'], 'unknown')
+AssertionError: 'identified' != 'unknown'
+- identified
++ unknown
+
+
+----------------------------------------------------------------------
+Ran 19 tests in 7.729s
+
+FAILED (failures=1, errors=3)
+REGRESSION_EXECUTION_RECORDED: executed device coverage; routine gate unchanged
+DEVICE_CONTINUITY_RECORDED: reviewed applicability; no device execution
+CHECK_ATTEMPT: af72438ad51841efa28279eb1303610b passed

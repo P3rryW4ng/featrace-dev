@@ -1,0 +1,31 @@
+test_device_review_apply_references_original_and_detects_target_edit (test_managed_links.ManagedLinkIntegrationTests) ... ok
+test_feature_attempt_adoption_and_latest_failure_keep_their_contract (test_managed_links.ManagedLinkIntegrationTests) ... ok
+test_legacy_runner_keeps_schema_two_and_stales_on_target_changes (test_managed_links.ManagedLinkIntegrationTests) ... ok
+test_links_new_to_feature_still_need_original_impact_handling (test_managed_links.ManagedLinkIntegrationTests) ... ok
+test_manual_scope_reader_reuses_same_identity_boundary (test_managed_links.ManagedLinkIntegrationTests) ... ok
+test_absolute_external_missing_root_control_and_file_targets_refused (test_managed_links.ManagedLinksTests) ... ok
+test_declared_inputs_and_workflow_paths_do_not_gain_link_permission (test_managed_links.ManagedLinksTests) ... ok
+test_fourteen_links_and_forty_six_files_are_bound_not_excluded (test_managed_links.ManagedLinksTests) ... ok
+test_hidden_target_changes_and_permissions_are_detected (test_managed_links.ManagedLinksTests) ... ok
+test_link_retarget_and_membership_changes_are_detected (test_managed_links.ManagedLinksTests) ... ok
+test_link_swap_during_read_never_produces_identified_input (test_managed_links.ManagedLinksTests) ... ok
+test_malformed_or_downgraded_link_records_are_unknown (test_managed_links.ManagedLinksTests) ... ok
+test_nested_links_and_cycles_are_never_followed (test_managed_links.ManagedLinksTests) ... ok
+test_old_reader_rejects_new_identity_and_live_links (test_managed_links.ManagedLinksTests) ... ok
+test_ordinary_projects_keep_schema_one_and_old_reader_compatibility (test_managed_links.ManagedLinksTests) ... ok
+test_sha256_git_objects_and_same_target_aliases (test_managed_links.ManagedLinksTests) ... ok
+test_target_edit_during_descriptor_read_is_unknown (test_managed_links.ManagedLinksTests) ... ok
+test_target_swap_before_open_never_reads_replacement (test_managed_links.ManagedLinksTests) ... ok
+test_uncommitted_or_replaced_links_are_not_certified (test_managed_links.ManagedLinksTests) ... ok
+test_unmanaged_ignored_missing_and_submodule_members_refused (test_managed_links.ManagedLinksTests) ... ok
+
+----------------------------------------------------------------------
+Ran 20 tests in 11.855s
+
+OK
+REGRESSION_EXECUTION_RECORDED: executed device coverage; routine gate unchanged
+DEVICE_CONTINUITY_RECORDED: reviewed applicability; no device execution
+CHECK_ATTEMPT: 40e5e4425d0e4135a425527261edc89f passed
+CHECK_RESULTS_ADOPTED: 1; no commands executed
+CHECK_ATTEMPT: bacf8aedefb440a6991ca17a7a4c3b5e failed
+CHECK_ATTEMPT: 4f0423bb33cc4f3f9fa7b93d56f2ddd5 passed

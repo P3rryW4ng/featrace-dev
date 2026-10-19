@@ -1,0 +1,26 @@
+{
+  "started_at": "2026-10-19T03:38:21.025956+00:00",
+  "ended_at": "2026-10-19T03:49:18.873667+00:00",
+  "elapsed_seconds": 657.783,
+  "returncode": 0,
+  "inputs_count": 169,
+  "inputs_unchanged": true,
+  "changed_inputs": [],
+  "log_sha256": "16cd6fca191dff29aabd40b75129ed174086efe068d20901db365b8a34fda455",
+  "tests": 560,
+  "test_runner_seconds": 657.639,
+  "skipped": 0,
+  "source_head": "ccb8ae7bd6dcdb0f91ff3c923933507ef5ddfcfa",
+  "source_state": "uncommitted managed-directory-link compatibility candidate; prior maintenance documents also uncommitted",
+  "formal_version_unchanged": "0.18.0",
+  "artifacts": {
+    "before.json": "35da2300fa69611004e66c696f2f8951610c1b2eec181eff7b2ff47d09304cf7",
+    "full-inputs-before.json": "28547221884dd8c13ac92a603116f6439687410a0c4eb640c16eed95740e7d88",
+    "full-result.json": "56e9e668d79fd5d212cdd834152eeb57d87d5878959fb8cab0ad5a2ae46c0db6",
+    "full.log": "16cd6fca191dff29aabd40b75129ed174086efe068d20901db365b8a34fda455",
+    "targeted-run1.log": "7fe14b466c8bc585e7c22eb75cc8dcf59e532f92e57f570f5cc706c76cd4484b",
+    "targeted-run2.log": "47f92663511b5ee96081f43b86361b8fbeda69039b013f14ad01acd5b63c2907",
+    "targeted-run3.log": "202da5f0a9fe9434de61e47318a7504e371f8c64e66e7412892a241c9d8f5143",
+    "targeted-final.log": "2f11ac12ba1336ab693fdb0d620afc7bddb615cf30d0ee287d968424be331a47"
+  }
+}
