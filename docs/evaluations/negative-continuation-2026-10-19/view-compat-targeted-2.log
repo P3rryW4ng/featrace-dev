@@ -1,0 +1,8 @@
+test_released_schema_five_reader_refuses_zero_adoption_instead_of_old_green (test_manual_scope.ManualScopeTests) ... ok
+test_all_negative_persists_without_adopting_or_changing_originals (test_manual_scope.ManualScopeTests) ... ok
+test_negative_cannot_be_replayed_over_newer_assessment_or_real_failure (test_manual_scope.ManualScopeTests) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 20.858s
+
+OK

@@ -22,6 +22,12 @@ Only a complete successful latest attempt with matching current input/selection 
 
 Attempt records are local workflow artifacts and may contain command output; keep sensitive raw output private/ignored under project policy. No helper auto-commits or uploads them. Shared durable evidence requires the existing explicit privacy/archival process. Hashes bind recorded bytes; they do not prove command honesty, external environment stability or semantic coverage.
 
+## Read-only continuation guidance
+
+Use existing `verification.py status` or `feature-status.py` to distinguish execution facts from pending acceptance. Status returns `continuation` (or `VERIFICATION_CONTINUATION`) without running commands, adopting results or preparing a project. A current mode-2 attempt plus stale/new automatic claims calls for inspection of actual assertions and the existing mapping/adoption path, not an automatic rerun. All requirements/decisions still bind claim stamps; this is guidance, not precise semantic dependency inference. Missing assertions require targeted tests. `run` always executes selected commands.
+
+Unavailable execution reports the existing refusal reason; investigate latest failure, unfinished processes, unknown/changed inputs or selection before choosing authorized execution. Do not search older success. Legacy mode has no adoption path and this diagnostic does not infer its exact stale cause; do not silently opt in the project-wide contract. Manual/device evidence and final review keep separate obligations. A current execution or a routing hint is never semantic acceptance.
+
 ## Bind actual assertions to current claims
 
 Execution truth is separate from acceptance. `verification.py run` may bind generated command-success rows to the actual latest attempt, but does not automatically pass every mapped product claim merely because commands exited zero. Inspect current complete requirements, preconditions, assertions and preserved behavior as ordinary Verify already requires. For explicit automatic targets:

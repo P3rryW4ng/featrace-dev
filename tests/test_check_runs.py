@@ -222,4 +222,41 @@ class CheckRunTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'lifecycle'):runs.run(self.root,'FEAT-001')
         with self.assertRaisesRegex(ValueError,'lifecycle'):runs.prepare(self.root,'FEAT-001',[{'name':'unit','test_ids':['UT-1']}],'Do not reconfigure unresolved execution')
 
+
+    def diagnostic(self):
+        import contextlib,io
+        stream=io.StringIO()
+        with contextlib.redirect_stdout(stream):v.summary(self.root,self.folder)
+        return json.loads(stream.getvalue())['continuation']
+
+    def test_readonly_diagnostic_recommends_mapping_not_command_for_current_fact(self):
+        ident=self.map_claim();report=self.execute();self.adopt(ident)
+        decisions=json.loads((self.folder/'decisions.json').read_text());decisions['decisions'].append({'id':'D-DIAGNOSTIC','status':'approved','evidence':'Synthetic revised authority'})
+        (self.folder/'decisions.json').write_text(json.dumps(decisions))
+        before={p:p.read_bytes() for p in self.folder.rglob('*') if p.is_file()}
+        diagnostic=self.diagnostic()
+        self.assertEqual(diagnostic['execution_state'],'current');self.assertEqual(diagnostic['attempt_id'],report['attempt_id'])
+        self.assertIn(ident,diagnostic['claim_review_targets']);self.assertIn('adopt-checks',diagnostic['next_action'])
+        self.assertEqual(self.counter.read_text(),'1');self.assertEqual({p:p.read_bytes() for p in before},before)
+        out=self.helper.run_script('feature-status.py',self.root,'FEAT-001');self.assertIn('VERIFICATION_CONTINUATION:',out)
+        self.assertEqual(self.counter.read_text(),'1')
+
+    def test_diagnostic_does_not_reuse_failed_or_changed_execution(self):
+        self.execute();(self.root/'convert.py').write_text('changed')
+        diagnostic=self.diagnostic();self.assertEqual(diagnostic['execution_state'],'unavailable')
+        self.assertNotIn('claim_review_targets',diagnostic);self.assertIn('changed',diagnostic['reason'])
+        self.helper.git('checkout','--','convert.py')
+        config=json.loads((self.helper.base/'quality-gates.json').read_text());config['gates'][0]['command']=[sys.executable,'-c','raise SystemExit(7)']
+        (self.helper.base/'quality-gates.json').write_text(json.dumps(config));self.assertEqual(runs.run(self.root,'FEAT-001'),2)
+        diagnostic=self.diagnostic();self.assertEqual(diagnostic['execution_state'],'unavailable');self.assertIn('failed',diagnostic['reason'])
+        self.assertNotIn('attempt_id',diagnostic)
+
+    def test_diagnostic_new_claim_without_assertions_is_not_automatically_passed(self):
+        self.execute();doc=self.plan();row=doc['items'][0];row.update(mode='automatic',gates=['unit'],test_ids=['NOT-EXECUTED'],coverage='Synthetic unsupported expanded claim');(self.folder/'verification.json').write_text(json.dumps(doc))
+        before=(self.folder/'verification.json').read_bytes();diagnostic=self.diagnostic()
+        self.assertIn(row['id'],diagnostic['claim_review_targets']);self.assertIn('Missing assertions',diagnostic['next_action'])
+        self.assertEqual((self.folder/'verification.json').read_bytes(),before)
+        with self.assertRaisesRegex(ValueError,'actually executed|not executed'):self.adopt(row['id'])
+        self.assertEqual(self.counter.read_text(),'1')
+
 if __name__=='__main__':unittest.main()
