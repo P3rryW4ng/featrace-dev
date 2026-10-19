@@ -150,7 +150,12 @@ def check_worktree(root, tree):
     algorithm = git(root, 'rev-parse', '--show-object-format').decode().strip()
     if algorithm not in ('sha1', 'sha256'):
         raise ValueError('unsupported Git object identity')
+    from managed_links import inspect
+    for name in tree: path_name(name)
+    entries = {n: {'mode': e['mode'], 'oid': e['blob']} for n, e in tree.items()}
+    links, members = inspect(root, entries, entries, clean=True)
     for name, expected in tree.items():
+        if name in links or name in members: continue
         path_name(name)
         path = root
         for component in Path(name).parts:

@@ -61,7 +61,7 @@ def collect(root, required, optional):
         name = os.fsdecode(raw)
         if workflow(name):
             continue
-        if mode not in ('100644', '100755') or kind != 'blob':
+        if mode not in ('100644', '100755', '120000') or kind != 'blob':
             raise ValueError('unsupported committed input: ' + name)
         committed[name] = {'mode': mode, 'oid': oid}
     for row in git(root, 'ls-files', '--stage', '-z').split(b'\0'):
@@ -72,20 +72,24 @@ def collect(root, required, optional):
         name = os.fsdecode(raw)
         if workflow(name):
             continue
-        if stage != '0' or mode not in ('100644', '100755'):
+        if stage != '0' or mode not in ('100644', '100755', '120000'):
             raise ValueError('unmerged/unsupported index input: ' + name)
         index[name] = {'mode': mode, 'oid': oid}
     untracked = {os.fsdecode(n) for n in git(root, 'ls-files', '--others', '--exclude-standard', '-z').split(b'\0')
                  if n and not workflow(os.fsdecode(n))}
     # Read actual bytes even for assume-unchanged entries. Git's clean flags are
     # not evidence that a compiler saw the committed contents.
-    files = {n: path_state(root, n) for n in sorted(set(committed) | set(index) | untracked)}
+    from managed_links import inspect
+    links, member_files = inspect(root, committed, index)
+    files = {}
+    for name in sorted(set(committed) | set(index) | untracked):
+        files[name] = links[name] if name in links else member_files[name] if name in member_files else path_state(root, name)
     declared = {}
     for name in sorted(set(required) | set(optional)):
         declared[name] = path_state(root, name)
         if name in required and declared[name]['state'] != 'file':
             raise ValueError('required check input missing: ' + name)
-    return {'schema_version': 1, 'scope': SCOPE, 'state': 'identified', 'project': str(root),
+    return {'schema_version': 2 if links else 1, 'scope': SCOPE, 'state': 'identified', 'project': str(root),
             'head': head, 'committed': committed, 'index': index, 'files': files, 'declared': declared}
 
 
@@ -102,7 +106,7 @@ def capture(root, required=(), optional=()):
 
 def valid(value):
     keys = {'schema_version', 'scope', 'state', 'project', 'head', 'committed', 'index', 'files', 'declared'}
-    shape = (isinstance(value, dict) and set(value) == keys and type(value['schema_version']) is int and value['schema_version'] == 1
+    shape = (isinstance(value, dict) and set(value) == keys and type(value['schema_version']) is int and value['schema_version'] in (1, 2)
             and value['scope'] == SCOPE and value['state'] == 'identified'
             and isinstance(value['project'], str) and bool(value['project'])
             and isinstance(value['head'], str) and re.fullmatch('[0-9a-f]{40}|[0-9a-f]{64}', value['head'])
@@ -117,14 +121,46 @@ def valid(value):
             if path.is_absolute() or '..' in path.parts or '.git' in path.parts or path.as_posix() != name:
                 return False
             if key in ('committed', 'index'):
-                if (set(entry) != {'mode', 'oid'} or entry['mode'] not in ('100644', '100755')
+                if (set(entry) != {'mode', 'oid'} or entry['mode'] not in (('100644', '100755', '120000') if value['schema_version'] == 2 else ('100644', '100755'))
                         or not isinstance(entry['oid'], str) or not re.fullmatch('[0-9a-f]{40}|[0-9a-f]{64}', entry['oid'])):
                     return False
+            elif key == 'files' and entry.get('state') == 'managed_directory_link':
+                if not valid_link(value, name, entry): return False
             elif entry != {'state': 'missing'}:
                 if (set(entry) != {'state', 'sha256', 'executable'} or entry['state'] != 'file'
                         or type(entry['executable']) is not bool or not isinstance(entry['sha256'], str)
                         or not re.fullmatch('[0-9a-f]{64}', entry['sha256'])):
                     return False
+    links = {n for n, e in value['files'].items() if e.get('state') == 'managed_directory_link'}
+    tracked_links = {n for k in ('committed', 'index') for n, e in value[k].items() if e['mode'] == '120000'}
+    if links != tracked_links or (value['schema_version'] == 2 and not links): return False
+    return True
+
+
+def valid_link(value, name, entry):
+    from managed_links import target_path, blob_id
+    if (value['schema_version'] != 2 or set(entry) != {'state', 'sha256', 'target', 'target_path', 'members'}
+            or not isinstance(entry['target'], str) or not isinstance(entry['sha256'], str)
+            or not isinstance(entry['target_path'], str) or not isinstance(entry['members'], list)
+            or not entry['members'] or not all(isinstance(n, str) for n in entry['members'])
+            or entry['members'] != sorted(set(entry['members']))):
+        return False
+    tracked = value['committed'].get(name)
+    if not tracked or tracked.get('mode') != '120000' or tracked != value['index'].get(name): return False
+    try:
+        raw = os.fsencode(entry['target'])
+        if (target_path(name, entry['target']) != entry['target_path']
+                or hashlib.sha256(raw).hexdigest() != entry['sha256']
+                or blob_id(raw, tracked['oid']) != tracked['oid']): return False
+    except (ValueError, TypeError, UnicodeError): return False
+    prefix = entry['target_path'] + '/'
+    expected = {n for n in value['committed'] if n.startswith(prefix)}
+    if set(entry['members']) != expected or expected != {n for n in value['index'] if n.startswith(prefix)}: return False
+    for member in expected:
+        if (value['committed'][member].get('mode') not in ('100644', '100755')
+                or value['index'][member].get('mode') not in ('100644', '100755')
+                or not isinstance(value['files'].get(member), dict)
+                or value['files'][member].get('state') != 'file'): return False
     return True
 
 

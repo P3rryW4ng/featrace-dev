@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.18.1 — 2026-10-19
+
+- Compatibility fix for committed relative links directly to managed in-project directories. Bind link bytes and complete target membership/content using no-follow reads; keep outside, missing, nested, unmanaged and moving inputs unknown.
+- Regular projects retain identity schema 1; supported linked inputs use schema 2 and older readers refuse them. Reuse the same boundary in automatic checks and device continuity without changing business verification schemas, enabling project contracts or re-signing original executions.
+- Scoped 113-file release preserves the 0.18.0 entrypoints and excludes main progress instructions. Source full-suite evidence and scoped candidate/temporary-install evidence remain separately identified; real-project benefit is not established. The separate all-negative manual-scope persistence issue remains unresolved.
+
 ## 0.18.0 — 2026-10-19
 
 - Explicit feature-local schema 5 separates immutable original manual observations from reviewed current applicability. Share one frozen batch and change inventory, require independent claim-specific dependency/environment/counterexample findings, and atomically save one supported subset without re-signing history.
