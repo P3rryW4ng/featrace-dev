@@ -1,5 +1,7 @@
 # Verification checklist (0.12.0)
 
+For explicitly prepared schema6 acceptance v1, use [acceptance-contract.md](acceptance-contract.md) instead of the legacy stamp/carry/final-review sequence below. Capture does not require already-supported acceptance; final delivery still requires complete coverage and existing guards. Do not migrate from an ordinary stale-status message.
+
 For a feature explicitly prepared with `manual_scope_contract: 1`, load [manual-scope.md](manual-scope.md) for batch applicability of original manual facts. New unknown changes require assessment, not automatic re-observation; supported subsets do not remove global blockers or the complete final review. Do not enable this format merely because the tool was installed.
 
 Use within `/dev check`, and after authorized develop/fix implementation when preparing acceptance. No new user-facing command. For ordinary check, load `technical-test.md` only if objective checks need selection, execution or repair. Technical Test owns selected commands and per-claim test coverage in existing records; this Verify responsibility inspects the resulting report, actual assertions and uncovered behavior before any acceptance/Deliver claim. They currently run in the same Agent context, so this is a responsibility boundary, not independent review. Ask the user only for remaining observations or business judgments. Respect requests for analysis-only or no execution.

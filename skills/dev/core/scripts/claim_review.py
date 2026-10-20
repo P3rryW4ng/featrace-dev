@@ -12,6 +12,8 @@ from verification import load_plan, state, context, manual_evidence_stamp, row_e
 
 
 def identity(root, folder):
+    from acceptance_contract import enabled, capture_assessment
+    if enabled(load_plan(folder)): return capture_assessment(root,folder)[0]
     req = json.loads((folder / 'spec/requirements.json').read_text())
     plan = load_plan(folder)
     stamp, head = context(root, folder, plan)
@@ -71,6 +73,11 @@ def identity(root, folder):
 
 
 def validate(root, folder):
+    from acceptance_contract import enabled, resolve_claims
+    try:
+        if enabled(load_plan(folder)):
+            return ['claim-to-evidence review unresolved: '+json.dumps(b) for b in resolve_claims(root,folder)['blockers']]
+    except (OSError,ValueError,KeyError,TypeError) as exc: return ['invalid acceptance review: '+str(exc)]
     path = folder / 'claim-review.json'
     if path.is_symlink():
         return ['claim-to-evidence review must be a local regular file']
@@ -104,15 +111,20 @@ def validate(root, folder):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('action', choices=('capture', 'check'))
+    parser.add_argument('action', choices=('capture', 'check', 'apply'))
     parser.add_argument('root', type=Path)
     parser.add_argument('feature_id')
+    parser.add_argument('--request',type=Path); parser.add_argument('--review',type=Path)
     args = parser.parse_args()
     if not re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9_-]*', args.feature_id):
         parser.error('invalid feature ID')
     root = args.root.resolve()
     folder = root / '.agent-workflow/features' / args.feature_id
     try:
+        if args.action == 'apply':
+            from acceptance_contract import apply_assessment, read, project_views
+            if not args.request or not args.review: raise ValueError('request and review required')
+            apply_assessment(root,folder,read(args.request),read(args.review)); project_views(root,folder); return 0
         if args.action == 'capture':
             print(json.dumps(identity(root, folder), ensure_ascii=False, indent=2))
             return 0

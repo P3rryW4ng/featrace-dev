@@ -17,7 +17,8 @@ from project import validate_gates
 
 
 def read(path):
-    return json.loads(path.read_text())
+    from acceptance_contract import parse
+    return parse(path.read_bytes())
 
 
 def save(path, doc):
@@ -33,6 +34,15 @@ def plan_mutation(function):
     """Serialize helper-authored result mutations; refuse rather than wait on a busy plan."""
     @wraps(function)
     def wrapped(root, folder, *args, **kwargs):
+        path = folder / 'verification.json'
+        if path.exists():
+            from acceptance_contract import enabled
+            if enabled(read(path)):
+                if function.__module__ == __name__ and function.__name__ in ('sync','run','record','retain'):
+                    return function(root, folder, *args, **kwargs)  # explicit new routes own locks
+                from acceptance_contract import mutation
+                with mutation(root,folder):
+                    return function(root,folder,*args,**kwargs)
         scratch = root / '.agent-workflow/scratch'
         if scratch.is_symlink() or (root / '.agent-workflow').is_symlink():
             raise ValueError('unsafe verification lock location')
@@ -93,6 +103,11 @@ def candidates(req, config, impact):
 
 def load_plan(folder):
     doc = read(folder / 'verification.json')
+    from acceptance_contract import enabled, validate_document
+    if enabled(doc):
+        validate_document(doc)
+        if doc['feature_id'] != folder.name: raise ValueError('CONTRACT_UNSUPPORTED: feature mismatch')
+        return doc
     if not isinstance(doc, dict) or doc.get('schema_version') not in (1, 2, 3, 4, 5) or doc.get('feature_id') != folder.name or not isinstance(doc.get('items'), list) or not isinstance(doc.get('retired'), list):
         raise ValueError('invalid verification identity/schema')
     if doc.get('schema_version') == 4 and doc.get('execution_contract') != 2:
@@ -182,6 +197,10 @@ class PlanSyncRequired(ValueError):
 
 
 def context(root, folder, doc):
+    from acceptance_contract import enabled, capture_assessment
+    if enabled(doc):
+        request, _ = capture_assessment(root, folder, doc=doc)
+        return request['world_digest'], git(root, 'rev-parse', 'HEAD').decode().strip()
     req, config, impact = sources(root, folder)
     expected = {r['id']: r for r in candidates(req, config, impact)}
     actual = {r['id']: r for r in doc['items']}
@@ -251,6 +270,11 @@ def manual_evidence_stamp(root, folder, row, *, carry_sources=None):
 
 
 def row_evidence_stamp(root, folder, row, check_view=None):
+    from acceptance_contract import enabled, resolve_claims
+    if check_view and '_acceptance' in check_view:
+        return next(x for x in check_view['_acceptance']['items'] if x['id'] == row['id'])
+    if row.get('acceptance_contract') == 1:
+        return next(x for x in resolve_claims(root, folder)['items'] if x['id'] == row['id'])
     if row['mode'] == 'manual':
         if row.get('manual_scope_ref'):
             from manual_scope import view
@@ -269,6 +293,8 @@ def row_evidence_stamp(root, folder, row, check_view=None):
 
 
 def check_currency(root, folder):
+    from acceptance_contract import enabled, resolve_claims
+    if enabled(load_plan(folder)): return {'_acceptance':resolve_claims(root,folder)}
     from check_runs import enabled, view
     outcome = view(root, folder.name) if enabled(root) else None
     doc = load_plan(folder)
@@ -296,7 +322,10 @@ def scope_files(root, folder):
 
 
 @plan_mutation
-def sync(root, folder):
+def sync(root, folder, resolutions=None):
+    from acceptance_contract import enabled, reconcile_claims
+    if (folder/'verification.json').exists() and enabled(read(folder/'verification.json')):
+        return reconcile_claims(root,folder,resolutions)
     req, config, impact = sources(root, folder)
     from feature_lifecycle import require_active
     require_active(req['feature'])
@@ -330,6 +359,10 @@ def sync(root, folder):
 
 
 def state(row, stamp, evidence_stamp=None):
+    if isinstance(evidence_stamp, dict) and 'applicability' in evidence_stamp:
+        return evidence_stamp['status']
+    if row.get('acceptance_contract')==1:
+        raise ValueError('CONTRACT_UNSUPPORTED: acceptance row requires unified resolver view')
     if not row['history']:
         return 'not_run'
     result = row['history'][-1]
@@ -355,6 +388,15 @@ def result(status, stamp, head, actual, evidence, method, *, semantic=None, file
 @plan_mutation
 def run(root, folder):
     doc = load_plan(folder)
+    from acceptance_contract import enabled
+    if enabled(doc):
+        from feature_lifecycle import require_active
+        require_active(read(folder/'spec/requirements.json')['feature'])
+        preflight = subprocess.run([sys.executable,str(Path(__file__).with_name('validate-feature.py')),'--stage','develop',str(root),folder.name],capture_output=True,text=True)
+        if preflight.returncode: raise ValueError('development eligibility failed: '+preflight.stdout+preflight.stderr)
+        execution = subprocess.run([sys.executable,str(Path(__file__).with_name('project.py')),'check',str(root),'--feature',folder.name],capture_output=True,text=True)
+        print(execution.stdout,end='')
+        return summary(root,folder)
     stamp, head = context(root, folder, doc)
     from feature_lifecycle import require_active
     require_active(read(folder / 'spec/requirements.json')['feature'])
@@ -402,6 +444,8 @@ def run(root, folder):
 
 
 def check_mapping_snapshot(root, folder, item_ids):
+    from acceptance_contract import refuse_legacy
+    refuse_legacy(load_plan(folder))
     from check_runs import current
     doc = load_plan(folder); report = current(root, folder.name)
     selected = [r for r in doc['items'] if r['id'] in item_ids]
@@ -418,6 +462,8 @@ def check_mapping_snapshot(root, folder, item_ids):
 
 def adopt_checks(root, folder, *, review=None, locked=False, allow_claims=True):
     def action():
+        from acceptance_contract import refuse_legacy
+        refuse_legacy(load_plan(folder))
         from check_runs import current
         doc = load_plan(folder); original = read(folder / 'verification.json'); report = current(root, folder.name)
         stamp, _ = context(root, folder, doc)
@@ -492,6 +538,8 @@ def doc_without_new_results(doc):
 @plan_mutation
 def record(root, folder, item_id, status, stamp, tested, actual, evidence):
     doc = load_plan(folder)
+    from acceptance_contract import enabled, record_fact
+    if enabled(doc): return record_fact(root,folder,item_id,status,stamp,tested,actual,evidence)
     current, head = context(root, folder, doc)
     from feature_lifecycle import require_active
     require_active(read(folder / 'spec/requirements.json')['feature'])
@@ -517,6 +565,8 @@ def record(root, folder, item_id, status, stamp, tested, actual, evidence):
 def retain(root, folder, item_id, stamp, changed, reason, evidence):
     """Carry a prior pass only after a scoped, current-input relevance review."""
     doc = load_plan(folder)
+    from acceptance_contract import refuse_legacy
+    refuse_legacy(doc)
     current, head = context(root, folder, doc)
     from feature_lifecycle import require_active
     require_active(read(folder / 'spec/requirements.json')['feature'])
@@ -573,6 +623,10 @@ def validate_verification(root, folder, req, stage):
         return ['verification list missing; run sync'] if required and stage == 'check' else []
     try:
         doc = load_plan(folder)
+        from acceptance_contract import enabled, resolve_claims
+        if enabled(doc):
+            if stage != 'check': return []
+            return ['verification incomplete: '+json.dumps(x,ensure_ascii=False) for x in resolve_claims(root,folder)['blockers']]
         if stage != 'check':
             return []
         stamp, _ = context(root, folder, doc)
@@ -586,6 +640,16 @@ def validate_verification(root, folder, req, stage):
 def impact_results(root, folder):
     """Read current checklist evidence without duplicating editable acceptance records."""
     doc = load_plan(folder)
+    from acceptance_contract import enabled, resolve_claims, latest_result
+    if enabled(doc):
+        view=resolve_claims(root,folder); by_id={x['id']:x for x in view['items']}
+        impact_stamp=impact_snapshot(root,read(folder/'impact.json'))['digest']
+        results={};origin_cache={}
+        for row in doc['items']:
+            if row['source'].startswith('impact:') and by_id[row['id']]['status'] in ('passed','waived'):
+                last=latest_result(root,folder,row,doc=doc,inventory=view['world']['facts'],cache=origin_cache)
+                results[row['source'][7:]]={'status':by_id[row['id']]['status'],'method':last.get('method','automatic reviewed attempt'),'evidence':json.dumps(last,ensure_ascii=False),'digest':impact_stamp}
+        return results
     stamp, _ = context(root, folder, doc)
     execution_view = check_currency(root, folder)
     impact_stamp = impact_snapshot(root, read(folder / 'impact.json'))['digest']
@@ -678,6 +742,11 @@ def legacy_execution_diagnostic(root, folder):
 
 
 def continuation_diagnostic(root, folder, items, execution_view, *, plan=None):
+    from acceptance_contract import enabled
+    if enabled(plan or load_plan(folder)):
+        return {'contract':1,'state':'review_required' if any(x['status'] not in ('passed','waived') for x in items) else 'current',
+                'next_action_code':'review_acceptance_delta' if any(x['status'] not in ('passed','waived') for x in items) else 'review_delivery','next_action':'Inspect complete changes and current claims; capture/apply acceptance review only when pending. Current judgments proceed to delivery guards without re-signing facts or running commands solely for record changes.'}
+
     """Read-only routing from existing facts; never certify assertion coverage."""
     from check_runs import enabled
     plan = load_plan(folder) if plan is None else plan
@@ -748,6 +817,12 @@ def continuation_diagnostic(root, folder, items, execution_view, *, plan=None):
 
 def summary(root, folder):
     doc = load_plan(folder)
+    from acceptance_contract import enabled, resolve_claims
+    if enabled(doc):
+        view=resolve_claims(root,folder); view.pop('world',None)
+        view['continuation']={'next_action_code':'review_acceptance_delta' if view['blockers'] else 'review_delivery','next_action':'Capture/apply acceptance review on full changes; no automatic rerun or migration.'}
+        print(json.dumps(view,ensure_ascii=False,indent=2))
+        return 0 if view['acceptance_eligible'] else 2
     stamp, head = context(root, folder, doc)
     execution_view = check_currency(root, folder)
     items = []
@@ -780,6 +855,8 @@ def render(folder):
         return
     doc = load_plan(folder)
     root = folder.parents[2]
+    from acceptance_contract import enabled, project_views
+    if enabled(doc): return project_views(root,folder)
     try:
         stamp, _ = context(root, folder, doc)
     except (OSError, ValueError, TypeError, KeyError):
@@ -818,11 +895,12 @@ def render(folder):
 
 def main():
     p = argparse.ArgumentParser(description=__doc__)
-    p.add_argument('action', choices=['sync', 'run', 'status', 'record', 'retain', 'capture-check-mapping', 'adopt-checks'])
+    p.add_argument('action', choices=['sync', 'run', 'status', 'record', 'retain', 'capture-check-mapping', 'adopt-checks', 'prepare-acceptance', 'compose-acceptance'])
     p.add_argument('root', type=Path)
     p.add_argument('feature_id')
     p.add_argument('--item'); p.add_argument('--status', choices=['passed', 'failed', 'unavailable', 'waived'])
     p.add_argument('--items', nargs='+'); p.add_argument('--review', type=Path)
+    p.add_argument('--approval',type=Path); p.add_argument('--resolutions',type=Path)
     p.add_argument('--digest'); p.add_argument('--tested-revision'); p.add_argument('--actual'); p.add_argument('--evidence')
     p.add_argument('--changed-path', action='append', default=[]); p.add_argument('--reason')
     args = p.parse_args()
@@ -832,13 +910,20 @@ def main():
     if not folder.resolve().is_relative_to(root) or folder.is_symlink():
         p.error('unsafe feature path')
     try:
+        if args.action == 'prepare-acceptance':
+            from acceptance_contract import prepare
+            if not args.approval: raise ValueError('PREPARE_REQUIRED: --approval required')
+            prepare(root,folder,read(args.approval)); render(folder); return summary(root,folder)
+        if args.action == 'compose-acceptance':
+            from acceptance_contract import compose_delivery
+            manifest=compose_delivery(root,folder); print(json.dumps(manifest,ensure_ascii=False,indent=2)); return 0 if manifest['delivery_eligible'] else 2
         if args.action == 'capture-check-mapping':
             print(json.dumps(check_mapping_snapshot(root, folder, args.items), ensure_ascii=False, indent=2)); return 0
         if args.action == 'adopt-checks':
             if not args.review: raise ValueError('adopt-checks requires --review')
             adopt_checks(root, folder, review=read(args.review)); return 0
         if args.action == 'sync':
-            sync(root, folder); summary(root, folder); return 0
+            sync(root, folder,read(args.resolutions) if args.resolutions else None); render(folder); summary(root, folder); return 0
         if args.action == 'run':
             return run(root, folder)
         if args.action == 'record':

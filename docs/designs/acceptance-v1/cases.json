@@ -1,0 +1,408 @@
+{
+  "kind": "acceptance_development_cases",
+  "status": "specification_only_not_executed",
+  "entries": [
+    {
+      "id": "C01",
+      "group": "initial_direct",
+      "preconditions": "直接原观察与完整attempt",
+      "mutation": "初始化后无独立判断",
+      "expected_error": "ASSESSMENT_REQUIRED",
+      "expected": "保持pending，首次审查不导入旧supported",
+      "mandatory": true,
+      "status": "not_run"
+    },
+    {
+      "id": "C02",
+      "group": "local_criterion",
+      "preconditions": "两个主张均已有支持，执行输入不变",
+      "mutation": "只改其中一项AC",
+      "expected_error": null,
+      "expected": "重新判断目标，有据reuse其余；不重签事实",
+      "mandatory": true,
+      "status": "not_run"
+    },
+    {
+      "id": "C03",
+      "group": "no_change",
+      "preconditions": "完整当前assessment",
+      "mutation": "只读status/next",
+      "expected_error": null,
+      "expected": "零执行、零权威写入",
+      "mandatory": true,
+      "status": "not_run"
+    },
+    {
+      "id": "C04",
+      "group": "progress",
+      "preconditions": "当前assessment",
+      "mutation": "只改允许表中的feature/task进度",
+      "expected_error": null,
+      "expected": "判断可保持，交付仍校验任务义务",
+      "mandatory": true,
+      "status": "not_run"
+    },
+    {
+      "id": "C05",
+      "group": "free_note",
+      "preconditions": "当前assessment",
+      "mutation": "改自由status_note",
+      "expected_error": "ASSESSMENT_REQUIRED",
+      "expected": "进入完整delta，不能按进度静默忽略",
+      "mandatory": true,
+      "status": "not_run"
+    },
+    {
+      "id": "C06",
+      "group": "local_decision",
+      "preconditions": "有来源范围的局部决定",
+      "mutation": "修改该决定",
+      "expected_error": null,
+      "expected": "目标重判，其他有据排除；完整集合不减少",
+      "mandatory": true,
+      "status": "not_run"
+    },
+    {
+      "id": "C07",
+      "group": "unknown_decision",
+      "preconditions": "无完整作用域的新决定",
+      "mutation": "增加决定",
+      "expected_error": "WORLD_UNKNOWN",
+      "expected": "保持未知，不默认无关",
+      "mandatory": true,
+      "status": "not_run"
+    },
+    {
+      "id": "C08",
+      "group": "parent_assumption",
+      "preconditions": "同父多个AC",
+      "mutation": "改父assumptions",
+      "expected_error": null,
+      "expected": "相关版本改变；逐目标审查或语义等价reuse",
+      "mandatory": true,
+      "status": "not_run"
+    },
+    {
+      "id": "C09",
+      "group": "shared_code",
+      "preconditions": "当前通过attempt",
+      "mutation": "改共享主题或逻辑",
+      "expected_error": "EXECUTION_UNAVAILABLE",
+      "expected": "按既有输入规则重跑必要整组，不能复用旧attempt",
+      "mandatory": true,
+      "status": "not_run"
+    },
+    {
+      "id": "C10",
+      "group": "test_config",
+      "preconditions": "当前通过attempt",
+      "mutation": "新增测试或改配置",
+      "expected_error": "EXECUTION_UNAVAILABLE",
+      "expected": "当前执行器身份保护保持，不宣称按项缓存",
+      "mandatory": true,
+      "status": "not_run"
+    },
+    {
+      "id": "C11",
+      "group": "latest_failure",
+      "preconditions": "原通过之后出现失败",
+      "mutation": "尝试引用更早通过",
+      "expected_error": "NEGATIVE_UNRESOLVED",
+      "expected": "保存最新失败，拒绝旧绿",
+      "mandatory": true,
+      "status": "not_run"
+    },
+    {
+      "id": "C12",
+      "group": "interrupted",
+      "preconditions": "最后attempt中断或缺终态",
+      "mutation": "引用旧完整attempt",
+      "expected_error": "EXECUTION_UNAVAILABLE",
+      "expected": "不拼组或回退",
+      "mandatory": true,
+      "status": "not_run"
+    },
+    {
+      "id": "C13",
+      "group": "key_retire",
+      "preconditions": "有未解决partial",
+      "mutation": "改key或退役无合法依据",
+      "expected_error": "NEGATIVE_UNRESOLVED",
+      "expected": "障碍沿前身保留",
+      "mandatory": true,
+      "status": "not_run"
+    },
+    {
+      "id": "C14",
+      "group": "unrelated_world",
+      "preconditions": "有未解决负向",
+      "mutation": "只改无关记录",
+      "expected_error": "NEGATIVE_UNRESOLVED",
+      "expected": "world变化不解除缺口",
+      "mandatory": true,
+      "status": "not_run"
+    },
+    {
+      "id": "C15",
+      "group": "all_negative",
+      "preconditions": "结构合法且无通过判断",
+      "mutation": "capture并返回全partial/unknown",
+      "expected_error": null,
+      "expected": "可以保存审查，不可交付；无capture循环",
+      "mandatory": true,
+      "status": "not_run"
+    },
+    {
+      "id": "C16",
+      "group": "apply_repeat",
+      "preconditions": "同request已成功apply",
+      "mutation": "重复apply同返回",
+      "expected_error": null,
+      "expected": "幂等返回原事件，不追加事实或审查",
+      "mandatory": true,
+      "status": "not_run"
+    },
+    {
+      "id": "C17",
+      "group": "older_from",
+      "preconditions": "最新assessment负向",
+      "mutation": "选择更早supported作from",
+      "expected_error": "REVIEW_INCOMPLETE",
+      "expected": "拒绝选择有利旧判断",
+      "mandatory": true,
+      "status": "not_run"
+    },
+    {
+      "id": "C18",
+      "group": "delta_missing",
+      "preconditions": "完整捕获包含多变化",
+      "mutation": "返回漏一delta",
+      "expected_error": "REVIEW_INCOMPLETE",
+      "expected": "零权威写入",
+      "mandatory": true,
+      "status": "not_run"
+    },
+    {
+      "id": "C19",
+      "group": "target_missing",
+      "preconditions": "完整当前主张集合",
+      "mutation": "assess/reuse/pending遗漏或重叠",
+      "expected_error": "REVIEW_INCOMPLETE",
+      "expected": "不能以少审主张通过",
+      "mandatory": true,
+      "status": "not_run"
+    },
+    {
+      "id": "C20",
+      "group": "new_split",
+      "preconditions": "已有主张",
+      "mutation": "新增/拆分/合并AC",
+      "expected_error": null,
+      "expected": "精确reconcile及前身追溯；不继承通过",
+      "mandatory": true,
+      "status": "not_run"
+    },
+    {
+      "id": "C21",
+      "group": "ambiguous_equal_text",
+      "preconditions": "两个相同文案不同来源AC",
+      "mutation": "重排且无法精确对齐",
+      "expected_error": "PLAN_RECONCILIATION_REQUIRED",
+      "expected": "要求明确映射，不用文本近似",
+      "mandatory": true,
+      "status": "not_run"
+    },
+    {
+      "id": "C22",
+      "group": "waiver",
+      "preconditions": "有旧合法豁免",
+      "mutation": "豁免权限或范围变化",
+      "expected_error": "ASSESSMENT_REQUIRED",
+      "expected": "重新核对授权，不机械复制",
+      "mandatory": true,
+      "status": "not_run"
+    },
+    {
+      "id": "C23",
+      "group": "missing_origin",
+      "preconditions": "迁移来源已记录Git引用",
+      "mutation": "对象缺失/浅克隆/字节不匹配",
+      "expected_error": "ORIGIN_UNAVAILABLE",
+      "expected": "拒绝；不从摘要补造原件",
+      "mandatory": true,
+      "status": "not_run"
+    },
+    {
+      "id": "C24",
+      "group": "dirty_prepare",
+      "preconditions": "原格式记录未提交",
+      "mutation": "请求prepare",
+      "expected_error": "PREPARE_REQUIRED",
+      "expected": "不自动提交且不改原文件",
+      "mandatory": true,
+      "status": "not_run"
+    },
+    {
+      "id": "C25",
+      "group": "complex_source",
+      "preconditions": "当前候选依赖未适配复合链",
+      "mutation": "请求prepare",
+      "expected_error": "SOURCE_UNSUPPORTED",
+      "expected": "整次拒绝，历史非候选链不一律阻塞",
+      "mandatory": true,
+      "status": "not_run"
+    },
+    {
+      "id": "C26",
+      "group": "drift",
+      "preconditions": "已冻结完整request",
+      "mutation": "apply前改变事实/世界/generation",
+      "expected_error": "INPUTS_MOVED",
+      "expected": "零部分写入",
+      "mandatory": true,
+      "status": "not_run"
+    },
+    {
+      "id": "C27",
+      "group": "busy",
+      "preconditions": "有活动执行或计划writer",
+      "mutation": "同时prepare/apply",
+      "expected_error": "WORKSPACE_BUSY",
+      "expected": "固定锁序，拒绝并发",
+      "mandatory": true,
+      "status": "not_run"
+    },
+    {
+      "id": "C28",
+      "group": "crash_before",
+      "preconditions": "prepare尚未原子切换",
+      "mutation": "注入写前故障",
+      "expected_error": null,
+      "expected": "原文件逐字不变",
+      "mandatory": true,
+      "status": "not_run"
+    },
+    {
+      "id": "C29",
+      "group": "crash_after",
+      "preconditions": "权威已切换，尚未生成视图",
+      "mutation": "注入视图生成故障",
+      "expected_error": "PROJECTION_STALE",
+      "expected": "合法pending可重建，无重测或回退旧writer",
+      "mandatory": true,
+      "status": "not_run"
+    },
+    {
+      "id": "C30",
+      "group": "old_writer",
+      "preconditions": "活动schema6",
+      "mutation": "旧carry/adopt/annotation/correction写入",
+      "expected_error": "LEGACY_WRITER_DISABLED",
+      "expected": "写前拒绝；直接新事实走新record",
+      "mandatory": true,
+      "status": "not_run"
+    },
+    {
+      "id": "C31",
+      "group": "legacy_mode",
+      "preconditions": "未迁移schema1-5",
+      "mutation": "运行既有流程",
+      "expected_error": null,
+      "expected": "现有语义不变，完整旧回归不削弱",
+      "mandatory": true,
+      "status": "not_run"
+    },
+    {
+      "id": "C32",
+      "group": "downgrade",
+      "preconditions": "schema6已有新fact/assessment",
+      "mutation": "恢复旧合同",
+      "expected_error": "DOWNGRADE_UNSAFE",
+      "expected": "保留新事实，拒绝自动丢失",
+      "mandatory": true,
+      "status": "not_run"
+    },
+    {
+      "id": "C33",
+      "group": "mixed_hosts",
+      "preconditions": "项目级execution_contract2准备不完整",
+      "mutation": "请求单需求prepare",
+      "expected_error": "PREPARE_REQUIRED",
+      "expected": "盘点活动需求/宿主，拒绝未知混用",
+      "mandatory": true,
+      "status": "not_run"
+    },
+    {
+      "id": "C34",
+      "group": "completed_case",
+      "preconditions": "旧需求complete",
+      "mutation": "普通升级/读取",
+      "expected_error": null,
+      "expected": "不迁移或重开7466/8024/8025",
+      "mandatory": true,
+      "status": "not_run"
+    },
+    {
+      "id": "C35",
+      "group": "readers",
+      "preconditions": "已构造正负schema6状态",
+      "mutation": "经过全部28读者",
+      "expected_error": null,
+      "expected": "同源判定；纯委托也有调用证据；动态调用补清单",
+      "mandatory": true,
+      "status": "not_run"
+    },
+    {
+      "id": "C36",
+      "group": "comparison",
+      "preconditions": "同合成仓库同事实和质量目标",
+      "mutation": "严格0.18.4对比候选局部/行为/共享变化",
+      "expected_error": null,
+      "expected": "保留反例；局部至少减少原事实重登记或重复完整判断；报告全部新增成本",
+      "mandatory": true,
+      "status": "not_run"
+    },
+    {
+      "id": "C37",
+      "group": "independence",
+      "preconditions": "完整返回",
+      "mutation": "只有自称reviewer、无宿主新上下文依据",
+      "expected_error": "REVIEW_NOT_INDEPENDENT",
+      "expected": "不接受为独立审查",
+      "mandatory": true,
+      "status": "not_run"
+    },
+    {
+      "id": "C38",
+      "group": "unknown_field",
+      "preconditions": "世界或返回出现新增未识别字段",
+      "mutation": "尝试忽略字段",
+      "expected_error": "WORLD_UNKNOWN",
+      "expected": "拒绝静默视为无关",
+      "mandatory": true,
+      "status": "not_run"
+    },
+    {
+      "id": "C39",
+      "group": "semantic_reuse",
+      "preconditions": "版本发生变化",
+      "mutation": "reuse无语义等价/变化排除依据",
+      "expected_error": "REVIEW_INCOMPLETE",
+      "expected": "不得仅凭hash或文件未命中支持",
+      "mandatory": true,
+      "status": "not_run"
+    },
+    {
+      "id": "C40",
+      "group": "resolved_negative",
+      "preconditions": "存在具体旧缺口",
+      "mutation": "新事实针对缺口且有独立解除依据",
+      "expected_error": null,
+      "expected": "保留原负向与解除链；只解除所覆盖障碍",
+      "mandatory": true,
+      "status": "not_run"
+    }
+  ],
+  "implementation_evidence": "../../evaluations/2026-10-20-acceptance-v1-candidate.md",
+  "evidence_boundary": "Declarative development specification, not an executable test result or installed runtime configuration; see actual Python tests and probe evidence."
+}

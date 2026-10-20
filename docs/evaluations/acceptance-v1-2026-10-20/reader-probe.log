@@ -1,0 +1,61 @@
+CHECK_ATTEMPT: 681236872d084f7b92e55d6389415ca6 passed
+{
+  "results": [
+    {
+      "reader": "stage_view.py",
+      "returncode": 0,
+      "expected": 0,
+      "stderr": ""
+    },
+    {
+      "reader": "revise.py",
+      "returncode": 0,
+      "expected": 0,
+      "stderr": ""
+    },
+    {
+      "reader": "closure-route.py",
+      "returncode": 0,
+      "expected": 0,
+      "stderr": ""
+    },
+    {
+      "reader": "impact.py",
+      "returncode": 0,
+      "expected": 0,
+      "stderr": ""
+    },
+    {
+      "reader": "archive-preflight.py",
+      "returncode": 0,
+      "expected": 0,
+      "stderr": ""
+    },
+    {
+      "writer": "evidence_annotations",
+      "code": "LEGACY_WRITER_DISABLED",
+      "unchanged": true
+    },
+    {
+      "writer": "evidence_adoption",
+      "code": "LEGACY_WRITER_DISABLED",
+      "unchanged": true
+    },
+    {
+      "writer": "evidence_carry",
+      "code": "LEGACY_WRITER_DISABLED",
+      "unchanged": true
+    },
+    {
+      "writer": "manual_scope",
+      "code": "LEGACY_WRITER_DISABLED",
+      "unchanged": true
+    },
+    {
+      "writer": "result_corrections",
+      "code": "LEGACY_WRITER_DISABLED",
+      "unchanged": true
+    }
+  ],
+  "scope": "synthetic read/delegation and explicit refusal, no real archive or real project mutation"
+}

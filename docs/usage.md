@@ -1,6 +1,24 @@
 # 使用与迭代指南
 
-适用正式运行包：**0.18.4 / release/0.18.4**；文档核对：2026-10-20。安装身份见[维护总览](../MAINTAINER.md)，版本历史见 [CHANGELOG](../CHANGELOG.md)。main 的两份未发布指令不能冒充正式安装能力。
+适用正式运行包：**0.19.0 / release/0.19.0**；文档核对：2026-10-20。安装身份见[维护总览](../MAINTAINER.md)，版本历史见 [CHANGELOG](../CHANGELOG.md)。main 的两份未发布指令不能冒充正式安装能力。
+
+## 0.19.0：显式启用的主张级验收合同
+
+0.19.0提供显式schema6 / acceptance_contract1；发布安装状态见[实际核验](evaluations/2026-10-20-release-0190.md)，安装不自动启用。局部记录变化先审查完整差异，受影响项重判，有据不受影响项可分组复用；原事实不重签、旧负向不回退，最终覆盖范围不缩减。原检查执行器仍整组选中执行，没有单项缓存。见[候选合同](../skills/dev/core/references/acceptance-contract.md)。
+
+```mermaid
+flowchart LR
+  A[读取当前来源、事实和变化] --> B{已显式启用新合同？}
+  B -->|否| C[原验收流程]
+  B -->|是| D[统一判定并显示具体缺口]
+  D --> E[执行必要检查或补证]
+  D --> F[独立差异审查：重判、复用或待定]
+  E --> F
+  F --> G[组合全部验收与原交付门禁]
+  G --> H{全部满足？}
+  H -->|否| D
+  H -->|是| I[交付报告与原结项流程]
+```
 
 ## 当前执行机制
 
@@ -396,7 +414,7 @@ scan 结束使用 `project.py validate-gates <PROJECT>` 只校验配置。字符
 
 ## 安装分发
 
-当前使用“克隆指定发布分支 + Python 安装命令”。正式 0.18.4 来源为 release/0.18.4；main 含未发布指令，不作为日常更新来源。安装器复制当前 checkout 的 skills/dev，尚不强制校验正式发布来源；操作前须核对分支、提交及发布清单。更新在已确认发布分支进行，再运行 --update，不是自动同步。
+当前使用“克隆指定发布分支 + Python 安装命令”。正式 0.19.0 来源为 release/0.19.0；main 含未发布指令，不作为日常更新来源。安装器复制当前 checkout 的 skills/dev，尚不强制校验正式发布来源；操作前须核对分支、提交及发布清单。更新在已确认发布分支进行，再运行 --update，不是自动同步。
 
 仓库地址：[P3rryW4ng/featrace-dev](https://github.com/P3rryW4ng/featrace-dev)。按 README 的指定发布来源安装，不能把任意 main 提交视为已发布包。Codex 用户也可请求内置 skill-installer 安装仓库中的 skills/dev（访问私库须授权）；本仓库测试覆盖的是本地安装脚本。
 

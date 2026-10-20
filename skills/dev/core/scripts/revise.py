@@ -211,7 +211,9 @@ def main():
                         matches = [row for row in plan['items'] if row['source'] == source and row['mode'] == 'manual']
                         if len(matches) != 1 or state(matches[0], stamp, row_evidence_stamp(root, folder, matches[0], execution_view)) != 'passed':
                             raise ValueError('Manual revision coverage missing/current pass: ' + item['test_id'] + ' / ' + source)
-                        if matches[0]['history'][-1]['tested_revision'] != head_now:
+                        from acceptance_contract import enabled, latest_result
+                        observed = latest_result(root,folder,matches[0],doc=plan) if enabled(plan) else matches[0]['history'][-1]
+                        if observed.get('tested_revision') != head_now:
                             raise ValueError('Manual revision coverage is not bound to current code: ' + source)
         tasks = json.loads((folder/'tasks.json').read_text())['tasks']
         states = doc['feature'].get('source_status', {})

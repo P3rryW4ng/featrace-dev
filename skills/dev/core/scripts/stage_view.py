@@ -119,9 +119,11 @@ def collect(root, feature_id, stage, task_ids, item_ids, base=None):
         except (OSError, ValueError, KeyError, TypeError) as exc: attention.append('canonical_context_unavailable: ' + str(exc))
     execution_view = v.check_currency(root, root / prefix) if plan is not None else None
     claims, global_states = [], []
+    origin_cache={}
     chosen_ids = {r["id"] for r in chosen_rows}
     for row in rows:
-        latest = row['history'][-1] if row['history'] else None
+        from acceptance_contract import enabled, latest_result
+        latest = latest_result(root,root/prefix,row,doc=plan,inventory=execution_view['_acceptance']['world']['facts'],cache=origin_cache) if enabled(plan) else (row['history'][-1] if row['history'] else None)
         result = None if latest is None else {k: value for k, value in latest.items() if k not in ('carry_receipt', 'annotation_receipt')}
         status = 'unknown'
         if stamp is not None:

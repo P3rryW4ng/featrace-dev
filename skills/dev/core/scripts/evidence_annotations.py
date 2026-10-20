@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 """Review a bounded index/annotation correction without pretending to rerun evidence."""
+from acceptance_contract import refuse_legacy
+
 import argparse
 import copy
 import hashlib
@@ -106,7 +108,7 @@ def capture(root, folder, metadata, additions=None):
     if any(r['path'] in existing or (folder / r['path']).exists() for r in additions):
         raise ValueError('archive additions must be new destinations; existing evidence cannot be replaced')
     before = {name: text_at(folder, name) for name in names}
-    doc = v.load_plan(folder); stamp, head = v.context(root, folder, doc)
+    doc = v.load_plan(folder); refuse_legacy(doc); stamp, head = v.context(root, folder, doc)
     req, _, impact = v.sources(root, folder)
     from evidence_carry import parent
     items, excluded = [], []
@@ -140,7 +142,7 @@ def amend_inputs(root, folder, frozen):
         raise ValueError('invalid annotation snapshot identity')
     if frozen.get('input_digest') != digest({k: val for k, val in frozen.items() if k != 'input_digest'}):
         raise ValueError('annotation snapshot changed')
-    doc = v.load_plan(folder)
+    doc = v.load_plan(folder); refuse_legacy(doc)
     if digest(doc) != frozen['plan_digest'] or digest(project_files(root)) != frozen['code_digest']:
         raise ValueError('plan/code changed; annotation review cannot preserve a new result or implementation')
     current = source_identity(root, folder)
@@ -262,7 +264,7 @@ def apply(root, folder, snapshot_path, review_path):
     frozen, review = v.read(snapshot_path), v.read(review_path)
     inputs = amend_inputs(root, folder, frozen)
     validate_review(review, inputs)
-    doc = v.load_plan(folder); original = copy.deepcopy(doc)
+    doc = v.load_plan(folder); refuse_legacy(doc); original = copy.deepcopy(doc)
     event = {'inputs': inputs, 'review': review}
     event['id'] = digest(event)
     doc.setdefault('annotation_reviews', []).append(event)

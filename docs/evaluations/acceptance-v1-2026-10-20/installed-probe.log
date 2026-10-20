@@ -1,0 +1,46 @@
+CHECK_ATTEMPT: 3f04670f87394e1f98f119db8569867a passed
+{
+  "installations": [
+    {
+      "target": "/tmp/ft-acceptance-isolated-home/.claude/skills/dev",
+      "files": 115,
+      "marker_version": "0.18.4",
+      "exact_source_bytes": true
+    },
+    {
+      "target": "/tmp/ft-acceptance-isolated-home/.agents/skills/dev",
+      "files": 115,
+      "marker_version": "0.18.4",
+      "exact_source_bytes": true
+    }
+  ],
+  "cli_operations": [
+    {
+      "script": "claim_review.py",
+      "action": "capture",
+      "returncode": 0
+    },
+    {
+      "script": "claim_review.py",
+      "action": "apply",
+      "returncode": 0
+    },
+    {
+      "script": "verification.py",
+      "action": "status",
+      "returncode": 0
+    },
+    {
+      "script": "verification.py",
+      "action": "record",
+      "returncode": 0
+    },
+    {
+      "script": "verification.py",
+      "action": "status",
+      "returncode": 2
+    }
+  ],
+  "latest_failure_preserved": true,
+  "scope": "synthetic CLI fixture, not independent native Agent or real project validation"
+}

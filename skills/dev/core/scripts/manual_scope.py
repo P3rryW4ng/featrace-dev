@@ -1,4 +1,6 @@
 """Reviewed current applicability of existing manual facts; never new execution."""
+from acceptance_contract import refuse_legacy
+
 import copy
 from datetime import datetime, timezone
 from pathlib import Path
@@ -94,7 +96,7 @@ def prepare(root, folder):
     root, folder = workspace(root, folder)
     @v.plan_mutation
     def action(root, folder):
-        doc = v.load_plan(folder)
+        doc = v.load_plan(folder); refuse_legacy(doc)
         require_active(v.read(folder / 'spec/requirements.json')['feature'])
         v.sources(root, folder)
         if doc.get('manual_scope_contract') == 1: return doc
@@ -134,7 +136,7 @@ def capture(root, folder, requests):
     from evidence_carry import historical, project_files, parent, observation_ref
     from feature_lifecycle import require_active
     root, folder = workspace(root, folder)
-    doc = v.load_plan(folder)
+    doc = v.load_plan(folder); refuse_legacy(doc)
     if doc.get('manual_scope_contract') != 1: raise ValueError('explicit manual-scope prepare required')
     require_active(v.read(folder / 'spec/requirements.json')['feature'])
     if not isinstance(requests, list) or not requests: raise ValueError('explicit manual scope requests required')
@@ -312,7 +314,7 @@ def assessment_matches(current, doc, row, event, target):
 def view(root, folder, doc=None):
     import verification as v
     root, folder = workspace(root, folder)
-    doc = v.load_plan(folder) if doc is None else doc
+    doc = v.load_plan(folder); refuse_legacy(doc) if doc is None else doc
     if doc.get('manual_scope_contract') != 1: return None
     try:
         current = guarded_inputs(root, folder, doc)
@@ -342,7 +344,7 @@ def apply(root, folder, snapshot, review):
     root, folder = workspace(root, folder)
     @v.plan_mutation
     def action(root, folder):
-        doc = v.load_plan(folder); original = copy.deepcopy(doc)
+        doc = v.load_plan(folder); refuse_legacy(doc); original = copy.deepcopy(doc)
         selected = validate_review(snapshot, review)
         for event in doc.get('manual_scope_reviews', []):
             if event['review'] == review and event['snapshot'] == snapshot:

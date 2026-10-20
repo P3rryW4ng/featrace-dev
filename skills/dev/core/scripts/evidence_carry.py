@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 """Freeze and apply a reviewed carry-forward of a stale manual observation."""
+from acceptance_contract import refuse_legacy
+
 import argparse
 import copy
 import json
@@ -125,7 +127,7 @@ def input_snapshot(root, folder, item_id, contract_revision=None):
     folder = folder.resolve()
     if not folder.is_relative_to(root):
         raise ValueError("feature directory outside project")
-    doc = v.load_plan(folder)
+    doc = v.load_plan(folder); refuse_legacy(doc)
     stamp, head = v.context(root, folder, doc)
     req, _, impact = v.sources(root, folder)
     require_active(req['feature'])
@@ -260,7 +262,7 @@ def apply(root, folder, snapshot, review):
         if (name not in before or before[name] != now.get(name)
                 or before[name]['kind'] != 'blob' or before[name]['mode'] == '120000'):
             raise ValueError('dependency changed or historical content unavailable: ' + name)
-    doc = v.load_plan(folder)
+    doc = v.load_plan(folder); refuse_legacy(doc)
     original_plan = copy.deepcopy(doc)
     row = next(r for r in doc['items'] if r['id'] == fresh['item_id'])
     previous = row['history'][-1]
@@ -364,7 +366,7 @@ def validate_receipt(entry, previous, item):
 @v.plan_mutation
 def minimize_copies(root, folder, item_ids):
     """Replace only uncommitted helper copies, never original observations/prose."""
-    doc = v.load_plan(folder)
+    doc = v.load_plan(folder); refuse_legacy(doc)
     before = copy.deepcopy(doc)
     head = git(root, 'rev-parse', 'HEAD').decode().strip()
     committed = historical(root, folder, head, 'verification.json')

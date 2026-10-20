@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 """Append reviewed descriptive corrections; never rewrite or re-sign observations."""
+from acceptance_contract import refuse_legacy
+
 import argparse
 import copy
 from datetime import datetime, timezone
@@ -133,7 +135,7 @@ def capture(root, folder, changes):
         raise ValueError('unsafe or missing feature authority')
     from feature_lifecycle import require_active
     require_active(v.read(folder / 'spec/requirements.json')['feature'])
-    doc = v.load_plan(folder)
+    doc = v.load_plan(folder); refuse_legacy(doc)
     if not isinstance(changes, list) or not changes:
         raise ValueError('select explicit descriptive corrections')
     selected = []
@@ -188,7 +190,7 @@ def apply(root, folder, snapshot, review_path):
     if fresh != frozen: raise ValueError('correction inputs stale; do not relabel the old review')
     review = v.read(review_path)
     validate_review(review, fresh)
-    doc = v.load_plan(folder)
+    doc = v.load_plan(folder); refuse_legacy(doc)
     original = copy.deepcopy(doc)
     body = {'at': datetime.now(timezone.utc).isoformat(), 'feature_id': folder.name,
             'reviewed_revision': fresh['reviewed_revision'], 'input_digest': fresh['input_digest'],

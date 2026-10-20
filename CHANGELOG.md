@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.19.0 — 2026-10-20
+
+- Introduce explicitly approved, opt-in schema 6 acceptance contract 1: immutable original fact references, stable claims, complete world deltas, assessment events and grouped reuse through one resolver. No automatic project migration.
+- Keep negative barriers, fixed execution attempts, independent review requirements, locks, drift detection, lifecycle and full delivery controls. Acceptance eligibility alone never certifies delivery. Legacy writers refuse schema 6; schema 1–5 remain supported.
+- Route ordinary readers and existing entrypoints through the new contract when enabled. Existing check execution and device/module controls remain; no per-gate cache or automatic dependency completeness claim.
+- Minor-version change for the new data/workflow contract. Source regression 634/634 (51 new); formal 115-file package retains the published entrypoint/orchestration, excluding unrelated main-only instructions. See release evidence; native semantic review and real efficiency remain unmeasured.
+
 ## 0.18.4 — 2026-10-20
 
 - Close ordinary Verify reentry: typed unsynchronized-list blockers require authorized sync followed by a fresh inventory; compact next_step appears first without changing minimal source inventories.

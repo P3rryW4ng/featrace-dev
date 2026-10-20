@@ -1,0 +1,27 @@
+test_reactivated_source_keeps_original_negative_identity (test_acceptance_contract.AcceptanceContractTests) ... ERROR
+test_known_dependency_mapping_changes_need_reconciliation (test_acceptance_contract.AcceptanceContractTests) ... ok
+test_archived_feature_cannot_receive_new_fact_review_or_prepare (test_acceptance_contract.AcceptanceContractTests) ... ok
+
+======================================================================
+ERROR: test_reactivated_source_keeps_original_negative_identity (test_acceptance_contract.AcceptanceContractTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/mac/Entrepôt/featrace-dev/tests/test_acceptance_contract.py", line 392, in test_reactivated_source_keeps_original_negative_identity
+    a.reconcile_claims(self.root,self.folder)
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/acceptance_contract.py", line 686, in reconcile_claims
+    write(root, folder, doc, before)
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/acceptance_contract.py", line 252, in write
+    validate_document(doc)
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/acceptance_contract.py", line 171, in validate_document
+    fail('CONTRACT_UNSUPPORTED', 'invalid row inventory')
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/acceptance_contract.py", line 25, in fail
+    raise ContractError(code, detail)
+acceptance_contract.ContractError: CONTRACT_UNSUPPORTED: invalid row inventory
+
+----------------------------------------------------------------------
+Ran 3 tests in 10.273s
+
+FAILED (errors=1)
+CHECK_ATTEMPT: c835acdd28d042febede6d8e5323e917 passed
+CHECK_ATTEMPT: 0d29aa7a8cd342c6ab23f044f731e84c passed
+CHECK_ATTEMPT: 99474f0a49784d3aa91dc83fcee395ef passed

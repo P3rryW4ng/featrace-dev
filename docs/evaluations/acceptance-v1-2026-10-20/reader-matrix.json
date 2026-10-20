@@ -1,0 +1,202 @@
+{
+  "kind": "candidate_reader_assessment",
+  "entries": [
+    {
+      "path": "skills/dev/core/scripts/verification.py",
+      "role": "core",
+      "source_sha256": "736efc635b2d4086ae82482f5bb890f78985dac018f95912c0fc47b0b5588efd",
+      "assessment": "new dispatch, resolver-backed state/summary/validation/impact; direct records own new lock path",
+      "boundary": "Source/delegation inspection and named synthetic probes; not 28 separate real project executions"
+    },
+    {
+      "path": "skills/dev/core/scripts/claim_review.py",
+      "role": "core",
+      "source_sha256": "ad8ab07773f3624ecf5312f4ca914303e162926f627fa369cc0032166aaf7008",
+      "assessment": "schema6 capture/apply/validate; no legacy review fallback",
+      "boundary": "Source/delegation inspection and named synthetic probes; not 28 separate real project executions"
+    },
+    {
+      "path": "skills/dev/core/scripts/audit-delivery.py",
+      "role": "direct",
+      "source_sha256": "711774137ca8cc82d83540701f0d4399221e4f5e5f61b287ab294d619e918ccd",
+      "assessment": "unchanged; validate_verification and original quality/device guards delegate to unified readers",
+      "boundary": "Source/delegation inspection and named synthetic probes; not 28 separate real project executions"
+    },
+    {
+      "path": "skills/dev/core/scripts/validate-feature.py",
+      "role": "direct",
+      "source_sha256": "8c80b2e5320220e2388bde74f745796ed88a2808f5d322f7c976f7f8d6cf6693",
+      "assessment": "unchanged; unified verification, claim review and original terminal guards",
+      "boundary": "Source/delegation inspection and named synthetic probes; not 28 separate real project executions"
+    },
+    {
+      "path": "skills/dev/core/scripts/verify-inputs.py",
+      "role": "direct",
+      "source_sha256": "427038bc001b08940be0e48f51e561e31f8ac314025fe12009aab8af3c1f450d",
+      "assessment": "unchanged; canonical context/state and schema6 continuation",
+      "boundary": "Source/delegation inspection and named synthetic probes; not 28 separate real project executions"
+    },
+    {
+      "path": "skills/dev/core/scripts/feature-status.py",
+      "role": "direct",
+      "source_sha256": "5b69f90492d7d39d9be3884f191fdcb52cac977126e4c387967b00b4c9801777",
+      "assessment": "unchanged; canonical context/state and continuation; no independent currentness rule",
+      "boundary": "Source/delegation inspection and named synthetic probes; not 28 separate real project executions"
+    },
+    {
+      "path": "skills/dev/core/scripts/closure-route.py",
+      "role": "direct",
+      "source_sha256": "c5a5fa00a9a90c2ffa15e93e0151a7ec088edaff85ca19143d504590e30f3c98",
+      "assessment": "unchanged; existing check/audit and canonical claim_review validation",
+      "boundary": "Source/delegation inspection and named synthetic probes; not 28 separate real project executions"
+    },
+    {
+      "path": "skills/dev/core/scripts/impact.py",
+      "role": "direct",
+      "source_sha256": "89a64874a6a6e64c4ee84647436daf63bcc84b77fd17e292a5677862c143fd58",
+      "assessment": "unchanged; check-stage impact_results delegates to verification",
+      "boundary": "Source/delegation inspection and named synthetic probes; not 28 separate real project executions"
+    },
+    {
+      "path": "skills/dev/core/scripts/stage_view.py",
+      "role": "direct",
+      "source_sha256": "ceba29f9687bf07178c4c1b5b1336fc22036a1da95f8f1d9997a0c670250cccc",
+      "assessment": "original latest result adapter with per-operation origin cache",
+      "boundary": "Source/delegation inspection and named synthetic probes; not 28 separate real project executions"
+    },
+    {
+      "path": "skills/dev/core/scripts/archive-preflight.py",
+      "role": "direct",
+      "source_sha256": "615d4a2248762367910820f13e8baf7f3caf3d146ed273339d77bfd3a1427d25",
+      "assessment": "unchanged; load_plan and original check/audit; synthetic draft probe",
+      "boundary": "Source/delegation inspection and named synthetic probes; not 28 separate real project executions"
+    },
+    {
+      "path": "skills/dev/core/scripts/revise.py",
+      "role": "direct",
+      "source_sha256": "6321559b339c961a81bf7c84978118abd1d6c544282889a73da96aa24899f5a5",
+      "assessment": "original result identity adapter; revision current-HEAD controls remain unchanged",
+      "boundary": "Source/delegation inspection and named synthetic probes; not 28 separate real project executions"
+    },
+    {
+      "path": "skills/dev/core/scripts/regression_continuity.py",
+      "role": "direct",
+      "source_sha256": "0d1aa6434b8c6ed30d66bd82eda64b973c2bd93cbe99d1631d771d429b01b088",
+      "assessment": "original/schema6 negative fact adapter; shared mutation locks retained",
+      "boundary": "Source/delegation inspection and named synthetic probes; not 28 separate real project executions"
+    },
+    {
+      "path": "skills/dev/core/scripts/evidence_adoption.py",
+      "role": "legacy",
+      "source_sha256": "db41c59d01bad89ca1aa330effe56acec34dda5523d2600805614f6b03a06892",
+      "assessment": "refuse schema6 before receipt mutation",
+      "boundary": "Source/delegation inspection and named synthetic probes; not 28 separate real project executions"
+    },
+    {
+      "path": "skills/dev/core/scripts/evidence_annotations.py",
+      "role": "legacy",
+      "source_sha256": "e1c54c455f47850ebf6decdc306f137db885afa3d54782aab0d302773c296ad2",
+      "assessment": "refuse schema6 before receipt mutation",
+      "boundary": "Source/delegation inspection and named synthetic probes; not 28 separate real project executions"
+    },
+    {
+      "path": "skills/dev/core/scripts/evidence_carry.py",
+      "role": "legacy",
+      "source_sha256": "d9860ac06b12a4f963215758572ffdced2d38de65e8dcba1b2718b0373af43b0",
+      "assessment": "refuse schema6 including minimize-copies",
+      "boundary": "Source/delegation inspection and named synthetic probes; not 28 separate real project executions"
+    },
+    {
+      "path": "skills/dev/core/scripts/manual_scope.py",
+      "role": "legacy",
+      "source_sha256": "663e83f2aaf37f46e16ab55f1bfe20ff63b50154727daa67d4e5670c8f2fdb65",
+      "assessment": "refuse schema6 prepare/capture/apply; no parallel writer",
+      "boundary": "Source/delegation inspection and named synthetic probes; not 28 separate real project executions"
+    },
+    {
+      "path": "skills/dev/core/scripts/result_corrections.py",
+      "role": "legacy",
+      "source_sha256": "0d4cb17ef9332d30c58bade398cf65914a0dd6bf5b2fd107a2ab4389cc485604",
+      "assessment": "refuse schema6 before correction mutation",
+      "boundary": "Source/delegation inspection and named synthetic probes; not 28 separate real project executions"
+    },
+    {
+      "path": "skills/dev/core/scripts/check_runs.py",
+      "role": "delegated",
+      "source_sha256": "3efc0a799162fd1fdb3d723743dd55074ce235cbad1be49fb6a3272fedff4a04",
+      "assessment": "unchanged actual executor and latest-attempt guards; tested by new automatic binding scenarios",
+      "boundary": "Source/delegation inspection and named synthetic probes; not 28 separate real project executions"
+    },
+    {
+      "path": "skills/dev/core/scripts/feature-archive.py",
+      "role": "delegated",
+      "source_sha256": "54ebfe1ba480e13fa2c4899475741afd09fb12953d681b06261a0724f744345f",
+      "assessment": "unchanged delegation to original validate/audit; no schema6 verdict computation",
+      "boundary": "Source/delegation inspection and named synthetic probes; not 28 separate real project executions"
+    },
+    {
+      "path": "skills/dev/core/scripts/feature_scope.py",
+      "role": "delegated",
+      "source_sha256": "71d2c98d4f0a131518b96af07adb10977bc4af01c5d84a076f25e8ee46c0cde7",
+      "assessment": "unchanged module/source control; exercised via validate-feature",
+      "boundary": "Source/delegation inspection and named synthetic probes; not 28 separate real project executions"
+    },
+    {
+      "path": "skills/dev/core/scripts/fixes.py",
+      "role": "delegated",
+      "source_sha256": "07370cd0b1e455342df4146fedd6401111d6ff2ce6c7ea52867b80577c598355",
+      "assessment": "unchanged fix schema and original device/gate guards",
+      "boundary": "Source/delegation inspection and named synthetic probes; not 28 separate real project executions"
+    },
+    {
+      "path": "skills/dev/core/scripts/module_context.py",
+      "role": "delegated",
+      "source_sha256": "523ec20200d9db148c1e81d93cf412d27b7f4a3828db14358424222135b9dd60",
+      "assessment": "unchanged module freshness; exercised via validate-feature",
+      "boundary": "Source/delegation inspection and named synthetic probes; not 28 separate real project executions"
+    },
+    {
+      "path": "skills/dev/core/scripts/project.py",
+      "role": "delegated",
+      "source_sha256": "17c6923fca95aa6f7ebea9a87f580f22fcbede4c900c0fc8c756a74d9a3f4489",
+      "assessment": "unchanged execution selection/input identity; no per-gate cache added",
+      "boundary": "Source/delegation inspection and named synthetic probes; not 28 separate real project executions"
+    },
+    {
+      "path": "skills/dev/core/scripts/record-fix.py",
+      "role": "delegated",
+      "source_sha256": "18b97d4cd020f920052fe12f6d08414fcf8df0c18e0fe20d72234128dc7fcade",
+      "assessment": "unchanged fix field mutation; does not compute acceptance verdict",
+      "boundary": "Source/delegation inspection and named synthetic probes; not 28 separate real project executions"
+    },
+    {
+      "path": "skills/dev/core/scripts/regression_execution.py",
+      "role": "delegated",
+      "source_sha256": "6705a3274746e30c09311db928d513007d93a7a769b98e41dbb05602250ba92c",
+      "assessment": "unchanged device contract; shared plan_mutation now retains workspace/plan exclusion in schema6",
+      "boundary": "Source/delegation inspection and named synthetic probes; not 28 separate real project executions"
+    },
+    {
+      "path": "skills/dev/core/scripts/render-workspace.py",
+      "role": "delegated",
+      "source_sha256": "0c43fbd525ded6d55b0de5a759aa624d70addf1cb14e2762f59e150f85be2e1e",
+      "assessment": "unchanged; verification.render generates rebuildable schema6 projection",
+      "boundary": "Source/delegation inspection and named synthetic probes; not 28 separate real project executions"
+    },
+    {
+      "path": "skills/dev/core/scripts/stage_cost.py",
+      "role": "delegated",
+      "source_sha256": "9ae8571f2709fc466729b065c4fc9eb872170cdf1f2308b5f8f151370b39d2c8",
+      "assessment": "unchanged ignored scratch journal; only shared read/save primitives",
+      "boundary": "Source/delegation inspection and named synthetic probes; not 28 separate real project executions"
+    },
+    {
+      "path": "skills/dev/core/scripts/archive_git.py",
+      "role": "container",
+      "source_sha256": "23d8021411884a5be21b6c8192e6e4f02967476ca2a29e815d2810d287118964",
+      "assessment": "unchanged container enumeration; no verdict interpretation",
+      "boundary": "Source/delegation inspection and named synthetic probes; not 28 separate real project executions"
+    }
+  ],
+  "read_only_or_delegating_readers_may_be_unchanged": true
+}

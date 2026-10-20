@@ -1,0 +1,19 @@
+CHECK_ATTEMPT: 1bbae57d9cae4b1ebec86c4fcc410520 passed
+{
+  "results": [
+    {
+      "case": "local criterion clarification",
+      "reassessed": 1,
+      "shared_reuse_groups": 1,
+      "new_observations": 0,
+      "check_executions": 1,
+      "result": "expected"
+    },
+    {
+      "case": "new unobserved criterion",
+      "result": "REVIEW_INCOMPLETE",
+      "older facts not inherited": true
+    }
+  ],
+  "scope": "synthetic workflow assertions only, not native semantic quality or actual UI rendering"
+}

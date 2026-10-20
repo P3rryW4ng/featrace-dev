@@ -4,6 +4,8 @@
 This is not execution, ordinary carry, or a way to waive an observed failure.
 Snapshots may include uncommitted workflow records; business code must be clean.
 """
+from acceptance_contract import refuse_legacy
+
 import argparse
 import copy
 from datetime import datetime, timezone
@@ -64,7 +66,7 @@ def capture(root, folder, requests):
     if folder.is_symlink() or not folder.resolve().is_relative_to(root):
         raise ValueError('unsafe feature directory')
     folder = folder.resolve()
-    doc = v.load_plan(folder)
+    doc = v.load_plan(folder); refuse_legacy(doc)
     stamp, head = v.context(root, folder, doc)
     from feature_lifecycle import require_active
     req = v.read(folder / 'spec/requirements.json')
@@ -278,7 +280,7 @@ def apply(root, folder, snapshot, review_path):
             if (name not in before or before[name] != current_project.get(name)
                     or before[name]['kind'] != 'blob' or before[name]['mode'] == '120000'):
                 raise ValueError('adoption dependency changed or unavailable; obtain new evidence')
-    doc = v.load_plan(folder)
+    doc = v.load_plan(folder); refuse_legacy(doc)
     original = copy.deepcopy(doc)
     doc['schema_version'] = max(3, doc['schema_version'])  # Older readers must fail closed.
     receipt = {'inputs': fresh, 'review': review}

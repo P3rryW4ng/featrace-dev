@@ -1,5 +1,7 @@
 # Focused claim-to-evidence review (workflow v6)
 
+For explicitly prepared schema6 acceptance v1, use [acceptance-contract.md](acceptance-contract.md) instead of the legacy stamp/carry/final-review sequence below. Capture does not require already-supported acceptance; final delivery still requires complete coverage and existing guards. Do not migrate from an ordinary stale-status message.
+
 At the Verify → Deliver boundary, after current check/audit pass and before `complete`, capture the current review input with `python3 core/scripts/claim_review.py capture <PROJECT> <ID>`. This is a focused review of active acceptance rows, not the optional full independent Verify investigation. Do not rerun unchanged tests just to produce this review.
 
 Give the captured input and project path to a **fresh-context, read-only reviewer**. The implementer must not sign off on its own acceptance claims. If the host cannot provide a fresh reviewer or the reviewer cannot inspect required source/test/device evidence, leave the feature provisional and report the gap. For each row, the reviewer reads the requirement's **full statement and criterion**, its original source or approved decision, actual assertions or observation artifacts, and tested build identity. `passed`, a test ID, or report prose alone cannot prove full coverage. Expand to relevant code and callers when a shared path or interface is involved.

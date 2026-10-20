@@ -227,7 +227,11 @@ def semantic_identity(root, folder, requests, target_revision=None):
         # prior_results are retained for the reviewer, not treated as current.
         plan_path = folder / 'verification.json'
         if plan_path.is_file():
-            for row in read(plan_path).get('items', []):
+            plan = read(plan_path)
+            from acceptance_contract import enabled, negative_for_test
+            if enabled(plan) and negative_for_test(root,folder,tid):
+                raise ValueError('current verification failure conflicts with device continuity')
+            for row in plan.get('items', []):
                 history = row.get('history', [])
                 if tid in row.get('test_ids', []) and history and history[-1].get('status') == 'failed':
                     raise ValueError('current verification failure conflicts with device continuity')
