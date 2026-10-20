@@ -8,7 +8,7 @@
 
 FeatraceDev 帮助 Coding Agent 在已有代码库中处理需求、调查影响、开发、修复和验收。它把原始资料、已确认的需求、开发任务、历史修复和测试证据连起来，让下一次改动有据可查，也让“完成”有明确的验证范围。
 
-适用于 Claude Code 和 Codex；目前提供通用工作流及 Android 适配。当前仓库源码版本为 **0.18.3**；请在使用设备上核对实际安装版本。
+适用于 Claude Code 和 Codex；目前提供通用工作流及 Android 适配。当前仓库源码版本为 **0.18.4**；请在使用设备上核对实际安装版本。
 
 > 当前是开发者参与的交付工具。它会提醒缺失的决策与证据，但不能保证自动理解所有 PRD、发现所有代码依赖，也不能保证所有设备与业务路径都能自动验证。具备工具和授权时，Agent 可以执行设备操作和客观测试；主观体验仍需人判断。
 
@@ -29,14 +29,14 @@ FeatraceDev 是品牌名，Dev 表示开发；Feature · Trace · Delivery 是�
 需要 Python 3.9+、Git，以及 Claude Code 或 Codex。Android 项目还需项目本身要求的 JDK 和 Android SDK。
 
 ```bash
-git clone --branch release/0.18.3 --single-branch https://github.com/P3rryW4ng/featrace-dev.git
+git clone --branch release/0.18.4 --single-branch https://github.com/P3rryW4ng/featrace-dev.git
 cd featrace-dev
 python3 scripts/install.py
 ```
 
 默认安装到当前用户的 Claude Code 和 Codex。只安装一个工具时使用 `--agent claude` 或 `--agent codex`。安装后打开**新会话**，使 Agent 加载新版本。
 
-正式安装来源为 `release/0.18.3`。`main` 含尚未发布的指令，不应直接用于日常更新；安装器复制当前检出的内容，并不强制验证发布来源。更新前核对发布分支、提交与清单；已有其他分支或本地改动时先调查，不直接覆盖。安装不启用业务项目的新数据合同。当前已知限制见 [维护总览](MAINTAINER.md)。
+正式安装来源为 `release/0.18.4`。`main` 含尚未发布的指令，不应直接用于日常更新；安装器复制当前检出的内容，并不强制验证发布来源。更新前核对发布分支、提交与清单；已有其他分支或本地改动时先调查，不直接覆盖。安装不启用业务项目的新数据合同。当前已知限制见 [维护总览](MAINTAINER.md)。
 
 ## 从这里开始
 
@@ -111,7 +111,7 @@ Skill 源码仓库与业务项目的 `.agent-workflow/` 是两处不同位置。
 
 ## 更新与卸载
 
-先确认当前克隆检出的是本次正式发布分支 `release/0.18.3`，且没有待保留的本地改动。以下命令只适用于该发布分支；在 `main` 或其他分支上不要直接执行安装更新：
+先确认当前克隆检出的是本次正式发布分支 `release/0.18.4`，且没有待保留的本地改动。以下命令只适用于该发布分支；在 `main` 或其他分支上不要直接执行安装更新：
 
 ```bash
 git pull --ff-only

@@ -8,7 +8,7 @@
 
 FeatraceDev helps coding agents understand requirements, investigate impact, implement changes, repair defects, and verify delivery in existing codebases. It connects original sources, confirmed requirements, tasks, historical fixes, and test evidence so future changes can build on recorded facts and completion claims have a clear verification scope.
 
-Works with Claude Code and Codex. Includes a generic workflow and an Android adapter. Current source version: **0.18.3**. Check the installed version on the device where you use it.
+Works with Claude Code and Codex. Includes a generic workflow and an Android adapter. Current source version: **0.18.4**. Check the installed version on the device where you use it.
 
 > This is a developer-assisted delivery tool. It surfaces missing decisions and evidence, but cannot guarantee complete PRD understanding, discover every dependency, or automate every device and business path. With suitable tools and authorization, the Agent can perform device operations and objective tests; subjective experience still requires human judgment.
 
@@ -29,7 +29,7 @@ When a task only requires configuration in another system, the agent states that
 Requires Python 3.9+, Git, and Claude Code or Codex. Android projects also need their required JDK and Android SDK.
 
 ```bash
-git clone --branch release/0.18.3 --single-branch https://github.com/P3rryW4ng/featrace-dev.git
+git clone --branch release/0.18.4 --single-branch https://github.com/P3rryW4ng/featrace-dev.git
 cd featrace-dev
 python3 scripts/install.py
 ```
@@ -38,7 +38,7 @@ By default, the installer installs for both Claude Code and Codex under the curr
 
 Optional independent review: `/dev check OGFR-1234 --independent`. Requires a host that can create a fresh Agent context. It reviews existing evidence read-only; it does not build, run tests, or approve delivery. This differs from the mandatory fresh-context evidence review before completing a newly created v6 workflow. Without host support or a valid review, that workflow remains incomplete.
 
-Use `release/0.18.3` for this release. `main` contains unreleased instructions; the installer copies the current checkout and does not enforce release provenance. Before updating, verify the release branch, commit and manifest, and inspect existing local changes. Installation does not enable new project data contracts. See [maintenance status](MAINTAINER.md) for known limitations.
+Use `release/0.18.4` for this release. `main` contains unreleased instructions; the installer copies the current checkout and does not enforce release provenance. Before updating, verify the release branch, commit and manifest, and inspect existing local changes. Installation does not enable new project data contracts. See [maintenance status](MAINTAINER.md) for known limitations.
 
 ## Start here
 
@@ -111,7 +111,7 @@ The skill repository and your application's `.agent-workflow/` are separate loca
 
 ## Update and uninstall
 
-First verify that the clone is on the official `release/0.18.3` branch and has no local changes to preserve. The commands below apply only to that release branch; do not install directly from `main` or another branch:
+First verify that the clone is on the official `release/0.18.4` branch and has no local changes to preserve. The commands below apply only to that release branch; do not install directly from `main` or another branch:
 
 ```bash
 git pull --ff-only

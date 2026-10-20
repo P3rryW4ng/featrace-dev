@@ -177,12 +177,16 @@ def load_plan(folder):
     return doc
 
 
+class PlanSyncRequired(ValueError):
+    """The derived row list must be synchronized before applicability is assessed."""
+
+
 def context(root, folder, doc):
     req, config, impact = sources(root, folder)
     expected = {r['id']: r for r in candidates(req, config, impact)}
     actual = {r['id']: r for r in doc['items']}
     if actual.keys() != expected.keys() or any(actual[k].get('source') != v['source'] or actual[k].get('expected') != v['expected'] for k, v in expected.items()):
-        raise ValueError('verification list is stale; run sync')
+        raise PlanSyncRequired('verification list is stale; run sync')
     names = {g['name'] for g in config['gates']}
     for row in doc['items']:
         if any(g not in names for g in row['gates']):
@@ -632,6 +636,47 @@ def annotation_links(doc, row, effective_status):
     return links
 
 
+def legacy_execution_diagnostic(root, folder):
+    """Read existing audit input guards; never adopt/rebind legacy assertions."""
+    from project import quality_selection, quality_snapshot, quality_comparison
+    report_path = root / '.agent-workflow/project-baseline/quality-report.json'
+    try:
+        if report_path.is_symlink():
+            raise ValueError('quality report must be a regular file')
+        original = report_path.read_bytes()
+        report = json.loads(original)
+        req, config, _ = sources(root, folder)
+        if (not config['gates'] or config.get('selection_feature_id') != folder.name
+                or report.get('quality_selection') != quality_selection(config)):
+            raise ValueError('report selection is missing or does not match this feature')
+        if report.get('input_comparison', {}).get('state') != 'same':
+            raise ValueError('execution did not certify stable inputs')
+        comparison = quality_comparison(root, report.get('project_snapshot'), quality_snapshot(root, config))
+        if comparison['state'] != 'same':
+            raise ValueError('execution inputs changed or are unknown: ' + comparison.get('reason', comparison['state']))
+        if req.get('feature', {}).get('baseline') is not None:
+            from revisions import binding
+            if report.get('feature_baseline') != binding(root, folder.name):
+                raise ValueError('report requirement baseline changed')
+        results = report.get('results')
+        if (not isinstance(results, list) or len(results) != len(config['gates'])
+                or any(not isinstance(row, dict) for row in results)
+                or len({row.get('name') for row in results}) != len(results)):
+            raise ValueError('report does not contain the complete selected check set')
+        by_name = {row['name']: row for row in results}
+        for gate in config['gates']:
+            row = by_name.get(gate['name'], {})
+            if row.get('status') != 'passed' or row.get('returncode') != 0:
+                raise ValueError('latest selected result failed, unavailable or missing')
+            if row.get('command') != gate['command'] or row.get('test_ids', []) != gate.get('test_ids', []):
+                raise ValueError('executed check contract does not match selection')
+        if report_path.read_bytes() != original:
+            raise ValueError('quality report changed during inspection')
+        return {'state': 'current', 'reason': 'Latest legacy report matches existing input, selection and stable-execution guards; coverage and delivery are not approved.'}
+    except (OSError, ValueError, TypeError, KeyError, AttributeError) as exc:
+        return {'state': 'unavailable', 'reason': str(exc)}
+
+
 def continuation_diagnostic(root, folder, items, execution_view, *, plan=None):
     """Read-only routing from existing facts; never certify assertion coverage."""
     from check_runs import enabled
@@ -675,16 +720,24 @@ def continuation_diagnostic(root, folder, items, execution_view, *, plan=None):
                         'Existing batch applicability may review unchanged active passed/retained rows even when a full parent changed. Before use, review format compatibility and obtain preparation authorization; do not enable it automatically. Legacy single-row carry is stricter.'),
         'boundary': 'Candidates are not certified reusable. New/replaced claims, latest failure/unavailable, missing originals and unknown effects remain gaps. Saved negative assessments require new evidence/authority before reconsideration, not a new reviewer on identical facts. Waivers need original-authority scope review/current recording, never automatic conversion into retained evidence.'}
     if not enabled(root):
-        result.update(contract='legacy', execution_state='not_evaluated',
-                      reason='Legacy acceptance binds the global contract; this diagnostic does not establish why a particular result expired.',
-                      next_action='Inspect changed inputs and coverage under the existing contract. No adopt-checks path; project-wide contract preparation requires explicit scope/compatibility review, never automatic migration.')
+        legacy = legacy_execution_diagnostic(root, folder)
+        result.update(contract='legacy', execution_state='not_evaluated', legacy_execution=legacy, reason=legacy['reason'])
+        if legacy['state'] != 'current':
+            result.update(next_action_code='investigate_execution',
+                          next_action='Investigate the latest report/input blocker. Use focused checks to diagnose actual failures, then execute applicable required gates on final inputs within authorization. Never fall back to older success.')
+        elif pending:
+            result.update(next_action_code='review_legacy_binding',
+                          next_action='Execution inputs match, but legacy acceptance is pending. Investigate claim/record changes and supported existing routes; legacy has no adopt-checks path. Do not re-sign old results, auto-migrate or promise that a physical rerun can be avoided.')
+        else:
+            result.update(next_action_code='review_delivery',
+                          next_action='Automatic rows and latest execution guards are current. Inspect full coverage and remaining manual/device gaps, then use validate-feature.py --stage check and audit-delivery.py. Do not call project.py check or verification.py run solely for a stage transition; both execute commands.')
     elif not execution_view or execution_view.get('state') != 'current':
-        result.update(contract=2, execution_state='unavailable',
+        result.update(contract=2, execution_state='unavailable', next_action_code='investigate_execution',
                       reason=(execution_view or {}).get('reason', 'No current execution fact'),
                       next_action='Investigate the latest attempt, input/selection identity and unresolved processes. Never borrow older success; run selected checks only within authorization after blockers are resolved.')
     else:
         claims = {r['id'] for r in plan['items'] if not r['source'].startswith('gate:')}
-        result.update(contract=2, execution_state='current', attempt_id=execution_view['attempt_id'],
+        result.update(contract=2, execution_state='current', next_action_code='review_execution_binding' if pending else 'review_delivery', attempt_id=execution_view['attempt_id'],
                       report_ref=execution_view['report_ref'],
                       reason='Latest execution inputs and selection match. Pending acceptance is not proof that a command needs re-execution; all requirements/decisions still bind claim stamps.',
                       next_action=('Inspect complete current claims against actual executed assertions; use capture-check-mapping and adopt-checks only for fully supported targets. Missing assertions require targeted tests. run always executes commands.' if pending else 'No pending automatic acceptance; resolve remaining manual/device/authority/final-review requirements without rerunning checks solely for a stage transition.'),

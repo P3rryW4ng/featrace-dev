@@ -1,0 +1,6 @@
+test_legacy_continuation_is_readonly_and_does_not_opt_in_or_run (test_verification.VerificationTests) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.564s
+
+OK
