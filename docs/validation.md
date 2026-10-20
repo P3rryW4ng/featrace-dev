@@ -6,7 +6,7 @@
 
 | 对象 | 已有证据 | 能证明／不能证明 |
 |---|---|---|
-| 验收再入候选 | [2026-10-20评审](reviews/2026-10-20-ui-verify-reentry.md)；6项有效失败基线→6项通过；[完整验证](evaluations/2026-10-20-verify-reentry.md) | 583/583、16次隔离CLI通过；实际发布安装待核；不宣称自然采纳/真实提效 |
+| 验收再入0.18.4 | [2026-10-20评审](reviews/2026-10-20-ui-verify-reentry.md)；6项有效失败基线→6项通过；[完整验证](evaluations/2026-10-20-verify-reentry.md) | 583/583、16次隔离CLI通过；[实际发布安装](evaluations/2026-10-20-release-0184.md)通过；不宣称自然采纳/真实提效 |
 | 普通Verify入口0.18.3 | [复现与验证](evaluations/2026-10-19-ordinary-verify-entry.md)：37行合成及普通库存反例 | 577/577、隔离14次CLI及113文件日常安装通过；[发布核验](evaluations/2026-10-19-release-0183.md)，真实自然采用/净收益未证，不新造自动局部免测 |
 | 零采用与接续指引0.18.2 | [本轮](evaluations/2026-10-19-negative-continuation-candidate.md)：570/570、753.171秒；[发布安装](evaluations/2026-10-19-release-0182.md) | 113文件及日常安装匹配；正向旧视图相等、空采用旧reader拒绝；不实现自动语义局部失效，净收益未测 |
 | 0.18.1发布安装 | [正式核验](evaluations/2026-10-19-release-0181.md)：113文件与Git树/安装SHA/权限一致，旧112备份及四入口通过 | 未变Python/测试沿用源码560项和候选26项；CC回报真实8024解阻，见下一行；净收益未验 |
