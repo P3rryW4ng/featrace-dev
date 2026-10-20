@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.18.4 — 2026-10-20
+
+- Close ordinary Verify reentry: typed unsynchronized-list blockers require authorized sync followed by a fresh inventory; compact next_step appears first without changing minimal source inventories.
+- Inspect latest legacy execution using existing identity/selection/baseline guards. Current automatic rows route to coverage review and read-only validation/audit; stale legacy bindings have no automatic adoption. Latest failures, incomplete reports and unknown/changed inputs stay blocked.
+- Separate focused diagnosis from final selected gates; keep project policy and required checks. Local UI criteria follow actual sources and consumers rather than an invented device/language matrix; dossier updates remain source investigation, not test execution.
+- No persistent contract, gate executor, automatic migration or reduced final review. Scoped 113-file release preserves formal SKILL and excludes unrelated main progress instructions. Real efficiency remains unmeasured.
+
 ## 0.18.3 — 2026-10-19
 
 - Surface the existing execution/acceptance continuation diagnostic at ordinary Verify input collection; separate manual review candidates, waiver-authority checks, new/adverse claims and saved negative assessments. No command executes and no project format is prepared.

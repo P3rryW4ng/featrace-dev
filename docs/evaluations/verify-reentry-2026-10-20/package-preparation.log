@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "/private/tmp/ft-verify-loop-0184/package_probe.py", line 5, in <module>
+    with tarfile.open(fileobj=io.BytesIO(archive)) as tar:tar.extractall(old,filter='data')
+TypeError: extractall() got an unexpected keyword argument 'filter'

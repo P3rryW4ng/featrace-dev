@@ -1,0 +1,19 @@
+{
+  "date": "2026-10-20",
+  "tests": 583,
+  "seconds": 785.861,
+  "frozen_inputs": 161,
+  "inputs_unchanged": true,
+  "targeted": 6,
+  "legacy_compatibility": 1,
+  "prior_full_failure": {
+    "tests": 583,
+    "failures": 1,
+    "seconds": 792.623
+  },
+  "existing_entry": 7,
+  "isolated_cli": 16,
+  "runtime_files": 113,
+  "real_pilot": false,
+  "new_contract": false
+}

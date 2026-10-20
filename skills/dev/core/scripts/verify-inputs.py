@@ -140,7 +140,7 @@ def collect(root, feature_id, *, include_acceptance=True):
         if plan.get('manual_scope_contract') == 1:
             from manual_scope import view
             applicability = view(root, folder, plan)
-        from verification import context, state, row_evidence_stamp, continuation_diagnostic
+        from verification import context, state, row_evidence_stamp, continuation_diagnostic, PlanSyncRequired
         execution_view = checked if isolated else None
         if applicability is not None:
             execution_view = dict(execution_view or {}, _manual_scope=applicability)
@@ -150,11 +150,23 @@ def collect(root, feature_id, *, include_acceptance=True):
                       'status': state(row, stamp, row_evidence_stamp(root, folder, row, execution_view))}
                      for row in plan['items']]
             continuation = continuation_diagnostic(root, folder, items, execution_view, plan=plan)
+        except PlanSyncRequired as exc:
+            continuation = {'state': 'unavailable', 'blocker_code': 'plan_sync_required',
+                            'reason': str(exc), 'next_action_code': 'sync_then_reinspect',
+                            'next_action': 'Within existing record-maintenance authorization, run verification.py sync, then rerun verify-inputs.py and inspect its fresh continuation before selecting execution or reuse. Sync is not testing or acceptance; do not auto-migrate formats.'}
+            issues.append('acceptance_continuation_unavailable')
         except (OSError, ValueError, TypeError, KeyError) as exc:
-            continuation = {'state': 'unavailable', 'reason': str(exc),
+            continuation = {'state': 'unavailable', 'blocker_code': 'acceptance_inputs_unavailable',
+                            'next_action_code': 'resolve_blocker', 'reason': str(exc),
                             'next_action': 'Resolve the reported plan/scope/configuration blocker within authorization; do not execute or borrow evidence to bypass it.'}
             issues.append('acceptance_continuation_unavailable')
-    return {**({'continuation': continuation} if continuation is not None else {}),**({'manual_scope': applicability} if applicability is not None else {}), 'feature_id': feature_id, 'git_head': head, 'worktree_changed_paths': dirty,
+    # Compact first field survives ordinary output previews. Detailed inventory
+    # stays available; source_identity's minimal reader remains unchanged.
+    next_step = ({'action': continuation['next_action_code'],
+                  'instruction': continuation['next_action'],
+                  'boundary': 'Read-only guidance. No execution, migration, adoption or delivery approval.'}
+                 if continuation is not None else None)
+    return {**({'next_step': next_step} if next_step is not None else {}),**({'continuation': continuation} if continuation is not None else {}),**({'manual_scope': applicability} if applicability is not None else {}), 'feature_id': feature_id, 'git_head': head, 'worktree_changed_paths': dirty,
             'source_status_claims': feature.get('source_status', {}),
             'sources': sources, 'quality_report': quality,
             'issues_to_review': sorted(set(issues)),
