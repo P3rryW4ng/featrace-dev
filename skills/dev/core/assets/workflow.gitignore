@@ -1,6 +1,7 @@
 # BEGIN feature-delivery-skill local state
 /project-baseline/fingerprint.json
 /project-baseline/quality-gates.json
+/project-baseline/check-contract-v2-origin.json
 /project-baseline/quality-report.json
 /baseline-draft/
 /baseline-backups/

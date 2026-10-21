@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.21.1 — 2026-10-21
+
+- Protect workspace-local check configuration and its original-config backup from accidental Git propagation. Preparation checks the real index and effective ignore rules before record writes; tracked controls refuse even if an ignore pattern matches.
+- Upgrade only the exact previous managed ignore block, retaining surrounding rules and refusing custom-block replacement. Readers diagnose tracked-backup conflicts without weakening the removed-marker barrier or falling back to legacy success.
+- Keep shared selections and referenced attempts outside blanket ignores; no automatic untracking, history rewriting, project migration or data rollback.
+- Patch release for the existing execution-contract lifecycle; no new schema. Full regression 695/695 (5 new), focused 25+5. Real project efficiency and migration remain unverified.
+
 ## 0.21.0 — 2026-10-21
 
 - Separate parent-delivery traceability from acceptance selection. Linked intake now explicitly selects legacy or scoped; the existing --verification-policy flag remains a scoped alias. Missing/conflicting selection refuses before creation.

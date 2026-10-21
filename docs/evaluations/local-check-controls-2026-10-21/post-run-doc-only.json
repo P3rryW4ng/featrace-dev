@@ -1,0 +1,6 @@
+{
+  "changes": {
+    "skills/dev/core/references/git-sharing.md": "94ef4f374b4e3ed9ca157aae4827aacb150ca1aa220b6c0cdbdbb064ec078832"
+  },
+  "reason": "Synchronize general Git sharing guide only; runtime scripts/tests unchanged from passed run"
+}

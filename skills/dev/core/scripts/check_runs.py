@@ -65,10 +65,37 @@ def folder(root, feature):
     return f
 
 
+LOCAL_CONTROLS = (
+    '.agent-workflow/project-baseline/quality-gates.json',
+    '.agent-workflow/project-baseline/check-contract-v2-origin.json',
+)
+
+
+def local_controls(root, *, require_ignored=False):
+    """Check the index, not merely ignore patterns. Never mutate Git policy/index."""
+    from check_identity import git
+    tracked = git(root, 'ls-files', '-z', '--', *LOCAL_CONTROLS)
+    if tracked:
+        names = ', '.join(os.fsdecode(p) for p in tracked.split(b'\0') if p)
+        raise ValueError('LOCAL_CHECK_CONTROL_TRACKED: local configuration/backup is tracked: '
+                         + names + '; inspect sharing policy; no automatic untracking or fallback')
+    if require_ignored:
+        for name in LOCAL_CONTROLS:
+            probe = subprocess.run(['git', '-C', str(root), 'check-ignore', '--no-index', '-q', '--', name],
+                                   capture_output=True, env={**os.environ, 'GIT_OPTIONAL_LOCKS': '0'})
+            if probe.returncode != 0:
+                raise ValueError('LOCAL_CHECK_CONTROL_UNPROTECTED: ' + name
+                                 + '; configure scoped ignore policy before preparation; no records written')
+
+
 def enabled(root):
     base = Path(root) / '.agent-workflow/project-baseline'
     config_path = safe(root, base / 'quality-gates.json')
     if not config_path.exists() and not (base / 'check-contract-v2-origin.json').exists(): return False
+    if (base / 'check-contract-v2-origin.json').exists():
+        local_controls(root)
+    if not config_path.exists():
+        raise ValueError('local check configuration missing; inspect local preparation; no legacy fallback')
     config = read(root, config_path)
     marker = config.get('execution_contract')
     if marker is not None and (type(marker) is not int or marker != 2):
@@ -123,7 +150,9 @@ def prepare(root, feature, selected, reason):
     from project import validate_gates
     if not isinstance(reason, str) or not reason.strip(): raise ValueError('selection reason required')
     f = folder(root, feature); base = Path(root) / '.agent-workflow/project-baseline'
+    local_controls(root, require_ignored=True)
     with execution_lock(root):
+        local_controls(root, require_ignored=True)
         no_unfinished(root)
         config = read(root, base / 'quality-gates.json'); validate_gates(root, config)
         trial = {'schema_version': 1, 'feature_id': feature, 'gates': selected, 'reason': reason}

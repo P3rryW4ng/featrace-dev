@@ -15,6 +15,8 @@ class VerificationTests(unittest.TestCase):
         test_impact.ImpactTests.setUp(self)
         self.base = self.root / '.agent-workflow/project-baseline'
         self.base.mkdir()
+        with (self.root / '.agent-workflow/.gitignore').open('a') as policy:
+            policy.write('\n/project-baseline/quality-gates.json\n/project-baseline/check-contract-v2-origin.json\n')
         self.gates([sys.executable, '-c', 'assert 1 + 1 == 2'])
         sync(self.root, self.folder)
 

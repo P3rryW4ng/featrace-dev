@@ -4,7 +4,7 @@
 
 The Skill repository tracks runtime sources, installer, synthetic tests, version/changelog and maintenance docs together. Never copy a real project's `.agent-workflow`, sources or personal installation into it. The Skill repository's root ignore of `.agent-workflow/` is intentional; never replace it with the business-project policy.
 
-A business repository may share reviewed current baselines and feature records with its authorized collaborators. At first use or when adopting this policy, run `python3 core/scripts/setup-workflow-git.py <PROJECT>`. It appends the bundled block to `.agent-workflow/.gitignore`, preserving existing rules. It never stages, untracks, commits or pushes. It reports conflicting parent ignores and already tracked ignored paths. Resolve those using project policy and existing user authorization; do not blindly remove a repository-wide exclusion or use `git add -f` on the whole workspace.
+A business repository may share reviewed current baselines and feature records with its authorized collaborators. At first use or when adopting this policy, run `python3 core/scripts/setup-workflow-git.py <PROJECT>`. It appends the bundled block or upgrades the exact known prior block in `.agent-workflow/.gitignore`, preserving surrounding project rules; customized managed blocks require review. It never stages, untracks, commits or pushes. It reports conflicting parent ignores and already tracked ignored paths. Resolve those using project policy and existing user authorization; do not blindly remove a repository-wide exclusion or use `git add -f` on the whole workspace.
 
 | Business-project content | Default |
 |---|---|
@@ -13,7 +13,7 @@ A business repository may share reviewed current baselines and feature records w
 | `quality-candidates.json` | Track shareable templates and rationale |
 | Module index/dossiers/views; impact and verification lists | Track after sensitivity review; verification history may include captured command output |
 | Feature requirements/intake (including module labels, archive history and opt-in baseline metadata), tasks, task-review.json/task-review.md, decisions, traceability, fixes.json/fixes.md, revision proposal JSON/generated revisions.md, generated review views and curated delivery conclusions | Track together after content review |
-| `fingerprint.json`, selected `quality-gates.json`, raw `quality-report.json` | Ignore: machine/revision-specific state and raw execution output |
+| `fingerprint.json`, selected `quality-gates.json`, `check-contract-v2-origin.json`, raw `quality-report.json` | Ignore: machine/revision-specific state and raw execution output |
 | Draft, managed/manual scan backups, lock, recovery and scratch directories | Ignore; local recovery only |
 | `features/*/sources/**` original PRD/API/design artifacts | Ignore by default until repository access and sharing permission are established |
 
@@ -34,3 +34,5 @@ Archive marks local lifecycle only. During Build, `task-commit.md` governs a sco
 Fingerprint includes Git HEAD; after a commit it may become stale even when shared notes remain valid. Review actual changes before refresh; do not repeatedly commit fingerprint updates. Existing tracked ignored files remain tracked: review exact paths with the user/project authorization before removing them from the index while preserving local copies. Ignore rules do not erase Git history. Never rewrite history or publish changes as a side effect of setup.
 
 Agent-authored ordinary scratch uses `.agent-workflow/scratch/` under `write-scope.md`. When needed append `/scratch/` after the existing managed block and check actual Git disposition; do not change the managed template or automatically untrack files. Independently authorized reviewer/worker external scratch remains separate.
+
+Execution-contract local controls require real Git-index and effective-ignore checks before preparation. Shared selections and referenced attempt facts are not blanket-ignored; see [local control and sharing boundary](check-execution.md#local-control-and-sharing-boundary). A local backup is not a supported data rollback.

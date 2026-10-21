@@ -18,11 +18,19 @@ def setup(root):
         raise ValueError('workflow and ignore file must not be symlinks')
     template = (Path(__file__).resolve().parents[1] / 'assets/workflow.gitignore').read_bytes()
     old = target.read_bytes() if target.exists() else b''
-    # Keep existing rules byte-for-byte. Changed managed blocks need review.
+    # Upgrade only the exact prior managed block; retain surrounding project rules.
+    upgraded = False
+    previous = template.replace(b'/project-baseline/check-contract-v2-origin.json\n', b'')
+    if previous.rstrip(b'\n') in old and template.rstrip(b'\n') not in old:
+        if old.count(START.encode()) == 1 and old.count(END.encode()) == 1:
+            old = old.replace(previous.rstrip(b'\n'), template.rstrip(b'\n'), 1)
+            target.write_bytes(old)
+            upgraded = True
+    # Custom managed blocks still need review.
     if START.encode() in old or END.encode() in old:
         if old.count(START.encode()) != 1 or old.count(END.encode()) != 1 or template.rstrip(b'\n') not in old:
             raise ValueError('existing managed ignore block differs; reconcile manually')
-        print('IGNORE_UNCHANGED')
+        print('IGNORE_UPGRADED' if upgraded else 'IGNORE_UNCHANGED')
     else:
         work.mkdir(exist_ok=True)
         target.write_bytes(old + (b'\n' if old and not old.endswith(b'\n') else b'') + template)

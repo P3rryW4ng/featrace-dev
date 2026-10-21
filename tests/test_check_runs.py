@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 import subprocess
 import sys
+import tempfile
 import unittest
 from unittest.mock import patch
 
@@ -22,6 +23,44 @@ class CheckRunTests(unittest.TestCase):
         self.helper.gates(self.command)
         runs.prepare(self.root, 'FEAT-001', [{'name':'unit','test_ids':['UT-1']}], 'Explicit fixture selection')
         v.sync(self.root, self.folder)
+
+    def test_prepare_rejects_unprotected_control_without_mutating_records(self):
+        policy=self.root/'.agent-workflow/.gitignore';original=policy.read_text()
+        before={p:p.read_bytes() for p in (self.helper.base/'quality-gates.json', self.helper.base/'check-contract-v2-origin.json', self.folder/'check-selection.json')}
+        for rules in ('',original+'!/project-baseline/check-contract-v2-origin.json\n'):
+            policy.write_text(rules)
+            with self.assertRaisesRegex(ValueError,'LOCAL_CHECK_CONTROL_UNPROTECTED'):
+                runs.prepare(self.root,'FEAT-001',[{'name':'unit','test_ids':['UT-1']}],'No unsafe publication')
+            self.assertEqual(before,{p:p.read_bytes() for p in before})
+
+    def test_tracked_backup_is_refused_even_if_ignored_and_in_clone(self):
+        origin=self.helper.base/'check-contract-v2-origin.json'
+        self.helper.git('add','-f',str(origin.resolve().relative_to(self.root)))
+        before=origin.read_bytes()
+        with self.assertRaisesRegex(ValueError,'LOCAL_CHECK_CONTROL_TRACKED'):runs.enabled(self.root)
+        with self.assertRaisesRegex(ValueError,'LOCAL_CHECK_CONTROL_TRACKED'):
+            runs.prepare(self.root,'FEAT-001',[{'name':'unit','test_ids':['UT-1']}],'Unsafe tracked backup')
+        self.assertEqual(origin.read_bytes(),before)
+        self.helper.git('add','-A');self.helper.git('-c','user.name=Fixture','-c','user.email=fixture@example.invalid','commit','-qm','Deliberately unsafe fixture')
+        tmp=tempfile.TemporaryDirectory();self.addCleanup(tmp.cleanup);clone=Path(tmp.name)/'clone'
+        subprocess.run(['git','clone','-q',str(self.root),str(clone)],check=True)
+        self.assertFalse((clone/'.agent-workflow/project-baseline/quality-gates.json').exists())
+        with self.assertRaisesRegex(ValueError,'LOCAL_CHECK_CONTROL_TRACKED'):runs.enabled(clone)
+        self.assertEqual((clone/'.agent-workflow/project-baseline/check-contract-v2-origin.json').read_bytes(),before)
+
+    def test_tracked_configuration_refuses_preparation_even_if_ignored(self):
+        self.helper.git('add','-f',str((self.helper.base/'quality-gates.json').resolve().relative_to(self.root)))
+        with self.assertRaisesRegex(ValueError,'LOCAL_CHECK_CONTROL_TRACKED'):
+            runs.prepare(self.root,'FEAT-001',[{'name':'unit','test_ids':['UT-1']}],'Tracked config')
+
+    def test_safe_clone_has_no_local_marker_or_backup_and_keeps_shared_selection(self):
+        self.helper.git('add','-A');self.helper.git('-c','user.name=Fixture','-c','user.email=fixture@example.invalid','commit','-qm','Share selection without local controls')
+        tmp=tempfile.TemporaryDirectory();self.addCleanup(tmp.cleanup);clone=Path(tmp.name)/'clone'
+        subprocess.run(['git','clone','-q',str(self.root),str(clone)],check=True)
+        self.assertFalse(runs.enabled(clone))
+        self.assertTrue((clone/'.agent-workflow/features/FEAT-001/check-selection.json').exists())
+        for name in runs.LOCAL_CONTROLS:self.assertFalse((clone/name).exists())
+        self.assertTrue(runs.enabled(self.root))
 
     def plan(self): return v.load_plan(self.folder)
 

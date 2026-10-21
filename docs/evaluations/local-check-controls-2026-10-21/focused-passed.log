@@ -1,0 +1,73 @@
+test_audit_final_review_status_and_stage_use_same_current_attempt (test_check_runs.CheckRunTests) ... ok
+test_declared_success_is_not_accepted_if_process_group_unresolved (test_check_runs.CheckRunTests) ... ok
+test_diagnostic_does_not_reuse_failed_or_changed_execution (test_check_runs.CheckRunTests) ... ok
+test_diagnostic_new_claim_without_assertions_is_not_automatically_passed (test_check_runs.CheckRunTests) ... ok
+test_execution_drift_and_ignored_declared_input_are_not_reusable (test_check_runs.CheckRunTests) ... ok
+test_execution_rebind_after_record_change_without_command_and_idempotent (test_check_runs.CheckRunTests) ... ok
+test_feature_isolation_and_workspace_lock (test_check_runs.CheckRunTests) ... ok
+test_input_change_and_selection_change_expire_execution_but_prose_does_not (test_check_runs.CheckRunTests) ... ok
+test_keyboard_interrupt_records_interruption_and_stops_remaining_checks (test_check_runs.CheckRunTests) ... ok
+test_latest_failed_and_missing_terminal_never_search_old_green (test_check_runs.CheckRunTests) ... ok
+test_mapping_review_drift_partial_and_unaffected_row_history (test_check_runs.CheckRunTests) ... ok
+test_plan_drift_after_read_refuses_adoption_without_overwrite (test_check_runs.CheckRunTests) ... ok
+test_prepare_rejects_unprotected_control_without_mutating_records (test_check_runs.CheckRunTests) ... ok
+test_readonly_diagnostic_recommends_mapping_not_command_for_current_fact (test_check_runs.CheckRunTests) ... ok
+test_runner_and_adoption_cli_complete_without_borrowing_project_report (test_check_runs.CheckRunTests) ... ok
+test_safe_clone_has_no_local_marker_or_backup_and_keeps_shared_selection (test_check_runs.CheckRunTests) ... ok
+test_schema_and_mode_reject_legacy_readers (test_check_runs.CheckRunTests) ... ok
+test_stale_mapping_review_no_writes_and_new_claim_not_automatically_covered (test_check_runs.CheckRunTests) ... ok
+test_successful_fact_survives_result_registration_failure (test_check_runs.CheckRunTests) ... ok
+test_symlink_and_unknown_input_refuse_before_any_command (test_check_runs.CheckRunTests) ... ok
+test_tampered_fact_and_removed_mode_refuse_without_legacy_fallback (test_check_runs.CheckRunTests) ... ok
+test_terminal_save_crash_retains_start_blocks_retry_without_reexecution (test_check_runs.CheckRunTests) ... ok
+test_timeout_stops_owned_group_and_does_not_pass (test_check_runs.CheckRunTests) ... ok
+test_tracked_backup_is_refused_even_if_ignored_and_in_clone (test_check_runs.CheckRunTests) ... ok
+test_tracked_configuration_refuses_preparation_even_if_ignored (test_check_runs.CheckRunTests) ... ok
+
+----------------------------------------------------------------------
+Ran 25 tests in 52.161s
+
+OK
+CHECK_ATTEMPT: 198d42b5aebf4de3a5d12f7601f29309 passed
+CHECK_RESULTS_ADOPTED: 1; no commands executed
+CHECK_ATTEMPT: af74c7c0480a4dffa1d9a1563a775608 failed
+CHECK_ATTEMPT: 2a224bdd65114fb783108e6499b1fee0 interrupted
+CHECK_ATTEMPT: 2ea9f28481684ad99fda2724ab7c3204 passed
+CHECK_ATTEMPT: ddb0d52c64234d14aca9a91767e90848 failed
+CHECK_ATTEMPT: 58c2c735aa42434e97f7d7714e674f85 passed
+CHECK_ATTEMPT: d3a445192d2343cabd9c23757a71bfe4 unavailable
+CHECK_ATTEMPT: da2313b6b50f4625a858b2489d13bd28 passed
+CHECK_ATTEMPT: f6654a00c0b9465f9904ec4d695ce587 passed
+CHECK_RESULTS_ADOPTED: 1; no commands executed
+CHECK_RESULTS_ADOPTED: 1; no commands executed
+CHECK_RESULTS_ADOPTED: 0; no commands executed
+CHECK_RESULTS_ADOPTED: 0; already applied; no commands executed
+CHECK_ATTEMPT: 3a901c1c1a0440c49ae9150c571ee89e passed
+CHECK_ATTEMPT: 893dd5a956f14e43a7890ca6fcfbe8bd passed
+CHECK_ATTEMPT: f86f0b6be18a46ba8a519f55ffa08864 passed
+CHECK_ATTEMPT: 5cb81093dcaa4ea2ad64466e024cb1cd interrupted
+CHECK_ATTEMPT: 61a7e4d204654ed093be4d1a84a44d23 passed
+CHECK_ATTEMPT: 08a433aae73a42e7a233c0a0635fcadc failed
+CHECK_ATTEMPT: b776ba3f22b64add9c44ca651b058283 passed
+CHECK_RESULTS_ADOPTED: 1; no commands executed
+CHECK_RESULTS_ADOPTED: 1; no commands executed
+CHECK_RESULTS_ADOPTED: 1; no commands executed
+CHECK_ATTEMPT: 184a8e76762143cf8473cb26ad212f49 passed
+CHECK_ATTEMPT: b3ba0520045948c2b223d6470e4d6896 passed
+CHECK_RESULTS_ADOPTED: 1; no commands executed
+CHECK_ATTEMPT: dbe0d3b7d34f492283032c47a01a9528 passed
+CHECK_RESULTS_ADOPTED: 1; no commands executed
+CHECK_ATTEMPT: 2847b561d8c84a03970ed439b7cc9510 passed
+CHECK_RESULTS_ADOPTED: 1; no commands executed
+CHECK_ATTEMPT: cfed569e7c124da5b87462f154d642d3 passed
+CHECK_ATTEMPT: 99e4c36984d5459db9509c9bc3d5ea93 unavailable
+test_clone_reuses_notes_and_rebuilds_local_fingerprint (test_git_sharing.GitSharingTests) ... ok
+test_exact_old_block_upgrade_preserves_custom_rules_and_shared_facts (test_git_sharing.GitSharingTests) ... ok
+test_parent_ignore_report_and_custom_block_conflict (test_git_sharing.GitSharingTests) ... ok
+test_reports_tracked_files_without_untracking (test_git_sharing.GitSharingTests) ... ok
+test_scope_and_idempotence (test_git_sharing.GitSharingTests) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.725s
+
+OK

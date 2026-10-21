@@ -26,12 +26,23 @@ class GitSharingTests(unittest.TestCase):
         self.assertEqual(self.setup_ignore().returncode,0);old=p.read_bytes()
         self.assertTrue(old.startswith(b'# existing\r\n/custom-private\n'))
         self.assertEqual(self.setup_ignore().returncode,0);self.assertEqual(old,p.read_bytes())
-        for rel in ('project-baseline/fingerprint.json','project-baseline/quality-gates.json','project-baseline/quality-report.json','baseline-draft/a','baseline-backups/a',' .baseline.lock'.strip(),'.baseline-previous/a','.baseline-stage-123/a','features/F/sources/prd.md'):
+        for rel in ('project-baseline/fingerprint.json','project-baseline/quality-gates.json','project-baseline/quality-report.json','project-baseline/check-contract-v2-origin.json','baseline-draft/a','baseline-backups/a',' .baseline.lock'.strip(),'.baseline-previous/a','.baseline-stage-123/a','features/F/sources/prd.md'):
             self.assertTrue(self.ignored('.agent-workflow/'+rel),rel)
         for rel in ('.gitignore','config.yaml','project-baseline/coverage.md','project-baseline/quality-candidates.json','features/F/spec/requirements.json','features/F/tasks.json'):
             self.assertFalse(self.ignored('.agent-workflow/'+rel),rel)
         with p.open('a') as f:f.write('!/features/F/sources/prd.md\n')
         self.assertFalse(self.ignored('.agent-workflow/features/F/sources/prd.md'))
+
+    def test_exact_old_block_upgrade_preserves_custom_rules_and_shared_facts(self):
+        work=self.root/'.agent-workflow';work.mkdir()
+        template=(SCRIPTS.parent/'assets/workflow.gitignore').read_bytes()
+        old=template.replace(b'/project-baseline/check-contract-v2-origin.json\n',b'')
+        target=work/'.gitignore';target.write_bytes(b'# user before\n'+old+b'/user-private\n')
+        self.assertEqual(self.setup_ignore().returncode,0)
+        self.assertEqual(target.read_bytes(),b'# user before\n'+template+b'/user-private\n')
+        for name in ('check-selection.json','check-head.json','check-runs/abc/result.json'):
+            self.assertFalse(self.ignored('.agent-workflow/features/F/'+name))
+        self.assertTrue(self.ignored('.agent-workflow/project-baseline/check-contract-v2-origin.json'))
 
     def test_reports_tracked_files_without_untracking(self):
         p=self.root/'.agent-workflow/project-baseline/fingerprint.json';p.parent.mkdir(parents=True);p.write_text('{}')
