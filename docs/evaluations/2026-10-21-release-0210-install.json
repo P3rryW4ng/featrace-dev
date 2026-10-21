@@ -1,0 +1,73 @@
+{
+  "version": "0.21.0",
+  "files": 118,
+  "runtime_commit": "1281b4a",
+  "sha_mode_marker_match": true,
+  "old_118_file_backup_full_match": true,
+  "backup": "/Users/mac/.feature-delivery/backups/20261021T054302-claude-9b05504d",
+  "personal_codex_unchanged": true,
+  "formal_probe": {
+    "candidate_package_files": 118,
+    "temporary_hosts": 2,
+    "marker_version": "0.21.0 formal isolated release",
+    "operations": [
+      {
+        "script": "verification.py",
+        "returncode": 0
+      },
+      {
+        "script": "verification_policy.py",
+        "returncode": 0
+      },
+      {
+        "script": "verification_policy.py",
+        "returncode": 0
+      },
+      {
+        "script": "verification.py",
+        "returncode": 2
+      },
+      {
+        "script": "verification.py",
+        "returncode": 0
+      }
+    ],
+    "physical_executions": 1,
+    "legacy_gate_registered": true,
+    "old_daily_reader_rejected_marker2_without_mutation": true,
+    "daily_install_unchanged": true,
+    "scope": "synthetic installed CLI, not native Agent, device, business migration or actual completion"
+  },
+  "daily_probe": {
+    "candidate_package_files": 118,
+    "installed_hosts": 1,
+    "marker_version": "0.21.0 actual Claude installation",
+    "operations": [
+      {
+        "script": "verification.py",
+        "returncode": 0
+      },
+      {
+        "script": "verification_policy.py",
+        "returncode": 0
+      },
+      {
+        "script": "verification_policy.py",
+        "returncode": 0
+      },
+      {
+        "script": "verification.py",
+        "returncode": 2
+      },
+      {
+        "script": "verification.py",
+        "returncode": 0
+      }
+    ],
+    "physical_executions": 1,
+    "legacy_gate_registered": true,
+    "old_0201_backup_rejected_marker2_without_mutation": true,
+    "old_backup_unchanged": true,
+    "scope": "synthetic installed CLI, not native Agent, device, business migration or actual completion"
+  }
+}
