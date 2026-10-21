@@ -1,4 +1,5 @@
 import contextlib
+import hashlib
 import importlib.util
 import io
 import json
@@ -153,3 +154,158 @@ class OutputPrivacyTests(unittest.TestCase):
     def test_oversized_text_is_unavailable_without_partial_clean(self):
         (self.root/'large').write_text('x'*(privacy.MAX_BYTES+1))
         r,c=self.scan('large');self.assertEqual(c,2);self.assertEqual(r['targets'][0]['reason'],'input_too_large')
+
+
+class StreamingPrivacyTests(unittest.TestCase):
+    setUp = OutputPrivacyTests.setUp
+    git = OutputPrivacyTests.git
+    scan = OutputPrivacyTests.scan
+    # Reuse the setup/helpers, not a second copy of the inherited test methods.
+    def large_json(self, path, size):
+        row=b'  {"path":"synthetic/file.kt","sha256":"'+b'a'*64+b'"},\n'
+        count=(size-8)//len(row)
+        with path.open('wb') as stream:
+            stream.write(b'[\n')
+            while count:
+                n=min(count,2048);stream.write(row*n);count-=n
+            stream.write(b' '*(size-stream.tell()-6)+b'null]\n')
+        self.assertEqual(path.stat().st_size,size)
+
+    def test_58mb_record_full_and_staged_detect_tail_without_mutation(self):
+        p=self.root/'large.json';self.large_json(p,58_328_693);self.git('add','large.json')
+        def sha():
+            h=hashlib.sha256()
+            with p.open('rb') as f:
+                for chunk in iter(lambda:f.read(1024*1024),b''):h.update(chunk)
+            return h.digest()
+        before=sha();index=(self.root/'.git/index').read_bytes()
+        for staged in (False,True):
+            r,c=self.scan('large.json',staged=staged,known_name='scratch/known.json')
+            self.assertEqual(c,0,r);self.assertEqual(r['status'],'no_matches')
+        self.assertEqual(before,sha());self.assertEqual(index,(self.root/'.git/index').read_bytes())
+        with p.open('ab') as f:f.write(self.marker.encode()+b'\n')
+        self.git('add','large.json')
+        for staged in (False,True):
+            r,c=self.scan('large.json',staged=staged,known_name='scratch/known.json')
+            self.assertEqual(c,1);self.assertTrue(any(f['confidence']=='known_value' for f in r['findings']))
+            self.assertNotIn(self.marker,json.dumps(r))
+
+    def test_large_old_and_new_blobs_scan_only_new_lines(self):
+        p=self.root/'history.json';self.large_json(p,18*1024*1024)
+        with p.open('ab') as f:f.write(b'userId: old_private_fixture\n')
+        self.git('add','history.json');self.git('commit','-qm','Large synthetic history')
+        with p.open('ab') as f:f.write(b'new safe summary\n')
+        self.git('add','history.json')
+        r,c=self.scan('history.json',staged=True);self.assertEqual(c,0,r)
+        with p.open('ab') as f:f.write(b'uid: new_private_fixture\n')
+        self.git('add','history.json')
+        r,c=self.scan('history.json',staged=True);self.assertEqual(c,1)
+        self.assertEqual(len(r['findings']),1)
+
+    def test_known_value_across_blocks_lines_and_json_escapes(self):
+        marker='甲\n乙\n丙'
+        (self.root/'scratch/known.json').write_text(json.dumps({'values':[{'kind':'contact','value':marker}]}))
+        (self.root/'lines').write_text('safe\n甲\n乙\n丙\n')
+        (self.root/'escaped').write_text(json.dumps({'body':marker}))
+        for name in ('lines','escaped'):
+            self.git('add',name)
+            for staged in (False,True):
+                with patch.object(privacy,'SCAN_BLOCK_CHARS',4):
+                    r,c=self.scan(name,staged=staged,known_name='scratch/known.json')
+                self.assertEqual(c,1,r);self.assertNotIn(marker,json.dumps(r))
+                if name=='lines':self.assertEqual((r['findings'][0]['line'],r['findings'][0]['column']),(2,1))
+
+    def test_no_synthetic_final_newline_in_staged_known_match(self):
+        (self.root/'scratch/known.json').write_text(json.dumps({'values':[{'kind':'contact','value':self.marker+'\n'}]}))
+        (self.root/'no-lf').write_text(self.marker);self.git('add','no-lf')
+        for staged in (False,True):
+            r,c=self.scan('no-lf',staged=staged,known_name='scratch/known.json');self.assertEqual(c,0,r)
+
+    def test_truncation_still_validates_late_encoding_and_binary(self):
+        for suffix in (b'\xff',b'\x00'):
+            (self.root/'bad-tail').write_bytes((b'uid: private_fixture\n'*200)+b'safe\n'*100+suffix)
+            for staged in (False,True):
+                self.git('add','bad-tail')
+                with patch.object(privacy,'SCAN_BLOCK_CHARS',64),patch.object(privacy,'MAX_FINDINGS',2):
+                    r,c=self.scan('bad-tail',staged=staged)
+                self.assertEqual(c,2);self.assertEqual(r['status'],'unavailable')
+
+    def test_total_stream_budget_refuses_and_git_process_is_reaped(self):
+        (self.root/'budget').write_text('safe\n'*1000);self.git('add','budget')
+        spawned=[];popen=privacy.subprocess.Popen
+        def track(*args,**kwargs):
+            proc=popen(*args,**kwargs);spawned.append(proc);return proc
+        for staged in (False,True):
+            with patch.object(privacy,'MAX_STREAM_BYTES',1024),patch.object(privacy.subprocess,'Popen',track):
+                r,c=self.scan('budget',staged=staged)
+            self.assertEqual(c,2);self.assertEqual(r['targets'][0]['reason'],'input_too_large')
+            self.assertTrue(all(p.poll() is not None for p in spawned))
+
+    def test_staged_index_and_known_input_drift_refuse(self):
+        p=self.root/'drift';p.write_text('safe\n');self.git('add','drift')
+        original=privacy.collect;count=[0]
+        def changed(*args):
+            count[0]+=1
+            if count[0]==2:
+                p.write_text(self.marker+'\n');self.git('add','drift')
+            return original(*args)
+        with patch.object(privacy,'collect',changed):r,c=self.scan('drift',staged=True)
+        self.assertEqual(c,2);self.assertEqual(r['reason'],'input_changed')
+        count=[0]
+        def known_changed(*args):
+            count[0]+=1
+            if count[0]==2:(self.root/'scratch/known.json').write_text('{"values":[]}')
+            return original(*args)
+        with patch.object(privacy,'collect',known_changed):
+            with self.assertRaisesRegex(privacy.ScanError,'known_values_changed'):
+                self.scan('drift',known_name='scratch/known.json')
+
+    def test_column_positions_and_noninitial_bom_are_not_rebased(self):
+        p=self.root/'unicode';p.write_text('safe\n\ufeff😀 '+self.marker+'\n');self.git('add','unicode')
+        for staged in (False,True):
+            with patch.object(privacy,'SCAN_BLOCK_CHARS',8):r,c=self.scan('unicode',staged=staged,known_name='scratch/known.json')
+            self.assertEqual(c,1);self.assertEqual((r['findings'][0]['line'],r['findings'][0]['column']),(2,4))
+
+    def test_dense_long_line_keeps_only_bounded_findings(self):
+        (self.root/'dense').write_text(('uid: fixture_private, '*100000)+'\n')
+        r,c=self.scan('dense');self.assertEqual(c,1)
+        self.assertEqual(len(r['findings']),privacy.MAX_FINDINGS);self.assertTrue(r['targets'][0]['positions_truncated'])
+
+
+    def test_read_error_after_partial_stream_is_unavailable_not_clean(self):
+        (self.root/'read-error').write_text('safe\n')
+        original=privacy.stream_lines
+        def unreadable(stream,state,key,**kwargs):
+            yield 'safe\n'
+            raise OSError('SYNTHETIC_PRIVATE_ERROR_MUST_NOT_ECHO')
+        with patch.object(privacy,'stream_lines',unreadable):r,c=self.scan('read-error')
+        self.assertEqual(c,2);self.assertEqual(r['targets'][0]['reason'],'file_unavailable')
+        self.assertNotIn('SYNTHETIC_PRIVATE_ERROR',json.dumps(r))
+
+
+    def test_new_empty_file_and_mode_only_change_are_not_false_unavailable(self):
+        p=self.root/'empty';p.write_bytes(b'');self.git('add','empty')
+        r,c=self.scan('empty',staged=True);self.assertEqual(c,0,r)
+        self.git('commit','-qm','Synthetic empty file')
+        self.git('update-index','--chmod=+x','empty')
+        r,c=self.scan('empty',staged=True);self.assertEqual(c,0,r)
+
+    def test_missing_diff_for_changed_blob_is_not_clean(self):
+        p=self.root/'missing-diff';p.write_text('safe\n');self.git('add','missing-diff');self.git('commit','-qm','Synthetic baseline')
+        p.write_text(self.marker+'\n');self.git('add','missing-diff')
+        original=privacy.git_lines
+        def omit(root,state,key,*args,**kwargs):
+            if key=='diff':
+                state[key]={'sha256':hashlib.sha256(b'').hexdigest(),'bytes':0}
+                return
+            yield from original(root,state,key,*args,**kwargs)
+        with patch.object(privacy,'git_lines',omit):r,c=self.scan('missing-diff',staged=True)
+        self.assertEqual(c,2);self.assertEqual(r['targets'][0]['reason'],'staged_diff_unavailable')
+
+    def test_known_values_never_stitch_across_unchanged_staged_lines(self):
+        marker='ALPHA\nOMEGA'
+        (self.root/'scratch/known.json').write_text(json.dumps({'values':[{'kind':'contact','value':marker}]}))
+        p=self.root/'hunks';p.write_text('old1\nunchanged\nold2\n');self.git('add','hunks');self.git('commit','-qm','Synthetic disjoint hunks')
+        p.write_text('ALPHA\nunchanged\nOMEGA\n');self.git('add','hunks')
+        with patch.object(privacy,'SCAN_BLOCK_CHARS',4):r,c=self.scan('hunks',staged=True,known_name='scratch/known.json')
+        self.assertEqual(c,0,r)

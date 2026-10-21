@@ -1,0 +1,25 @@
+{
+  "case": "one synthetic staged new UTF-8 JSON file, same scope and no-match result",
+  "file_bytes": 8388530,
+  "file_sha256": "0f1c051a9dfa4be6e6e56b554350d2949425e4a1afd0d43e971d05c736ad83f1",
+  "old_source_sha256": "426aea165b107772d31ab0569badffb46badee5668a5335932e794b3a0644734",
+  "new_source_sha256": "54be161d474b4bc55ae1a28207de80f4077f0093172114b7079a12ce672fee6e",
+  "metrics": [
+    {
+      "implementation": "old",
+      "elapsed_seconds_with_tracemalloc": 0.708676292,
+      "python_peak_traced_bytes": 97161256,
+      "status": 0,
+      "scope": "staged_additions"
+    },
+    {
+      "implementation": "new",
+      "elapsed_seconds_with_tracemalloc": 1.1616165,
+      "python_peak_traced_bytes": 969118,
+      "status": 0,
+      "scope": "staged_additions"
+    }
+  ],
+  "file_and_index_unchanged": true,
+  "limitations": "one observation; Python tracemalloc excludes Git process/native allocations; tracing changes timing; not real-project cost or general speed evidence"
+}

@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.21.2 — 2026-10-21
+
+- Replace whole-file privacy collection with bounded streamed text reads and complete digest rechecks. Support large UTF-8 records without retaining complete old/new blobs, diffs and raw snapshots in Python memory.
+- Preserve staged-addition scope, existing candidate/known-value matching, position-only output, input-drift refusal and exit statuses. Known values span groups; a truncated findings list still validates the remaining input.
+- Keep explicit limits: 256 MiB per file/blob/diff stream and 16 MiB per logical source line. Invalid encoding, resource excess and incomplete reads remain unavailable; empty files and mode-only changes do not invent unavailable diffs.
+- No acceptance-record rewriting, storage deduplication, schema migration or business retest. Patch release for existing checker internals; full regression 708/708 (13 new), focused 31/31. A same-input observation reduced Python traced memory but increased traced runtime; no general speed claim.
+
 ## 0.21.1 — 2026-10-21
 
 - Protect workspace-local check configuration and its original-config backup from accidental Git propagation. Preparation checks the real index and effective ignore rules before record writes; tracked controls refuse even if an ignore pattern matches.

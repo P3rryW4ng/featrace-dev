@@ -1,0 +1,14 @@
+test_new_empty_file_and_mode_only_change_are_not_false_unavailable (test_output_privacy.StreamingPrivacyTests) ... FAIL
+
+======================================================================
+FAIL: test_new_empty_file_and_mode_only_change_are_not_false_unavailable (test_output_privacy.StreamingPrivacyTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/mac/Entrepôt/featrace-dev/tests/test_output_privacy.py", line 288, in test_new_empty_file_and_mode_only_change_are_not_false_unavailable
+    r,c=self.scan('empty',staged=True);self.assertEqual(c,0,r)
+AssertionError: 2 != 0 : {'status': 'unavailable', 'targets': [{'target': 1, 'status': 'unavailable', 'reason': 'staged_diff_unavailable'}], 'findings': [], 'note': 'Target numbers follow --file order. Positions only; values, paths and context are omitted. No matches is not privacy approval; patterns/known values are bounded. No files were redacted or rewritten.'}
+
+----------------------------------------------------------------------
+Ran 1 test in 0.081s
+
+FAILED (failures=1)

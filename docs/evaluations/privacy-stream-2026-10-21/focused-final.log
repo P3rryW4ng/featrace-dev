@@ -1,0 +1,33 @@
+test_binary_git_attribute_does_not_hide_valid_text_additions (test_output_privacy.OutputPrivacyTests) ... ok
+test_changes_during_scan_refuse_clean_result (test_output_privacy.OutputPrivacyTests) ... ok
+test_cli_exit_codes_and_readonly_index_and_files (test_output_privacy.OutputPrivacyTests) ... ok
+test_fifo_returns_unavailable_without_waiting_for_writer (test_output_privacy.OutputPrivacyTests) ... ok
+test_git_interhunk_configuration_cannot_shift_locations (test_output_privacy.OutputPrivacyTests) ... ok
+test_known_file_must_be_ignored_and_errors_never_echo_bad_values (test_output_privacy.OutputPrivacyTests) ... ok
+test_known_markers_match_json_escape_variant_without_echo (test_output_privacy.OutputPrivacyTests) ... ok
+test_known_values_in_review_and_receipt_prose_only_report_positions (test_output_privacy.OutputPrivacyTests) ... ok
+test_labeled_identifiers_and_credentials_are_candidates_not_authority (test_output_privacy.OutputPrivacyTests) ... ok
+test_locations_are_bounded_and_hidden_values_cannot_leak_in_paths (test_output_privacy.OutputPrivacyTests) ... ok
+test_oversized_text_is_unavailable_without_partial_clean (test_output_privacy.OutputPrivacyTests) ... ok
+test_partial_unreadable_binary_or_symlink_targets_are_unavailable (test_output_privacy.OutputPrivacyTests) ... ok
+test_placeholders_hashes_and_unlabeled_unknown_values_do_not_claim_safe (test_output_privacy.OutputPrivacyTests) ... ok
+test_staged_deleted_file_adds_no_new_exposure (test_output_privacy.OutputPrivacyTests) ... ok
+test_staged_new_file_with_literal_pathspec_name_is_checked (test_output_privacy.OutputPrivacyTests) ... ok
+test_staged_only_new_lines_ignore_unchanged_and_removed_sensitive_history (test_output_privacy.OutputPrivacyTests) ... ok
+test_unicode_separator_remains_staged_file_content (test_output_privacy.OutputPrivacyTests) ... ok
+test_worktree_leak_not_staged_is_not_misreported_as_index_content (test_output_privacy.OutputPrivacyTests) ... ok
+test_58mb_record_full_and_staged_detect_tail_without_mutation (test_output_privacy.StreamingPrivacyTests) ... ok
+test_column_positions_and_noninitial_bom_are_not_rebased (test_output_privacy.StreamingPrivacyTests) ... ok
+test_dense_long_line_keeps_only_bounded_findings (test_output_privacy.StreamingPrivacyTests) ... ok
+test_known_value_across_blocks_lines_and_json_escapes (test_output_privacy.StreamingPrivacyTests) ... ok
+test_large_old_and_new_blobs_scan_only_new_lines (test_output_privacy.StreamingPrivacyTests) ... ok
+test_no_synthetic_final_newline_in_staged_known_match (test_output_privacy.StreamingPrivacyTests) ... ok
+test_read_error_after_partial_stream_is_unavailable_not_clean (test_output_privacy.StreamingPrivacyTests) ... ok
+test_staged_index_and_known_input_drift_refuse (test_output_privacy.StreamingPrivacyTests) ... ok
+test_total_stream_budget_refuses_and_git_process_is_reaped (test_output_privacy.StreamingPrivacyTests) ... ok
+test_truncation_still_validates_late_encoding_and_binary (test_output_privacy.StreamingPrivacyTests) ... ok
+
+----------------------------------------------------------------------
+Ran 28 tests in 16.792s
+
+OK

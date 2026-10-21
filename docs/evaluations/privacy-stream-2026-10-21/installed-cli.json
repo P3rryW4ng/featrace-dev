@@ -1,0 +1,28 @@
+{
+  "candidate_marker": "0.21.1 inherited, not a published release",
+  "temporary_hosts": 2,
+  "files_each": 118,
+  "hashes_and_modes_match": true,
+  "entry_equals_formal_0211": true,
+  "synthetic_staged_file_bytes": 58328693,
+  "operations": [
+    {
+      "script_root": "candidate",
+      "returncode": 0,
+      "status": "no_matches"
+    },
+    {
+      "script_root": "daily-old",
+      "returncode": 2,
+      "status": "unavailable"
+    },
+    {
+      "script_root": "candidate",
+      "returncode": 1,
+      "status": "review_needed"
+    }
+  ],
+  "clean_case_file_and_index_unchanged": true,
+  "daily_install_not_updated": true,
+  "scope": "one actual candidate installed CLI, second host identical files; synthetic only, no business record or privacy approval"
+}

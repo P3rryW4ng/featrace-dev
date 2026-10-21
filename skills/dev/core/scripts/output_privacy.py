@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Read-only, explicit output privacy checks; no redaction or safety certification."""
 import argparse
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -9,7 +10,9 @@ import stat
 import subprocess
 import sys
 
-MAX_BYTES = 16 * 1024 * 1024
+MAX_BYTES = 16 * 1024 * 1024  # Maximum logical line; not maximum file size.
+MAX_STREAM_BYTES = 256 * 1024 * 1024
+SCAN_BLOCK_CHARS = 256 * 1024
 MAX_FINDINGS = 100
 KINDS = {'account_identifier', 'credential', 'device_identifier', 'contact'}
 LABEL = re.compile(r'''(?i)\b(?P<key>user[_-]?id|uid|account[_-]?id|device[_-]?(?:id|serial)|serial[_-]?(?:number|no)|access[_-]?token|refresh[_-]?token|api[_-]?key|client[_-]?secret|authorization|email|phone)[\\"'` \t]*[:=：][\\"'` \t]*(?P<value>[^\s,;\]}"'`\\]+)''')
@@ -32,7 +35,8 @@ class Parser(argparse.ArgumentParser):
 
 def git(root, *args, required=True):
     options = [] if args and args[0] == 'check-ignore' else ['--literal-pathspecs']
-    p = subprocess.run(['git', *options, '-C', str(root), *args], capture_output=True)
+    p = subprocess.run(['git', *options, '-C', str(root), *args], capture_output=True,
+                       env={**os.environ, 'GIT_OPTIONAL_LOCKS': '0'})
     if required and p.returncode:
         raise ScanError('git_input_unavailable')
     return p
@@ -98,58 +102,136 @@ def known_values(root, name):
         raise ScanError('invalid_known_values') from None
 
 
-def staged_text(root, name):
-    actual = git(root, 'rev-parse', '--show-toplevel').stdout.decode().strip()
-    if Path(actual).resolve() != root:
-        raise ScanError('staged_requires_git_root')
-    entry = git(root, 'ls-files', '--stage', '-z', '--', name).stdout
-    if not entry:
-        old = git(root, 'cat-file', '-e', 'HEAD:' + name, required=False)
-        if old.returncode == 0:
-            return b'', [], 'staged_deletion'
-        raise ScanError('target_not_staged')
-    rows = [x.split(b'\t', 1)[0].split() for x in entry.split(b'\x00') if x]
-    if len(rows) != 1 or len(rows[0]) != 3 or rows[0][2] != b'0' or rows[0][0] not in {b'100644', b'100755'}:
-        raise ScanError('unsafe_or_unmerged_index')
-    new = git(root, 'cat-file', 'blob', rows[0][1].decode()).stdout
-    if len(new) > MAX_BYTES:
-        raise ScanError('input_too_large')
-    new_text = text(new)
-    old = git(root, 'show', 'HEAD:' + name, required=False)
-    if old.returncode == 0:
-        if len(old.stdout) > MAX_BYTES:
+def stream_lines(stream, state, key, *, line_limit=MAX_BYTES):
+    """Validate all UTF-8 bytes; bound a logical line and each input stream."""
+    sha = hashlib.sha256(); size = 0; first = True
+    while True:
+        data = stream.readline(line_limit + 1)
+        if not data:
+            break
+        size += len(data)
+        if len(data) > line_limit or size > MAX_STREAM_BYTES:
             raise ScanError('input_too_large')
-        old_text = text(old.stdout)
-    else:
-        old_text = ''
-    # Mirror the exact staged addition ranges; disable external diff/textconv drivers.
-    diff = git(root, 'diff', '--cached', '--no-ext-diff', '--no-textconv', '--no-color',
-               '--no-renames', '--text', '--inter-hunk-context=0', '--unified=0', '--', name).stdout
-    parts = []; first = None; cursor = None; added = []
-    # Git uses LF; Unicode separators are file content, not patch delimiters.
-    for line in re.findall(r'[^\n]*\n|[^\n]+$', text(diff)):
-        hunk = re.match(r'^@@ -[0-9]+(?:,[0-9]+)? \+([0-9]+)(?:,[0-9]+)? @@', line)
-        if hunk:
-            if added: parts.append((first, ''.join(added)))
-            cursor = int(hunk[1]); first = None; added = []
-        elif cursor is not None and line.startswith('+'):
-            if first is None: first = cursor
-            added.append(line[1:]); cursor += 1
-        elif cursor is not None and line.startswith(' '):
-            if added: parts.append((first, ''.join(added)))
-            first = None; added = []; cursor += 1
-    if added: parts.append((first, ''.join(added)))
-    if new_text != old_text and not re.search(rb'^@@ ', diff, re.MULTILINE):
-        raise ScanError('staged_diff_unavailable')
-    return entry + b'\x00' + new + b'\x00' + old.stdout + b'\x00' + diff, parts, 'staged_additions'
+        sha.update(data)
+        if b'\x00' in data:
+            raise ScanError('binary_or_encoding_unavailable')
+        try:
+            value = data.decode('utf-8-sig' if first else 'utf-8')
+        except UnicodeError:
+            raise ScanError('binary_or_encoding_unavailable') from None
+        first = False
+        yield value
+    state[key] = {'sha256': sha.hexdigest(), 'bytes': size}
+
+
+def git_lines(root, state, key, *args, line_limit=MAX_BYTES):
+    """Never retain full Git output, launch diff drivers, or echo stderr."""
+    try:
+        proc = subprocess.Popen(['git', '--literal-pathspecs', '-C', str(root), *args],
+                                stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
+                                env={**os.environ, 'GIT_OPTIONAL_LOCKS': '0'})
+    except OSError:
+        raise ScanError('git_input_unavailable') from None
+    try:
+        yield from stream_lines(proc.stdout, state, key, line_limit=line_limit)
+        if proc.wait(timeout=5):
+            raise ScanError('git_input_unavailable')
+    except (subprocess.TimeoutExpired, OSError):
+        raise ScanError('git_input_unavailable') from None
+    finally:
+        proc.stdout.close()
+        if proc.poll() is None:
+            try:
+                proc.kill()
+            except ProcessLookupError:
+                pass
+            proc.wait()
 
 
 def collect(root, name, staged):
     path = path_at(root, name)
-    if staged:
-        return staged_text(root, name)
-    data = raw_file(path)
-    return data, [(1, text(data))], 'file_text'
+    state = {}
+    if not staged:
+        def file_parts():
+            try:
+                fd = os.open(path, os.O_RDONLY | os.O_NONBLOCK | getattr(os, 'O_NOFOLLOW', 0))
+            except OSError:
+                raise ScanError('file_unavailable') from None
+            with os.fdopen(fd, 'rb') as stream:
+                if not stat.S_ISREG(os.fstat(stream.fileno()).st_mode):
+                    raise ScanError('not_regular_file')
+                try:
+                    for number, value in enumerate(stream_lines(stream, state, 'file'), 1):
+                        yield number, value
+                except OSError:
+                    raise ScanError('file_unavailable') from None
+        return state, file_parts(), 'file_text'
+    actual = git(root, 'rev-parse', '--show-toplevel').stdout.decode().strip()
+    if Path(actual).resolve() != root:
+        raise ScanError('staged_requires_git_root')
+    entry = git(root, 'ls-files', '--stage', '-z', '--', name).stdout
+    head = git(root, 'rev-parse', '--verify', 'HEAD', required=False)
+    old = git(root, 'rev-parse', '--verify', 'HEAD:' + name, required=False)
+    state.update(index=hashlib.sha256(entry).hexdigest(), head=head.stdout.hex(), old=old.stdout.hex())
+    if not entry:
+        if old.returncode == 0:
+            return state, iter(()), 'staged_deletion'
+        raise ScanError('target_not_staged')
+    rows = [x.split(b'\t', 1)[0].split() for x in entry.split(b'\x00') if x]
+    if len(rows) != 1 or len(rows[0]) != 3 or rows[0][2] != b'0' or rows[0][0] not in {b'100644', b'100755'}:
+        raise ScanError('unsafe_or_unmerged_index')
+    new_oid = rows[0][1].decode(); old_oid = old.stdout.decode().strip() if old.returncode == 0 else None
+    def staged_parts():
+        for _ in git_lines(root, state, 'new_blob', 'cat-file', 'blob', new_oid):
+            pass
+        if old_oid:
+            for _ in git_lines(root, state, 'old_blob', 'cat-file', 'blob', old_oid):
+                pass
+        cursor = None; pending = None; had_hunk = False
+        for line in git_lines(root, state, 'diff', 'diff', '--cached', '--no-ext-diff', '--no-textconv',
+                              '--no-color', '--no-renames', '--text', '--inter-hunk-context=0', '--unified=0',
+                              '--', name, line_limit=MAX_BYTES + 65536):
+            # Delay one addition to remove Git's synthetic LF on a non-LF final line.
+            if line.startswith('\\ No newline at end of file'):
+                if pending:
+                    yield pending[0], pending[1][:-1] if pending[1].endswith('\n') else pending[1]
+                    pending = None
+                continue
+            if pending:
+                yield pending
+                pending = None
+            hunk = re.match(r'^@@ -[0-9]+(?:,[0-9]+)? \+([0-9]+)(?:,[0-9]+)? @@', line)
+            if hunk:
+                cursor = int(hunk[1]); had_hunk = True
+            elif cursor is not None and line.startswith('+'):
+                pending = (cursor, line[1:]); cursor += 1
+            elif cursor is not None and line.startswith(' '):
+                cursor += 1
+        if pending:
+            yield pending
+        old_hash = state.get('old_blob', {}).get('sha256', hashlib.sha256(b'').hexdigest())
+        if state['new_blob']['sha256'] != old_hash and not had_hunk:
+            raise ScanError('staged_diff_unavailable')
+    return state, staged_parts(), 'staged_additions'
+
+
+def blocks(parts):
+    """Group complete contiguous lines: regex tokens never split at a block edge."""
+    values = []; size = 0; first = None; next_line = None
+    for number, value in parts:
+        if values and (number != next_line or size + len(value) > SCAN_BLOCK_CHARS):
+            yield first, ''.join(values)
+            values = []; size = 0
+        if not values:
+            first = number
+        values.append(value); size += len(value); next_line = number + value.count('\n')
+    if values:
+        yield first, ''.join(values)
+
+
+def position(value, offset, first, column=1):
+    last = value.rfind('\n', 0, offset)
+    return first + value.count('\n', 0, offset), offset - last if last >= 0 else column + offset
 
 
 def placeholder(value):
@@ -182,16 +264,31 @@ def scan(root, files, *, staged=False, known_name=None):
     if not root.is_dir() or not files or len(files) > 64 or len(files) != len(set(files)):
         raise ScanError('invalid_targets')
     known, known_bytes = known_values(root, known_name)
+    variants = [(kind, variant) for kind, secret in known for variant in sorted({
+        secret, json.dumps(secret, ensure_ascii=True)[1:-1], json.dumps(secret, ensure_ascii=False)[1:-1]})]
+    overlap = max([len(v) for _, v in variants] or [0])
     results, findings, snapshots = [], [], []
     for number, name in enumerate(files, 1):
+        parts = None
         try:
             source, parts, scope = collect(root, name, staged)
-            snapshots.append((name, source))
-            seen = set(); truncated = False
-            for first_line, value in parts:
-                for offset, kind, confidence in matches(value, known):
-                    line = first_line + value.count('\n', 0, offset)
-                    column = offset - value.rfind('\n', 0, offset)
+            seen = set(); truncated = False; tail = ''; tail_line = 1; tail_column = 1; next_line = None
+            for first_line, value in blocks(parts):
+                if truncated:
+                    continue  # Still consume/hash/validate every input byte.
+                if first_line != next_line:
+                    tail = ''; tail_line = first_line; tail_column = 1
+                combined = tail + value
+                def candidates():
+                    for kind, variant in variants:
+                        for match in re.finditer(re.escape(variant), combined):
+                            if match.end() > len(tail):
+                                yield (position(combined, match.start(), tail_line, tail_column),
+                                       'known_' + kind, 'known_value')
+                    for offset, kind, confidence in matches(value, []):
+                        yield position(value, offset, first_line), kind, confidence
+                # Keep candidate iteration lazy even on a dense, very long line.
+                for (line, column), kind, confidence in candidates():
                     item = (line, column, kind)
                     if item in seen:
                         continue
@@ -199,18 +296,34 @@ def scan(root, files, *, staged=False, known_name=None):
                         truncated = True; break
                     seen.add(item)
                     findings.append({'target': number, 'line': line, 'column': column, 'kind': kind, 'confidence': confidence})
-                if truncated:
-                    break
+                if overlap:
+                    cut = max(0, len(combined) - overlap)
+                    tail_line, tail_column = position(combined, cut, tail_line, tail_column)
+                    tail = combined[cut:]
+                else:
+                    tail = ''; tail_line = first_line + value.count('\n'); tail_column = 1
+                next_line = first_line + value.count('\n')
+            snapshots.append((name, source))
             results.append({'target': number, 'status': 'scanned', 'scope': scope, 'findings': len(seen), 'positions_truncated': truncated})
         except ScanError as exc:
             results.append({'target': number, 'status': 'unavailable', 'reason': str(exc)})
-    # Recheck the exact examined artifacts/index/HEAD and local marker input, no writes.
+        finally:
+            if hasattr(parts, 'close'):
+                parts.close()
+    # Re-read exact sources/index/HEAD, comparing summaries rather than retaining raw copies.
     for name, before in snapshots:
+        parts = None
         try:
-            if collect(root, name, staged)[0] != before:
+            after, parts, _ = collect(root, name, staged)
+            for _ in parts:
+                pass
+            if after != before:
                 raise ScanError('input_changed')
         except ScanError:
             return {'status': 'unavailable', 'reason': 'input_changed', 'targets': results, 'findings': findings}, 2
+        finally:
+            if hasattr(parts, 'close'):
+                parts.close()
     if known_name is not None and raw_file(path_at(root, known_name), 64 * 1024) != known_bytes:
         raise ScanError('known_values_changed')
     unavailable = any(x['status'] == 'unavailable' for x in results)
