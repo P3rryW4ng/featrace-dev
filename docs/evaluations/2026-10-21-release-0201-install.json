@@ -1,0 +1,11 @@
+{
+  "version": "0.20.1",
+  "files": 118,
+  "runtime_revision": "9cdc916",
+  "sha_mode_marker_match": true,
+  "backup_complete": true,
+  "backup": "/Users/mac/.feature-delivery/backups/20261021T030222-claude-47bfec23",
+  "personal_codex_unchanged": true,
+  "runtime_change": "Only progress entry and progress section added to 0.20.0; all existing instructions preserved",
+  "native_host_rendering_observed": false
+}
