@@ -157,6 +157,9 @@ def quality_snapshot(root, selected_config=None):
     identity = capture_check_identity(root, required, ('AGENTS.md', 'CLAUDE.md'))
     config = selected_config if selected_config is not None else json.loads((root / '.agent-workflow/project-baseline/quality-gates.json').read_text())
     validate_gates(root, config)
+    if config.get('selection_feature_id'):
+        from verification_policy import enforce_selection
+        enforce_selection(root,config['selection_feature_id'],config)
     if before != snapshot(root):
         identity = {'state': 'unknown', 'reason': 'project manifests changed during capture'}
     return dict(before, check_inputs=identity, gate_contract=quality_selection(config))
@@ -411,6 +414,10 @@ def scan_baseline(root, keep, action):
             if not (candidate / name).is_file() or not (candidate / name).read_text().strip():
                 raise ValueError('draft missing required file: ' + name)
         inventory(root, candidate)
+        policy_path = candidate / 'quality-candidates.json'
+        if policy_path.exists():
+            from verification_policy import policy_view
+            policy_view(root,[],catalog=json.loads(policy_path.read_text()))
         validate_gates(root, json.loads((candidate / 'quality-gates.json').read_text()))
         candidate_snapshot = snapshot(root, candidate)
         if candidate_snapshot['profile'] == 'android':

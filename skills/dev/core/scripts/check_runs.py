@@ -96,7 +96,10 @@ def selection(root, feature):
     f = folder(root, feature)
     catalog = read(root, Path(root) / '.agent-workflow/project-baseline/quality-gates.json')
     validate_gates(root, catalog)
-    if not enabled(root): return catalog
+    if not enabled(root):
+        from verification_policy import enforce_selection
+        enforce_selection(root,feature,catalog)
+        return catalog
     chosen = read(root, f / 'check-selection.json')
     if (set(chosen) != {'schema_version', 'feature_id', 'gates', 'reason'} or chosen['schema_version'] != 1
             or chosen['feature_id'] != feature or not isinstance(chosen['reason'], str) or not chosen['reason'].strip()
@@ -109,6 +112,8 @@ def selection(root, feature):
         seen.add(item['name']); gate = dict(by_name[item['name']]); gate['test_ids'] = item['test_ids']; gates.append(gate)
     resolved = {'selection_feature_id': feature, 'gates': gates, 'selection_reason': chosen['reason']}
     validate_gates(root, resolved)
+    from verification_policy import enforce_selection
+    enforce_selection(root,feature,resolved)
     return resolved
 
 

@@ -1,0 +1,24 @@
+{
+  "temporary_packages": [
+    {
+      "target": "/tmp/ft-scope-candidate-home/.claude/skills/dev",
+      "marker_version": "0.19.0",
+      "files": 118,
+      "sha_mode_match": true
+    },
+    {
+      "target": "/tmp/ft-scope-candidate-home/.agents/skills/dev",
+      "marker_version": "0.19.0",
+      "files": 118,
+      "sha_mode_match": true
+    }
+  ],
+  "daily_unchanged": {
+    "version": "0.19.0",
+    "files": 115
+  },
+  "frontmatter_exact_formal_0190": true,
+  "frontmatter_safe_parser": "system Ruby Psych",
+  "links_checked": 244,
+  "final_source_match": true
+}

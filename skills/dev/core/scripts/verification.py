@@ -624,6 +624,8 @@ def validate_verification(root, folder, req, stage):
     try:
         doc = load_plan(folder)
         from acceptance_contract import enabled, resolve_claims
+        if req.get('feature',{}).get('verification_policy') == 1 and stage == 'check' and doc.get('schema_version') != 7:
+            return ['scoped verification requires explicit schema7 acceptance preparation; no legacy final-pass fallback']
         if enabled(doc):
             if stage != 'check': return []
             return ['verification incomplete: '+json.dumps(x,ensure_ascii=False) for x in resolve_claims(root,folder)['blockers']]

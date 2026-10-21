@@ -184,6 +184,12 @@ def collect(root, feature_id, stage, task_ids, item_ids, base=None):
     frozen = handoff.capture(root, feature_id, base, [])
     feature = req['feature']
     identity = {k: feature[k] for k in ('id', 'status', 'status_note', 'workflow_version', 'modules', 'source_status', 'source_notes') if k in feature}
+    if feature.get('verification_policy') is not None:
+        identity['verification_policy'] = feature['verification_policy']
+    if feature.get('change_context'):
+        context=feature['change_context']
+        identity['change_context']={k:context[k] for k in ('parent_id','parent_record_revision','delivered_revision','scope_base_revision')}
+        identity['change_context']['background_path_count']=len(context['background_paths'])
     baseline = feature.get('baseline')
     if isinstance(baseline, dict):
         identity['baseline'] = {k: baseline[k] for k in ('version', 'digest', 'verified_version', 'pending') if k in baseline}

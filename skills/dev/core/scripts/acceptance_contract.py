@@ -68,7 +68,7 @@ def read(path):
 
 
 def enabled(doc):
-    return isinstance(doc,dict) and (doc.get('schema_version') == 6 or 'acceptance_contract' in doc)
+    return isinstance(doc,dict) and (doc.get('schema_version') in (6,7) or 'acceptance_contract' in doc)
 
 
 def git(root, *args):
@@ -111,7 +111,7 @@ def original(root, ref):
 
 def validate_document(doc):
     exact(doc, ['schema_version', 'feature_id', 'items', 'retired', 'acceptance_contract', 'acceptance'])
-    if type(doc['schema_version']) is not int or type(doc['acceptance_contract']) is not int or doc['schema_version'] != 6 or doc['acceptance_contract'] != 1 or not text(doc['feature_id']):
+    if type(doc['schema_version']) is not int or type(doc['acceptance_contract']) is not int or doc['schema_version'] not in (6,7) or doc['acceptance_contract'] != 1 or not text(doc['feature_id']):
         fail('CONTRACT_UNSUPPORTED', 'unsupported acceptance format')
     a = doc['acceptance']
     exact(a, ['contract_id', 'generation', 'origins', 'worlds', 'events'])
@@ -339,7 +339,9 @@ def _authority(folder):
     result = {}
     # Scan the actual feature record/source/evidence inventory, not a fixed allowlist
     # that could silently omit a newly introduced authority field or document.
-    excluded = {'verification.json', 'verification.md', 'claim-review.json', 'delivery-report.md'}
+    from delivery_metadata import view as publication_view
+    publication_view(folder.parents[2],folder)
+    excluded = {'verification.json', 'verification.md', 'claim-review.json', 'delivery-report.md', 'delivery-metadata.json'}
     for path in sorted(folder.rglob('*')):
         if path.is_symlink(): fail('WORLD_UNKNOWN', 'symlink feature input')
         if not path.is_file(): continue
@@ -364,6 +366,14 @@ def _authority(folder):
 def world(root, folder, doc, *, locked=False):
     if safe(root,folder) != Path(root).resolve()/'.agent-workflow/features'/folder.name:
         fail('WORLD_UNKNOWN','feature folder outside canonical workspace')
+    req = read(folder/'spec/requirements.json')
+    if doc['schema_version'] == 7:
+        from verification_policy import validate_plan
+        if req['feature'].get('verification_policy') != 1: fail('CONTRACT_UNSUPPORTED','schema7 requires verification policy')
+        from check_runs import selection as scoped_selection
+        validate_plan(root,folder,req,read(folder/'impact.json'),scoped_selection(root,folder.name))
+    elif req['feature'].get('verification_policy') is not None:
+        fail('PREPARE_REQUIRED','existing acceptance contract cannot silently enable scoped policy; use an explicit follow-up')
     from check_runs import enabled as attempts_enabled, view, _current
     from check_identity import capture
     if not attempts_enabled(root): fail('PREPARE_REQUIRED', 'project execution contract2 required')
@@ -738,11 +748,14 @@ def prepare(root, folder, approval):
             last = row['history'][-1] if row['history'] else None
             if last and (last.get('status') == 'retained' or any(k in last for k in ('retention_kind','scope_ref')) or row.get('manual_scope_ref')):
                 fail('SOURCE_UNSUPPORTED','active composite source: '+row['id'])
+        scoped = req['feature'].get('verification_policy') == 1
+        if scoped and any(h.get('verification_policy_capable') is not True for h in approval['hosts']):
+            fail('PREPARE_REQUIRED','schema7 capable participant hosts required')
         rows = deepcopy(before_rows)
         for row in rows:
             row['history'] = []
             row['acceptance_contract']=1
-        doc = dict(schema_version=6,feature_id=folder.name,items=rows,retired=[],acceptance_contract=1,
+        doc = dict(schema_version=7 if scoped else 6,feature_id=folder.name,items=rows,retired=[],acceptance_contract=1,
                    acceptance=dict(contract_id=str(uuid.uuid4()),generation=0,origins=origins,worlds={},events=[]))
         expected=candidates(req,config,impact)
         if {(x['source'],x['expected']) for x in rows} != {(x['source'],x['expected']) for x in expected}:

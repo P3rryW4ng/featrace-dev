@@ -7,3 +7,5 @@ Load only after Deliver has registered the applicable baseline, set the feature 
 3. Commit only after the staged content matches the completed delivery, using the project's convention and a subject such as `docs(OGFR-7840): record verified delivery`. Report the commit hash and any intentionally local-only evidence. If nothing shareable changed, report that no final commit was needed. A workflow-only commit must not be represented as a new test run or installed build; existing audit rules determine whether evidence remains current after it.
 
 Task-level implementation commits remain governed by `task-commit.md`. This final records commit follows them; it never replaces them. Keep `complete` when a safe Git commit cannot be isolated, and state that local publication is pending rather than reclassifying accepted behavior.
+
+Publication-only observations belong in the typed `delivery-metadata.json` via `delivery_metadata.py` under [verification-policy.md](verification-policy.md). Do not rewrite free `status_note` or an accepted report simply to announce push state; that file is not a live remote check or a completion signal.

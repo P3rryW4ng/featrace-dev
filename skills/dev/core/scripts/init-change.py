@@ -15,6 +15,10 @@ def main():
     parser.add_argument('--kind', choices=('change', 'defect', 'unclear'), required=True)
     parser.add_argument('--request-file', type=Path, required=True,
                         help='regular UTF-8 file containing the user report verbatim')
+    parser.add_argument('--verification-policy', action='store_true')
+    parser.add_argument('--parent', help='Complete historical feature; create a separate increment, never reopen it')
+    parser.add_argument('--delivery-revision', help='Full original delivered code revision')
+    parser.add_argument('--delivery-evidence', help='Existing source establishing that delivered revision')
     args = parser.parse_args()
 
     root = args.root.resolve()
@@ -32,6 +36,12 @@ def main():
     if folder.exists():
         raise ValueError('work item already exists; use its existing feature or choose a distinct product ID')
 
+    context = None
+    if args.parent or args.delivery_revision or args.delivery_evidence:
+        if not all((args.parent,args.delivery_revision,args.delivery_evidence)) or args.parent == args.feature_id:
+            raise ValueError('distinct parent, delivered revision and evidence required')
+        from verification_policy import followup_context
+        context = followup_context(root,args.parent,args.delivery_revision,args.delivery_evidence)
     scripts = Path(__file__).resolve().parent
     subprocess.run([sys.executable, str(scripts / 'init-feature.py'), args.feature_id,
                     str(source), str(root)], check=True)
@@ -39,6 +49,10 @@ def main():
     requirements = json.loads(requirements_path.read_text(encoding='utf-8'))
     feature = requirements['feature']
     feature['entry_kind'] = args.kind
+    if args.verification_policy or context:
+        feature['verification_policy'] = 1
+    if context:
+        feature['change_context'] = context
     feature['source_notes']['prd'] = (
         'Initial source is a user-reported change or observed problem, not an approved full PRD. '
         'Investigate the current contract and confirm any new expected behavior before development.'

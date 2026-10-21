@@ -203,6 +203,19 @@ def main():
     if not errors:
         errors.extend(validate_acceptance_provenance(feature_dir, req_doc, decisions, args.stage))
     errors.extend(validate_verification(pathlib.Path(args.root).resolve(), feature_dir, req_doc, args.stage))
+    from verification_policy import validate_plan, validate_followup
+    try:
+        if feature.get('change_context') is not None:
+            validate_followup(pathlib.Path(args.root).resolve(), feature['change_context'])
+        impact_path = feature_dir / 'impact.json'
+        if impact_path.exists():
+            validate_plan(pathlib.Path(args.root).resolve(), feature_dir, req_doc, json.loads(impact_path.read_text()), stage=args.stage)
+        elif feature.get('verification_policy') is not None and args.stage != 'draft':
+            errors.append('impact-classified verification plan missing')
+        from delivery_metadata import view as publication_view
+        publication_view(pathlib.Path(args.root).resolve(),feature_dir)
+    except (ValueError,OSError,KeyError,TypeError) as exc:
+        errors.append(str(exc))
     errors.extend(validate_scope(pathlib.Path(args.root).resolve(), feature, args.stage))
     errors.extend(validate_modules(pathlib.Path(args.root).resolve(), feature_dir, req_doc, args.stage))
     regression_errors, regression_warnings = validate_regression_review(pathlib.Path(args.root).resolve(), feature_dir, req_doc, args.stage)

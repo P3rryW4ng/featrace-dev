@@ -68,7 +68,13 @@ def identity(root, folder):
                       'impact': impact_snapshot(root, impact)['digest'],
                       'claims': claims, **({'manual_scope_reviews': plan['manual_scope_reviews']} if plan.get('manual_scope_contract') == 1 else {}), **({'device_continuity': {'summary': continuity, 'events': fix_doc['regression_continuity_reviews']}} if continuity is not None else {})})
     scope_refs = [{'event_id': e['id'], 'path': '.agent-workflow/features/' + folder.name + '/verification.json#manual_scope_reviews/' + e['id']} for e in plan.get('manual_scope_reviews', [])]
-    return {'feature_id': folder.name, 'input_digest': binding, 'code_revision': head,
+    work = None
+    if plan.get('manual_scope_contract') == 1:
+        reusable = [{'id': c['id'], 'ref': c['manual_scope']['review_ref'], 'event_id': c['manual_scope']['event_id']}
+                    for c in claims if c.get('manual_scope',{}).get('state') == 'current' and c.get('result_status') in ('passed','retained')]
+        work = {'reuse_applicability': reusable, 'assess': [c['id'] for c in claims if c['id'] not in {r['id'] for r in reusable}],
+                'instruction': 'Cover all claims; inspect current prior finding and contradictions for reuse, do not repeat the same complete delta investigation without new cause. Not an automatic verdict.'}
+    return {'feature_id': folder.name, 'input_digest': binding, 'code_revision': head, **({'review_work':work} if work is not None else {}),
             'source_hashes': sources, 'claims': claims, **({'manual_scope_review_refs': scope_refs} if scope_refs else {}), **({'device_continuity': continuity} if continuity is not None else {})}
 
 
@@ -99,6 +105,10 @@ def validate(root, folder):
             allowed = ('supported', 'approved_waiver') if current_rows[name]['result_status'] == 'waived' else ('supported',)
             if item.get('verdict') not in allowed:
                 errors.append('claim-to-evidence review unresolved: ' + name)
+            if item.get('applicability_ref') is not None:
+                prior = next((r for r in current.get('review_work',{}).get('reuse_applicability',[]) if r['id'] == name),None)
+                if prior is None or item['applicability_ref'] != prior['ref']:
+                    errors.append('claim-to-evidence applicability reference stale/unsupported: ' + name)
             for key in ('source_basis', 'required_scope', 'observed_scope', 'evidence_ref', 'counterexample_check'):
                 if not isinstance(item.get(key), str) or not item[key].strip():
                     errors.append('claim-to-evidence review lacks ' + key + ': ' + name)

@@ -1,5 +1,7 @@
 # Verification checklist (0.12.0)
 
+For new work or a new change after delivery, first use [verification-policy.md](verification-policy.md): identify the actual contract, classify/combine effects and effective project constraints before selecting checks. Existing schema1–6 are not implicitly migrated. Scoped schema7 uses the same acceptance resolver and full delivery guards, not the legacy repeated review sequence.
+
 For explicitly prepared schema6 acceptance v1, use [acceptance-contract.md](acceptance-contract.md) instead of the legacy stamp/carry/final-review sequence below. Capture does not require already-supported acceptance; final delivery still requires complete coverage and existing guards. Do not migrate from an ordinary stale-status message.
 
 For a feature explicitly prepared with `manual_scope_contract: 1`, load [manual-scope.md](manual-scope.md) for batch applicability of original manual facts. New unknown changes require assessment, not automatic re-observation; supported subsets do not remove global blockers or the complete final review. Do not enable this format merely because the tool was installed.

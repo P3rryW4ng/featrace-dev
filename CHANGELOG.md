@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.20.0 — 2026-10-21
+
+- Add explicitly prepared schema 7 scoped acceptance: classify actual change units, combine causal checks, investigate unknown effects, and preserve parent delivery/background changes and negative barriers in linked increments. Schema 1–6 remain readable; no automatic migration.
+- Resolve scoped project constraints from original sources, enforce applicable mandatory gates and execution authority, and reject duplicate physical commands or unexplained suite overlap. Host/hook restrictions remain effective.
+- Allow final review to cite current applicability judgments without repeating the same investigation; every current claim still needs an adequate final finding. Add typed delivery metadata without globally excluding semantic status notes.
+- Minor-version change for the workflow/data contract. Full regression 670/670 (36 new); formal package excludes the two previously unpublished main-only instruction additions. Installed capability does not enable project contracts; native real-project efficiency remains unmeasured.
+
 ## 0.19.0 — 2026-10-20
 
 - Introduce explicitly approved, opt-in schema 6 acceptance contract 1: immutable original fact references, stable claims, complete world deltas, assessment events and grouped reuse through one resolver. No automatic project migration.

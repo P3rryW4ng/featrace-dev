@@ -1,6 +1,6 @@
 # FeatraceDev 路线图与问题跟踪
 
-更新：2026-10-20。此页是当前优先级权威；[整理前快照](docs/history/2026-10-19-maintenance-snapshot/INDEX.md)保留过去的候选、批准及发布顺序，不作为今天的执行授权。产品目标见 [PRODUCT](PRODUCT.md)，安装身份见 [MAINTAINER](MAINTAINER.md)。
+更新：2026-10-21。此页是当前优先级权威；[整理前快照](docs/history/2026-10-19-maintenance-snapshot/INDEX.md)保留过去的候选、批准及发布顺序，不作为今天的执行授权。产品目标见 [PRODUCT](PRODUCT.md)，安装身份见 [MAINTAINER](MAINTAINER.md)。
 
 ## 阶段状态
 
@@ -34,6 +34,13 @@
 <a id="verify-pilot-next"></a>
 
 ## 试点与案例接续
+
+
+### 当前开发批次（2026-10-21）
+
+用户已批准按顺序完成[组合方案](docs/designs/impact-verification-and-project-policy.md)五项：旧交付增量入口→分类/分层复核→有效项目约束→门禁选择→状态说明解耦。候选36项定向反例及670/670完整回归通过，见[实际核验](docs/evaluations/2026-10-21-scoped-verification.md)。不开发旧复合证据自动迁移；用schema7拒旧读者边界，schema1–6保留。新ID必须显式承接背景影响及已知负向，不能逃避失败；分类不是自动通过。
+
+维护文档与源码可修改；本批开发验证时未发布安装；用户随后已授权0.20.0提交推送和Claude安装，不操作业务项目，不重验已结项8024/8025。冻结回归、临时包探针与源码/安装差异已核对，下一步完成已授权发布安装，再等待自然试点；实际提效及原生Agent表现仍需自然试点，GAP不因合成通过全部关闭。执行成本统计缺失保留未知。
 
 当前顺序已由上节更新为先底层评审/设计批准，再候选验证与自然试点。以下为既有案例事实，不作为先试点再讨论架构的执行指令。
 

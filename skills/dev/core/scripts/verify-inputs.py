@@ -166,7 +166,14 @@ def collect(root, feature_id, *, include_acceptance=True):
                   'instruction': continuation['next_action'],
                   'boundary': 'Read-only guidance. No execution, migration, adoption or delivery approval.'}
                  if continuation is not None else None)
-    return {**({'next_step': next_step} if next_step is not None else {}),**({'continuation': continuation} if continuation is not None else {}),**({'manual_scope': applicability} if applicability is not None else {}), 'feature_id': feature_id, 'git_head': head, 'worktree_changed_paths': dirty,
+    route = None
+    if include_acceptance:
+        try:
+            from verification_policy import entry_status
+            route = entry_status(root,feature_id)
+        except (OSError,ValueError,KeyError,TypeError) as exc:
+            route = {'state':'unavailable','reason':str(exc),'automatic_preparation':False}
+    return {**({'contract_route': route} if route is not None else {}),**({'next_step': next_step} if next_step is not None else {}),**({'continuation': continuation} if continuation is not None else {}),**({'manual_scope': applicability} if applicability is not None else {}), 'feature_id': feature_id, 'git_head': head, 'worktree_changed_paths': dirty,
             'source_status_claims': feature.get('source_status', {}),
             'sources': sources, 'quality_report': quality,
             'issues_to_review': sorted(set(issues)),

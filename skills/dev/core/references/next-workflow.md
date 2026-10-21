@@ -1,5 +1,7 @@
 # Natural-language continuation (`next`)
 
+For new work or a new change to a completed delivery, load [verification-policy.md](verification-policy.md) before selecting tests or reopening old acceptance. Preserve the original delivery; normally create a linked increment with only current objectives and relevant regression claims. Explicit in-place revisions/whole-build certification retain their chosen scope, and known negatives cannot be escaped by a new ID.
+
 `/dev next [description] [--feature ID]` is the normal continuation entry after a feature exists. In active session delivery mode, ordinary delivery messages are treated as this entry without requiring the `/dev next` prefix. It reduces command recall; it does not replace the underlying workflow contracts or create a second state machine. Apply `orchestration.md` to choose the professional stage and its minimal reference set.
 
 ## Resolve context first

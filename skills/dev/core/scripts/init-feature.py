@@ -13,6 +13,7 @@ parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('feature')
 parser.add_argument('primary', type=pathlib.Path, help='first document or HTML source')
 parser.add_argument('root', nargs='?', type=pathlib.Path, default=pathlib.Path('.'))
+parser.add_argument('--verification-policy', action='store_true', help='Explicitly use impact-classified verification planning')
 parser.add_argument('--source', action='append', type=pathlib.Path, default=[], help='additional document or HTML source; repeatable')
 args = parser.parse_args()
 feature, root = args.feature, args.root.resolve()
@@ -44,6 +45,8 @@ doc = {"feature": {"id": feature, "title": "", "status": "drafted", "workflow_ve
                    "module_scope": {"status": "pending", "capability": None, "assignments": [], "note": ""},
                    "source_status": {"prd": "present", "api": "unknown", "figma": "unknown"},
                    "source_notes": {}, "prd_path": paths[0], "prd_paths": paths}, "requirements": []}
+if args.verification_policy:
+    doc['feature']['verification_policy'] = 1
 (folder / "spec/requirements.json").write_text(json.dumps(doc, indent=2) + "\n")
 for name, key in (("tasks", "tasks"), ("decisions", "decisions"), ("traceability", "links"), ("fixes", "fixes")):
     (folder / (name + ".json")).write_text(json.dumps({"feature_id": feature, key: []}, indent=2) + "\n")

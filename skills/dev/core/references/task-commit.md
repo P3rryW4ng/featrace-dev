@@ -1,5 +1,7 @@
 # Commit a completed Build task
 
+Before an actual commit in impact-classified work, inspect the effective commit policy through `verification_policy.py --operation commit` as described in `project-compatibility.md`. Reuse scoped existing permission; a grant from another task is not automatically global. Focused checks are selected by impact and project rules, not an unconditional separate compilation. A specific user no-compile rule is not overridden by the phrase “focused checks.”
+
 Load when the router is finishing an implemented task in the primary Git checkout, whether Build was serial or a parallel candidate has been adopted. This is an internal Build handoff, not a new user command or a Git hook. The product owner's default is one local commit per completed task, soon after that task's code, focused checks and task/traceability records are ready; do not accumulate independent tasks into one end-of-feature commit. An explicit no-commit/read-only request, repository policy, or unavailable Git identity takes precedence. Do not push, open a PR, archive or mark the feature complete as a side effect.
 
 ## Separate task readiness from delivery acceptance

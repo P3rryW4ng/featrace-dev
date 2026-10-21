@@ -70,3 +70,5 @@ Only after project opt-in authorization, use `check-execution.md` to prepare fea
 
 
 Manual applicability may separately opt in per feature under [manual-scope.md](manual-scope.md). Schema 5 does not enable execution contract 2, and reviewed old observations do not certify new code/check inputs. Current quality results, device execution and final acceptance keep their separate responsibilities.
+
+For new impact-classified work, reconcile effective policy under `project-compatibility.md` during scan review and load `verification-policy.md` before gate selection. Candidate catalogs may include the reviewed `policy_contract`; baseline publication validates its shape, while relevant unresolved/stale/enforced rules stop the actual scoped operation. A selected gate needs a causal check mapping; remove duplicate bundles or document a genuinely unavoidable project constraint. No automatic compiler ladder or previous-feature selection.

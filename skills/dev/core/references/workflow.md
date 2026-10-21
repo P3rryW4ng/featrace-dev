@@ -1,5 +1,7 @@
 # Workflow invariants
 
+For new work or a new change to a completed delivery, load [verification-policy.md](verification-policy.md) before selecting tests or reopening old acceptance. Preserve the original delivery; normally create a linked increment with only current objectives and relevant regression claims. Explicit in-place revisions/whole-build certification retain their chosen scope, and known negatives cannot be escaped by a new ID.
+
 For API and Figma separately set `feature.source_status` to `present`, `missing`, `unknown`, or `not_applicable`; explain not-applicable in `feature.source_notes`. A feature that needs neither source can complete if all other conditions hold. Missing required evidence permits provisional work only; never invent an API or design artifact to satisfy a field.
 
 Legacy YAML migration uses `migrate-workspace.py` only to create an empty scaffold while preserving old records. Reconstruct requirements, tasks, decisions and traceability from actual evidence and validate before development; the helper is not a semantic converter.

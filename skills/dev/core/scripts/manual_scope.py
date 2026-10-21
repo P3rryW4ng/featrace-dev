@@ -91,6 +91,9 @@ def guarded_inputs(root, folder, doc):
 
 
 def prepare(root, folder):
+    import verification as verification_reader
+    if verification_reader.read(folder/'spec/requirements.json')['feature'].get('verification_policy') == 1:
+        raise ValueError('scoped verification uses schema7 acceptance; do not prepare legacy schema5')
     import verification as v
     from feature_lifecycle import require_active
     root, folder = workspace(root, folder)

@@ -23,6 +23,14 @@ counts = {state: sum(item.get("status") == state for item in requirements) for s
 done = sum(task.get("status") == "done" for task in tasks)
 modules, archive = metadata(req["feature"])
 print(f"FEATURE: {feature_id}")
+print("STATUS: " + str(req["feature"].get("status", "unknown")))
+try:
+    from delivery_metadata import view as publication_view
+    publication = publication_view(root,folder)
+    if publication:
+        print("PUBLICATION_OBSERVATION: " + publication["publication_observation"] + "; at=" + publication["observed_at"] + "; not a live remote query")
+except (OSError,ValueError,KeyError,TypeError) as exc:
+    print("PUBLICATION_METADATA_INVALID: " + str(exc))
 print("ARCHIVED: " + str(archive["archived"]))
 print("MODULES: " + (", ".join(modules) or "unclassified"))
 scope = req['feature'].get('module_scope')

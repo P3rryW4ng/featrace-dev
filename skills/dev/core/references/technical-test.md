@@ -1,5 +1,7 @@
 # Technical Test handoff (0.11.1)
 
+Before choosing commands for new or incremental work, load [verification-policy.md](verification-policy.md). The final effect classification and effective project rules determine the selected union; do not inherit old feature gates or add unrelated regressions by habit. Project-required gates remain unless an authorized scoped rule resolution has actually replaced them.
+
 Use inside an authorized ordinary Verify after Build/Repair, or when a user asks to run applicable objective checks. This is an internal responsibility boundary, not a new user command, seventh stage, separate Agent, or independently installed Skill. The current router performs Test in the same context; extraction requires a later same-input accuracy/cost comparison. An explicit read-only or `check --independent` request does not run Test. Load only the applicable project profile, quality-selection rules in `project-baseline.md`, and source/impact records needed for this test scope; Deliver and completion rules stay with `verification-workflow.md` and the router.
 
 For an explicitly prepared `execution_contract: 2` workspace, load `check-execution.md` for feature-local attempts and exact current-claim mapping. Keep legacy workspaces unchanged. Reuse a matching complete execution only through that shared reader; record changes do not authorize old assertions to prove a new claim.

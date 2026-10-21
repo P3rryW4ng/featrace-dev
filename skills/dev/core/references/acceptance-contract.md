@@ -1,6 +1,6 @@
-# Acceptance contract v1 (schema 6, explicit opt-in candidate)
+# Acceptance contract v1 (schemas 6/7, explicit opt-in)
 
-Use this reference only when `verification.json` has `schema_version: 6` and
+Use this reference only when `verification.json` has `schema_version: 6` or `7` and
 `acceptance_contract: 1`, or when explicitly evaluating preparation. Installation
 never prepares projects. Schema 1–5 keep their original workflow. Do not downgrade,
 re-sign observations, use old carry/adoption writers, or reopen completed features
@@ -117,3 +117,5 @@ Exit 0 means an operation succeeded or a view is readable, not product acceptanc
 Typed blockers identify reconciliation, absent originals, unknown input, incomplete
 review, unresolved negative, unavailable execution, drift, busy writers and disabled
 legacy writers. Resolve the specific cause; do not fall back to global legacy stamps.
+
+Scoped new work uses schema7 with verification_policy1 under [verification-policy.md](verification-policy.md). It keeps the same acceptance event format but requires checked classification/project policy and capable hosts; 0.19.0 readers reject this schema. Existing schema6 remains supported and is not silently changed.
