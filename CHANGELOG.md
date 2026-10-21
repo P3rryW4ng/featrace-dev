@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.21.0 — 2026-10-21
+
+- Separate parent-delivery traceability from acceptance selection. Linked intake now explicitly selects legacy or scoped; the existing --verification-policy flag remains a scoped alias. Missing/conflicting selection refuses before creation.
+- Add guarded legacy planning marker2: preserve causal effect plans, background changes, prior negative obligations and effective project rules while retaining legacy evidence/currentness and full current-work review. Old policy readers reject marker2; no automatic route conversion.
+- Expose read-only prospective/current readiness, project-switch impact and the correct execution/registration entry. Only unprepared scoped routes inventory other features; unprepared schema7 routes refuse ordinary develop/final-gate execution before commands.
+- Keep native progress/text fallback, original facts and failure barriers. Full regression 690/690 (20 new), targeted 56/56; installed efficiency and business migration are not claimed.
+- Minor-version change for explicit intake behavior and the new guarded route discriminator. Installing this release neither prepares projects nor closes existing blocked work.
+
+
 ## 0.20.1 — 2026-10-21
 
 - Restore the approved requirement-specific progress display to the formal runtime: reuse the host's native task/plan list and native states, derived from current work rather than fixed workflow stages.

@@ -17,3 +17,15 @@ python3 core/scripts/init-change.py <PROJECT> <ID> --kind change|defect|unclear 
 The helper rejects existing IDs and empty/invalid sources. It uses the normal initializer, copies the report into the feature's immutable `sources/prd-original.*`, marks `feature.entry_kind`, and leaves requirements, tasks, decisions and review unapproved. The path name is inherited from the current PRD schema; for a defect it means *original report*, not an approved product specification. `--kind defect` additionally registers one `FIX-001` with `status=reported`, `kind=unclassified` and blank expected/root-cause fields. `--kind unclear` keeps the classification open without a fix record. A failed or interrupted creation must be inspected and resumed; never rerun initialization over an existing folder. After successful draft analysis and validation, select the new ID in this conversation under `feature-selection.md`; this helper never changes session selection.
 
 Inventory and review the short source under `prd-analysis.md`. A change request's asserted new behavior may be confirmed only to the extent the user's wording/approval actually supports it; missing boundary rules stay pending. A defect report proves the observation, not the expected behavior: investigate existing contracts, code and history, then confirm the expectation from evidence or ask for a product decision. Do not manufacture a requirement or mark it confirmed merely to pass develop. Update only the existing canonical JSON and generated views; map affected module roles and callers, protect old behavior through impact/historical-fix review, then follow the ordinary gates and selected checks. `change` does not create code changes automatically, waive manual acceptance, or certify completion.
+
+## Linked history and route readiness
+
+For a committed complete parent, --parent plus delivered revision/evidence
+preserves lineage; it does not choose acceptance. Inspect prospective
+verification_policy.py readiness, then explicitly select --verification-route
+legacy|scoped. A missing route refuses before creating a linked item. Both
+classified routes preserve background changes, negative obligations and current
+scope; legacy keeps legacy stamps/final review and requires capable marker2
+readers, scoped requires explicit schema7 preparation. Existing items retain
+their chosen identity/contract. Do not rebuild a failed or blocked item to switch
+routes. See verification-policy.md for details.

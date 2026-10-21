@@ -15,7 +15,9 @@ def main():
     parser.add_argument('--kind', choices=('change', 'defect', 'unclear'), required=True)
     parser.add_argument('--request-file', type=Path, required=True,
                         help='regular UTF-8 file containing the user report verbatim')
-    parser.add_argument('--verification-policy', action='store_true')
+    parser.add_argument('--verification-policy', action='store_true', help='Explicit scoped/schema7 route (alias)')
+    parser.add_argument('--verification-route', choices=('legacy', 'scoped'),
+                        help='Choose acceptance independently of parent traceability; required for a linked increment')
     parser.add_argument('--parent', help='Complete historical feature; create a separate increment, never reopen it')
     parser.add_argument('--delivery-revision', help='Full original delivered code revision')
     parser.add_argument('--delivery-evidence', help='Existing source establishing that delivered revision')
@@ -36,6 +38,12 @@ def main():
     if folder.exists():
         raise ValueError('work item already exists; use its existing feature or choose a distinct product ID')
 
+    route = args.verification_route
+    if args.verification_policy:
+        if route == 'legacy': raise ValueError('conflicting verification routes')
+        route = 'scoped'
+    if args.parent and route is None:
+        raise ValueError('linked work requires an explicit --verification-route legacy|scoped; inspect readiness before choosing')
     context = None
     if args.parent or args.delivery_revision or args.delivery_evidence:
         if not all((args.parent,args.delivery_revision,args.delivery_evidence)) or args.parent == args.feature_id:
@@ -49,8 +57,10 @@ def main():
     requirements = json.loads(requirements_path.read_text(encoding='utf-8'))
     feature = requirements['feature']
     feature['entry_kind'] = args.kind
-    if args.verification_policy or context:
-        feature['verification_policy'] = 1
+    if route is not None:
+        # 1 retains the existing scoped contract; 2 is guarded legacy planning.
+        # Old policy readers reject 2 rather than skipping the causal obligations.
+        feature['verification_policy'] = 1 if route == 'scoped' else 2
     if context:
         feature['change_context'] = context
     feature['source_notes']['prd'] = (
@@ -65,7 +75,9 @@ def main():
         subprocess.run([sys.executable, str(scripts / 'record-fix.py'), str(root),
                         args.feature_id, report.strip()], check=True)
     print('LIGHTWEIGHT_WORK_ITEM_CREATED: ' + str(folder))
-    print('NEXT: review the report, locate affected code and old behavior, then complete normal intake and Scope')
+    from verification_policy import delivery_readiness
+    print('DELIVERY_READINESS: ' + json.dumps(delivery_readiness(root, args.feature_id), ensure_ascii=False))
+    print('NEXT: inspect the actual route and prerequisites before Build/check execution; intake is not preparation or acceptance')
     return 0
 
 

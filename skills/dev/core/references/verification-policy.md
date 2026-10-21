@@ -19,7 +19,8 @@ schema6 acceptance v1 or schema7 scoped acceptance.
   work item** with a distinct local ID, rather than reopening the historical PRD
   and treating all old criteria as new obligations. Use
   `init-change.py <PROJECT> <CHANGE-ID> --kind change|defect --request-file <REPORT>
-  --parent <PARENT-ID> --delivery-revision <FULL-SHA> --delivery-evidence <SOURCE>`.
+  --parent <PARENT-ID> --delivery-revision <FULL-SHA> --delivery-evidence <SOURCE>
+  --verification-route legacy|scoped`.
   Confirm the delivered SHA from existing evidence, never infer it from HEAD.
   This captures the committed complete parent and background changed paths while
   leaving all parent records untouched. Add only current objectives and relevant
@@ -39,6 +40,45 @@ background changes separately. Investigate these once in groups with concrete
 shared exclusion evidence; affected groups require current regression claims,
 unknown groups stay unresolved. Captured parent failures/open fixes/negative review findings must also be partitioned as unaffected/covered/unknown in `prior_findings` (`id`, `effect`, `claims`, `evidence`). Related findings require current regression criteria; unknown relevance blocks scoped certification. No original failed observation is turned into a pass. No new whole-parent completion claim is implied.
 Do not rename a failing merged-build certification as a harmless merge review.
+
+Parent association is traceability, not acceptance selection. A linked intake must
+explicitly choose `--verification-route legacy|scoped`; omitted/conflicting routes
+refuse before creating records. `--verification-policy` remains an explicit alias
+for scoped. Do not recommend a development-only route when the user requested a
+completed delivery without clearly explaining that it cannot reach that endpoint.
+
+- Scoped uses the existing `feature.verification_policy: 1` and schema7. Existing
+  scoped work does not fall back to legacy; do not edit/remove its marker to close.
+- Guarded legacy planning uses `feature.verification_policy: 2`. This is a route
+  discriminator, **not acceptance contract2 or execution contract2**. It keeps the
+  same reviewed effect plan, background/negative obligations and effective rules
+  but uses existing schema1–5 facts, stamps and full current-work final review.
+  It does not gain schema7 judgment/reuse guarantees. Old policy readers reject
+  marker2. Do not migrate retained/composite records just to use this route.
+
+Before creating a linked item, inspect prospective readiness without writes:
+`verification_policy.py <PROJECT> <NEW-ID> --inspect-route legacy|scoped --parent <PARENT-ID>`.
+The parent argument is a prospective relationship hint, not proof of parent
+delivery; creation still verifies the exact committed parent and delivered SHA.
+For an existing item inspect the actual route; a conflicting requested route
+refuses. Readiness reports actual execution/verification formats, project-wide
+participant and missing-selection inventory, uncommitted/composite originals,
+unknown host capability/authority and the execution/registration entry. It is
+structural guidance, not semantic approval, host attestation or a migration.
+Only a scoped route still needing preparation inventories other active features.
+Legacy and already-prepared routes inspect their own inputs, not every unrelated
+record; unavailable unrelated records do not become legacy route blockers.
+Resolve genuine missing authority once; reuse authorization already covering
+the operation. No business testing is needed to inspect this.
+
+Use `verification.py run <PROJECT> <ID>` for selected checks needing acceptance
+registration. In legacy execution, direct `project.py check` is diagnostic and
+cannot later be adopted as a gate result; do not run it first when the same suite
+must be registered. With execution2, a direct check records an attempt but still
+needs actual assertion mapping. Never repeat just for a stage transition.
+Unprepared scoped work refuses ordinary develop/final-gate execution before
+commands; explicit development diagnostics remain separate facts and do not
+grant delivery credit. Preparation/status commands never grant test permission.
 
 Scoped preparation remains explicit: inspect project-level execution-contract2
 participants and hosts, preserve originals, and obtain any genuinely missing

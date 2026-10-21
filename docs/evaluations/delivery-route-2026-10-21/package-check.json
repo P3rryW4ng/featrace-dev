@@ -1,0 +1,27 @@
+{
+  "temporary_packages": [
+    {
+      "path": "/private/tmp/ft-route-candidate-home/.claude/skills/dev",
+      "files": 118,
+      "marker_version": "0.20.1",
+      "sha_mode_match": true,
+      "formal_release": false
+    },
+    {
+      "path": "/private/tmp/ft-route-candidate-home/.agents/skills/dev",
+      "files": 118,
+      "marker_version": "0.20.1",
+      "sha_mode_match": true,
+      "formal_release": false
+    }
+  ],
+  "daily_unchanged": {
+    "version": "0.20.1",
+    "files": 118,
+    "sha_mode_match_formal_0201": true
+  },
+  "tested_source_files": 177,
+  "source_still_matches": true,
+  "frontmatter_unchanged": true,
+  "links_checked": 178
+}

@@ -619,6 +619,12 @@ def validate_verification(root, folder, req, stage):
     required = req.get('feature', {}).get('verification_required', False)
     if not isinstance(required, bool):
         return ['verification_required must be boolean']
+    if req.get('feature',{}).get('verification_policy') == 1 and stage in ('develop','check'):
+        try:
+            from verification_policy import require_execution_route
+            require_execution_route(root,folder.name)
+        except (ValueError,OSError,KeyError,TypeError) as exc:
+            return [str(exc)]
     if not path.exists():
         return ['verification list missing; run sync'] if required and stage == 'check' else []
     try:

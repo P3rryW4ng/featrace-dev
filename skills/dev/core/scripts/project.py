@@ -496,6 +496,10 @@ def main():
         if not prepared:
             print('SELECTION_REQUIRED: empty selection is not a passed quality check')
         return 0
+    route_owner = args.feature or selected_config.get('selection_feature_id')
+    if route_owner:
+        from verification_policy import require_execution_route
+        require_execution_route(root,route_owner)
     from check_runs import enabled, run as run_attempt
     if enabled(root):
         if not args.feature: raise ValueError('feature required for isolated check execution')

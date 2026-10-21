@@ -21,7 +21,10 @@ composition with original guards, never by a row-status sum.
 A supported judgment is not proof that a test was executed again. The original
 version, time and Git/evidence reference remain unchanged.
 
-Preparation is explicit, not a normal response to stale evidence. It requires the
+Preparation is explicit, not a normal response to stale evidence. A declared
+legacy planning route (policy marker2) refuses conversion by this helper; do not
+silently change the chosen route. Existing scoped marker1 work retains its
+schema7 obligation. Inspect readiness before recommending preparation. It requires the
 existing project-level execution contract 2, inventory of participating active
 features and capable hosts, authorization, and recoverable committed originals.
 Active composite carry/scope/adoption sources currently refuse preparation. Do not

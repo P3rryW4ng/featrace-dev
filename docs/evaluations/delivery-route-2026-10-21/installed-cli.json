@@ -1,0 +1,32 @@
+{
+  "candidate_package_files": 118,
+  "temporary_hosts": 2,
+  "marker_version": "0.20.1 inherited; unpublished candidate only",
+  "operations": [
+    {
+      "script": "verification.py",
+      "returncode": 0
+    },
+    {
+      "script": "verification_policy.py",
+      "returncode": 0
+    },
+    {
+      "script": "verification_policy.py",
+      "returncode": 0
+    },
+    {
+      "script": "verification.py",
+      "returncode": 2
+    },
+    {
+      "script": "verification.py",
+      "returncode": 0
+    }
+  ],
+  "physical_executions": 1,
+  "legacy_gate_registered": true,
+  "old_daily_reader_rejected_marker2_without_mutation": true,
+  "daily_install_unchanged": true,
+  "scope": "synthetic installed CLI, not native Agent, device, business migration or actual completion"
+}

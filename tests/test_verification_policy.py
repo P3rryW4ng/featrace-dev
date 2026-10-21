@@ -168,7 +168,7 @@ class VerificationPolicyTests(unittest.TestCase):
         self.assertNotIn('requirements',context)
         request=self.root/'.agent-workflow/scratch/request.md';request.parent.mkdir(exist_ok=True);request.write_text('Change only the local icon')
         scripts=Path(p.__file__).parent
-        run=subprocess.run([sys.executable,str(scripts/'init-change.py'),str(self.root),'FEAT-001-C1','--kind','change','--request-file',str(request),'--parent','FEAT-001','--delivery-revision',head,'--delivery-evidence','Synthetic accepted delivery report'],capture_output=True,text=True)
+        run=subprocess.run([sys.executable,str(scripts/'init-change.py'),str(self.root),'FEAT-001-C1','--kind','change','--request-file',str(request),'--verification-route','scoped','--parent','FEAT-001','--delivery-revision',head,'--delivery-evidence','Synthetic accepted delivery report'],capture_output=True,text=True)
         self.assertEqual(run.returncode,0,run.stderr)
         child=json.loads((self.folder.parent/'FEAT-001-C1/spec/requirements.json').read_text())
         self.assertEqual(child['requirements'],[]);self.assertEqual(child['feature']['change_context'],context)
@@ -325,3 +325,173 @@ class PublicationMetadataTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'remote-tracking'):meta.validate(value,'F')
         value['tracking_ref']='refs/remotes/origin/main';value['note']='approve missing behavior'
         with self.assertRaisesRegex(ValueError,'unsupported delivery'):meta.validate(value,'F')
+
+
+class DeliveryRouteTests(unittest.TestCase):
+    """Prospective inspection and explicit routes; no business/device fixtures."""
+    def setUp(self):
+        self.h=VerificationPolicyTests();self.h.setUp();self.addCleanup(self.h.doCleanups)
+        self.root=self.h.root;self.folder=self.h.folder;self.scripts=Path(p.__file__).parent
+
+    def snapshot(self):
+        return {str(x.relative_to(self.root)):x.read_bytes() for x in self.root.rglob('*') if x.is_file() and '.git' not in x.parts}
+
+    def parent(self):
+        self.h.req['feature']['status']='complete';self.h.persist();self.h.h.git('add','-A');self.h.h.git('commit','-qm','Synthetic complete parent')
+        return self.h.h.git('rev-parse','HEAD').strip()
+
+    def create(self,route=None,policy=False):
+        head=self.parent();source=self.root/'.agent-workflow/scratch/request.md';source.parent.mkdir(exist_ok=True);source.write_text('Synthetic child layout repair')
+        args=[sys.executable,str(self.scripts/'init-change.py'),str(self.root),'CHILD-1','--kind','change','--request-file',str(source),'--parent','FEAT-001','--delivery-revision',head,'--delivery-evidence','Synthetic accepted parent report']
+        if route:args+=['--verification-route',route]
+        if policy:args+=['--verification-policy']
+        return subprocess.run(args,capture_output=True,text=True)
+
+    def test_link_without_route_refuses_before_creating(self):
+        result=self.create()
+        self.assertEqual(result.returncode,2,result.stdout);self.assertIn('explicit --verification-route',result.stderr)
+        self.assertFalse((self.folder.parent/'CHILD-1').exists())
+
+    def test_link_legacy_preserves_parent_without_project_switch(self):
+        result=self.create('legacy');self.assertEqual(result.returncode,0,result.stderr)
+        req=json.loads((self.folder.parent/'CHILD-1/spec/requirements.json').read_text())
+        self.assertEqual(req['feature']['verification_policy'],2);self.assertEqual(req['feature']['change_context']['parent_id'],'FEAT-001')
+        self.assertEqual(json.loads((self.folder/'spec/requirements.json').read_text())['feature']['status'],'complete')
+        self.assertNotIn('execution_contract',json.loads((self.h.base/'quality-gates.json').read_text()))
+        view=p.delivery_readiness(self.root,'CHILD-1')
+        self.assertEqual(view['route'],'legacy');self.assertFalse(view['project_switch']['required'])
+        self.assertEqual(view['direct_check_result'],'diagnostic_only_no_legacy_adoption')
+        self.assertFalse((self.h.base/'check-contract-v2-origin.json').exists())
+
+    def test_link_scoped_and_alias_keep_explicit_schema7_requirement(self):
+        result=self.create('scoped');self.assertEqual(result.returncode,0,result.stderr)
+        req=json.loads((self.folder.parent/'CHILD-1/spec/requirements.json').read_text())
+        self.assertEqual(req['feature']['verification_policy'],1)
+        view=p.delivery_readiness(self.root,'CHILD-1')
+        self.assertIn('project_execution_contract2',view['missing']);self.assertIn('participating_host_capabilities',view['unknown'])
+        self.assertIn('explicit_schema7_preparation',view['missing'])
+
+    def test_conflicting_route_options_cannot_create(self):
+        result=self.create('legacy',policy=True)
+        self.assertEqual(result.returncode,2);self.assertIn('conflicting',result.stderr)
+        self.assertFalse((self.folder.parent/'CHILD-1').exists())
+
+    def test_prospective_readiness_inventories_project_without_writes(self):
+        before=self.snapshot();view=p.delivery_readiness(self.root,'FUTURE-1','scoped','FEAT-001')
+        self.assertEqual(self.snapshot(),before)
+        self.assertEqual(view['relationship'],'linked');self.assertEqual(view['project_switch']['scope'],'project-wide')
+        self.assertIn('FEAT-001',view['project_switch']['active_features'])
+        self.assertIn('FEAT-001',view['project_switch']['missing_selections'])
+        self.assertFalse((self.folder.parent/'FUTURE-1').exists());self.assertFalse(view['automatic_preparation'])
+
+    def test_existing_scoped_cannot_be_downgraded_by_inspection(self):
+        self.h.persist();before=self.snapshot()
+        with self.assertRaisesRegex(ValueError,'cannot be changed'):p.delivery_readiness(self.root,'FEAT-001','legacy')
+        self.assertEqual(self.snapshot(),before)
+
+    def test_legacy_route_can_execute_once_and_keeps_real_final_evidence_rules(self):
+        import verification as v
+        self.h.req['feature']['verification_policy']=2;self.h.persist()
+        counter=self.root/'.agent-workflow/scratch/count';counter.parent.mkdir(exist_ok=True)
+        self.h.config['gates'][0]['command']=[sys.executable,'-c', 'from pathlib import Path; p=Path(".agent-workflow/scratch/count"); p.write_text(str(int(p.read_text())+1) if p.exists() else "1")']
+        (self.h.base/'quality-gates.json').write_text(json.dumps(self.h.config))
+        self.h.h.git('add','-A');self.h.h.git('commit','-qm','Synthetic legacy plan')
+        v.sync(self.root,self.folder)
+        self.h.h.run_checks()
+        self.assertEqual(counter.read_text(),'1')
+        self.h.h.accept_manual()
+        req=json.loads((self.folder/'spec/requirements.json').read_text())
+        self.assertEqual(v.validate_verification(self.root,self.folder,req,'check'),[])
+        self.assertEqual(v.load_plan(self.folder)['schema_version'],1)
+        self.assertEqual(p.delivery_readiness(self.root,'FEAT-001')['state'],'structurally_ready')
+        row=v.load_plan(self.folder)['items'][0];stamp,head=v.context(self.root,self.folder,v.load_plan(self.folder))
+        v.record(self.root,self.folder,row['id'],'failed',stamp,head,'Synthetic real counterexample','Synthetic observation')
+        self.assertTrue(v.validate_verification(self.root,self.folder,req,'check'))
+        self.assertEqual(counter.read_text(),'1')
+
+    def test_unprepared_scoped_refuses_develop_and_both_gate_entries_before_execution(self):
+        import verification as v
+        self.h.persist();before=self.snapshot()
+        issues=v.validate_verification(self.root,self.folder,self.h.req,'develop')
+        self.assertIn('DELIVERY_PREPARE_REQUIRED',' '.join(issues))
+        result=subprocess.run([sys.executable,str(self.scripts/'project.py'),'check',str(self.root),'--feature','FEAT-001'],capture_output=True,text=True)
+        self.assertNotEqual(result.returncode,0);self.assertIn('DELIVERY_PREPARE_REQUIRED',result.stdout+result.stderr)
+        self.assertFalse((self.h.base/'quality-report.json').exists())
+        self.assertEqual(self.snapshot(),before)
+
+    def test_legacy_planning_still_rejects_unknown_and_unrelated_checks(self):
+        self.h.req['feature']['verification_policy']=2;self.h.plan['units'][0]['sharing']='unknown'
+        self.h.plan['units'][0]['category']='U'
+        with self.assertRaisesRegex(ValueError,'unknown impact'):self.h.validate()
+        self.h.plan['units'][0].update(sharing='local',category='B')
+        self.h.plan['checks'].append(dict(self.h.check('LOGIC'),kind='behavior'))
+        with self.assertRaisesRegex(ValueError,'project-rule basis'):self.h.validate()
+
+    def test_legacy_cannot_erase_parent_negative_obligations(self):
+        self.h.req['feature']['verification_policy']=2
+        self.h.test_followup_cannot_omit_parent_failure_or_open_fix()
+
+    def test_legacy_planning_cannot_silently_prepare_acceptance(self):
+        import acceptance_contract as a
+        self.h.req['feature']['verification_policy']=2;self.h.persist();before=self.snapshot()
+        with self.assertRaisesRegex(ValueError,'legacy planning route'):a.prepare(self.root.resolve(),self.folder.resolve(),{})
+        # Temporary lock files are not acceptance evidence; original records stay.
+        self.assertEqual((self.folder/'verification.json').read_bytes(),before[str((self.folder/'verification.json').relative_to(self.root))])
+        self.assertNotIn('acceptance_contract',json.loads((self.folder/'verification.json').read_text()))
+
+    def test_legacy_background_is_not_ignored(self):
+        self.h.req['feature']['verification_policy']=2
+        self.h.test_background_changes_are_separate_and_cannot_be_dropped()
+
+    def test_mode_two_executor_rejects_unprepared_scoped_before_attempt(self):
+        import check_runs
+        self.h.persist()
+        check_runs.prepare(self.root,'FEAT-001',[{'name':'unit','test_ids':['UT-1']}],'Explicit synthetic preparation')
+        with self.assertRaisesRegex(ValueError,'DELIVERY_PREPARE_REQUIRED'):check_runs.run(self.root,'FEAT-001')
+        self.assertFalse((self.folder/'check-runs').exists())
+        self.assertFalse((self.folder/'check-head.json').exists())
+
+    def test_legacy_planning_cannot_hide_missing_effect_plan(self):
+        self.h.req['feature']['verification_policy']=2;del self.h.impact['verification_plan']
+        with self.assertRaisesRegex(ValueError,'plan missing'):self.h.validate()
+
+    def test_existing_schema6_is_not_misreported_as_legacy_downgrade(self):
+        import test_acceptance_contract
+        h=test_acceptance_contract.AcceptanceContractTests();h.setUp();self.addCleanup(h.doCleanups)
+        result=p.delivery_readiness(h.root,'FEAT-001')
+        self.assertEqual(result['route'],'acceptance_v1')
+        self.assertNotIn('existing_acceptance_contract_no_downgrade',result['missing'])
+
+    def test_missing_feature_is_intake_guidance_not_delivery_readiness(self):
+        view=p.delivery_readiness(self.root,'FUTURE-2','legacy')
+        self.assertEqual(view['state'],'route_available_for_intake')
+        self.assertFalse(view['feature_exists']);self.assertFalse(view['semantic_acceptance'])
+
+    def test_omitting_feature_argument_does_not_execute_unprepared_owner(self):
+        self.h.persist()
+        result=subprocess.run([sys.executable,str(self.scripts/'project.py'),'check',str(self.root)],capture_output=True,text=True)
+        self.assertNotEqual(result.returncode,0);self.assertIn('DELIVERY_PREPARE_REQUIRED',result.stdout+result.stderr)
+        self.assertFalse((self.h.base/'quality-report.json').exists())
+
+    def test_readiness_cli_does_not_prepare_or_create_feature(self):
+        before=self.snapshot()
+        result=subprocess.run([sys.executable,str(self.scripts/'verification_policy.py'),str(self.root),'FUTURE-3','--inspect-route','scoped','--parent','FEAT-001'],capture_output=True,text=True)
+        self.assertEqual(result.returncode,0,result.stderr)
+        view=json.loads(result.stdout);self.assertFalse(view['automatic_preparation'])
+        self.assertEqual(view['state'],'preparation_required');self.assertEqual(self.snapshot(),before)
+
+    def test_legacy_readiness_does_not_read_unrelated_feature_records(self):
+        self.h.req['feature']['verification_policy']=2;self.h.persist()
+        unrelated=self.folder.parent/'UNRELATED/spec';unrelated.mkdir(parents=True)
+        (unrelated/'requirements.json').write_text('Unrelated unavailable record must not block this legacy route')
+        result=p.delivery_readiness(self.root,'FEAT-001')
+        self.assertEqual(result['route'],'legacy')
+        self.assertEqual(result['project_switch']['inventory_state'],'not_applicable_to_current_route')
+        self.assertEqual(result['project_switch']['active_features'],[])
+
+    def test_scoped_readiness_does_investigate_relevant_participant_inventory(self):
+        unrelated=self.folder.parent/'OTHER-ACTIVE/spec';unrelated.mkdir(parents=True)
+        (unrelated/'requirements.json').write_text(json.dumps({'feature':{'id':'OTHER-ACTIVE','status':'drafted'}}))
+        view=p.delivery_readiness(self.root,'FUTURE-5','scoped')
+        self.assertIn('OTHER-ACTIVE',view['project_switch']['active_features'])
+        self.assertEqual(view['project_switch']['inventory_state'],'inspected')

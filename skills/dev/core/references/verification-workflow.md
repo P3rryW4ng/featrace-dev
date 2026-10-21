@@ -1,3 +1,10 @@
+> Route readiness: inspect the current feature before physical execution. Linked
+> history does not choose the acceptance contract. Explicit legacy planning
+> (policy marker2) keeps existing evidence/currentness/full current-work review;
+> scoped marker1 requires prepared schema7. Use verification.py run for checks
+> that need registration. Do not change an existing marker to escape a failure or
+> missing preparation. See verification-policy.md.
+
 # Verification checklist (0.12.0)
 
 For new work or a new change after delivery, first use [verification-policy.md](verification-policy.md): identify the actual contract, classify/combine effects and effective project constraints before selecting checks. Existing schema1–6 are not implicitly migrated. Scoped schema7 uses the same acceptance resolver and full delivery guards, not the legacy repeated review sequence.

@@ -277,8 +277,10 @@ def run(root, feature):
     from project import quality_selection, quality_snapshot, quality_comparison, validate_gates
     root = Path(root).resolve(); f = folder(root, feature)
     if not enabled(root): raise ValueError('explicit prepare required before feature attempts')
+    from verification_policy import require_execution_route
     with execution_lock(root):
         no_unfinished(root)
+        require_execution_route(root,feature)
         config = selection(root, feature); prepared = validate_gates(root, config)
         if not prepared: raise ValueError('no selected checks')
         before = quality_snapshot(root, config)

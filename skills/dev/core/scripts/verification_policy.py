@@ -188,7 +188,13 @@ def validate_plan(root, folder, req, impact, config=None, stage='check'):
     plan = impact.get('verification_plan')
     if marker is None and plan is None:
         return None
-    need(type(marker) is int and marker == 1, 'explicit verification_policy 1 required')
+    need(type(marker) is int and marker in (1, 2), 'explicit supported verification_policy required')
+    # Mode 2 only changes planning/route selection, never legacy evidence rules.
+    verification_file = folder / 'verification.json'
+    if marker == 2 and verification_file.exists():
+        existing = read(root, verification_file)
+        need(existing.get('schema_version', 1) not in (6, 7) and existing.get('acceptance_contract') is None,
+             'legacy planning cannot downgrade an acceptance contract')
     fields = {'schema_version','environment','operations','units','checks','interactions','background','prior_findings','gate_map','overlap_reasons','policy_digest'}
     need(isinstance(plan, dict) and set(plan) == fields and type(plan['schema_version']) is int and plan['schema_version'] == 1, 'verification plan missing/unsupported')
     need(plan['environment'] in ('test','local','production'), 'explicit verification environment required')
@@ -321,6 +327,113 @@ def enforce_selection(root, feature_id, config):
     validate_plan(root, folder, req, impact, config)
 
 
+def delivery_readiness(root, feature_id, requested_route=None, parent_id=None):
+    """Read-only structural readiness, never approval or semantic certification.
+
+    Supports prospective intake without creating a feature. This inventories the
+    project-wide switch rather than promising a feature-local migration.
+    """
+    need(isinstance(feature_id,str) and re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9_-]*',feature_id), 'valid feature ID required')
+    need(requested_route in (None, 'legacy', 'scoped'), 'unknown requested verification route')
+    root = Path(root).resolve()
+    folder = safe(root, '.agent-workflow/features/' + feature_id)
+    req_path = folder / 'spec/requirements.json'
+    req = read(root, req_path) if req_path.exists() else {'feature': {}}
+    feature = req['feature']; marker = feature.get('verification_policy')
+    need(marker is None or type(marker) is int and marker in (1,2), 'unsupported verification policy')
+    path = folder / 'verification.json'; doc = read(root,path) if path.exists() else {}
+    schema = doc.get('schema_version',1)
+    existing_route = 'scoped' if marker == 1 or schema == 7 else ('acceptance_v1' if schema == 6 else 'legacy')
+    if req_path.exists() and requested_route is not None:
+        need(requested_route == existing_route, 'existing route cannot be changed by readiness inspection')
+    route = existing_route if req_path.exists() else requested_route
+    base = root / '.agent-workflow/project-baseline'
+    config_path = base / 'quality-gates.json'
+    config = read(root,config_path) if config_path.exists() else {}
+    from check_runs import enabled as execution_enabled
+    execution = 2 if config_path.exists() and execution_enabled(root) else 1
+    participants = []
+    feature_root = folder.parent
+    inventory_needed = route == 'scoped' and (schema != 7 or doc.get('acceptance_contract') != 1)
+    if inventory_needed and feature_root.exists():
+        for candidate in sorted(feature_root.iterdir()):
+            path = candidate / 'spec/requirements.json'
+            if path.is_file() and read(root,path)['feature'].get('status') != 'complete':
+                participants.append(candidate.name)
+    missing = []; unknown = []; originals = []
+    ready = route is not None
+    if route is None: missing.append('explicit_route_selection'); ready = False
+    if not config_path.exists(): missing.append('check_definitions'); ready = False
+    if execution == 2 and req_path.exists() and not (folder/'check-selection.json').exists():
+        missing.append('feature_check_selection'); ready = False
+    if route == 'scoped':
+        if execution != 2: missing.append('project_execution_contract2'); ready = False
+        if schema != 7 or doc.get('acceptance_contract') != 1:
+            missing.append('explicit_schema7_preparation'); ready = False
+            # Preparation uses committed originals. Do not silently commit them.
+            for name in ('verification.json','claim-review.json'):
+                path = folder / name
+                if not path.exists(): continue
+                try:
+                    raw = git(root,'show','HEAD:'+path.relative_to(root).as_posix())
+                    state = 'committed' if raw == path.read_bytes() else 'uncommitted'
+                except ValueError: state = 'uncommitted'
+                originals.append(dict(path=name,state=state))
+                if state != 'committed': missing.append('commit_original:'+name)
+            if any(row.get('manual_scope_ref') or (row.get('history') and
+                    (row['history'][-1].get('status') == 'retained' or
+                     any(k in row['history'][-1] for k in ('retention_kind','scope_ref')))) for row in doc.get('items',[])):
+                missing.append('unsupported_composite_originals')
+            unknown.extend(['participating_host_capabilities','preparation_authority'])
+    if schema in (6,7):
+        from acceptance_contract import validate_document
+        try: validate_document(doc)
+        except (ValueError,KeyError,TypeError) as exc:
+            missing.append('invalid_acceptance_document:'+str(exc)); ready = False
+    if route == 'legacy' and schema in (6,7):
+        missing.append('existing_acceptance_contract_no_downgrade'); ready = False
+    if req_path.exists() and route is not None:
+        from check_runs import selection
+        try: selection(root,feature_id)
+        except (OSError, ValueError, KeyError, TypeError) as exc:
+            missing.append('selection_or_effect_plan:'+str(exc)); ready = False
+    pending_switch = route == 'scoped' and execution != 2
+    return dict(route=route, relationship='linked' if feature.get('change_context') or parent_id else 'standalone',
+                feature_exists=req_path.exists(),
+                state=('route_available_for_intake' if not req_path.exists() else 'structurally_ready') if ready and not unknown else 'preparation_required',
+                verification_schema=schema, execution_contract=execution,
+                missing=missing, unknown=unknown, original_records=originals,
+                project_switch=dict(required=pending_switch, scope='project-wide' if pending_switch else 'none',
+                    inventory_state='inspected' if inventory_needed else 'not_applicable_to_current_route',
+                    active_features=participants,
+                    missing_selections=[x for x in participants if not (feature_root/x/'check-selection.json').exists()] if route == 'scoped' else []),
+                execution_entry='verification.py run <PROJECT> <ID>',
+                direct_check_result='diagnostic_only_no_legacy_adoption' if execution == 1 else 'recorded_attempt_requires_claim_mapping',
+                limitation='Legacy routes keep global stamps/full current-work review; no schema7 reuse promise.' if route == 'legacy' else ('Existing schema6 acceptance remains on its own contract; inspection does not migrate it.' if route == 'acceptance_v1' else 'Schema7 requires explicit project/host preparation; no legacy final-pass fallback.'),
+                automatic_preparation=False, semantic_acceptance=False)
+
+
+def require_execution_route(root, feature_id):
+    """Refuse known unprepared scoped final-gate runs before side effects.
+
+    Focused development diagnostics remain possible through project tools; they
+    are not promised acceptance credit. No migration or approval is performed.
+    """
+    folder = safe(root, '.agent-workflow/features/' + feature_id)
+    path = folder/'spec/requirements.json'
+    if not path.exists(): return
+    feature = read(root,path)['feature']
+    if feature.get('verification_policy') != 1: return
+    plan_path = folder/'verification.json'
+    doc = read(root,plan_path) if plan_path.exists() else {}
+    from check_runs import enabled as execution_enabled
+    need(doc.get('schema_version') == 7 and doc.get('acceptance_contract') == 1 and execution_enabled(root),
+         'DELIVERY_PREPARE_REQUIRED: explicit schema7 scoped route is not prepared; inspect readiness before final-gate execution; diagnostics grant no acceptance credit')
+    from acceptance_contract import validate_document
+    validate_document(doc)
+    need(doc.get('feature_id') == feature_id, 'prepared contract belongs to another feature')
+
+
 def entry_status(root, feature_id):
     folder = safe(root, '.agent-workflow/features/' + feature_id)
     req = read(root, folder / 'spec/requirements.json'); plan_path = folder / 'verification.json'
@@ -328,19 +441,25 @@ def entry_status(root, feature_id):
     schema = plan.get('schema_version', 1)
     if req['feature'].get('status') == 'complete': route = 'historical_delivery_or_explicit_followup'
     elif schema in (6,7): route = 'acceptance_v1_scoped' if schema == 7 else 'acceptance_v1'
+    elif req['feature'].get('verification_policy') == 2: route = 'legacy_effect_planning_no_scoped_acceptance'
     elif any(r.get('manual_scope_ref') or (r.get('history') and r['history'][-1].get('status') == 'retained') for r in plan.get('items',[])): route = 'legacy_composite_sources_need_review_not_force_migration'
     else: route = 'evaluate_acceptance_v1_prerequisites_before_offering_legacy_batch'
-    return dict(feature_id=feature_id, installed_version_is_not_contract=True, verification_schema=schema,
+    return dict(readiness=delivery_readiness(root, feature_id), feature_id=feature_id, installed_version_is_not_contract=True, verification_schema=schema,
                 execution_contract=read(root, '.agent-workflow/project-baseline/quality-gates.json').get('execution_contract',1),
                 route=route, manual_scope_contract=plan.get('manual_scope_contract'), verification_policy=req['feature'].get('verification_policy'), automatic_preparation=False)
 
 
 def main():
     p = argparse.ArgumentParser(description=__doc__); p.add_argument('root', type=Path); p.add_argument('feature_id')
+    p.add_argument('--inspect-route', choices=('legacy','scoped'), help='Read-only prospective or existing route inspection')
+    p.add_argument('--parent', help='Prospective parent trace only; does not enable a contract')
     p.add_argument('--operation', choices=('test','build','commit','device','configure'))
     p.add_argument('--path', action='append', default=[])
     p.add_argument('--environment', choices=('test','local','production'), default='test')
-    args = p.parse_args(); root = args.root.resolve(); result = entry_status(root,args.feature_id)
+    args = p.parse_args(); root = args.root.resolve()
+    if args.inspect_route:
+        print(json.dumps(delivery_readiness(root,args.feature_id,args.inspect_route,args.parent), ensure_ascii=False, indent=2)); return 0
+    result = entry_status(root,args.feature_id)
     if args.operation:
         need(bool(args.path), 'operation inspection needs explicit paths')
         for path in args.path: path_name(path)

@@ -725,6 +725,8 @@ def prepare(root, folder, approval):
         before = load_plan(folder) if exists else None
         if before is not None and enabled(before): return before
         req, config, impact = sources(root,folder)
+        if req['feature'].get('verification_policy') == 2:
+            fail('PREPARE_REQUIRED','explicit legacy planning route cannot silently become schema6/7; retain its identity and use a separately approved route-change design')
         if req['feature'].get('status') == 'complete': fail('PREPARE_REQUIRED','completed features are not migration targets')
         if not attempt_enabled(root): fail('PREPARE_REQUIRED','project execution contract2 must be prepared explicitly first')
         participants = sorted(f.name for f in folder.parent.iterdir() if (f/'spec/requirements.json').is_file() and read(f/'spec/requirements.json')['feature'].get('status') != 'complete')
