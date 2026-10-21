@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.20.1 — 2026-10-21
+
+- Restore the approved requirement-specific progress display to the formal runtime: reuse the host's native task/plan list and native states, derived from current work rather than fixed workflow stages.
+- Update on material starts, completions and blockers; use concise text when no native list is available. No new configuration, persistent ledger, permission or acceptance gate.
+- Correct the release omission that kept these existing instructions only on main. Scripts, schema and test execution remain unchanged; host rendering and natural Agent adoption still need observation.
+
+
 ## 0.20.0 — 2026-10-21
 
 - Add explicitly prepared schema 7 scoped acceptance: classify actual change units, combine causal checks, investigate unknown effects, and preserve parent delivery/background changes and negative barriers in linked increments. Schema 1–6 remain readable; no automatic migration.
