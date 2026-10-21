@@ -173,3 +173,8 @@ semantic corrections still follow normal review. Do not reopen business checks
 just to state a publication observation.
 
 Pure A housekeeping may use existing content-only handling when no feature-level delivery is requested; do not create a feature or business gate just for a comment. For explicit feature certification with no applicable executable command, report the current execution-contract preparation limitation instead of inventing checks or claiming an empty execution passed.
+
+
+Schema8 storage retains its original profile6/7; it is not proof of scoped preparation.
+A stored profile7 follows this policy and the same resolver; profile6 cannot become
+scoped by changing the outer format number. See [acceptance-contract.md](acceptance-contract.md).

@@ -1,0 +1,57 @@
+test_fresh_scoped_storage_uses_real_gate_and_same_resolver (test_acceptance_storage.ScopedStorageTests) ... FAIL
+test_missing_capability_refuses_without_rewriting_original (test_acceptance_storage.ScopedStorageTests) ... ok
+test_changed_actual_reviewer_context_is_not_a_correction (test_acceptance_storage.StorageAcceptanceTests) ... ok
+test_changed_scope_or_different_context_cannot_be_corrected (test_acceptance_storage.StorageAcceptanceTests) ... ok
+test_fact_failure_cannot_be_relabelled_as_review_error (test_acceptance_storage.StorageAcceptanceTests) ... ok
+test_new_preparation_can_explicitly_choose_storage_without_migrating_old (test_acceptance_storage.StorageAcceptanceTests) ... ok
+test_new_world_cannot_use_same_input_correction (test_acceptance_storage.StorageAcceptanceTests) ... ok
+test_observed_failure_classification_cannot_be_corrected (test_acceptance_storage.StorageAcceptanceTests) ... ok
+test_old_reader_rejects_packed_format (test_acceptance_storage.StorageAcceptanceTests) ... ok
+test_old_unclassified_negative_cannot_be_corrected (test_acceptance_storage.StorageAcceptanceTests) ... ok
+test_original_missing_or_changed_refuses (test_acceptance_storage.StorageAcceptanceTests) ... ok
+test_prepare_preserves_events_facts_and_original_digests_without_execution (test_acceptance_storage.StorageAcceptanceTests) ... ok
+test_prepare_refuses_completed_work (test_acceptance_storage.StorageAcceptanceTests) ... ok
+test_readiness_uses_same_decoded_profile (test_acceptance_storage.StorageAcceptanceTests) ... ok
+test_same_context_correction_keeps_negative_without_new_execution (test_acceptance_storage.StorageAcceptanceTests) ... ok
+test_typed_fact_does_not_silently_enable_for_old_contract (test_acceptance_storage.StorageAcceptanceTests) ... ok
+test_typed_fact_invalid_time_refuses (test_acceptance_storage.StorageAcceptanceTests) ... ok
+test_typed_static_fact_preserves_observation_and_registration_times (test_acceptance_storage.StorageAcceptanceTests) ... ok
+test_uncommitted_or_missing_host_authorization_refuses_no_write (test_acceptance_storage.StorageAcceptanceTests) ... ok
+test_bounded_expansion_refuses_but_literal_reference_text_is_preserved (test_acceptance_storage.StorageCodecTests) ... ok
+test_missing_object_refuses (test_acceptance_storage.StorageCodecTests) ... ok
+test_modified_object_refuses (test_acceptance_storage.StorageCodecTests) ... ok
+test_old_documents_are_not_rewritten (test_acceptance_storage.StorageCodecTests) ... ok
+test_repeated_large_snapshots_are_stored_once_and_exactly_restored (test_acceptance_storage.StorageCodecTests) ... ok
+test_unreachable_object_refuses (test_acceptance_storage.StorageCodecTests) ... ok
+test_wrong_envelope_or_node_refuses (test_acceptance_storage.StorageCodecTests) ... ok
+
+======================================================================
+FAIL: test_fresh_scoped_storage_uses_real_gate_and_same_resolver (test_acceptance_storage.ScopedStorageTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/mac/Entrepôt/featrace-dev/tests/test_acceptance_storage.py", line 215, in test_fresh_scoped_storage_uses_real_gate_and_same_resolver
+    self.assertTrue(request['fact_refs']);self.assertFalse(a.resolve_claims(self.p.root,self.p.folder)['acceptance_eligible'])
+AssertionError: {} is not true
+
+----------------------------------------------------------------------
+Ran 26 tests in 84.985s
+
+FAILED (failures=1)
+CHECK_ATTEMPT: a0cb2514805d4cbfadddc08c35bd4323 passed
+CHECK_ATTEMPT: bf9472df2e684e608eb1d788c130d65d passed
+CHECK_ATTEMPT: 7fd6da7379774a02b43380a6c25a30ee passed
+CHECK_ATTEMPT: 92e362438abf45339c97410472d6f42d passed
+CHECK_ATTEMPT: 58c0bca130ca4307abc18a32e28a2b35 passed
+CHECK_ATTEMPT: 6852e47cb3084ed9ad30907568b0598c passed
+CHECK_ATTEMPT: 7f0a102fe56b42449a9befb8905e64b5 passed
+CHECK_ATTEMPT: d823eaf36e204631a77819019da546d1 passed
+CHECK_ATTEMPT: 5ffa2f630ed04f0098e37ccc988a8660 passed
+CHECK_ATTEMPT: b0aa697023794ec9b9b1fa9cae3c7f68 passed
+CHECK_ATTEMPT: e192d0b137bc4eb4ba7c13cdaba11f6d passed
+CHECK_ATTEMPT: 6486bd1f49b849a699531342bc34d2f8 passed
+CHECK_ATTEMPT: a0604ee601f74d66bc9a43c5c19b3a87 passed
+CHECK_ATTEMPT: 1c00945c51a143efa9316432da9e66aa passed
+CHECK_ATTEMPT: 4056b66f9a9f4195a8e2cfc8026ea238 passed
+CHECK_ATTEMPT: 10f93f5fb82c48f08586365ea397bbc4 passed
+CHECK_ATTEMPT: 9d930126ff5a4734886f7d2ba73eb335 passed
+CHECK_ATTEMPT: 76a6a455286e44d3be4d0503de0d789b passed

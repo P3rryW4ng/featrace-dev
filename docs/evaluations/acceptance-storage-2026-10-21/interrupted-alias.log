@@ -1,0 +1,81 @@
+test_ordinary_inventory_classifies_legacy_candidates_waivers_and_new_claims (test_acceptance_continuation.AcceptanceContinuationTests) ... ok
+test_ordinary_inventory_exposes_unsynced_plan_without_mutating_it (test_acceptance_continuation.AcceptanceContinuationTests) ... ok
+test_ordinary_inventory_never_routes_latest_failure_to_adoption (test_acceptance_continuation.AcceptanceContinuationTests) ... ok
+test_ordinary_inventory_routes_matching_execution_without_running_it (test_acceptance_continuation.AcceptanceContinuationTests) ... ok
+test_parent_change_legacy_stales_37_but_existing_batch_retains_22_in_one_write (test_acceptance_continuation.AcceptanceContinuationTests) ... ok
+test_replaced_claim_is_not_a_batch_source_but_unchanged_rows_are_candidates (test_acceptance_continuation.AcceptanceContinuationTests) ... ok
+test_unknown_shared_consumer_or_environment_cannot_be_supported (test_acceptance_continuation.AcceptanceContinuationTests) ... ok
+test_affected_targets_cannot_use_reuse_action (test_acceptance_contract.AcceptanceContractTests) ... ok
+test_all_negative_saved_and_same_input_cannot_turn_green (test_acceptance_contract.AcceptanceContractTests) ... ok
+test_archived_feature_cannot_receive_new_fact_review_or_prepare (test_acceptance_contract.AcceptanceContractTests) ... ok
+test_atomic_write_failure_preserves_plan (test_acceptance_contract.AcceptanceContractTests) ... ok
+test_automatic_facts_bound_to_exact_attempt_and_assertion_ids (test_acceptance_contract.AcceptanceContractTests) ... Traceback (most recent call last):
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/runpy.py", line 197, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/runpy.py", line 87, in _run_code
+    exec(code, run_globals)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/unittest/__main__.py", line 18, in <module>
+    main(module=None)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/unittest/main.py", line 101, in __init__
+    self.runTests()
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/unittest/main.py", line 271, in runTests
+    self.result = testRunner.run(self.test)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/unittest/runner.py", line 176, in run
+    test(result)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/unittest/suite.py", line 84, in __call__
+    return self.run(*args, **kwds)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/unittest/suite.py", line 122, in run
+    test(result)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/unittest/suite.py", line 84, in __call__
+    return self.run(*args, **kwds)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/unittest/suite.py", line 122, in run
+    test(result)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/unittest/suite.py", line 84, in __call__
+    return self.run(*args, **kwds)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/unittest/suite.py", line 122, in run
+    test(result)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/unittest/case.py", line 653, in __call__
+    return self.run(*args, **kwds)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/unittest/case.py", line 589, in run
+    self._callSetUp()
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/unittest/case.py", line 547, in _callSetUp
+    self.setUp()
+  File "/Users/mac/Entrepôt/featrace-dev/tests/test_acceptance_contract.py", line 23, in setUp
+    v.record(self.root,self.folder,row['id'],'passed',stamp,head,'Synthetic complete observation','Synthetic non-device fixture')
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/verification.py", line 64, in wrapped
+    return function(root, folder, *args, **kwargs)
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/verification.py", line 561, in record
+    render(folder)
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/verification.py", line 875, in render
+    effective = state(row, stamp, row_evidence_stamp(root, folder, row, execution_view)) if stamp else 'stale'
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/verification.py", line 283, in row_evidence_stamp
+    return manual_evidence_stamp(root, folder, row)
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/verification.py", line 245, in manual_evidence_stamp
+    req, _, impact = sources(root, folder)
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/verification.py", line 78, in sources
+    errors, _ = validate_impact(root, folder, req, 'develop')
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/impact.py", line 110, in validate_impact
+    current = snapshot(root, doc)
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/impact.py", line 44, in snapshot
+    changed.update(git(root, 'ls-files', '--others', '--exclude-standard', '-z').decode().split('\0'))
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/impact.py", line 17, in git
+    result = subprocess.run(['git', '-C', str(root), *args], capture_output=True)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/subprocess.py", line 507, in run
+    stdout, stderr = process.communicate(input, timeout=timeout)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/subprocess.py", line 1134, in communicate
+    stdout, stderr = self._communicate(input, endtime, timeout)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/subprocess.py", line 1979, in _communicate
+    ready = selector.select(timeout)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/selectors.py", line 416, in select
+    fd_event_list = self._selector.poll(timeout)
+KeyboardInterrupt
+CHECK_ATTEMPT: ed11b8688271498691962581ca990641 passed
+CHECK_ATTEMPT: c9229915f6594e5b977f202056145f16 failed
+CHECK_ATTEMPT: 441ae31f61904e1e973919b5af7fcd98 passed
+CHECK_RESULTS_ADOPTED: 1; no commands executed
+SYNTHETIC_NEWLINE: legacy_stale=37 retained=22 affected=6 waiver_authority_checks=9 shared_saves=1; no new test execution
+CHECK_ATTEMPT: 6ac03e169b884ea1a8b4d912441df75e passed
+CHECK_ATTEMPT: 8601bea327944f088e552210dafdc3da passed
+CHECK_ATTEMPT: a08225a0ac1a43cb8d27fb76c719ce66 passed
+CHECK_ATTEMPT: dcb886453f7546a49eb2d755f1e9f528 passed
+CHECK_ATTEMPT: a173891e5b3f40e2a7d3b4817ebe7079 passed

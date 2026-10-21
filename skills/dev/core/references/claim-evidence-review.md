@@ -1,6 +1,6 @@
 # Focused claim-to-evidence review (workflow v6)
 
-For explicitly prepared schema6 acceptance v1, use [acceptance-contract.md](acceptance-contract.md) instead of the legacy stamp/carry/final-review sequence below. Capture does not require already-supported acceptance; final delivery still requires complete coverage and existing guards. Do not migrate from an ordinary stale-status message.
+For explicitly prepared schema6/7 acceptance v1 or schema8 storage (retaining profile6/7), use [acceptance-contract.md](acceptance-contract.md) instead of the legacy stamp/carry/final-review sequence below. Capture does not require already-supported acceptance; final delivery still requires complete coverage and existing guards. Do not migrate from an ordinary stale-status message.
 
 At the Verify → Deliver boundary, after current check/audit pass and before `complete`, capture the current review input with `python3 core/scripts/claim_review.py capture <PROJECT> <ID>`. This is a focused review of active acceptance rows, not the optional full independent Verify investigation. Do not rerun unchanged tests just to produce this review.
 

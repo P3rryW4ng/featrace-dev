@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.22.0 — 2026-10-21
+
+- Add explicitly prepared schema8 single-file content-addressed storage, retaining the original schema6/7 acceptance profile. Share repeated subtrees while restoring the complete facts, event chain and world digests; missing, modified, unreachable or excessive objects refuse. No automatic migration or completed-feature rewrite.
+- Support typed static investigations/runtime observations with actual observed time distinct from registration time. Preserve original facts and actual execution identity.
+- Permit bounded judgment correction only for classified review mistakes in the same actual context, same world/authority and complete original fact set; retain original negatives and refuse actual failed/unavailable facts, unclassified old negatives or context changes. Existing targeted-evidence/authority resolution remains.
+- Minor version for the new data and review contract. Full regression 736/736 (28 new), focused 28/28; final code/test hashes match the frozen run. Original interruption and failure evidence remains. A 58.3MB synthetic logical record stored as 19.6MB with exact recovery, but encoding/decoding were slower than plain JSON: no net-efficiency claim.
+- Whole-repository identity collection, full-history validation and whole-selection execution remain; installation does not prepare business projects or reopen completed work.
+
 ## 0.21.2 — 2026-10-21
 
 - Replace whole-file privacy collection with bounded streamed text reads and complete digest rechecks. Support large UTF-8 records without retaining complete old/new blobs, diffs and raw snapshots in Python memory.

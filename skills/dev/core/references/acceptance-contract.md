@@ -1,7 +1,7 @@
-# Acceptance contract v1 (schemas 6/7, explicit opt-in)
+# Acceptance contract v1 (schemas 6/7 and explicit schema8 storage)
 
 Use this reference only when `verification.json` has `schema_version: 6` or `7` and
-`acceptance_contract: 1`, or when explicitly evaluating preparation. Installation
+`acceptance_contract: 1`, or for an explicitly prepared schema8 envelope described below, or when evaluating preparation. Installation
 never prepares projects. Schema 1–5 keep their original workflow. Do not downgrade,
 re-sign observations, use old carry/adoption writers, or reopen completed features
 to evaluate this contract.
@@ -122,3 +122,70 @@ review, unresolved negative, unavailable execution, drift, busy writers and disa
 legacy writers. Resolve the specific cause; do not fall back to global legacy stamps.
 
 Scoped new work uses schema7 with verification_policy1 under [verification-policy.md](verification-policy.md). It keeps the same acceptance event format but requires checked classification/project policy and capable hosts; 0.19.0 readers reject this schema. Existing schema6 remains supported and is not silently changed.
+
+
+## Explicit snapshot storage (schema8, 0.22.0 explicit opt-in)
+
+Schema8 is a single-file content-addressed envelope around the complete acceptance
+record, with `storage.profile` retaining schema6 or schema7 semantics. It is not a
+new execution contract and does not reduce claim coverage. Literal evidence stays
+text, not compressed. Only the shared loader may interpret logical JSON Pointers;
+raw JSON tools see the envelope, not `/items` at its physical root.
+
+Do not rewrite a completed record to shrink it. Existing schemas remain unchanged.
+For an active, committed schema6/7 original, explicit authorized preparation is:
+
+```text
+verification.py prepare-storage ROOT ID --approval approval.json
+```
+
+Approval requires `snapshot_storage: 1`, actual authorization `evidence`, and every
+participating `hosts` entry with `name` and `snapshot_storage_capable: true`.
+Preparation changes this feature's format only, records the recoverable Git original,
+preserves every original fact/event/world digest, and executes no checks. All readers
+must support schema8; old readers refuse. New acceptance preparation may explicitly
+include the same approval fields; installation alone never selects the format.
+No new automatic downgrade is supplied: preserve the original; new events/facts
+must never be discarded to run an older tool. Missing, altered, cyclic, unreachable
+or excessively expanded objects refuse; never treat a reference hash as recovered
+proof. Atomic single-file writes keep the complete reachable object pool together.
+Loading still expands the logical record and validates history; no constant-memory
+or universal speed improvement is promised.
+
+### Static investigation and observation
+
+Schema8 `record` optionally accepts `--evidence-kind static_analysis` or
+`runtime_observation`, together with `--observed-at` (actual ISO8601 time with zone,
+not later than registration). `at` remains registration time; `tested_revision`
+remains the inspected input revision. Old facts retain their original fields.
+Do not date a repeated description as new analysis. Static proof of no influence
+may support a preservation claim; it is not runtime proof of all old behavior.
+
+### Negative classification and judgment correction
+
+For new schema8 negative assessments, `negative_kind` can be `observed_failure`,
+`evidence_gap`, or `judgment_error`. Review may include `review_context` with actual
+`host`, `context_id`, `reviewer`, matching the host provenance artifact. A continued
+original independent context is not a second independent source or a newly created
+context; do not fabricate either. Omitted classification preserves old conservative
+rules. Facts with failed/unavailable status remain independent barriers.
+
+Normally resolve a negative through new relevant facts or legitimate authority.
+A narrow `barrier_resolutions` entry may instead use:
+
+```json
+{"barrier_id":"<original-event>:<claim-key>","kind":"judgment_correction",
+ "error_kind":"scope_overreach","original_scope":{"source_basis":"<exact original>",
+ "required_scope":"<exact original>","observed_scope":"<exact original>"},
+ "addresses":"Which original inference was wrong and why",
+ "evidence":"Exact existing fact references and exclusion reasoning"}
+```
+
+`error_kind` is `scope_overreach` or `evidence_misread`. This requires a previously
+classified evidence_gap/judgment_error, the same actual independent context, exact
+same world and claim authority/version, and the complete same original fact set.
+Any corresponding failed/unavailable fact refuses this route. The original negative
+and new disposition both remain. Unknown influence or absent proof stays unresolved;
+changing reviewer, narrowing facts, changing authority or adding a label is not a
+correction. The helper checks structure and identity, not semantic truth. If a real
+behavioral gap remains, supply targeted evidence rather than wording a correction.

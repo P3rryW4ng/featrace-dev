@@ -1,0 +1,44 @@
+test_changed_actual_reviewer_context_is_not_a_correction (test_acceptance_storage.StorageAcceptanceTests) ... ok
+test_changed_scope_or_different_context_cannot_be_corrected (test_acceptance_storage.StorageAcceptanceTests) ... ok
+test_fact_failure_cannot_be_relabelled_as_review_error (test_acceptance_storage.StorageAcceptanceTests) ... ok
+test_new_preparation_can_explicitly_choose_storage_without_migrating_old (test_acceptance_storage.StorageAcceptanceTests) ... ok
+test_new_world_cannot_use_same_input_correction (test_acceptance_storage.StorageAcceptanceTests) ... ok
+test_observed_failure_classification_cannot_be_corrected (test_acceptance_storage.StorageAcceptanceTests) ... ok
+test_old_reader_rejects_packed_format (test_acceptance_storage.StorageAcceptanceTests) ... ok
+test_old_unclassified_negative_cannot_be_corrected (test_acceptance_storage.StorageAcceptanceTests) ... ok
+test_original_missing_or_changed_refuses (test_acceptance_storage.StorageAcceptanceTests) ... ok
+test_prepare_preserves_events_facts_and_original_digests_without_execution (test_acceptance_storage.StorageAcceptanceTests) ... ok
+test_prepare_refuses_completed_work (test_acceptance_storage.StorageAcceptanceTests) ... ok
+test_readiness_uses_same_decoded_profile (test_acceptance_storage.StorageAcceptanceTests) ... ok
+test_same_context_correction_keeps_negative_without_new_execution (test_acceptance_storage.StorageAcceptanceTests) ... ok
+test_typed_fact_invalid_time_refuses (test_acceptance_storage.StorageAcceptanceTests) ... ok
+test_typed_static_fact_preserves_observation_and_registration_times (test_acceptance_storage.StorageAcceptanceTests) ... ok
+test_uncommitted_or_missing_host_authorization_refuses_no_write (test_acceptance_storage.StorageAcceptanceTests) ... ok
+test_bounded_expansion_refuses_but_literal_reference_text_is_preserved (test_acceptance_storage.StorageCodecTests) ... ok
+test_missing_object_refuses (test_acceptance_storage.StorageCodecTests) ... ok
+test_modified_object_refuses (test_acceptance_storage.StorageCodecTests) ... ok
+test_old_documents_are_not_rewritten (test_acceptance_storage.StorageCodecTests) ... ok
+test_repeated_large_snapshots_are_stored_once_and_exactly_restored (test_acceptance_storage.StorageCodecTests) ... ok
+test_unreachable_object_refuses (test_acceptance_storage.StorageCodecTests) ... ok
+test_wrong_envelope_or_node_refuses (test_acceptance_storage.StorageCodecTests) ... ok
+
+----------------------------------------------------------------------
+Ran 23 tests in 81.322s
+
+OK
+CHECK_ATTEMPT: 21d72038237141f59633c4529a9d56f5 passed
+CHECK_ATTEMPT: 1309b179b9f94c769e3fac4460865797 passed
+CHECK_ATTEMPT: f1112d93dd6a4763859a33f400b457b0 passed
+CHECK_ATTEMPT: 9e259c233cf44e1cbc91c7f7fbd9015e passed
+CHECK_ATTEMPT: 33e67b32186841b0b07f7a3192c20c5e passed
+CHECK_ATTEMPT: 5e1128a181f147e6ac4d2066506e7700 passed
+CHECK_ATTEMPT: 100cf8abb49e4c77a872d6b01c7736d8 passed
+CHECK_ATTEMPT: 85de097f4a5247128177c9712cae31af passed
+CHECK_ATTEMPT: 274fdda453f342c38a26915f1348322d passed
+CHECK_ATTEMPT: 5269f0211fb549379aaf7083f5d24b74 passed
+CHECK_ATTEMPT: dceee28a7f8e4f7192fca4cb31d41b39 passed
+CHECK_ATTEMPT: d47d138d10774f09bc663860d9f050fc passed
+CHECK_ATTEMPT: 4abd77025b344a09a13e46aecb6796e4 passed
+CHECK_ATTEMPT: 415d0028e004401ca3e37f3cb657fe76 passed
+CHECK_ATTEMPT: c87dff4e2e0d4fe88afa48e3941d5551 passed
+CHECK_ATTEMPT: e500379eba3840e3ad43a000b059205d passed

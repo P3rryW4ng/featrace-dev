@@ -59,7 +59,9 @@ def _pairs(pairs):
 
 
 def parse(raw):
-    return json.loads(raw, object_pairs_hook=_pairs, parse_constant=lambda s: fail('CONTRACT_UNSUPPORTED', 'invalid JSON constant'))
+    from acceptance_storage import unpack
+    value = json.loads(raw, object_pairs_hook=_pairs, parse_constant=lambda s: fail('CONTRACT_UNSUPPORTED', 'invalid JSON constant'))
+    return unpack(value) if isinstance(value,dict) else value
 
 
 def read(path):
@@ -67,8 +69,12 @@ def read(path):
     return parse(path.read_bytes())
 
 
+def profile(doc):
+    return doc['storage']['profile'] if doc.get('schema_version') == 8 else doc.get('schema_version')
+
+
 def enabled(doc):
-    return isinstance(doc,dict) and (doc.get('schema_version') in (6,7) or 'acceptance_contract' in doc)
+    return isinstance(doc,dict) and (doc.get('schema_version') in (6,7,8) or 'acceptance_contract' in doc)
 
 
 def git(root, *args):
@@ -110,8 +116,12 @@ def original(root, ref):
 
 
 def validate_document(doc):
-    exact(doc, ['schema_version', 'feature_id', 'items', 'retired', 'acceptance_contract', 'acceptance'])
-    if type(doc['schema_version']) is not int or type(doc['acceptance_contract']) is not int or doc['schema_version'] not in (6,7) or doc['acceptance_contract'] != 1 or not text(doc['feature_id']):
+    exact(doc, ['schema_version', 'feature_id', 'items', 'retired', 'acceptance_contract', 'acceptance'] + (['storage'] if doc.get('schema_version') == 8 else []))
+    if doc.get('schema_version') == 8:
+        exact(doc['storage'], ['profile','origin','approval'])
+        if type(doc['storage']['profile']) is not int or doc['storage']['profile'] not in (6,7): fail('STORAGE_INVALID','invalid profile')
+        _storage_approval(doc['storage']['approval'])
+    if type(doc['schema_version']) is not int or type(doc['acceptance_contract']) is not int or doc['schema_version'] not in (6,7,8) or doc['acceptance_contract'] != 1 or not text(doc['feature_id']):
         fail('CONTRACT_UNSUPPORTED', 'unsupported acceptance format')
     a = doc['acceptance']
     exact(a, ['contract_id', 'generation', 'origins', 'worlds', 'events'])
@@ -179,8 +189,12 @@ def validate_document(doc):
             fail('CONTRACT_UNSUPPORTED','invalid manual/automatic mapping')
         for index,fact in enumerate(row['history']):
             if (row['id'],index) not in registered: fail('CONTRACT_UNSUPPORTED','unregistered fact added to history')
-            if set(fact)-{'status','digest','tested_revision','actual','evidence','at','method','observed_at'}:
+            if set(fact)-{'status','digest','tested_revision','actual','evidence','at','method','observed_at','evidence_kind'}:
                 fail('CONTRACT_UNSUPPORTED','unknown new fact field')
+            if 'evidence_kind' in fact:
+                if doc['schema_version'] != 8 or fact['evidence_kind'] not in ('static_analysis','runtime_observation'):
+                    fail('CONTRACT_UNSUPPORTED','typed fact requires storage contract')
+                _observation_time(fact.get('observed_at'),fact['at'])
             if fact.get('status') not in ('passed', 'failed', 'unavailable', 'waived'):
                 fail('CONTRACT_UNSUPPORTED', 'only direct new facts supported')
             if any(not text(fact.get(k)) for k in ('digest', 'tested_revision', 'actual', 'evidence', 'at', 'method')):
@@ -193,9 +207,16 @@ def validate_document(doc):
     return doc
 
 
-def load(folder):
-    doc = validate_document(read(folder / 'verification.json'))
+def load(folder, *, doc=None):
+    doc = validate_document(read(folder / 'verification.json') if doc is None else doc)
     if doc['feature_id'] != folder.name: fail('CONTRACT_UNSUPPORTED', 'feature mismatch')
+    if doc['schema_version'] == 8 and doc['storage']['origin'] is not None:
+        prior=original(folder.parents[2],doc['storage']['origin'])
+        if (prior.get('schema_version') != profile(doc) or prior.get('feature_id') != doc['feature_id']
+                or prior.get('acceptance',{}).get('contract_id') != doc['acceptance']['contract_id']
+                or doc['acceptance']['events'][:len(prior['acceptance']['events'])] != prior['acceptance']['events']
+                or any(doc['acceptance']['worlds'].get(k)!=v for k,v in prior['acceptance']['worlds'].items())):
+            fail('ORIGIN_UNAVAILABLE','storage origin history differs')
     return doc
 
 
@@ -250,7 +271,8 @@ def write(root, folder, doc, before):
     path=folder/'verification.json'
     if (read(path) if path.exists() else None) != before: fail('INPUTS_MOVED', 'plan changed before commit')
     validate_document(doc)
-    save(root, folder / 'verification.json', doc)
+    from acceptance_storage import pack
+    save(root, folder / 'verification.json', pack(doc))
 
 
 def _sources(root, folder):
@@ -312,7 +334,7 @@ def _origin_rows(root, doc):
 
 
 def fact_summary(entry):
-    return {k:entry[k] for k in ('status','tested_revision','at','method')}
+    return {k:entry[k] for k in ('status','tested_revision','at','method','evidence_kind','observed_at') if k in entry}
 
 
 def fact_inventory(root, doc):
@@ -367,7 +389,7 @@ def world(root, folder, doc, *, locked=False):
     if safe(root,folder) != Path(root).resolve()/'.agent-workflow/features'/folder.name:
         fail('WORLD_UNKNOWN','feature folder outside canonical workspace')
     req = read(folder/'spec/requirements.json')
-    if doc['schema_version'] == 7:
+    if profile(doc) == 7:
         from verification_policy import validate_plan
         if req['feature'].get('verification_policy') != 1: fail('CONTRACT_UNSUPPORTED','schema7 requires verification policy')
         from check_runs import selection as scoped_selection
@@ -534,10 +556,16 @@ def _proof(folder, request, review):
     if (proof.get('request_digest') != request['request_digest'] or proof.get('fresh_context') is not True
             or not text(proof.get('host')) or not text(proof.get('context_id')) or proof.get('reviewer') != review['reviewer']):
         fail('REVIEW_NOT_INDEPENDENT', 'actual fresh host context evidence required; a label alone is insufficient')
+    if 'review_context' in review and review['review_context'] != {k:proof[k] for k in ('host','context_id','reviewer')}:
+        fail('REVIEW_NOT_INDEPENDENT','correction context must match actual host provenance')
 
 
 def _validate_review(doc, request, review, current):
-    exact(review, ['request_digest','reviewer','reviewer_evidence_ref','change_findings','assess','reuse','pending','barrier_resolutions'], 'REVIEW_INCOMPLETE')
+    exact(review, ['request_digest','reviewer','reviewer_evidence_ref','change_findings','assess','reuse','pending','barrier_resolutions'] + (['review_context'] if doc['schema_version'] == 8 and 'review_context' in review else []), 'REVIEW_INCOMPLETE')
+    if 'review_context' in review:
+        exact(review['review_context'],['host','context_id','reviewer'],'REVIEW_INCOMPLETE')
+        if not all(text(v) for v in review['review_context'].values()) or review['review_context']['reviewer'] != review['reviewer']:
+            fail('REVIEW_INCOMPLETE','invalid review context')
     if review['request_digest'] != request['request_digest'] or not text(review['reviewer']): fail('REVIEW_INCOMPLETE', 'review/request mismatch')
     if any(not isinstance(review[k],list) for k in ('change_findings','assess','reuse','pending','barrier_resolutions')):
         fail('REVIEW_INCOMPLETE','review collections must be arrays')
@@ -582,7 +610,9 @@ def _validate_review(doc, request, review, current):
                 fail('REVIEW_INCOMPLETE', 'reuse requires latest supported judgment and explicit equivalence')
             finding = deepcopy(old); finding['version'] = claim['version_digest']
         else:
-            exact(action, ['claim_key','verdict','source_basis','required_scope','observed_scope','evidence_ref','counterexample_check','fact_refs'], 'REVIEW_INCOMPLETE')
+            exact(action, ['claim_key','verdict','source_basis','required_scope','observed_scope','evidence_ref','counterexample_check','fact_refs'] + (['negative_kind'] if doc['schema_version'] == 8 and 'negative_kind' in action else []), 'REVIEW_INCOMPLETE')
+            if 'negative_kind' in action and (action['verdict'] not in ('partial','unknown') or action['negative_kind'] not in ('observed_failure','evidence_gap','judgment_error')):
+                fail('REVIEW_INCOMPLETE','negative classification requires a negative verdict')
             if action['verdict'] not in ('supported','partial','unknown','approved_waiver'):
                 fail('REVIEW_INCOMPLETE', 'invalid verdict')
             if any(not text(action[k]) for k in ('source_basis','required_scope','observed_scope','evidence_ref','counterexample_check')):
@@ -621,7 +651,7 @@ def _validate_review(doc, request, review, current):
             index=event['seq'];prefix=deepcopy(doc);prefix['acceptance']['events']=doc['acceptance']['events'][:index+1]
             for oldkey, old in _judgments(prefix).items():
                 if oldkey in [key] + claim['predecessors'] and old['verdict'] in ('partial','unknown'):
-                    barriers.append((event['id'] + ':' + oldkey, dict(old,at=event['at'])))
+                    barriers.append((event['id'] + ':' + oldkey, dict(old,at=event['at'],review_context=event['payload']['review'].get('review_context'),world_digest=event['payload']['request']['world_digest'])))
         for fact_id, item in candidates:
             if item['fact']['status'] in ('failed','unavailable'):
                 barriers.append((fact_id, {'fact_refs':[fact_id], 'version':claim['version_digest'], 'at':item['fact']['at']}))
@@ -638,9 +668,30 @@ def _validate_review(doc, request, review, current):
             new_authority = old.get('version') != claim['version_digest'] and text(resolution.get('authority_evidence'))
             if not isinstance(resolution.get('addresses'),str) or not resolution['addresses'].strip():
                 fail('NEGATIVE_UNRESOLVED','resolution must address the original counterexample')
-            if not new_refs and not new_authority: fail('NEGATIVE_UNRESOLVED', 'new targeted evidence/authority required')
+            if resolution.get('kind') == 'judgment_correction':
+                _judgment_correction(doc,request,review,claim,finding,old,resolution,candidates)
+            elif not new_refs and not new_authority: fail('NEGATIVE_UNRESOLVED', 'new targeted evidence/authority required')
         judgments[key] = finding
     return judgments
+
+
+def _judgment_correction(doc, request, review, claim, finding, old, resolution, candidates):
+    if doc['schema_version'] != 8:
+        fail('NEGATIVE_UNRESOLVED','judgment correction requires explicit schema8')
+    exact(resolution,['barrier_id','kind','error_kind','original_scope','addresses','evidence'],'NEGATIVE_UNRESOLVED')
+    if (old.get('negative_kind') not in ('evidence_gap','judgment_error')
+            or resolution['error_kind'] not in ('scope_overreach','evidence_misread')
+            or not text(resolution['evidence']) or not text(resolution['addresses'])):
+        fail('NEGATIVE_UNRESOLVED','classified review error with precise reasons required')
+    if resolution['original_scope'] != {k:old[k] for k in ('source_basis','required_scope','observed_scope')}:
+        fail('NEGATIVE_UNRESOLVED','original reasoning must be addressed exactly')
+    if (not old.get('review_context') or old['review_context'] != review.get('review_context')
+            or old.get('version') != claim['version_digest']
+            or old.get('world_digest') != request['world_digest']
+            or set(old.get('fact_refs',[])) != set(finding['fact_refs'])):
+        fail('NEGATIVE_UNRESOLVED','same actual context, authority, world and complete original fact set required')
+    if any(item['fact']['status'] in ('failed','unavailable') for _,item in candidates):
+        fail('NEGATIVE_UNRESOLVED','actual failed/unavailable evidence cannot be corrected as judgment error')
 
 
 def apply_assessment(root, folder, request, review):
@@ -699,7 +750,14 @@ def reconcile_claims(root, folder, resolutions=None):
     return doc
 
 
-def record_fact(root, folder, item_id, status, frozen, tested, actual, evidence):
+def _observation_time(value, registered):
+    try:
+        observed=datetime.fromisoformat(value.replace('Z','+00:00')); end=datetime.fromisoformat(registered.replace('Z','+00:00'))
+        if observed.tzinfo is None or end.tzinfo is None or observed > end: raise ValueError('time range')
+    except (ValueError,TypeError,AttributeError): fail('REVIEW_INCOMPLETE','actual observation time with timezone must not exceed registration')
+
+
+def record_fact(root, folder, item_id, status, frozen, tested, actual, evidence, *, evidence_kind=None, observed_at=None):
     with mutation(root, folder):
         before = load(folder); request, current = capture_assessment(root, folder, doc=before, locked=True)
         if frozen != request['world_digest'] or tested != git(root, 'rev-parse','HEAD').decode().strip(): fail('INPUTS_MOVED', 'new observation identity changed')
@@ -709,12 +767,42 @@ def record_fact(root, folder, item_id, status, frozen, tested, actual, evidence)
         if index is None: fail('REVIEW_INCOMPLETE', 'manual target required')
         row = doc['items'][index]
         fact = dict(status=status,digest=frozen,tested_revision=tested,actual=actual,evidence=evidence,at=now(),method='manual')
+        if evidence_kind is not None or observed_at is not None:
+            if before['schema_version'] != 8 or evidence_kind not in ('static_analysis','runtime_observation'):
+                fail('REVIEW_INCOMPLETE','typed facts require explicit schema8 preparation')
+            _observation_time(observed_at,fact['at'])
+            fact.update(evidence_kind=evidence_kind,observed_at=observed_at)
         row['history'].append(fact)
         ref = dict(row_id=row['id'],history_index=len(row['history'])-1,pointer='/items/' + str(index) + '/history/' + str(len(row['history'])-1),sha256=stamp(fact))
         append(doc,'fact',{'ref':ref,'source':row['source']},'verification record')
         if world(root,folder,before,locked=True) != current: fail('INPUTS_MOVED','inputs moved before fact commit')
         write(root,folder,doc,before)
     return doc
+
+
+def prepare_storage(root, folder, approval):
+    with mutation(root,folder):
+        before = load(folder)
+        if read(folder/'spec/requirements.json')['feature'].get('status') == 'complete':
+            fail('PREPARE_REQUIRED','completed features are not storage migration targets')
+        if before['schema_version'] == 8: return before
+        _storage_approval(approval)
+        commit=git(root,'rev-parse','HEAD').decode().strip()
+        path=folder/'verification.json'; rel=path.relative_to(root).as_posix()
+        try:
+            oid=git(root,'rev-parse',commit+':'+rel).decode().strip(); raw=git(root,'cat-file','blob',oid)
+        except ValueError: fail('PREPARE_REQUIRED','commit original before storage preparation')
+        if raw != path.read_bytes(): fail('PREPARE_REQUIRED','uncommitted original record')
+        doc=deepcopy(before);doc['schema_version']=8
+        doc['storage']=dict(profile=before['schema_version'],origin=dict(commit=commit,path=rel,blob_oid=oid,sha256=byte_hash(raw)),approval=approval)
+        write(root,folder,doc,before)
+    return doc
+
+
+def _storage_approval(approval):
+    if (not isinstance(approval,dict) or type(approval.get('snapshot_storage')) is not int or approval.get('snapshot_storage') != 1 or not text(approval.get('evidence'))
+            or not approval.get('hosts') or any(not isinstance(h,dict) or h.get('snapshot_storage_capable') is not True or not text(h.get('name')) for h in approval['hosts'])):
+        fail('PREPARE_REQUIRED','explicit storage authorization and participating capable hosts required')
 
 
 def prepare(root, folder, approval):
@@ -759,6 +847,10 @@ def prepare(root, folder, approval):
             row['acceptance_contract']=1
         doc = dict(schema_version=7 if scoped else 6,feature_id=folder.name,items=rows,retired=[],acceptance_contract=1,
                    acceptance=dict(contract_id=str(uuid.uuid4()),generation=0,origins=origins,worlds={},events=[]))
+        if approval.get('snapshot_storage') is not None:
+            _storage_approval(approval)
+            doc['schema_version']=8
+            doc['storage']=dict(profile=7 if scoped else 6,origin=None,approval=approval)
         expected=candidates(req,config,impact)
         if {(x['source'],x['expected']) for x in rows} != {(x['source'],x['expected']) for x in expected}:
             fail('PLAN_RECONCILIATION_REQUIRED','sync original rows before prepare')

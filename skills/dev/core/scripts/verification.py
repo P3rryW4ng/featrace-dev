@@ -105,9 +105,8 @@ def load_plan(folder):
     doc = read(folder / 'verification.json')
     from acceptance_contract import enabled, validate_document
     if enabled(doc):
-        validate_document(doc)
-        if doc['feature_id'] != folder.name: raise ValueError('CONTRACT_UNSUPPORTED: feature mismatch')
-        return doc
+        from acceptance_contract import load
+        return load(folder,doc=doc)
     if not isinstance(doc, dict) or doc.get('schema_version') not in (1, 2, 3, 4, 5) or doc.get('feature_id') != folder.name or not isinstance(doc.get('items'), list) or not isinstance(doc.get('retired'), list):
         raise ValueError('invalid verification identity/schema')
     if doc.get('schema_version') == 4 and doc.get('execution_contract') != 2:
@@ -536,10 +535,11 @@ def doc_without_new_results(doc):
 
 
 @plan_mutation
-def record(root, folder, item_id, status, stamp, tested, actual, evidence):
+def record(root, folder, item_id, status, stamp, tested, actual, evidence, *, evidence_kind=None, observed_at=None):
     doc = load_plan(folder)
     from acceptance_contract import enabled, record_fact
-    if enabled(doc): return record_fact(root,folder,item_id,status,stamp,tested,actual,evidence)
+    if enabled(doc): return record_fact(root,folder,item_id,status,stamp,tested,actual,evidence,evidence_kind=evidence_kind,observed_at=observed_at)
+    if evidence_kind is not None or observed_at is not None: raise ValueError('typed facts require explicit schema8 preparation')
     current, head = context(root, folder, doc)
     from feature_lifecycle import require_active
     require_active(read(folder / 'spec/requirements.json')['feature'])
@@ -630,7 +630,7 @@ def validate_verification(root, folder, req, stage):
     try:
         doc = load_plan(folder)
         from acceptance_contract import enabled, resolve_claims
-        if req.get('feature',{}).get('verification_policy') == 1 and stage == 'check' and doc.get('schema_version') != 7:
+        if req.get('feature',{}).get('verification_policy') == 1 and stage == 'check' and doc.get('storage',{}).get('profile',doc.get('schema_version')) != 7:
             return ['scoped verification requires explicit schema7 acceptance preparation; no legacy final-pass fallback']
         if enabled(doc):
             if stage != 'check': return []
@@ -903,12 +903,13 @@ def render(folder):
 
 def main():
     p = argparse.ArgumentParser(description=__doc__)
-    p.add_argument('action', choices=['sync', 'run', 'status', 'record', 'retain', 'capture-check-mapping', 'adopt-checks', 'prepare-acceptance', 'compose-acceptance'])
+    p.add_argument('action', choices=['sync', 'run', 'status', 'record', 'retain', 'capture-check-mapping', 'adopt-checks', 'prepare-acceptance', 'prepare-storage', 'compose-acceptance'])
     p.add_argument('root', type=Path)
     p.add_argument('feature_id')
     p.add_argument('--item'); p.add_argument('--status', choices=['passed', 'failed', 'unavailable', 'waived'])
     p.add_argument('--items', nargs='+'); p.add_argument('--review', type=Path)
     p.add_argument('--approval',type=Path); p.add_argument('--resolutions',type=Path)
+    p.add_argument('--evidence-kind',choices=['static_analysis','runtime_observation']); p.add_argument('--observed-at')
     p.add_argument('--digest'); p.add_argument('--tested-revision'); p.add_argument('--actual'); p.add_argument('--evidence')
     p.add_argument('--changed-path', action='append', default=[]); p.add_argument('--reason')
     args = p.parse_args()
@@ -918,6 +919,10 @@ def main():
     if not folder.resolve().is_relative_to(root) or folder.is_symlink():
         p.error('unsafe feature path')
     try:
+        if args.action == 'prepare-storage':
+            from acceptance_contract import prepare_storage
+            if not args.approval: raise ValueError('PREPARE_REQUIRED: --approval required')
+            prepare_storage(root,folder,read(args.approval)); render(folder); return summary(root,folder)
         if args.action == 'prepare-acceptance':
             from acceptance_contract import prepare
             if not args.approval: raise ValueError('PREPARE_REQUIRED: --approval required')
@@ -937,7 +942,7 @@ def main():
         if args.action == 'record':
             if not all([args.item, args.status, args.digest, args.tested_revision, args.actual, args.evidence]):
                 raise ValueError('record requires item, status, digest, tested-revision, actual and evidence')
-            record(root, folder, args.item, args.status, args.digest, args.tested_revision, args.actual, args.evidence)
+            record(root, folder, args.item, args.status, args.digest, args.tested_revision, args.actual, args.evidence,evidence_kind=args.evidence_kind,observed_at=args.observed_at)
             return 0
         if args.action == 'retain':
             if not all([args.item, args.digest, args.reason, args.evidence]):

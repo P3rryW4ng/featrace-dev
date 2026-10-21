@@ -14,7 +14,15 @@ from pathlib import Path
 import re
 import sys
 
-from check_runs import safe, read
+from check_runs import safe, read as read_record
+
+def read(root,path):
+    target=safe(root,path)
+    if target.name == "verification.json":
+        from acceptance_contract import read as read_acceptance
+        return read_acceptance(target)
+    return read_record(root,path)
+
 from impact import digest, git, path_name, snapshot
 
 
@@ -57,7 +65,8 @@ def parent_findings(root, parent_id, record_revision, *, match_worktree=False):
             continue
         raw = git(root,'show',record_revision+':'+rel)
         if match_worktree: need(path.is_file() and path.read_bytes()==raw, 'commit parent findings before follow-up')
-        doc = json.loads(raw); found = []
+        from acceptance_contract import parse
+        doc = parse(raw); found = []
         if name == 'verification.json':
             for section in ('items','retired'):
                 for i,row in enumerate(doc.get(section,[])):
@@ -193,7 +202,7 @@ def validate_plan(root, folder, req, impact, config=None, stage='check'):
     verification_file = folder / 'verification.json'
     if marker == 2 and verification_file.exists():
         existing = read(root, verification_file)
-        need(existing.get('schema_version', 1) not in (6, 7) and existing.get('acceptance_contract') is None,
+        need(existing.get('schema_version', 1) not in (6, 7, 8) and existing.get('acceptance_contract') is None,
              'legacy planning cannot downgrade an acceptance contract')
     fields = {'schema_version','environment','operations','units','checks','interactions','background','prior_findings','gate_map','overlap_reasons','policy_digest'}
     need(isinstance(plan, dict) and set(plan) == fields and type(plan['schema_version']) is int and plan['schema_version'] == 1, 'verification plan missing/unsupported')
@@ -343,7 +352,8 @@ def delivery_readiness(root, feature_id, requested_route=None, parent_id=None):
     need(marker is None or type(marker) is int and marker in (1,2), 'unsupported verification policy')
     path = folder / 'verification.json'; doc = read(root,path) if path.exists() else {}
     schema = doc.get('schema_version',1)
-    existing_route = 'scoped' if marker == 1 or schema == 7 else ('acceptance_v1' if schema == 6 else 'legacy')
+    effective_schema = doc.get('storage',{}).get('profile',schema)
+    existing_route = 'scoped' if marker == 1 or effective_schema == 7 else ('acceptance_v1' if effective_schema == 6 else 'legacy')
     if req_path.exists() and requested_route is not None:
         need(requested_route == existing_route, 'existing route cannot be changed by readiness inspection')
     route = existing_route if req_path.exists() else requested_route
@@ -354,7 +364,7 @@ def delivery_readiness(root, feature_id, requested_route=None, parent_id=None):
     execution = 2 if config_path.exists() and execution_enabled(root) else 1
     participants = []
     feature_root = folder.parent
-    inventory_needed = route == 'scoped' and (schema != 7 or doc.get('acceptance_contract') != 1)
+    inventory_needed = route == 'scoped' and (effective_schema != 7 or doc.get('acceptance_contract') != 1)
     if inventory_needed and feature_root.exists():
         for candidate in sorted(feature_root.iterdir()):
             path = candidate / 'spec/requirements.json'
@@ -368,7 +378,7 @@ def delivery_readiness(root, feature_id, requested_route=None, parent_id=None):
         missing.append('feature_check_selection'); ready = False
     if route == 'scoped':
         if execution != 2: missing.append('project_execution_contract2'); ready = False
-        if schema != 7 or doc.get('acceptance_contract') != 1:
+        if effective_schema != 7 or doc.get('acceptance_contract') != 1:
             missing.append('explicit_schema7_preparation'); ready = False
             # Preparation uses committed originals. Do not silently commit them.
             for name in ('verification.json','claim-review.json'):
@@ -385,12 +395,12 @@ def delivery_readiness(root, feature_id, requested_route=None, parent_id=None):
                      any(k in row['history'][-1] for k in ('retention_kind','scope_ref')))) for row in doc.get('items',[])):
                 missing.append('unsupported_composite_originals')
             unknown.extend(['participating_host_capabilities','preparation_authority'])
-    if schema in (6,7):
-        from acceptance_contract import validate_document
-        try: validate_document(doc)
+    if schema in (6,7,8):
+        from acceptance_contract import load as load_acceptance
+        try: load_acceptance(folder)
         except (ValueError,KeyError,TypeError) as exc:
             missing.append('invalid_acceptance_document:'+str(exc)); ready = False
-    if route == 'legacy' and schema in (6,7):
+    if route == 'legacy' and schema in (6,7,8):
         missing.append('existing_acceptance_contract_no_downgrade'); ready = False
     if req_path.exists() and route is not None:
         from check_runs import selection
@@ -427,10 +437,10 @@ def require_execution_route(root, feature_id):
     plan_path = folder/'verification.json'
     doc = read(root,plan_path) if plan_path.exists() else {}
     from check_runs import enabled as execution_enabled
-    need(doc.get('schema_version') == 7 and doc.get('acceptance_contract') == 1 and execution_enabled(root),
+    need(doc.get('storage',{}).get('profile',doc.get('schema_version')) == 7 and doc.get('acceptance_contract') == 1 and execution_enabled(root),
          'DELIVERY_PREPARE_REQUIRED: explicit schema7 scoped route is not prepared; inspect readiness before final-gate execution; diagnostics grant no acceptance credit')
-    from acceptance_contract import validate_document
-    validate_document(doc)
+    from acceptance_contract import load as load_acceptance
+    doc=load_acceptance(folder)
     need(doc.get('feature_id') == feature_id, 'prepared contract belongs to another feature')
 
 
@@ -440,7 +450,7 @@ def entry_status(root, feature_id):
     plan = read(root, plan_path) if plan_path.exists() else {}
     schema = plan.get('schema_version', 1)
     if req['feature'].get('status') == 'complete': route = 'historical_delivery_or_explicit_followup'
-    elif schema in (6,7): route = 'acceptance_v1_scoped' if schema == 7 else 'acceptance_v1'
+    elif schema in (6,7,8): route = 'acceptance_v1_scoped' if plan.get('storage',{}).get('profile',schema) == 7 else 'acceptance_v1'
     elif req['feature'].get('verification_policy') == 2: route = 'legacy_effect_planning_no_scoped_acceptance'
     elif any(r.get('manual_scope_ref') or (r.get('history') and r['history'][-1].get('status') == 'retained') for r in plan.get('items',[])): route = 'legacy_composite_sources_need_review_not_force_migration'
     else: route = 'evaluate_acceptance_v1_prerequisites_before_offering_legacy_batch'
