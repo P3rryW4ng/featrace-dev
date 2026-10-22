@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.23.0 — 2026-10-22
+
+- Replace the legacy feature-ledger, schema/carry/history replay, permanent module dossiers and full-history closure workflow with a bounded current-task kernel. This is an incompatible workflow/data change; old tasks require pinned0.22.0. No business record migration/deletion or Git-history rewriting.
+- Separate causal acceptance scope, product authority and execution inputs. Select and reuse checks individually, bind toolchain/environment/output identity, and keep device/remote/production checks nonreusable and time-bounded. Local unknowns block relevant claims/checks; authorized investigation can preserve a genuine execution for later assessment without a registration rerun.
+- Preserve unresolved runtime failures independently of the latest observation. Match permissions against actual semantic/execution paths and input members; reject unknown environment kinds. Static no-influence cannot clear an observed runtime failure.
+- Keep one current project policy, bounded local task/evidence data, paged read-only queries and storage visibility. Apply confirmed retention only to eligible owned completed data, retaining incomplete work and unhanded limitations; no daemon or project-wide storage guarantee.
+- Add on-demand Figma guidance using actual host tools, selected nodes, existing project components and scoped rendered comparison; no built-in connector, live design freshness service or write-back. Native task display/text fallback remains an instruction, not guaranteed host UI automation.
+- Require a matching committed release descriptor, local pinned release ref and package/installer content for formal installs; explicit development installs have separate identities. Preserve install ownership checks and old-copy backups. This is not signed remote-origin attestation.
+- Minor-version upgrade because the delivered workflow and data contract are replaced; not a1.0 maturity claim. Retire unsupported old runtime/tests and redundant current-tree documents with pinned Git history preserved. Prior150 current-kernel tests and isolated package/scale evidence remain scoped to their inputs; the final release verification is indexed in docs/validation.md. Natural Agent accuracy, Android/Figma trial outcomes, context recovery and net cost remain unmeasured.
+
 ## 0.22.0 — 2026-10-21
 
 - Add explicitly prepared schema8 single-file content-addressed storage, retaining the original schema6/7 acceptance profile. Share repeated subtrees while restoring the complete facts, event chain and world digests; missing, modified, unreachable or excessive objects refuse. No automatic migration or completed-feature rewrite.

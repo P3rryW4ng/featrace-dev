@@ -1,6 +1,0 @@
-test_recovered_contract_in_receipt_preserves_other_current_retained_evidence (test_evidence_adoption.EvidenceAdoptionTests) ... ok
-
-----------------------------------------------------------------------
-Ran 1 test in 11.855s
-
-OK

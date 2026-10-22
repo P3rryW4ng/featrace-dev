@@ -1,0 +1,169 @@
+test_broad_check_still_invalidates_on_unrelated_compiler_input (test_hardening.HardeningTests) ... ok
+test_execution_input_rule_not_only_semantic_scope (test_hardening.HardeningTests) ... ok
+test_input_set_permissions_are_enforced (test_hardening.HardeningTests) ... ok
+test_other_owned_file_drift_does_not_block_independent_check (test_hardening.HardeningTests) ... ok
+test_runtime_failure_survives_unavailable_static_and_plan_removal (test_hardening.HardeningTests) ... ok
+test_scoped_unknown_allows_independent_check_but_blocks_closure (test_hardening.HardeningTests) ... ok
+test_storage_paginates_and_does_not_follow_unknown_links (test_hardening.HardeningTests) ... ERROR
+test_storage_reports_stale_active_tasks_without_modifying_or_cleaning (test_hardening.HardeningTests) ... ERROR
+test_unknown_and_missing_environment_refuse (test_hardening.HardeningTests) ... ok
+test_unrelated_branch_commit_does_not_expand_claims (test_hardening.HardeningTests) ... ok
+test_unrelated_claim_rule_does_not_block_independent_action (test_hardening.HardeningTests) ... ok
+test_installer_copy_idempotence_conflict_and_uninstall (test_install.InstallerTests) ... ok
+test_installer_migrates_legacy_identity_with_backup_and_no_duplicate_skill (test_install.InstallerTests) ... ok
+test_installer_rejects_modified_legacy_install (test_install.InstallerTests) ... ok
+test_installer_unowned_preflight_no_partial_install (test_install.InstallerTests) ... ok
+test_installer_update_keeps_old_copy (test_install.InstallerTests) ... ok
+test_binary_git_attribute_does_not_hide_valid_text_additions (test_output_privacy.OutputPrivacyTests) ... ok
+test_changes_during_scan_refuse_clean_result (test_output_privacy.OutputPrivacyTests) ... ok
+test_cli_exit_codes_and_readonly_index_and_files (test_output_privacy.OutputPrivacyTests) ... ok
+test_fifo_returns_unavailable_without_waiting_for_writer (test_output_privacy.OutputPrivacyTests) ... ok
+test_git_interhunk_configuration_cannot_shift_locations (test_output_privacy.OutputPrivacyTests) ... ok
+test_known_file_must_be_ignored_and_errors_never_echo_bad_values (test_output_privacy.OutputPrivacyTests) ... ok
+test_known_markers_match_json_escape_variant_without_echo (test_output_privacy.OutputPrivacyTests) ... ok
+test_known_values_in_review_and_receipt_prose_only_report_positions (test_output_privacy.OutputPrivacyTests) ... ok
+test_labeled_identifiers_and_credentials_are_candidates_not_authority (test_output_privacy.OutputPrivacyTests) ... ok
+test_locations_are_bounded_and_hidden_values_cannot_leak_in_paths (test_output_privacy.OutputPrivacyTests) ... ok
+test_oversized_text_is_unavailable_without_partial_clean (test_output_privacy.OutputPrivacyTests) ... ok
+test_partial_unreadable_binary_or_symlink_targets_are_unavailable (test_output_privacy.OutputPrivacyTests) ... ok
+test_placeholders_hashes_and_unlabeled_unknown_values_do_not_claim_safe (test_output_privacy.OutputPrivacyTests) ... ok
+test_staged_deleted_file_adds_no_new_exposure (test_output_privacy.OutputPrivacyTests) ... ok
+test_staged_new_file_with_literal_pathspec_name_is_checked (test_output_privacy.OutputPrivacyTests) ... ok
+test_staged_only_new_lines_ignore_unchanged_and_removed_sensitive_history (test_output_privacy.OutputPrivacyTests) ... ok
+test_unicode_separator_remains_staged_file_content (test_output_privacy.OutputPrivacyTests) ... ok
+test_worktree_leak_not_staged_is_not_misreported_as_index_content (test_output_privacy.OutputPrivacyTests) ... ok
+test_58mb_record_full_and_staged_detect_tail_without_mutation (test_output_privacy.StreamingPrivacyTests) ... ok
+test_column_positions_and_noninitial_bom_are_not_rebased (test_output_privacy.StreamingPrivacyTests) ... ok
+test_dense_long_line_keeps_only_bounded_findings (test_output_privacy.StreamingPrivacyTests) ... ok
+test_known_value_across_blocks_lines_and_json_escapes (test_output_privacy.StreamingPrivacyTests) ... ok
+test_known_values_never_stitch_across_unchanged_staged_lines (test_output_privacy.StreamingPrivacyTests) ... ok
+test_large_old_and_new_blobs_scan_only_new_lines (test_output_privacy.StreamingPrivacyTests) ... ok
+test_missing_diff_for_changed_blob_is_not_clean (test_output_privacy.StreamingPrivacyTests) ... ok
+test_new_empty_file_and_mode_only_change_are_not_false_unavailable (test_output_privacy.StreamingPrivacyTests) ... ok
+test_no_synthetic_final_newline_in_staged_known_match (test_output_privacy.StreamingPrivacyTests) ... ok
+test_read_error_after_partial_stream_is_unavailable_not_clean (test_output_privacy.StreamingPrivacyTests) ... ok
+test_staged_index_and_known_input_drift_refuse (test_output_privacy.StreamingPrivacyTests) ... ok
+test_total_stream_budget_refuses_and_git_process_is_reaped (test_output_privacy.StreamingPrivacyTests) ... ok
+test_truncation_still_validates_late_encoding_and_binary (test_output_privacy.StreamingPrivacyTests) ... ok
+test_candidate_cannot_masquerade_as_formal_version (test_release_identity.ReleaseIdentityTests) ... ok
+test_descriptor_without_matching_release_ref_refuses (test_release_identity.ReleaseIdentityTests) ... ok
+test_formal_identity_binds_committed_content (test_release_identity.ReleaseIdentityTests) ... ok
+test_installed_marker_preserves_channel_and_commit (test_release_identity.ReleaseIdentityTests) ... ok
+test_uncommitted_matching_descriptor_refuses (test_release_identity.ReleaseIdentityTests) ... ok
+test_attachment_budget_refuses_without_deleting_original (test_task_extensions.FullReplacementTests) ... ok
+test_authority_revision_invalidates_only_its_assessment_not_execution (test_task_extensions.FullReplacementTests) ... ok
+test_automatic_retention_forgets_expired_task_without_new_per_task_prompt (test_task_extensions.FullReplacementTests) ... ok
+test_automatic_retention_never_forgets_unhanded_limitations (test_task_extensions.FullReplacementTests) ... ok
+test_automatic_retention_preserves_unknown_files (test_task_extensions.FullReplacementTests) ... ok
+test_build_input_breadth_does_not_expand_semantic_claims (test_task_extensions.FullReplacementTests) ... ok
+test_changed_applicable_rule_needs_reconciliation_not_blanket_permission (test_task_extensions.FullReplacementTests) ... ok
+test_changed_owned_attachment_is_retained_as_unknown (test_task_extensions.FullReplacementTests) ... ok
+test_closed_stdout_does_not_evade_timeout (test_task_extensions.FullReplacementTests) ... ok
+test_code_query_is_literal_current_source_only_with_explicit_paging (test_task_extensions.FullReplacementTests) ... ok
+test_code_query_never_reads_retired_ledger (test_task_extensions.FullReplacementTests) ... ok
+test_completed_summary_does_not_dump_large_limitation_body (test_task_extensions.FullReplacementTests) ... ok
+test_external_toolchain_bytes_and_environment_invalidate_check (test_task_extensions.FullReplacementTests) ... ok
+test_external_toolchain_tree_accepts_internal_aliases_but_not_escape (test_task_extensions.FullReplacementTests) ... ok
+test_fast_output_is_refused_without_exceeding_hard_log_cap (test_task_extensions.FullReplacementTests) ... ok
+test_file_group_cannot_omit_criterion_input (test_task_extensions.FullReplacementTests) ... ok
+test_foreign_policy_is_not_silently_overwritten (test_task_extensions.FullReplacementTests) ... ok
+test_input_group_includes_new_files_and_ignores_build_outputs (test_task_extensions.FullReplacementTests) ... ok
+test_large_detail_cli_is_bounded_and_explicit_about_tail (test_task_extensions.FullReplacementTests) ... ok
+test_link_cycles_refuse_without_unbounded_recursion (test_task_extensions.FullReplacementTests) ... ok
+test_maintenance_control_lock_does_not_collide_with_task_slots (test_task_extensions.FullReplacementTests) ... ok
+test_maintenance_rotates_past_active_tasks_and_obeys_recorded_retention (test_task_extensions.FullReplacementTests) ... ok
+test_managed_directory_link_accepted_only_when_declared_in_build_set (test_task_extensions.FullReplacementTests) ... ok
+test_manifest_membership_drift_is_not_silently_certified (test_task_extensions.FullReplacementTests) ... ok
+test_missing_external_and_explicit_inputs_cannot_certify (test_task_extensions.FullReplacementTests) ... ok
+test_mutable_environment_requires_non_reusable_bounded_result (test_task_extensions.FullReplacementTests) ... ok
+test_observation_survives_wording_revision_but_assessment_must_be_renewed (test_task_extensions.FullReplacementTests) ... ok
+test_old_static_fact_never_becomes_runtime_by_changing_claim_kind (test_task_extensions.FullReplacementTests) ... ok
+test_outside_or_dangling_link_in_selected_build_set_refuses (test_task_extensions.FullReplacementTests) ... ok
+test_owned_attachment_copy_is_collected_but_original_is_preserved (test_task_extensions.FullReplacementTests) ... ok
+test_policy_setup_preserves_user_ignore_and_refuses_owned_block_conflict (test_task_extensions.FullReplacementTests) ... ok
+test_policy_standing_grant_applies_only_to_matching_scope_environment (test_task_extensions.FullReplacementTests) ... ok
+test_removing_local_ignore_protection_blocks_next_execution (test_task_extensions.FullReplacementTests) ... ok
+test_scoped_review_input_returns_current_fact_ids_not_other_task_history (test_task_extensions.FullReplacementTests) ... ok
+test_status_hashes_shared_execution_inputs_once_not_per_criterion (test_task_extensions.FullReplacementTests) ... ok
+test_tracked_local_task_data_prevents_silent_ignore_setup (test_task_extensions.FullReplacementTests) ... ok
+test_transient_group_handles_more_than_512_source_paths_without_manifest (test_task_extensions.FullReplacementTests) ... ok
+test_actual_runtime_failure_cannot_be_cleared_by_static_no_influence (test_task_workflow.TaskWorkflowTests) ... ok
+test_changed_criterion_requires_new_assessment_but_reuses_check (test_task_workflow.TaskWorkflowTests) ... ok
+test_check_cannot_omit_declared_criterion_dependency (test_task_workflow.TaskWorkflowTests) ... ok
+test_cleanup_preview_and_apply_only_after_completion_and_retention (test_task_workflow.TaskWorkflowTests) ... ok
+test_cleanup_refuses_unknown_artifacts (test_task_workflow.TaskWorkflowTests) ... ok
+test_cli_begin_succeeds_but_draft_status_returns_not_ready (test_task_workflow.TaskWorkflowTests) ... ok
+test_cli_refusal_reports_specific_code_without_echoing_input (test_task_workflow.TaskWorkflowTests) ... ok
+test_closed_result_is_as_of_not_recertification_of_future_code (test_task_workflow.TaskWorkflowTests) ... ok
+test_duplicate_keys_and_oversized_task_refuse (test_task_workflow.TaskWorkflowTests) ... ok
+test_edited_constraint_invalidates_current_inputs (test_task_workflow.TaskWorkflowTests) ... ok
+test_environment_change_invalidates_execution (test_task_workflow.TaskWorkflowTests) ... ok
+test_evidence_drift_invalidates_observation (test_task_workflow.TaskWorkflowTests) ... ok
+test_excluded_unrelated_file_drift_does_not_stale_task (test_task_workflow.TaskWorkflowTests) ... ok
+test_executable_bytes_are_inputs_even_if_path_stays_same (test_task_workflow.TaskWorkflowTests) ... ok
+test_failed_check_cannot_be_removed_from_plan_to_escape_failure (test_task_workflow.TaskWorkflowTests) ... ok
+test_failed_check_cannot_be_turned_green_by_assessment (test_task_workflow.TaskWorkflowTests) ... ok
+test_failed_observation_cannot_be_removed_with_criterion (test_task_workflow.TaskWorkflowTests) ... ok
+test_fake_independent_provenance_refuses (test_task_workflow.TaskWorkflowTests) ... ok
+test_forget_requires_limitations_handoff_and_removes_task_record (test_task_workflow.TaskWorkflowTests) ... ok
+test_forget_without_limitations_needs_no_permanent_delivery_file (test_task_workflow.TaskWorkflowTests) ... ok
+test_future_observation_refuses (test_task_workflow.TaskWorkflowTests) ... ok
+test_independent_structural_provenance_binds_exact_facts (test_task_workflow.TaskWorkflowTests) ... ok
+test_input_change_invalidates_execution (test_task_workflow.TaskWorkflowTests) ... ok
+test_input_drift_during_execution_is_not_a_pass (test_task_workflow.TaskWorkflowTests) ... ok
+test_interrupt_reaps_owned_child_and_never_saves_a_pass (test_task_workflow.TaskWorkflowTests) ... ok
+test_list_is_paged_and_does_not_certify_recorded_state (test_task_workflow.TaskWorkflowTests) ... ok
+test_locate_is_a_readonly_candidate_query (test_task_workflow.TaskWorkflowTests) ... ok
+test_log_corruption_prevents_reuse (test_task_workflow.TaskWorkflowTests) ... ok
+test_missing_independent_review_blocks_close (test_task_workflow.TaskWorkflowTests) ... ok
+test_monitor_io_error_reaps_owned_child_and_records_unavailable (test_task_workflow.TaskWorkflowTests) ... ok
+test_new_process_resumes_without_conversation_or_reexecution (test_task_workflow.TaskWorkflowTests) ... ok
+test_no_legacy_module_imports (test_task_workflow.TaskWorkflowTests) ... ok
+test_observation_predating_task_cannot_be_signed_as_current (test_task_workflow.TaskWorkflowTests) ... ok
+test_observed_failure_blocks_even_with_a_passing_check (test_task_workflow.TaskWorkflowTests) ... ok
+test_other_criterion_wording_does_not_rerun_check (test_task_workflow.TaskWorkflowTests) ... ok
+test_outside_scope_change_is_visible_not_automatic_reacceptance (test_task_workflow.TaskWorkflowTests) ... ok
+test_paging_does_not_hide_tail_gap (test_task_workflow.TaskWorkflowTests) ... ok
+test_repeated_check_reuses_actual_success (test_task_workflow.TaskWorkflowTests) ... ok
+test_runtime_observation_requires_actual_target_identity (test_task_workflow.TaskWorkflowTests) ... ok
+test_runtime_target_and_registration_revision_are_distinct (test_task_workflow.TaskWorkflowTests) ... ok
+test_same_task_lock_blocks_concurrent_writer (test_task_workflow.TaskWorkflowTests) ... ok
+test_scope_unknown_refuses_execution (test_task_workflow.TaskWorkflowTests) ... ok
+test_second_close_does_not_run_anything (test_task_workflow.TaskWorkflowTests) ... ok
+test_shared_plan_requires_independent_review (test_task_workflow.TaskWorkflowTests) ... ok
+test_static_analysis_does_not_prove_changed_runtime (test_task_workflow.TaskWorkflowTests) ... ok
+test_static_unaffected_claim_needs_no_extra_runtime (test_task_workflow.TaskWorkflowTests) ... ok
+test_status_does_not_execute_or_write (test_task_workflow.TaskWorkflowTests) ... ok
+test_symlink_scope_refuses_but_unrelated_symlink_does_not (test_task_workflow.TaskWorkflowTests) ... ok
+test_targeted_pass_resolves_failure_without_erasing_original_artifact (test_task_workflow.TaskWorkflowTests) ... ok
+test_task_tampering_refuses (test_task_workflow.TaskWorkflowTests) ... ok
+test_timeout_records_unavailable (test_task_workflow.TaskWorkflowTests) ... ok
+test_unrelated_committed_head_does_not_rerun_selected_check (test_task_workflow.TaskWorkflowTests) ... ok
+test_unrelated_preexisting_symlink_is_not_scanned (test_task_workflow.TaskWorkflowTests) ... ok
+test_unsafe_task_id_refuses (test_task_workflow.TaskWorkflowTests) ... ok
+test_vertical_closure_has_no_legacy_files (test_task_workflow.TaskWorkflowTests) ... ok
+
+======================================================================
+ERROR: test_storage_paginates_and_does_not_follow_unknown_links (test_hardening.HardeningTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/mac/Documents/Codex/2026-09-16/https-chatgpt-com-s-cx-6aaa36eed1208191be4fa6502194e3e2/outputs/skill-hardening-20261022/stage/tests/test_hardening.py", line 91, in test_storage_paginates_and_does_not_follow_unknown_links
+    summary=w.storage(self.root,0,2);self.assertEqual(len(summary['items']),2);self.assertEqual(summary['next_offset'],2)
+  File "/Users/mac/Documents/Codex/2026-09-16/https-chatgpt-com-s-cx-6aaa36eed1208191be4fa6502194e3e2/outputs/skill-hardening-20261022/stage/skills/dev/core/scripts/task_workflow.py", line 652, in storage
+    age=max(0,(datetime.now(timezone.utc)-instant(doc.get('updated_at',doc.get('created_at',doc.get('receipt',{}).get('completed_at'))))).days)
+AttributeError: 'NoneType' object has no attribute 'get'
+
+======================================================================
+ERROR: test_storage_reports_stale_active_tasks_without_modifying_or_cleaning (test_hardening.HardeningTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/mac/Documents/Codex/2026-09-16/https-chatgpt-com-s-cx-6aaa36eed1208191be4fa6502194e3e2/outputs/skill-hardening-20261022/stage/tests/test_hardening.py", line 80, in test_storage_reports_stale_active_tasks_without_modifying_or_cleaning
+    summary=w.storage(self.root)
+  File "/Users/mac/Documents/Codex/2026-09-16/https-chatgpt-com-s-cx-6aaa36eed1208191be4fa6502194e3e2/outputs/skill-hardening-20261022/stage/skills/dev/core/scripts/task_workflow.py", line 652, in storage
+    age=max(0,(datetime.now(timezone.utc)-instant(doc.get('updated_at',doc.get('created_at',doc.get('receipt',{}).get('completed_at'))))).days)
+AttributeError: 'NoneType' object has no attribute 'get'
+
+----------------------------------------------------------------------
+Ran 144 tests in 49.359s
+
+FAILED (errors=2)

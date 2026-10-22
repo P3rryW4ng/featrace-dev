@@ -1,2 +1,0 @@
-UNINSTALLED: /private/tmp/manual-scope-scoped-upgrade-yc0_7i10/home/.claude/skills/dev
-BACKUP: /private/tmp/manual-scope-scoped-upgrade-yc0_7i10/home/.feature-delivery/backups/20261018T090407-claude-d745795c

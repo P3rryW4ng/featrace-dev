@@ -1,0 +1,702 @@
+{
+  "initial_94_target_call": "refused invalid_targets; scanner limit64, no scan performed",
+  "batches": [
+    {
+      "offset": 0,
+      "count": 64,
+      "exit_code": 1,
+      "report": {
+        "status": "review_needed",
+        "targets": [
+          {
+            "target": 1,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 2,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 3,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 4,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 5,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 6,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 7,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 8,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 9,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 10,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 11,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 12,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 13,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 1,
+            "positions_truncated": false
+          },
+          {
+            "target": 14,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 15,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 16,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 17,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 18,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 19,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 20,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 21,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 22,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 23,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 24,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 25,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 26,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 27,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 28,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 29,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 30,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 31,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 32,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 33,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 34,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 35,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 36,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 37,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 38,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 39,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 40,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 41,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 42,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 43,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 44,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 45,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 46,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 47,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 48,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 49,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 50,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 51,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 52,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 53,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 54,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 55,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 56,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 57,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 58,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 59,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 60,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 61,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 62,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 63,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 64,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          }
+        ],
+        "findings": [
+          {
+            "target": 13,
+            "line": 3,
+            "column": 21,
+            "kind": "credential_candidate",
+            "confidence": "candidate"
+          }
+        ],
+        "note": "Target numbers follow --file order. Positions only; values, paths and context are omitted. No matches is not privacy approval; patterns/known values are bounded. No files were redacted or rewritten."
+      }
+    },
+    {
+      "offset": 64,
+      "count": 31,
+      "exit_code": 0,
+      "report": {
+        "status": "no_matches",
+        "targets": [
+          {
+            "target": 1,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 2,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 3,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 4,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 5,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 6,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 7,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 8,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 9,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 10,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 11,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 12,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 13,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 14,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 15,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 16,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 17,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 18,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 19,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 20,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 21,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 22,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 23,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 24,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 25,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 26,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 27,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 28,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 29,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 30,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          },
+          {
+            "target": 31,
+            "status": "scanned",
+            "scope": "file_text",
+            "findings": 0,
+            "positions_truncated": false
+          }
+        ],
+        "findings": [],
+        "note": "Target numbers follow --file order. Positions only; values, paths and context are omitted. No matches is not privacy approval; patterns/known values are bounded. No files were redacted or rewritten."
+      }
+    }
+  ]
+}

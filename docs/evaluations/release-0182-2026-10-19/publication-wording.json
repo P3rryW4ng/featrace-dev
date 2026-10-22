@@ -1,6 +1,0 @@
-{
-  "path": "skills/dev/core/references/orchestration.md",
-  "before_sha256": "226bf7382df84993e2f961617cfa21c7960bc380f8ffceebfd418a443af240d5",
-  "after_sha256": "1759ffac5550f4979b17f506e813d5ba58c5fc7f05a4e11dd5f2030bd510a535",
-  "edit": "section heading source candidate -> 0.18.2; publication wording only"
-}

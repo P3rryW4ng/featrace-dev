@@ -1,0 +1,45 @@
+{
+  "candidate_not_release": true,
+  "work": "/private/tmp/featrace-whole-probe-gyis9_rl",
+  "hosts": [
+    {
+      "layout": ".claude",
+      "runtime_files": 10,
+      "marker_base_version": "0.22.0",
+      "first_run_physical": true,
+      "second_run_reused": true,
+      "complete": true,
+      "registered_evidence_copy_cleaned": true,
+      "sweep_simulated_plus_days": 8,
+      "cleaned": 1,
+      "local_task_files_after_forget": 0,
+      "installed_kernel_sha256": "ac0d210bd534c3fd04e5bc8566a046b540c4fb8d66e8c3daad26366412ac798a"
+    },
+    {
+      "layout": ".agents",
+      "runtime_files": 10,
+      "marker_base_version": "0.22.0",
+      "first_run_physical": true,
+      "second_run_reused": true,
+      "complete": true,
+      "registered_evidence_copy_cleaned": true,
+      "sweep_simulated_plus_days": 8,
+      "cleaned": 1,
+      "local_task_files_after_forget": 0,
+      "installed_kernel_sha256": "ac0d210bd534c3fd04e5bc8566a046b540c4fb8d66e8c3daad26366412ac798a"
+    }
+  ],
+  "scale": {
+    "tasks": 200,
+    "total_task_bytes": 629600,
+    "max_task_bytes": 3148,
+    "actual_executions": 200,
+    "create_execute_close_seconds": 84.700292625,
+    "concurrency": "single process sequential; not team stress",
+    "simulated_clock_plus_days": 8,
+    "sweep_seconds": 0.1569440840000027,
+    "remaining_task_files": 0,
+    "remaining_log_files": 0,
+    "lock_files": 64
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "path": "docs/designs/task-workflow-retirement.json",
+  "sha256": "f363c012efe58794fe5dbcf2cdf72bfa65b62d9ce24fd09fde4b44aff0002124",
+  "target_position": {
+    "line": 3,
+    "column": 21,
+    "kind": "credential_candidate"
+  },
+  "verdict": "not_private",
+  "reason": "The authorization field is ordinary workflow-scope prose created by this review, not a credential, token or private identifier. Scanner candidate is preserved; no pattern disabled and no raw value removed.",
+  "boundary": "Selected text only, no known-values input; not a privacy certificate."
+}

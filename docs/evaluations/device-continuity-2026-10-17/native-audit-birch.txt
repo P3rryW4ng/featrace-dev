@@ -1,3 +1,0 @@
-fixture-syntax: passed
-ERROR: FIX-001 invalid device regression evidence: executed project tree differs from current tree; run affected regression
-ERROR: FIX-001 regression test not selected by a passed check: UT-1

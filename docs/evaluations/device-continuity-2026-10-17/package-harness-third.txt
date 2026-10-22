@@ -1,6 +1,0 @@
-REGRESSION_EXECUTION_RECORDED: executed device coverage; routine gate unchanged
-DEVICE_CONTINUITY_RECORDED: reviewed applicability; no device execution
-Traceback (most recent call last):
-  File "/private/tmp/device-continuity-package-check.py", line 42, in <module>
-    assert all(m.name.startswith('skills/dev') and '..' not in Path(m.name).parts and (m.isfile() or m.isdir()) for m in tar.getmembers())
-AssertionError

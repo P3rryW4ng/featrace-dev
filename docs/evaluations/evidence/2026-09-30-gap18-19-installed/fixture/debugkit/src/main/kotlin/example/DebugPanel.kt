@@ -1,2 +1,0 @@
-package example
-class DebugPanel

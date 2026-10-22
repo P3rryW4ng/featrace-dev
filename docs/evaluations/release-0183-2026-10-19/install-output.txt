@@ -1,3 +1,0 @@
-INSTALLED: /Users/mac/.claude/skills/dev
-BACKUP: /Users/mac/.feature-delivery/backups/20261019T112321-claude-53faff9e
-FeatraceDev by Perry Wang | Claude: /dev scan | Codex: $dev scan. Open a new agent session if not discovered.

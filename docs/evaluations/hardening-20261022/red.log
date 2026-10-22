@@ -1,0 +1,32 @@
+test_execution_input_rule_not_only_semantic_scope (test_hardening.HardeningTests) ... FAIL
+test_runtime_failure_survives_unavailable_static_and_plan_removal (test_hardening.HardeningTests) ... FAIL
+test_unknown_and_missing_environment_refuse (test_hardening.HardeningTests) ... FAIL
+
+======================================================================
+FAIL: test_execution_input_rule_not_only_semantic_scope (test_hardening.HardeningTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/mac/Documents/Codex/2026-09-16/https-chatgpt-com-s-cx-6aaa36eed1208191be4fa6502194e3e2/outputs/skill-hardening-20261022/stage/tests/test_hardening.py", line 23, in test_execution_input_rule_not_only_semantic_scope
+    with self.assertRaisesRegex(ValueError,'POLICY_DENIED'):self.execute()
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_runtime_failure_survives_unavailable_static_and_plan_removal (test_hardening.HardeningTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/mac/Documents/Codex/2026-09-16/https-chatgpt-com-s-cx-6aaa36eed1208191be4fa6502194e3e2/outputs/skill-hardening-20261022/stage/tests/test_hardening.py", line 12, in test_runtime_failure_survives_unavailable_static_and_plan_removal
+    self.observe('C1','static_analysis',w.now(),'No influence',['app.py'],'passed')
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_unknown_and_missing_environment_refuse (test_hardening.HardeningTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/mac/Documents/Codex/2026-09-16/https-chatgpt-com-s-cx-6aaa36eed1208191be4fa6502194e3e2/outputs/skill-hardening-20261022/stage/tests/test_hardening.py", line 30, in test_unknown_and_missing_environment_refuse
+    with self.assertRaisesRegex(ValueError,'ENVIRONMENT_KIND'):self.refresh()
+AssertionError: ValueError not raised
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.650s
+
+FAILED (failures=3)

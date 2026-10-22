@@ -1,0 +1,96 @@
+test_ordinary_inventory_classifies_legacy_candidates_waivers_and_new_claims (test_acceptance_continuation.AcceptanceContinuationTests) ... ok
+test_ordinary_inventory_exposes_unsynced_plan_without_mutating_it (test_acceptance_continuation.AcceptanceContinuationTests) ... ok
+test_ordinary_inventory_never_routes_latest_failure_to_adoption (test_acceptance_continuation.AcceptanceContinuationTests) ... ok
+test_ordinary_inventory_routes_matching_execution_without_running_it (test_acceptance_continuation.AcceptanceContinuationTests) ... ok
+test_parent_change_legacy_stales_37_but_existing_batch_retains_22_in_one_write (test_acceptance_continuation.AcceptanceContinuationTests) ... ok
+test_replaced_claim_is_not_a_batch_source_but_unchanged_rows_are_candidates (test_acceptance_continuation.AcceptanceContinuationTests) ... ok
+test_unknown_shared_consumer_or_environment_cannot_be_supported (test_acceptance_continuation.AcceptanceContinuationTests) ... ok
+test_affected_targets_cannot_use_reuse_action (test_acceptance_contract.AcceptanceContractTests) ... ok
+test_all_negative_saved_and_same_input_cannot_turn_green (test_acceptance_contract.AcceptanceContractTests) ... ok
+test_archived_feature_cannot_receive_new_fact_review_or_prepare (test_acceptance_contract.AcceptanceContractTests) ... ok
+test_atomic_write_failure_preserves_plan (test_acceptance_contract.AcceptanceContractTests) ... ok
+test_automatic_facts_bound_to_exact_attempt_and_assertion_ids (test_acceptance_contract.AcceptanceContractTests) ... ok
+test_business_change_requires_execution_again (test_acceptance_contract.AcceptanceContractTests) ... ok
+test_canonical_reader_entrypoints_agree (test_acceptance_contract.AcceptanceContractTests) ... ok
+test_claim_review_capture_before_supported (test_acceptance_contract.AcceptanceContractTests) ... ok
+test_device_failure_adapter_sees_original_and_new_negative (test_acceptance_contract.AcceptanceContractTests) ... ok
+test_device_negative_survives_review_staleness_and_held_lock (test_acceptance_contract.AcceptanceContractTests) ... ok
+test_dirty_original_and_completed_prepare_refuse (test_acceptance_contract.AcceptanceContractTests) ... ok
+test_duplicate_json_and_event_hash_refuse (test_acceptance_contract.AcceptanceContractTests) ... ok
+test_event_history_and_saved_judgment_tamper_refuse (test_acceptance_contract.AcceptanceContractTests) ... ok
+test_failed_missing_terminal_has_no_old_green (test_acceptance_contract.AcceptanceContractTests) ... Traceback (most recent call last):
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/runpy.py", line 197, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/runpy.py", line 87, in _run_code
+    exec(code, run_globals)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/unittest/__main__.py", line 18, in <module>
+    main(module=None)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/unittest/main.py", line 101, in __init__
+    self.runTests()
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/unittest/main.py", line 271, in runTests
+    self.result = testRunner.run(self.test)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/unittest/runner.py", line 176, in run
+    test(result)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/unittest/suite.py", line 84, in __call__
+    return self.run(*args, **kwds)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/unittest/suite.py", line 122, in run
+    test(result)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/unittest/suite.py", line 84, in __call__
+    return self.run(*args, **kwds)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/unittest/suite.py", line 122, in run
+    test(result)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/unittest/suite.py", line 84, in __call__
+    return self.run(*args, **kwds)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/unittest/suite.py", line 122, in run
+    test(result)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/unittest/case.py", line 653, in __call__
+    return self.run(*args, **kwds)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/unittest/case.py", line 589, in run
+    self._callSetUp()
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/unittest/case.py", line 547, in _callSetUp
+    self.setUp()
+  File "/Users/mac/Entrepôt/featrace-dev/tests/test_acceptance_contract.py", line 23, in setUp
+    v.record(self.root,self.folder,row['id'],'passed',stamp,head,'Synthetic complete observation','Synthetic non-device fixture')
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/verification.py", line 64, in wrapped
+    return function(root, folder, *args, **kwargs)
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/verification.py", line 561, in record
+    render(folder)
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/verification.py", line 875, in render
+    effective = state(row, stamp, row_evidence_stamp(root, folder, row, execution_view)) if stamp else 'stale'
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/verification.py", line 283, in row_evidence_stamp
+    return manual_evidence_stamp(root, folder, row)
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/verification.py", line 248, in manual_evidence_stamp
+    'impact': impact_snapshot(root, impact)['digest'], 'item': contract}
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/impact.py", line 36, in snapshot
+    if Path(git(root, 'rev-parse', '--show-toplevel').decode().strip()).resolve() != root:
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/impact.py", line 17, in git
+    result = subprocess.run(['git', '-C', str(root), *args], capture_output=True)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/subprocess.py", line 507, in run
+    stdout, stderr = process.communicate(input, timeout=timeout)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/subprocess.py", line 1134, in communicate
+    stdout, stderr = self._communicate(input, endtime, timeout)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/subprocess.py", line 1979, in _communicate
+    ready = selector.select(timeout)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/selectors.py", line 416, in select
+    fd_event_list = self._selector.poll(timeout)
+KeyboardInterrupt
+CHECK_ATTEMPT: 0ac3cc729e644f80ab15d0561b82ab51 passed
+CHECK_ATTEMPT: f405cf113ca54d5898fce06364ed1048 failed
+CHECK_ATTEMPT: 95d2588298284c888bf1197ce3c5d794 passed
+CHECK_RESULTS_ADOPTED: 1; no commands executed
+SYNTHETIC_NEWLINE: legacy_stale=37 retained=22 affected=6 waiver_authority_checks=9 shared_saves=1; no new test execution
+CHECK_ATTEMPT: c6971b1ad2a848c29f6d0604f4c22b6c passed
+CHECK_ATTEMPT: 93922cd715214eca960a220b851b510b passed
+CHECK_ATTEMPT: 4c614df8115a47ed8ba364b94616fff5 passed
+CHECK_ATTEMPT: fa63ac06c2f84acba8ce5f9e6fece410 passed
+CHECK_ATTEMPT: c263aea235854e29bea40bd452c6ae9b passed
+CHECK_ATTEMPT: 937bea2bb25940259e1c5cf3a265629b passed
+CHECK_ATTEMPT: 223237087bb2458abf13f50f7edd430a passed
+CHECK_ATTEMPT: 4abd9299b82b4a17806a886582504265 passed
+CHECK_ATTEMPT: a0235d8f0a9a4f56b232c3cbfb04b009 passed
+CHECK_ATTEMPT: ba50a8b5eea4412e8feed731aee41cf2 passed
+CHECK_ATTEMPT: bb442077867749c0b189c5dd93e4c88a passed
+CHECK_ATTEMPT: 5bbaa64299034edaaa5fdbaa3932c34b passed
+CHECK_ATTEMPT: e512109207e24e949a76946b586cba7d passed
+CHECK_ATTEMPT: 68f92cce51c441da9b482b62df44aac5 passed
+CHECK_ATTEMPT: 06f5381cbbbf48d982fb3ff87876f860 passed

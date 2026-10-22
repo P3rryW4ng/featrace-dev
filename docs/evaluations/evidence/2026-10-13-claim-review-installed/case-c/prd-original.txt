@@ -1,1 +1,0 @@
-All three APIs getHostUserInfo, getHostUserInfoAll, and getUserInfoAll must return systemLanguages ["de-DE", "en-GB"] when passed exactly the ordered input ["de-DE", "en-GB"].

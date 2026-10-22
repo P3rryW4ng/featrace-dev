@@ -1,6 +1,0 @@
-test_enabled_and_zero (__main__.ButtonRegression) ... ok
-
-----------------------------------------------------------------------
-Ran 1 test in 0.000s
-
-OK

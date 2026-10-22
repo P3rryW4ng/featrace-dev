@@ -1,0 +1,10 @@
+{
+  "started_at": "2026-10-22T03:38:57.092292+00:00",
+  "ended_at": "2026-10-22T03:47:05.097295+00:00",
+  "elapsed_seconds": 488.05842375,
+  "exit_code": -2,
+  "input_count": 173,
+  "inputs_unchanged": true,
+  "source_base": "54c5260fd6688a0bca9c83f29bad240321a67b52",
+  "candidate": true
+}

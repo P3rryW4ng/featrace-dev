@@ -1,5 +1,6 @@
 # Runtime business evidence never belongs in this Skill repository
 .agent-workflow/
+.featrace/
 __pycache__/
 *.py[cod]
 .DS_Store

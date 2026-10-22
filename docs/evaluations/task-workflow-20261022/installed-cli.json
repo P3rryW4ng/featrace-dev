@@ -1,0 +1,26 @@
+{
+  "probes": [
+    {
+      "host_directory": "claude",
+      "base_version": "0.22.0",
+      "candidate_not_release": true,
+      "files": 122,
+      "script_sha256": "814e91b8daf3b0aed907d67c58939734403b332e93ee402227de2dab7e4832a7",
+      "execution_reused": true,
+      "completed": true,
+      "legacy_directory_created": false
+    },
+    {
+      "host_directory": "codex",
+      "base_version": "0.22.0",
+      "candidate_not_release": true,
+      "files": 122,
+      "script_sha256": "814e91b8daf3b0aed907d67c58939734403b332e93ee402227de2dab7e4832a7",
+      "execution_reused": true,
+      "completed": true,
+      "legacy_directory_created": false
+    }
+  ],
+  "daily_install_changed": false,
+  "boundary": "Actual CLI in isolated copies, not actual Claude/Codex Agent semantic execution"
+}

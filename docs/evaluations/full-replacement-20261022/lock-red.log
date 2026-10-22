@@ -1,0 +1,44 @@
+test_automatic_retention_forgets_expired_task_without_new_per_task_prompt (test_task_extensions.FullReplacementTests) ... ok
+test_automatic_retention_never_forgets_unhanded_limitations (test_task_extensions.FullReplacementTests) ... ok
+test_automatic_retention_preserves_unknown_files (test_task_extensions.FullReplacementTests) ... ok
+test_build_input_breadth_does_not_expand_semantic_claims (test_task_extensions.FullReplacementTests) ... ok
+test_changed_applicable_rule_needs_reconciliation_not_blanket_permission (test_task_extensions.FullReplacementTests) ... ok
+test_closed_stdout_does_not_evade_timeout (test_task_extensions.FullReplacementTests) ... ok
+test_code_query_is_literal_current_source_only_with_explicit_paging (test_task_extensions.FullReplacementTests) ... ok
+test_code_query_never_reads_retired_ledger (test_task_extensions.FullReplacementTests) ... ok
+test_completed_summary_does_not_dump_large_limitation_body (test_task_extensions.FullReplacementTests) ... ok
+test_external_toolchain_bytes_and_environment_invalidate_check (test_task_extensions.FullReplacementTests) ... ok
+test_external_toolchain_tree_accepts_internal_aliases_but_not_escape (test_task_extensions.FullReplacementTests) ... ok
+test_fast_output_is_refused_without_exceeding_hard_log_cap (test_task_extensions.FullReplacementTests) ... ok
+test_file_group_cannot_omit_criterion_input (test_task_extensions.FullReplacementTests) ... ok
+test_foreign_policy_is_not_silently_overwritten (test_task_extensions.FullReplacementTests) ... ok
+test_input_group_includes_new_files_and_ignores_build_outputs (test_task_extensions.FullReplacementTests) ... ok
+test_large_detail_cli_is_bounded_and_explicit_about_tail (test_task_extensions.FullReplacementTests) ... ok
+test_link_cycles_refuse_without_unbounded_recursion (test_task_extensions.FullReplacementTests) ... ok
+test_maintenance_control_lock_does_not_collide_with_task_slots (test_task_extensions.FullReplacementTests) ... FAIL
+test_maintenance_rotates_past_active_tasks_and_obeys_recorded_retention (test_task_extensions.FullReplacementTests) ... ok
+test_managed_directory_link_accepted_only_when_declared_in_build_set (test_task_extensions.FullReplacementTests) ... ok
+test_manifest_membership_drift_is_not_silently_certified (test_task_extensions.FullReplacementTests) ... ok
+test_missing_external_and_explicit_inputs_cannot_certify (test_task_extensions.FullReplacementTests) ... ok
+test_mutable_environment_requires_non_reusable_bounded_result (test_task_extensions.FullReplacementTests) ... ok
+test_outside_or_dangling_link_in_selected_build_set_refuses (test_task_extensions.FullReplacementTests) ... ok
+test_policy_setup_preserves_user_ignore_and_refuses_owned_block_conflict (test_task_extensions.FullReplacementTests) ... ok
+test_policy_standing_grant_applies_only_to_matching_scope_environment (test_task_extensions.FullReplacementTests) ... ok
+test_removing_local_ignore_protection_blocks_next_execution (test_task_extensions.FullReplacementTests) ... ok
+test_scoped_review_input_returns_current_fact_ids_not_other_task_history (test_task_extensions.FullReplacementTests) ... ok
+test_status_hashes_shared_execution_inputs_once_not_per_criterion (test_task_extensions.FullReplacementTests) ... ok
+test_tracked_local_task_data_prevents_silent_ignore_setup (test_task_extensions.FullReplacementTests) ... ok
+test_transient_group_handles_more_than_512_source_paths_without_manifest (test_task_extensions.FullReplacementTests) ... ok
+
+======================================================================
+FAIL: test_maintenance_control_lock_does_not_collide_with_task_slots (test_task_extensions.FullReplacementTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/mac/Entrepôt/featrace-dev/tests/test_task_extensions.py", line 246, in test_maintenance_control_lock_does_not_collide_with_task_slots
+    self.assertFalse(w.task_path(self.root,ident).exists())
+AssertionError: True is not false
+
+----------------------------------------------------------------------
+Ran 31 tests in 18.252s
+
+FAILED (failures=1)

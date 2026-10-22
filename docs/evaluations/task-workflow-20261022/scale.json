@@ -1,0 +1,22 @@
+{
+  "synthetic_tasks": 200,
+  "before": {
+    "task_records": 200,
+    "task_bytes": 603993,
+    "max_task_bytes": 3020,
+    "default_status_bytes": 473,
+    "log_files": 200
+  },
+  "after": {
+    "task_records": 0,
+    "log_files": 0,
+    "lock_slots": 59,
+    "code_unchanged": true,
+    "legacy_directory_created": false
+  },
+  "create_execute_close_seconds": 25.701206667,
+  "cleanup_seconds": 0.1348492080000021,
+  "actual_executions": 200,
+  "clock": "Cleanup uses simulated +8 days; execution timestamps not rewritten",
+  "limits": "Single host sequential synthetic tasks, not team concurrency or real effort/time-saving comparison"
+}

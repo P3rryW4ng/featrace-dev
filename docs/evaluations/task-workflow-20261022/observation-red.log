@@ -1,0 +1,23 @@
+test_observation_predating_task_cannot_be_signed_as_current (test_task_workflow.TaskWorkflowTests) ... FAIL
+test_runtime_observation_requires_actual_target_identity (test_task_workflow.TaskWorkflowTests) ... FAIL
+
+======================================================================
+FAIL: test_observation_predating_task_cannot_be_signed_as_current (test_task_workflow.TaskWorkflowTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/mac/Entrepôt/featrace-dev/tests/test_task_workflow.py", line 193, in test_observation_predating_task_cannot_be_signed_as_current
+    w.observe(self.root,self.ident,'C1','runtime_observation','2020-01-01T00:00:00+00:00','Old observation is not current',['app.py'])
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_runtime_observation_requires_actual_target_identity (test_task_workflow.TaskWorkflowTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/mac/Entrepôt/featrace-dev/tests/test_task_workflow.py", line 197, in test_runtime_observation_requires_actual_target_identity
+    w.observe(self.root,self.ident,'C1','runtime_observation',w.now(),'Target unknown',['app.py'])
+AssertionError: ValueError not raised
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.192s
+
+FAILED (failures=2)

@@ -1,0 +1,252 @@
+{
+  "status": "no_matches",
+  "targets": [
+    {
+      "target": 1,
+      "status": "scanned",
+      "scope": "staged_additions",
+      "findings": 0,
+      "positions_truncated": false
+    },
+    {
+      "target": 2,
+      "status": "scanned",
+      "scope": "staged_additions",
+      "findings": 0,
+      "positions_truncated": false
+    },
+    {
+      "target": 3,
+      "status": "scanned",
+      "scope": "staged_additions",
+      "findings": 0,
+      "positions_truncated": false
+    },
+    {
+      "target": 4,
+      "status": "scanned",
+      "scope": "staged_additions",
+      "findings": 0,
+      "positions_truncated": false
+    },
+    {
+      "target": 5,
+      "status": "scanned",
+      "scope": "staged_additions",
+      "findings": 0,
+      "positions_truncated": false
+    },
+    {
+      "target": 6,
+      "status": "scanned",
+      "scope": "staged_additions",
+      "findings": 0,
+      "positions_truncated": false
+    },
+    {
+      "target": 7,
+      "status": "scanned",
+      "scope": "staged_additions",
+      "findings": 0,
+      "positions_truncated": false
+    },
+    {
+      "target": 8,
+      "status": "scanned",
+      "scope": "staged_additions",
+      "findings": 0,
+      "positions_truncated": false
+    },
+    {
+      "target": 9,
+      "status": "scanned",
+      "scope": "staged_additions",
+      "findings": 0,
+      "positions_truncated": false
+    },
+    {
+      "target": 10,
+      "status": "scanned",
+      "scope": "staged_additions",
+      "findings": 0,
+      "positions_truncated": false
+    },
+    {
+      "target": 11,
+      "status": "scanned",
+      "scope": "staged_additions",
+      "findings": 0,
+      "positions_truncated": false
+    },
+    {
+      "target": 12,
+      "status": "scanned",
+      "scope": "staged_additions",
+      "findings": 0,
+      "positions_truncated": false
+    },
+    {
+      "target": 13,
+      "status": "scanned",
+      "scope": "staged_additions",
+      "findings": 0,
+      "positions_truncated": false
+    },
+    {
+      "target": 14,
+      "status": "scanned",
+      "scope": "staged_additions",
+      "findings": 0,
+      "positions_truncated": false
+    },
+    {
+      "target": 15,
+      "status": "scanned",
+      "scope": "staged_additions",
+      "findings": 0,
+      "positions_truncated": false
+    },
+    {
+      "target": 16,
+      "status": "scanned",
+      "scope": "staged_additions",
+      "findings": 0,
+      "positions_truncated": false
+    },
+    {
+      "target": 17,
+      "status": "scanned",
+      "scope": "staged_additions",
+      "findings": 0,
+      "positions_truncated": false
+    },
+    {
+      "target": 18,
+      "status": "scanned",
+      "scope": "staged_additions",
+      "findings": 0,
+      "positions_truncated": false
+    },
+    {
+      "target": 19,
+      "status": "scanned",
+      "scope": "staged_additions",
+      "findings": 0,
+      "positions_truncated": false
+    },
+    {
+      "target": 20,
+      "status": "scanned",
+      "scope": "staged_additions",
+      "findings": 0,
+      "positions_truncated": false
+    },
+    {
+      "target": 21,
+      "status": "scanned",
+      "scope": "staged_additions",
+      "findings": 0,
+      "positions_truncated": false
+    },
+    {
+      "target": 22,
+      "status": "scanned",
+      "scope": "staged_additions",
+      "findings": 0,
+      "positions_truncated": false
+    },
+    {
+      "target": 23,
+      "status": "scanned",
+      "scope": "staged_additions",
+      "findings": 0,
+      "positions_truncated": false
+    },
+    {
+      "target": 24,
+      "status": "scanned",
+      "scope": "staged_additions",
+      "findings": 0,
+      "positions_truncated": false
+    },
+    {
+      "target": 25,
+      "status": "scanned",
+      "scope": "staged_additions",
+      "findings": 0,
+      "positions_truncated": false
+    },
+    {
+      "target": 26,
+      "status": "scanned",
+      "scope": "staged_additions",
+      "findings": 0,
+      "positions_truncated": false
+    },
+    {
+      "target": 27,
+      "status": "scanned",
+      "scope": "staged_additions",
+      "findings": 0,
+      "positions_truncated": false
+    },
+    {
+      "target": 28,
+      "status": "scanned",
+      "scope": "staged_additions",
+      "findings": 0,
+      "positions_truncated": false
+    },
+    {
+      "target": 29,
+      "status": "scanned",
+      "scope": "staged_additions",
+      "findings": 0,
+      "positions_truncated": false
+    },
+    {
+      "target": 30,
+      "status": "scanned",
+      "scope": "staged_additions",
+      "findings": 0,
+      "positions_truncated": false
+    },
+    {
+      "target": 31,
+      "status": "scanned",
+      "scope": "staged_additions",
+      "findings": 0,
+      "positions_truncated": false
+    },
+    {
+      "target": 32,
+      "status": "scanned",
+      "scope": "staged_additions",
+      "findings": 0,
+      "positions_truncated": false
+    },
+    {
+      "target": 33,
+      "status": "scanned",
+      "scope": "staged_additions",
+      "findings": 0,
+      "positions_truncated": false
+    },
+    {
+      "target": 34,
+      "status": "scanned",
+      "scope": "staged_additions",
+      "findings": 0,
+      "positions_truncated": false
+    },
+    {
+      "target": 35,
+      "status": "scanned",
+      "scope": "staged_additions",
+      "findings": 0,
+      "positions_truncated": false
+    }
+  ],
+  "findings": [],
+  "note": "Target numbers follow --file order. Positions only; values, paths and context are omitted. No matches is not privacy approval; patterns/known values are bounded. No files were redacted or rewritten."
+}

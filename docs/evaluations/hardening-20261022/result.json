@@ -1,0 +1,16 @@
+{
+  "started_at": "2026-10-22T08:39:55.796304+00:00",
+  "finished_at": "2026-10-22T08:40:47.666056+00:00",
+  "seconds": 51.870072458,
+  "returncode": 0,
+  "frozen_input_count": 18,
+  "inputs_unchanged": true,
+  "post_test_documentation_only": {
+    "skills/dev/core/references/task-workflow.md": {
+      "before_sha256": "5d4c0c68e2e323a1e064b473a7e9b1048c362598387a69ca52e3a86c39828bc3",
+      "after_sha256": "92663a24e159d214454c1379a94fd6458c77d04f94b570696f1964b951c15add",
+      "reason": "Clarify actual-member permission matching; no scripts/tests changed after full run."
+    }
+  },
+  "quick_validator": "unavailable: missing PyYAML; separate Ruby YAML/frontmatter parse passed"
+}

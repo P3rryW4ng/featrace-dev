@@ -1,3 +1,0 @@
-fixture-syntax: passed
-DELIVERY_EVIDENCE_CURRENT: selected checks passed and verified-fix tests have current gate/device execution evidence
-Scope: manifests, tracked content outside .agent-workflow and registered evidence only; check task meaning, test assertions, uncommitted code and delivery report manually

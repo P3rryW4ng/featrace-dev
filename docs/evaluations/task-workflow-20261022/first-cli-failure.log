@@ -1,0 +1,14 @@
+Synthetic completed tasks: 50
+Synthetic completed tasks: 100
+Synthetic completed tasks: 150
+Synthetic completed tasks: 200
+Traceback (most recent call last):
+  File "/Users/mac/Documents/Codex/2026-09-16/https-chatgpt-com-s-cx-6aaa36eed1208191be4fa6502194e3e2/outputs/storage-review-20261022/task_pilot.py", line 73, in <module>
+    installed_cli(script,fixture.root,'begin',ident,'--request','Synthetic installed CLI local label')
+  File "/Users/mac/Documents/Codex/2026-09-16/https-chatgpt-com-s-cx-6aaa36eed1208191be4fa6502194e3e2/outputs/storage-review-20261022/task_pilot.py", line 21, in installed_cli
+    if p.returncode:raise RuntimeError('Installed CLI failed: '+p.stdout+p.stderr)
+RuntimeError: Installed CLI failed: {
+  "id": "CLI-claude",
+  "state": "draft"
+}
+

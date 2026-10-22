@@ -1,0 +1,8 @@
+{
+  "scope_rule_classification": "46-test run: applicable rule changes incorrectly entered unexplained-business set. Constraints are now separately recognized and their identity still expires scope/results.",
+  "cli_exit_status": "First installed probe: begin successfully created draft but returned2. It now returns0; status of unready draft returns2.",
+  "interrupt": "Explicit red: parent interrupt did not reap own child. Kill owned process group/wait before propagating interrupt. Full run interrupted after123.5855s with unchanged inputs; not a pass.",
+  "validation_scope": "Final55 targeted and791 full checks are authoritative; earlier milestones are not replacements.",
+  "observation_identity": "Two red tests rejected old observation re-signing and missing target after correction; registration HEAD is not observed build identity.",
+  "second_full_interruption": "488.058 seconds, return-2, unchanged inputs; premature full execution before completing observation-interface audit."
+}

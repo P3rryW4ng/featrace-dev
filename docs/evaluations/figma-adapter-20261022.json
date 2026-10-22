@@ -1,0 +1,53 @@
+{
+  "checked_at": "2026-10-22T09:07:03.244570+00:00",
+  "scope": "Instruction adapter and isolated packaging only; no live Figma or product UI trial",
+  "previous_inputs": 18,
+  "changed_previous_inputs": [
+    "skills/dev/SKILL.md"
+  ],
+  "new_runtime_files": [
+    "core/references/figma-design.md"
+  ],
+  "all_previous_scripts_tests_installer_version_unchanged": true,
+  "package_checks": [
+    {
+      "host_layout": "claude",
+      "actual_cli_installer_exit": 0,
+      "runtime_files": 11,
+      "manifest_and_source_match": true,
+      "figma_reference_present": true,
+      "channel": "development",
+      "version": "0.22.0+dev.54c5260fd668.e54adc4d8c6d",
+      "yaml_parse": "passed"
+    },
+    {
+      "host_layout": "codex",
+      "actual_cli_installer_exit": 0,
+      "runtime_files": 11,
+      "manifest_and_source_match": true,
+      "figma_reference_present": true,
+      "channel": "development",
+      "version": "0.22.0+dev.54c5260fd668.e54adc4d8c6d",
+      "yaml_parse": "passed"
+    }
+  ],
+  "daily_install_updated": false,
+  "figma_file_access_tested": false,
+  "cc_figma_connection_verified": false,
+  "instruction_inputs": {
+    "skills/dev/SKILL.md": "4d50cdea0da5256135c60e3702ef837625f31a125d1800717913707d507f460e",
+    "skills/dev/core/references/figma-design.md": "8828473c28557e33fbb07ab5416be34e3c13c5b6f35a9eff94f14f1f6e8e12ff"
+  },
+  "current_host_figma_tool_declarations": [
+    "get_design_context",
+    "get_screenshot",
+    "get_metadata",
+    "download_assets",
+    "get_code_connect_map"
+  ],
+  "tool_declaration_is_connection_proof": false,
+  "live_figma_calls": 0,
+  "standard_quick_validator": "unavailable: PyYAML missing",
+  "fallback_frontmatter_yaml_parse": "passed in both isolated copies",
+  "static_scenario_walkthrough": "Maintainer inspection of guidance only; no fresh-context Agent execution or UI fidelity claim."
+}

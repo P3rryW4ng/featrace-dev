@@ -1,0 +1,13 @@
+{
+  "result": "scale_failure_retained",
+  "source_full_run": "/private/tmp/featrace-whole-full-20261022/result.json",
+  "actual_scale_executions": 200,
+  "remaining_task_ids": [
+    "T-0144",
+    "T-0174"
+  ],
+  "remaining_logs": 2,
+  "cause": "maintenance control lock hashed to task slot59; task IDs T-0144 and T-0174 also used59",
+  "missing_metrics": "Initial probe failed before writing calculated sizes/duration; those values are unknown, not reconstructed from chat gaps.",
+  "business_operations": false
+}

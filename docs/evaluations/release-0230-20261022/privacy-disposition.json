@@ -1,0 +1,8 @@
+{
+  "staged_targets": 99,
+  "scanner_review_needed": 1,
+  "candidate_path": "docs/designs/task-workflow-retirement.json",
+  "candidate_sha256": "f363c012efe58794fe5dbcf2cdf72bfa65b62d9ce24fd09fde4b44aff0002124",
+  "disposition": "Existing ordinary authorization prose classification remains applicable at identical content hash; original review_needed result retained. No patterns disabled.",
+  "no_matches_is_not_privacy_certification": true
+}

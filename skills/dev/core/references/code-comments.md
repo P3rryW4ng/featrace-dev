@@ -1,9 +1,0 @@
-# Necessary implementation comments
-
-Use during ordinary serial Build/Repair and isolated Build tasks; follow the project's existing comment style. Add or update comments where code alone does not explain a material invariant, boundary, fallback, concurrency/lifecycle choice, compatibility constraint or historical defect protection. A trivial edit does not require a new comment.
-
-Explain why the behavior must remain, the condition where it applies, and the nearby test or canonical decision/fix reference when useful. Example: why JSON null falls back but the literal string "null" remains a real value; why app-language state must not contaminate system-language reporting. Reference a durable test name or project-owned record if available, not a private temporary path. Preserve the distinction between confirmed contracts and investigated assumptions; do not state platform behavior or a root cause as fact merely because it sounds plausible.
-
-When changing that logic, read its comments and linked tests/constraints, reconcile stale wording within the affected lines, and report unrelated stale comments separately. Do not clean up an entire file, attach the PRD verbatim, narrate every line, create comment-count gates or add comments merely to mirror a simple implementation. Scope discipline and task-owned paths remain binding. If a helpful comment would require a file outside assigned ownership, return the issue to the router instead of expanding the worker scope.
-
-A comment is a maintenance aid, not test execution, proof of API behavior, a waiver or a second product authority. Build returns any material contract comments changed and the actual supporting test/decision reference through existing task evidence; no new user form or canonical comment inventory is needed. Verify challenges unsupported technical assertions and does not accept the existence of a comment as behavior evidence.

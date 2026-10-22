@@ -1,1 +1,0 @@
-UNRELATED_THEME = "dark"

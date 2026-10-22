@@ -1,0 +1,22 @@
+{
+  "source_candidate_files": {
+    "SKILL.md": "a413d06f6dcbcfac99e6a9fb7b10d9a1fc1da3c492e999c27bb75387378a65fc",
+    "core/references/project-compatibility.md": "9fc5b29e0a86a54b7a50fd5ed5410bccd6b96580467b2653fd407be4d9da18e8",
+    "core/references/output-privacy.md": "8c1d43834acfb41ee1d125bdc1ec37eb97cedca3d9afbff3b408658f81c8fab3",
+    "core/references/task-workflow.md": "1a99d53c4af7e967af19f445ad4f9c946c8eadb3dc081b8ea97c832512730b50",
+    "core/scripts/output_privacy.py": "54be161d474b4bc55ae1a28207de80f4077f0093172114b7079a12ce672fee6e",
+    "core/scripts/task_policy.py": "b50ff73af4d2badca278d62af692553bde8f1263c835dddf69a6878e2ad66458",
+    "core/scripts/task_workflow.py": "ac0d210bd534c3fd04e5bc8566a046b540c4fb8d66e8c3daad26366412ac798a",
+    "core/scripts/task_inputs.py": "9143dc945e478d069b501094b64265d519ad91c4519b0c09e4c825886326d3a8",
+    "agents/openai.yaml": "237666967ab617f4452194694fc91dc1fcbb3b3beda59172c74572525117a009",
+    "profiles/android/PROFILE.md": "5f3c6c09528bf9e4d76602c0d8a60f7a2b2be624db50748d289209784859e024"
+  },
+  "frozen_inputs_current": true,
+  "installed_temp_copies_match": true,
+  "daily_claude": {
+    "version": "0.22.0",
+    "files": 119,
+    "marker_matches": true
+  },
+  "release_or_remote_changed": false
+}

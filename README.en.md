@@ -2,161 +2,53 @@
 
 [简体中文](README.md) | **English**
 
-**Feature · Trace · Delivery**
+**Feature · Trace · Delivery** — Turn changing requirements into verifiable delivery.
 
-**Turn evolving requirements into verifiable delivery.**
+Help Claude Code and Codex investigate impact, implement changes, repair failures and verify relevant behavior in existing projects. Use code, configuration, tests and actual product intent, without turning every local change into full business reacceptance.
 
-FeatraceDev helps coding agents understand requirements, investigate impact, implement changes, repair defects, and verify delivery in existing codebases. It connects original sources, confirmed requirements, tasks, historical fixes, and test evidence so future changes can build on recorded facts and completion claims have a clear verification scope.
-
-Works with Claude Code and Codex. Includes a generic workflow and an Android adapter. Current official release: **0.22.0**. Check the installed version on the device where you use it.
-
-> This is a developer-assisted delivery tool. It surfaces missing decisions and evidence, but cannot guarantee complete PRD understanding, discover every dependency, or automate every device and business path. With suitable tools and authorization, the Agent can perform device operations and objective tests; subjective experience still requires human judgment.
-
-## Name and principles
-
-- **Feature**: understand requirements and changes, and define implementation boundaries.
-- **Trace**: connect requirements, decisions, code, and verification evidence while protecting confirmed behavior.
-- **Delivery**: work toward results that can be accepted and continued by the next developer or agent.
-
-FeatraceDev is the brand name, with Dev referring to development. Feature · Trace · Delivery expresses the product principles: features are the starting point, traceability provides assurance, and delivery is the outcome.
-
-During development, the router makes a local Git commit for each independently completed task after its relevant checks, with a message explaining the outcome, reason, and checks. After the final task or later evidence clears a blocker, it resumes verification and closes the feature when current evidence supports it. Missing device observations or product decisions are reported precisely. After completion, it safely commits that feature's final shareable records locally. A task commit alone does not mark the feature complete, push it remotely, or archive it.
-
-When a task only requires configuration in another system, the agent states that this project has zero code changes, identifies the implementing owner and hands off the exact parameters. It then checks the applied configuration and a narrow runtime outcome instead of treating a records commit or unrelated client checks as implementation.
-
-## Install
-
-Requires Python 3.9+, Git, and Claude Code or Codex. Android projects also need their required JDK and Android SDK.
-
-```bash
-git clone --branch release/0.22.0 --single-branch https://github.com/P3rryW4ng/featrace-dev.git
-cd featrace-dev
-python3 scripts/install.py
-```
-
-By default, the installer installs for both Claude Code and Codex under the current user. Use `--agent claude` or `--agent codex` to install for just one. Open a **new session** after installation to load the updated skill.
-
-Optional independent review: `/dev check OGFR-1234 --independent`. Requires a host that can create a fresh Agent context. It reviews existing evidence read-only; it does not build, run tests, or approve delivery. This differs from the mandatory fresh-context evidence review before completing a newly created v6 workflow. Without host support or a valid review, that workflow remains incomplete.
-
-Use `release/0.22.0` for this release. `main` contains unreleased instructions; the installer copies the current checkout and does not enforce release provenance. Before updating, verify the release branch, commit and manifest, and inspect existing local changes. Installation does not enable new project data contracts. See [maintenance status](MAINTAINER.md) for known limitations.
-
-## Current release highlights
-
-- **Share repeated snapshots**: explicitly prepared schema8 stores repeated content once while retaining complete facts and digests. Old records are not migrated automatically; old readers refuse the new format.
-- **Distinguish evidence and review errors**: type static investigations and runtime observations; bounded same-context/same-fact corrections preserve negatives and cannot bypass actual failures. Encoding/decoding may cost more; net efficiency is unproven.
-
-- **Verification follows impact**: explicitly prepared scoped acceptance combines checks by change unit, distinguishes current and background changes, and preserves prior negative findings. Classification does not replace coverage evidence.
-- **Choose a deliverable route first**: new work linked to an earlier delivery explicitly selects legacy or scoped and checks preparation requirements. Installing an update does not migrate existing features or enable project contracts.
-- **Inspect large text records**: stream complete files or staged additions within explicit resource limits, retaining input-drift checks. Records are not rewritten, and no matches is not privacy approval.
-- **Protect local execution state**: preparation checks actual Git tracking and ignore behavior for local configuration and its backup. It never automatically untracks files, deletes history, or borrows old success.
-- **Show actual progress**: use the host's native task list when available, otherwise briefly report current work, blockers, and the next step.
-
-See the [changelog](CHANGELOG.md) and [usage guide](docs/usage.md) for changes and limitations. These mechanisms do not yet demonstrate lower net delivery time in real projects.
-
-## Start here
-
-Open Claude Code in your application project and enter `/dev` to start delivery mode for the current session. Then describe what you need without repeating `/dev next`:
-
-```text
-/dev
-scan
-prd ./requirements.md --feature OGFR-1234
-change --feature OGFR-1235 Rename the existing wallet entry without changing its tap behavior
-Continue developing the current feature
-I have new designs; please review their impact
-status
-```
-
-Use the product or work-item ID already assigned by your team; the skill does not invent one. Run `scan` when first adopting the workflow in a project to investigate its build setup and module candidates. A newly created feature becomes the selected feature for the current session and project.
-
-You can also say “Start a new feature.” The Agent shows a short readiness summary and asks only for a missing product ID or accessible PRD. For an independent change to existing functionality or a defect with no owning feature record, provide the assigned product ID and a short original description through `change`; a separately prepared PRD is not required. The Agent investigates module ownership and expected behavior before development. Cross-module work need not be forced into one label. An unresolved module scope can remain in a draft, but blocks development until reviewed.
-
-While delivery mode is active, every reply starts with `FeatraceDev ON` and the current project, without repeating the selected feature. Use `status` to see the current feature and its progress, or `list` to see available features. If unsure whether it is still active, repeat `/dev` to display or reactivate the mode without starting a scan or development. `dev off` displays `FeatraceDev OFF` and exits. In Codex, invoke `$dev`, for example `$dev scan` or `$dev prd ./requirements.md --feature OGFR-1234`. Enter the mode again after starting a new session or switching projects. The line is generated by the Agent, not a persistent Claude Code status light; no permanent project switch is written, and mode does not persist across sessions.
-
-### Everyday inputs
-
-| Input | When to use it |
+| Object | Current state |
 |---|---|
-| `prd <file> --feature <work-item-ID>` | Create a feature and register its original sources |
-| `change --feature <work-item-ID> <description>` | Create a work item for an existing-function change or standalone defect from a short report |
-| Describe the work, or use `next <description>` | Let the agent choose the next step from the current feature state |
-| `status` | Read recorded progress, blockers, and next steps without rebuilding |
-| `list` / `use <work-item-ID>` | Find and switch between features |
-| `check` | Run selected checks and identify remaining manual acceptance work |
-| `help` / `help <command>` | View precise commands and when to use them |
-| `dev off` | Leave delivery mode in the current Claude Code session |
+| Release version | **0.23.0**, current-task workflow,11 runtime files |
+| Validation scope | 150 kernel tests; isolated package and synthetic scale evidence, with natural new-project trials still pending |
+| Real-world outcome | Phase two remains open: natural classification, resumption and net cost need new-project evidence |
 
-If unsure which command to use, describe the situation: “The back button does not follow the confirmed behavior,” “This PRD changes the flag rules,” or “I have a new interactive prototype.” The agent should investigate the defect, handle the requirement revision, or register the new source. Choices affecting product meaning still require your confirmation.
+0.23.0 replaces the legacy workflow and does not read/migrate old ledgers. Use pinned0.22.0 for old-record continuation. See [maintenance status](MAINTAINER.md) for release/actual installation identities.
 
-## How it supports delivery
+## Replacement capabilities
 
-1. **Understand change**: retain original PRDs, designs, API specifications, or HTML prototypes; distinguish clarifications, revisions, and confirmed requirements. Start with one source or several.
-2. **Investigate impact**: locate relevant modules, relationships, and behavior to preserve, and identify historical fixes that may need retesting. Android Gradle relationships are review candidates, not a complete call graph.
-3. **Implement and verify**: connect requirements to tasks and code, run selected checks, and distinguish automated tests, visual inspection, and device evidence. Failed or stale evidence does not automatically become a pass.
-4. **Continue and revisit**: the application's `.agent-workflow/` stores requirements, decisions, fixes, and delivery records so a new session or developer can continue from records rather than chat memory.
+- Combine presentation, interaction, state, interface, shared and device checks from causal impact, rather than reaccept the entire parent requirement.
+- Separate behavioral impact, product authority and execution inputs. Reuse valid checks; distinguish runtime observations, static analysis, failures and unknowns.
+- Keep one project policy and one bounded active task. Preserve lasting intent/constraints in tests, adjacent comments or existing concise project records.
+- For Figma-based tasks, read selected nodes, reuse project components and compare scoped rendered UI; actual connector access belongs to the host.
+- Clean owned task outputs under the confirmed calendar-day policy; query and page necessary content instead of preserving every feature's complete process forever.
+- Reuse genuine same-scope authorization; ask only for actual conflicts, missing sources/accounts or host restrictions. Prefer native task progress, with concise text when unavailable.
 
-A feature may span modules: payment rules can belong to a wallet module while chat hosts their presentation. The skill proposes roles and evidence rather than assigning a single owner from the feature name alone.
+These are0.23.0 capability boundaries. Installing old0.22.0 does not enable this workflow. It does not guarantee full dynamic dependencies, objective visual judgment or genuine host independence. Code and structural validity do not establish product correctness.
 
-The internal workflow has six stages loaded as needed: Requirement, Scope, Build, Verify, Repair, and Deliver. The router loads each stage as needed. Build selects serial execution or two independent agents based on dependencies, scope, substantive work and host capacity; Verify can run independently. These are responsibility boundaries, not six new commands or a claim of fully autonomous delivery.
+## Install and update an official release
 
-You do not need to choose a worker count. Small changes, shared dependencies or insufficient evidence favor serial execution. Say “do not use subagents” or use `develop --serial` to force it. Build currently supports at most two workers; the router remains the single writer of shared requirement records.
-
-## Add sources and handle fixes
-
-Provide a document and prototype together when creating a feature:
-
-```text
-prd ./requirements.md --feature OGFR-1234 --source ./prototype.html
-```
-
-Add API or design material later without recreating the feature:
-
-```text
-api ./api.yaml
-figma ./design-export.md
-```
-
-For explicit control, use `clarify` to investigate uncertainty, `revise` to update confirmed requirements, or `fix` to record and investigate observed discrepancies. A newer source does not automatically override confirmed requirements, and a code defect is not automatically treated as a PRD change. See the [usage guide (Chinese)](docs/usage.md) for complete parameters and additional commands.
-
-## Project records and sharing
-
-The skill repository and your application's `.agent-workflow/` are separate locations. Current requirements, tasks, decisions, traceability, and reviewed module descriptions can usually be shared according to team policy. Original PRDs, logs, scan drafts, and local quality commands may contain sensitive or environment-specific information; review them individually. Initialization does not automatically commit, push, or upload application materials. See the [Git sharing rules](skills/dev/core/references/git-sharing.md).
-
-## Update and uninstall
-
-Running `git pull` in an older release clone does not switch it to a newer release branch. Preserve that clone and any local changes, clone the current release into an unused directory using the installation instructions above, then run the installer from that copy with `--update`.
-
-First verify that the clone is on the official `release/0.22.0` branch and has no local changes to preserve. The commands below apply only to that release branch; do not install directly from `main` or another branch:
+Requires Python3.9+,Git and the chosen host; Android also needs the project's JDK/SDK. Install from the pinned0.23.0 release branch:
 
 ```bash
-git pull --ff-only
-python3 scripts/install.py --agent both --update
+git clone --branch release/0.23.0 --single-branch https://github.com/P3rryW4ng/featrace-dev.git
+cd featrace-dev
+python3 scripts/install.py --agent both
 ```
 
-Open a new session afterward. Replace `both` with `claude` or `codex` to update one tool. To uninstall, run `python3 scripts/install.py --agent both --uninstall`. Old copies are moved to `~/.feature-delivery/backups/`. The installer refuses to overwrite an unrelated or locally modified installation.
+Preserve existing local changes and verify the official checkout before updating. Use `--update` only from that release tree; select `--agent claude` or `--agent codex` as needed. Open a new session afterward. The installer refuses unrelated or locally modified copies, backs up updates and moves uninstalled copies to backups with `--uninstall`. The installer requires a matching committed release.json, local release ref and runtime/installer content. Development trials require explicit --development with a separate identity; this is not signed remote-origin authentication.
 
-### Migrate from the old repository
+Find legacy commands, acceptance contracts and records in the [fixed0.22.0 guide](https://github.com/P3rryW4ng/featrace-dev/blob/54c5260fd6688a0bca9c83f29bad240321a67b52/README.en.md). The replacement does not migrate or delete old application .agent-workflow data; use a pinned old version for explicit old-record continuation.
 
-Existing `feature-delivery-skill` users can update the remote address. This does not switch the checkout to an official release:
+## Use and documentation
 
-```bash
-git remote set-url origin https://github.com/P3rryW4ng/featrace-dev.git
-```
+Claude invokes `/dev`,Codex invokes `$dev`. An empty invocation activates this conversation's mode without starting work. For development, provide the target project, original request and any necessary design reference. Mode is not inherited by a new session/project; `dev off` exits. Help, status and historical questions do not initialize tasks or run tests.
 
-If the current branch is not the release branch, preserve the existing clone and local changes, clone the release separately using the installation instructions above, and update the installation from that copy. Do not run the installer directly from the old main checkout.
+- [Current source workflow](docs/usage.md): daily development, files, resumption and cleanup.
+- [Product direction](PRODUCT.md): developer assistance and longer-term vision.
+- [Current queue and phase two](ROADMAP.md): unresolved issues and next actions.
+- [Validation and fixed historical entrypoints](docs/validation.md): measured facts and unproven outcomes.
+- [Changelog](CHANGELOG.md): published history, not active development instructions.
 
-You may rename the local clone directory to `featrace-dev`. The installer recognizes the legacy package identity and backs it up before updating. `/dev`, `$dev`, `skills/dev`, and the application's `.agent-workflow/` remain compatible. The existing installation marker filename and backup directory are retained to avoid moving existing records.
-
-If Claude Code reports `Unknown skill: dev`, check that the skill exists at `~/.claude/skills/dev/` and open a new session. In Codex, use `$dev`.
-
-## More information
-
-- [Complete usage guide (Chinese)](docs/usage.md)
-- [Changelog](CHANGELOG.md)
-- [Maintainer documentation (Chinese)](MAINTAINER.md)
-
-An open-source license has not yet been selected. The repository owner must define the permission terms before redistribution.
-
----
+Commits, pushes, PRs, installation and publication follow actual authorization; materials are not uploaded automatically. No open-source license has been selected; public readability does not grant redistribution rights.
 
 Created by [Perry Wang](https://github.com/P3rryW4ng).

@@ -1,0 +1,239 @@
+test_ordinary_inventory_classifies_legacy_candidates_waivers_and_new_claims (test_acceptance_continuation.AcceptanceContinuationTests) ... ok
+test_ordinary_inventory_exposes_unsynced_plan_without_mutating_it (test_acceptance_continuation.AcceptanceContinuationTests) ... ok
+test_ordinary_inventory_never_routes_latest_failure_to_adoption (test_acceptance_continuation.AcceptanceContinuationTests) ... ok
+test_ordinary_inventory_routes_matching_execution_without_running_it (test_acceptance_continuation.AcceptanceContinuationTests) ... ok
+test_parent_change_legacy_stales_37_but_existing_batch_retains_22_in_one_write (test_acceptance_continuation.AcceptanceContinuationTests) ... ok
+test_replaced_claim_is_not_a_batch_source_but_unchanged_rows_are_candidates (test_acceptance_continuation.AcceptanceContinuationTests) ... ok
+test_unknown_shared_consumer_or_environment_cannot_be_supported (test_acceptance_continuation.AcceptanceContinuationTests) ... ok
+test_affected_targets_cannot_use_reuse_action (test_acceptance_contract.AcceptanceContractTests) ... ok
+test_all_negative_saved_and_same_input_cannot_turn_green (test_acceptance_contract.AcceptanceContractTests) ... ok
+test_archived_feature_cannot_receive_new_fact_review_or_prepare (test_acceptance_contract.AcceptanceContractTests) ... ok
+test_atomic_write_failure_preserves_plan (test_acceptance_contract.AcceptanceContractTests) ... ok
+test_automatic_facts_bound_to_exact_attempt_and_assertion_ids (test_acceptance_contract.AcceptanceContractTests) ... ok
+test_business_change_requires_execution_again (test_acceptance_contract.AcceptanceContractTests) ... ok
+test_canonical_reader_entrypoints_agree (test_acceptance_contract.AcceptanceContractTests) ... ok
+test_claim_review_capture_before_supported (test_acceptance_contract.AcceptanceContractTests) ... ok
+test_device_failure_adapter_sees_original_and_new_negative (test_acceptance_contract.AcceptanceContractTests) ... ok
+test_device_negative_survives_review_staleness_and_held_lock (test_acceptance_contract.AcceptanceContractTests) ... ok
+test_dirty_original_and_completed_prepare_refuse (test_acceptance_contract.AcceptanceContractTests) ... ok
+test_duplicate_json_and_event_hash_refuse (test_acceptance_contract.AcceptanceContractTests) ... ok
+test_event_history_and_saved_judgment_tamper_refuse (test_acceptance_contract.AcceptanceContractTests) ... ok
+test_failed_missing_terminal_has_no_old_green (test_acceptance_contract.AcceptanceContractTests) ... ok
+test_fresh_initialization_needs_no_fake_old_fact (test_acceptance_contract.AcceptanceContractTests) ... ok
+test_full_delivery_composition_keeps_non_acceptance_guards (test_acceptance_contract.AcceptanceContractTests) ... ok
+test_idempotent_apply_no_duplicate (test_acceptance_contract.AcceptanceContractTests) ... ok
+test_initial_capture_pending_without_check_pass_cycle (test_acceptance_contract.AcceptanceContractTests) ... ok
+test_input_drift_and_generation_no_partial_writes (test_acceptance_contract.AcceptanceContractTests) ... ok
+test_known_dependency_mapping_changes_need_reconciliation (test_acceptance_contract.AcceptanceContractTests) ... ok
+test_latest_attempt_failure_never_falls_back (test_acceptance_contract.AcceptanceContractTests) ... ok
+test_latest_failure_cannot_use_original_green (test_acceptance_contract.AcceptanceContractTests) ... ok
+test_legacy_format_still_usable_before_explicit_prepare (test_acceptance_contract.AcceptanceContractTests) ... ok
+test_local_decision_reuses_all_without_resigning_observations (test_acceptance_contract.AcceptanceContractTests) ... ok
+test_missing_delta_and_claim_reject_no_write (test_acceptance_contract.AcceptanceContractTests) ... ok
+test_new_direct_fact_not_support_until_review (test_acceptance_contract.AcceptanceContractTests) ... ok
+test_old_writers_disabled_and_no_mutation (test_acceptance_contract.AcceptanceContractTests) ... ok
+test_older_frozen_snapshot_rejects_after_new_assessment (test_acceptance_contract.AcceptanceContractTests) ... ok
+test_partial_unknown_resolved_with_targeted_new_fact (test_acceptance_contract.AcceptanceContractTests) ... ok
+test_participant_inventory_required (test_acceptance_contract.AcceptanceContractTests) ... ok
+test_progress_not_free_note (test_acceptance_contract.AcceptanceContractTests) ... ok
+test_projection_failure_rebuild_does_not_execute (test_acceptance_contract.AcceptanceContractTests) ... ok
+test_reactivated_source_keeps_original_negative_identity (test_acceptance_contract.AcceptanceContractTests) ... ok
+test_real_host_provenance_required (test_acceptance_contract.AcceptanceContractTests) ... ok
+test_reconcile_parent_and_explicit_criterion_alignment (test_acceptance_contract.AcceptanceContractTests) ... ok
+test_registration_control_does_not_change_semantic_world_but_is_validated (test_acceptance_contract.AcceptanceContractTests) ... ok
+test_removal_needs_explicit_authority_disposition (test_acceptance_contract.AcceptanceContractTests) ... ok
+test_removed_or_corrupt_original_refuses (test_acceptance_contract.AcceptanceContractTests) ... ok
+test_restoration_only_before_new_fact_or_judgment (test_acceptance_contract.AcceptanceContractTests) ... ok
+test_restoration_with_input_change_refuses (test_acceptance_contract.AcceptanceContractTests) ... ok
+test_retirement_does_not_erase_unresolved_scope (test_acceptance_contract.AcceptanceContractTests) ... ok
+test_reuse_from_other_key_is_rejected (test_acceptance_contract.AcceptanceContractTests) ... ok
+test_same_inputs_legacy_global_stale_candidate_reuses_facts (test_acceptance_contract.AcceptanceContractTests) ... ok
+test_shared_fix_writers_keep_workspace_and_plan_exclusion (test_acceptance_contract.AcceptanceContractTests) ... ok
+test_supported_and_no_input_change_readonly (test_acceptance_contract.AcceptanceContractTests) ... ok
+test_unknown_change_not_ignored (test_acceptance_contract.AcceptanceContractTests) ... ok
+test_unknown_root_row_and_request_fields_refuse (test_acceptance_contract.AcceptanceContractTests) ... ok
+test_unsigned_new_history_cannot_become_evidence (test_acceptance_contract.AcceptanceContractTests) ... ok
+test_unsupported_composite_source_refuses_before_switch (test_acceptance_contract.AcceptanceContractTests) ... ok
+test_waiver_cannot_be_synthesized_from_pass (test_acceptance_contract.AcceptanceContractTests) ... ok
+test_workspace_busy (test_acceptance_contract.AcceptanceContractTests) ... ok
+test_fresh_scoped_storage_uses_real_gate_and_same_resolver (test_acceptance_storage.ScopedStorageTests) ... ok
+test_missing_capability_refuses_without_rewriting_original (test_acceptance_storage.ScopedStorageTests) ... ok
+test_changed_actual_reviewer_context_is_not_a_correction (test_acceptance_storage.StorageAcceptanceTests) ... ok
+test_changed_scope_or_different_context_cannot_be_corrected (test_acceptance_storage.StorageAcceptanceTests) ... ok
+test_fact_failure_cannot_be_relabelled_as_review_error (test_acceptance_storage.StorageAcceptanceTests) ... ok
+test_new_preparation_can_explicitly_choose_storage_without_migrating_old (test_acceptance_storage.StorageAcceptanceTests) ... ok
+test_new_world_cannot_use_same_input_correction (test_acceptance_storage.StorageAcceptanceTests) ... ok
+test_observed_failure_classification_cannot_be_corrected (test_acceptance_storage.StorageAcceptanceTests) ... ok
+test_old_reader_rejects_packed_format (test_acceptance_storage.StorageAcceptanceTests) ... ok
+test_old_unclassified_negative_cannot_be_corrected (test_acceptance_storage.StorageAcceptanceTests) ... ok
+test_original_missing_or_changed_refuses (test_acceptance_storage.StorageAcceptanceTests) ... ok
+test_prepare_preserves_events_facts_and_original_digests_without_execution (test_acceptance_storage.StorageAcceptanceTests) ... ok
+test_prepare_refuses_completed_work (test_acceptance_storage.StorageAcceptanceTests) ... ok
+test_readiness_uses_same_decoded_profile (test_acceptance_storage.StorageAcceptanceTests) ... ok
+test_same_context_correction_keeps_negative_without_new_execution (test_acceptance_storage.StorageAcceptanceTests) ... ok
+test_typed_fact_does_not_silently_enable_for_old_contract (test_acceptance_storage.StorageAcceptanceTests) ... ok
+test_typed_fact_invalid_time_refuses (test_acceptance_storage.StorageAcceptanceTests) ... ok
+test_typed_static_fact_preserves_observation_and_registration_times (test_acceptance_storage.StorageAcceptanceTests) ... ok
+test_uncommitted_or_missing_host_authorization_refuses_no_write (test_acceptance_storage.StorageAcceptanceTests) ... ok
+test_unscoped_profile_cannot_become_scoped_by_its_envelope_number (test_acceptance_storage.StorageAcceptanceTests) ... ok
+test_bounded_expansion_refuses_but_literal_reference_text_is_preserved (test_acceptance_storage.StorageCodecTests) ... ok
+test_encoded_and_restored_snapshots_have_no_mutable_aliases (test_acceptance_storage.StorageCodecTests) ... ok
+test_missing_object_refuses (test_acceptance_storage.StorageCodecTests) ... ok
+test_modified_object_refuses (test_acceptance_storage.StorageCodecTests) ... ok
+test_old_documents_are_not_rewritten (test_acceptance_storage.StorageCodecTests) ... ok
+test_repeated_large_snapshots_are_stored_once_and_exactly_restored (test_acceptance_storage.StorageCodecTests) ... ok
+test_unreachable_object_refuses (test_acceptance_storage.StorageCodecTests) ... ok
+test_wrong_envelope_or_node_refuses (test_acceptance_storage.StorageCodecTests) ... ok
+test_current_link_displays_exact_row_assessment_and_scope_without_rewriting (test_annotation_view.AnnotationViewTests) ... ok
+test_later_evidence_edit_marks_notes_historical_and_keeps_stale (test_annotation_view.AnnotationViewTests) ... ok
+test_loose_note_text_is_not_a_machine_link (test_annotation_view.AnnotationViewTests) ... ok
+test_new_observation_does_not_turn_old_note_into_current_correction (test_annotation_view.AnnotationViewTests) ... ok
+test_other_rows_do_not_inherit_shared_correction (test_annotation_view.AnnotationViewTests) ... ok
+test_readonly_summary_does_not_change_input_digest (test_annotation_view.AnnotationViewTests) ... ok
+test_scoped_stage_view_includes_linked_notes_without_loading_all_history (test_annotation_view.AnnotationViewTests) ... ok
+test_tampered_shared_assessment_is_rejected_before_display (test_annotation_view.AnnotationViewTests) ... ok
+test_two_amendments_preserve_history_and_distinguish_latest (test_annotation_view.AnnotationViewTests) ... ok
+test_unapplied_adverse_verdict_is_pending_not_approved (test_annotation_view.AnnotationViewTests) ... ok
+test_committed_then_modified_records (test_archive_git.ArchiveGitTests) ... ok
+test_ignored_shared_record_is_reported_not_force_added (test_archive_git.ArchiveGitTests) ... ok
+test_untracked_records_and_sources_excluded_without_mutation (test_archive_git.ArchiveGitTests) ... ok
+test_supported_unknown_then_metadata_amendment_preserves_stale_history (test_archive_multirow_review.ArchiveMultirowReviewTests) ... Traceback (most recent call last):
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/runpy.py", line 197, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/runpy.py", line 87, in _run_code
+    exec(code, run_globals)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/unittest/__main__.py", line 18, in <module>
+    main(module=None)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/unittest/main.py", line 101, in __init__
+    self.runTests()
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/unittest/main.py", line 271, in runTests
+    self.result = testRunner.run(self.test)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/unittest/runner.py", line 176, in run
+    test(result)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/unittest/suite.py", line 84, in __call__
+    return self.run(*args, **kwds)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/unittest/suite.py", line 122, in run
+    test(result)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/unittest/suite.py", line 84, in __call__
+    return self.run(*args, **kwds)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/unittest/suite.py", line 122, in run
+    test(result)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/unittest/suite.py", line 84, in __call__
+    return self.run(*args, **kwds)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/unittest/suite.py", line 122, in run
+    test(result)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/unittest/case.py", line 653, in __call__
+    return self.run(*args, **kwds)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/unittest/case.py", line 593, in run
+    self._callTestMethod(testMethod)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/unittest/case.py", line 550, in _callTestMethod
+    method()
+  File "/Users/mac/Entrepôt/featrace-dev/tests/test_archive_multirow_review.py", line 56, in test_supported_unknown_then_metadata_amendment_preserves_stale_history
+    a.apply(root, folder, fixture.snapshot, fixture.review_path)
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/verification.py", line 64, in wrapped
+    return function(root, folder, *args, **kwargs)
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/evidence_annotations.py", line 285, in apply
+    if amend_inputs(root, folder, frozen) != inputs or v.load_plan(folder) != original:
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/evidence_annotations.py", line 146, in amend_inputs
+    if digest(doc) != frozen['plan_digest'] or digest(project_files(root)) != frozen['code_digest']:
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/evidence_carry.py", line 53, in project_files
+    return project_files(root, git(root, 'rev-parse', 'HEAD').decode().strip())
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/impact.py", line 17, in git
+    result = subprocess.run(['git', '-C', str(root), *args], capture_output=True)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/subprocess.py", line 507, in run
+    stdout, stderr = process.communicate(input, timeout=timeout)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/subprocess.py", line 1134, in communicate
+    stdout, stderr = self._communicate(input, endtime, timeout)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/subprocess.py", line 1979, in _communicate
+    ready = selector.select(timeout)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/selectors.py", line 416, in select
+    fd_event_list = self._selector.poll(timeout)
+KeyboardInterrupt
+CHECK_ATTEMPT: 6e5cc2e8f7734fafbb00de9499fb82af passed
+CHECK_ATTEMPT: 5eedfede0192469aaf6a40c429cc36e0 failed
+CHECK_ATTEMPT: 86b3ce25354043dea9af66ba43f50944 passed
+CHECK_RESULTS_ADOPTED: 1; no commands executed
+SYNTHETIC_NEWLINE: legacy_stale=37 retained=22 affected=6 waiver_authority_checks=9 shared_saves=1; no new test execution
+CHECK_ATTEMPT: 70da7117d8f44fceadaf5f7a6f1ecb5e passed
+CHECK_ATTEMPT: 32f821c79d974dc3bc3685e2969de9c6 passed
+CHECK_ATTEMPT: cf5cb79be4e341a3b2fe9d638d8b0648 passed
+CHECK_ATTEMPT: a1d0a5f012944bb695ce557b110c260d passed
+CHECK_ATTEMPT: b3ae5c46c9bc41eebc78ffcb9fd3f82c passed
+CHECK_ATTEMPT: 066a5863af2a4eb9b17d804ed8d81d31 passed
+CHECK_ATTEMPT: 01a44961cbb7444392d945053cf07dcd passed
+CHECK_ATTEMPT: 7fab8d61ea81455ca17209dfdcff3124 passed
+CHECK_ATTEMPT: 42aae577e2b84d5dbe3907c321e3d3de passed
+CHECK_ATTEMPT: dcbbd2c18af7455fa7fa52571e9c1a82 passed
+CHECK_ATTEMPT: 8063eb49036b497b8b0113a6f0259a65 passed
+CHECK_ATTEMPT: 020b7c1026034303b6e0fe39ec71b2e0 passed
+CHECK_ATTEMPT: 900a62f520194ccaa9a183061fb0e722 passed
+CHECK_ATTEMPT: 073929738e3c4c8185b21e9619a1529d passed
+CHECK_ATTEMPT: 03a7ff55e131446d9df180b2c434340c passed
+CHECK_ATTEMPT: 233696b0dabf47718a64500a7a39ba19 passed
+CHECK_ATTEMPT: 6d84d6171e474e069a5124909721ea76 passed
+CHECK_ATTEMPT: 1e09e2e93e1f441e82d84cf119e6a695 passed
+CHECK_ATTEMPT: ef76da50b20e44588e922bb268f86e41 passed
+CHECK_ATTEMPT: 5e9f645b591d4df89cfcb5be773b71b8 passed
+CHECK_ATTEMPT: 6d99dae2f71140139610effd6bff322b passed
+CHECK_ATTEMPT: 74b4392954e24d09981c22df7a25f55f passed
+CHECK_ATTEMPT: bdd67c3494e74590b8fb55ea04e25fa7 failed
+CHECK_ATTEMPT: 291231278e7145d8aa81ba182d50335d passed
+CHECK_ATTEMPT: f8a8ad77e9ac4eb8a2c5d6507f425b5e passed
+CHECK_ATTEMPT: e6d1f0c609094e7b8f5f4ebe15afbc02 passed
+CHECK_ATTEMPT: 9000de7e911642fba86ca0636435264e passed
+CHECK_ATTEMPT: c5019288c2ed4c24a28390ae31926735 passed
+CHECK_ATTEMPT: dce98aef2d7f40ee989e2343f4746e94 passed
+CHECK_ATTEMPT: 20960dfb4abe4db0948035201c45e3a6 passed
+CHECK_ATTEMPT: 8fcac00ab624428f8b53c7080c0994f8 passed
+CHECK_ATTEMPT: 9de0c4bcff594b1e857f14e1bba6b7f7 passed
+CHECK_ATTEMPT: e31de5661f60453eaf4f2ca7e13175a5 passed
+CHECK_ATTEMPT: 6cca48b1b9da45fd83701a3994ca0e4c passed
+CHECK_ATTEMPT: a164c2a7f55343e68501fe758b71d7b0 passed
+CHECK_ATTEMPT: 9e1a6eeb2048486fa643ed61c49139d1 passed
+CHECK_ATTEMPT: 8f1dc2487d1b4a398e516853a7aebf4c passed
+CHECK_ATTEMPT: 18d08dbba4344f7b850abeb5d07f11f8 passed
+CHECK_ATTEMPT: 3e982df5acf44836ba1b81fe3cb78d65 passed
+CHECK_ATTEMPT: 7d7d23fe92344b049d75525405aae874 passed
+CHECK_ATTEMPT: 8d4aa6d82dd14d768618ee7c54717ea2 passed
+CHECK_ATTEMPT: 3855373064f149939e955da723eae2fc passed
+CHECK_ATTEMPT: a14f8d460a3a4315b01708b939148548 passed
+CHECK_ATTEMPT: 5d8540cd9ff340c9bda97c88b4a0b989 passed
+CHECK_ATTEMPT: 5eb42863c75d42dda14849fc1e19f555 passed
+CHECK_ATTEMPT: e65a19645f08464bafec4c93d6e320a8 passed
+CHECK_ATTEMPT: aa3221c179e443959691dc51ccba9603 passed
+CHECK_ATTEMPT: 9094fb84107b481eb8cd2bbbe6deab02 passed
+CHECK_ATTEMPT: 1843a9b273644c7e9cf3ed82db3603cd passed
+CHECK_ATTEMPT: d089d6c34fd0483fb2fcfafff7190849 passed
+CHECK_ATTEMPT: 1ad426effedc4b5e906da28ffc1499ba passed
+CHECK_ATTEMPT: b07d2862c9db4a8791473c61e77d4235 passed
+CHECK_ATTEMPT: dabe20d79834477aa089512d75350cd9 passed
+CHECK_ATTEMPT: 054d226848264952ada322147597130d passed
+CHECK_ATTEMPT: 667d0ec9b2be469987f300f83add05fb passed
+CHECK_ATTEMPT: bcb4103481c44a35b64cfc043d019f5e passed
+CHECK_ATTEMPT: eac8da9c1cad4484b089b84f009de7bf passed
+CHECK_ATTEMPT: dffc3b64b372459fa9960073c230e600 passed
+CHECK_ATTEMPT: d6768eea0d2a4fef900a1092928802f2 passed
+CHECK_ATTEMPT: 1b6000f42e50476ca654b330811aa28e passed
+CHECK_ATTEMPT: 21cea1ed053c411f8f2ec1437c56520f passed
+CHECK_ATTEMPT: 7c266cf39bca44eab5d8a9f7f859598c passed
+CHECK_ATTEMPT: dc72d8b1dae84a88bbf96ce3708361ca passed
+CHECK_ATTEMPT: 3405c145663d45e1913459cf0f507520 passed
+CHECK_ATTEMPT: 344382f64f614c2894b966a5f531881f passed
+CHECK_ATTEMPT: 63b37cfa77304f3380153ffa63297199 passed
+CHECK_ATTEMPT: dce0e4713a4f4f65a2747ecc0795d9a3 passed
+CHECK_ATTEMPT: 091919698d754e8b8830adc22adf7612 passed
+CHECK_ATTEMPT: 796a930d85be41a2aa4d3aa28be4802e passed
+CHECK_ATTEMPT: 36849d0303764deb8ba5ee376efe2432 passed
+CHECK_ATTEMPT: ff4cc587bc1047e69416bfaa200b0d0a passed
+CHECK_ATTEMPT: 0baec629719d46c0b9a0fc98e29ab388 passed
+EVIDENCE_ANNOTATION_REVIEWED: original test identity unchanged; no re-execution; retained=1 unresolved=0 excluded_stale=0
+EVIDENCE_ANNOTATION_REVIEWED: original test identity unchanged; no re-execution; retained=1 unresolved=0 excluded_stale=0
+EVIDENCE_ANNOTATION_REVIEWED: original test identity unchanged; no re-execution; retained=1 unresolved=0 excluded_stale=0
+EVIDENCE_ANNOTATION_REVIEWED: original test identity unchanged; no re-execution; retained=1 unresolved=0 excluded_stale=0
+EVIDENCE_ANNOTATION_REVIEWED: original test identity unchanged; no re-execution; retained=1 unresolved=0 excluded_stale=0
+EVIDENCE_ANNOTATION_REVIEWED: original test identity unchanged; no re-execution; retained=1 unresolved=0 excluded_stale=0
+EVIDENCE_ANNOTATION_REVIEWED: original test identity unchanged; no re-execution; retained=1 unresolved=0 excluded_stale=0
+EVIDENCE_ANNOTATION_REVIEWED: original test identity unchanged; no re-execution; retained=1 unresolved=0 excluded_stale=0
+EVIDENCE_ANNOTATION_REVIEWED: original test identity unchanged; no re-execution; retained=1 unresolved=0 excluded_stale=0
+EVIDENCE_ANNOTATION_REVIEWED: original test identity unchanged; no re-execution; retained=0 unresolved=1 excluded_stale=0
+EVIDENCE_ANNOTATION_REVIEWED: original test identity unchanged; no re-execution; retained=1 unresolved=1 excluded_stale=0

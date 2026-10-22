@@ -1,0 +1,8 @@
+{
+  "exit_code": 1,
+  "stage": "counterexamples/corrupt referenced bucket refuses full restore",
+  "cause": "Fixture selected empty bucket and assigned identical bytes {}. No actual corruption occurred, so expected rejection was invalid.",
+  "correction": "Change bytes to {\"tampered\":true}, guaranteeing different object digest.",
+  "runtime_source_changed": false,
+  "growth_results_status": "Eight growth/roundtrip observations printed before fixture failure; final report uses complete rerun instead."
+}

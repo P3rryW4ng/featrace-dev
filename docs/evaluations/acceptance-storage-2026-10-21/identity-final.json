@@ -1,7 +1,0 @@
-{
-  "runtime_files": 119,
-  "temporary_claude_codex_sha_and_modes_equal_source": true,
-  "source_version": "0.21.2 plus uncommitted A106 candidate, not a formal release",
-  "daily_installation_unchanged": true,
-  "code_test_sha_unchanged_after_frozen_full_run": true
-}

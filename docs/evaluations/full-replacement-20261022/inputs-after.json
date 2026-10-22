@@ -1,0 +1,18 @@
+{
+  "VERSION": "464863ee696ca862f6ae2bfee9728ebbd84463597825442efc62838d945b00fb",
+  "scripts/install.py": "28c53f752b2a66c4e352fd96413e580c69f4d980b2041cbc41b039f714f9c540",
+  "skills/dev/SKILL.md": "a413d06f6dcbcfac99e6a9fb7b10d9a1fc1da3c492e999c27bb75387378a65fc",
+  "skills/dev/agents/openai.yaml": "237666967ab617f4452194694fc91dc1fcbb3b3beda59172c74572525117a009",
+  "skills/dev/core/references/output-privacy.md": "8c1d43834acfb41ee1d125bdc1ec37eb97cedca3d9afbff3b408658f81c8fab3",
+  "skills/dev/core/references/project-compatibility.md": "9fc5b29e0a86a54b7a50fd5ed5410bccd6b96580467b2653fd407be4d9da18e8",
+  "skills/dev/core/references/task-workflow.md": "1a99d53c4af7e967af19f445ad4f9c946c8eadb3dc081b8ea97c832512730b50",
+  "skills/dev/core/scripts/output_privacy.py": "54be161d474b4bc55ae1a28207de80f4077f0093172114b7079a12ce672fee6e",
+  "skills/dev/core/scripts/task_inputs.py": "9143dc945e478d069b501094b64265d519ad91c4519b0c09e4c825886326d3a8",
+  "skills/dev/core/scripts/task_policy.py": "b50ff73af4d2badca278d62af692553bde8f1263c835dddf69a6878e2ad66458",
+  "skills/dev/core/scripts/task_workflow.py": "ac0d210bd534c3fd04e5bc8566a046b540c4fb8d66e8c3daad26366412ac798a",
+  "skills/dev/profiles/android/PROFILE.md": "5f3c6c09528bf9e4d76602c0d8a60f7a2b2be624db50748d289209784859e024",
+  "tests/test_install.py": "f0da13a5303622ecb95b7e558e91c3e92c3748eddc8018b4ddc0bb611c98e711",
+  "tests/test_output_privacy.py": "cdc145520efefccb9453399c9dc1242a25ad42ac94dcb4eb24408dc1ecb5ddc2",
+  "tests/test_task_extensions.py": "a8e412d74b81972df0203d71c0492c8d4468589dd4231b7f5458d9a66806077b",
+  "tests/test_task_workflow.py": "0b29155495d280b02206ee84ad9c186d7eba6c8438bbb0f265891aa13f79f8a5"
+}

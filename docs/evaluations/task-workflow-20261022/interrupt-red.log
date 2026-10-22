@@ -1,0 +1,16 @@
+test_interrupt_reaps_owned_child_and_never_saves_a_pass (test_task_workflow.TaskWorkflowTests) ... FAIL
+
+======================================================================
+FAIL: test_interrupt_reaps_owned_child_and_never_saves_a_pass (test_task_workflow.TaskWorkflowTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/mac/Entrepôt/featrace-dev/tests/test_task_workflow.py", line 170, in test_interrupt_reaps_owned_child_and_never_saves_a_pass
+    kill.assert_called_once_with(child.pid,w.signal.SIGKILL);child.wait.assert_called()
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/unittest/mock.py", line 918, in assert_called_once_with
+    raise AssertionError(msg)
+AssertionError: Expected 'killpg' to be called once. Called 0 times.
+
+----------------------------------------------------------------------
+Ran 1 test in 0.098s
+
+FAILED (failures=1)

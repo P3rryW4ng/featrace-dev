@@ -1,0 +1,7 @@
+{
+  "cli_investigation_passed": true,
+  "same_execution_reused_after_resolution": true,
+  "physical_executions": 1,
+  "closed": true,
+  "storage_cli_read_only": true
+}

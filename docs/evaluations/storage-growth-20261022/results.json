@@ -1,0 +1,174 @@
+{
+  "source": "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/acceptance_storage.py",
+  "source_sha256": "720723469890bc954b0d73d229784aadf701d012e742a9424d678c48367f845e",
+  "synthetic_only": true,
+  "growth": [
+    {
+      "scenario": "unchanged",
+      "rounds": 1,
+      "logical_bytes": 188576,
+      "schema8_bytes": 107723,
+      "schema8_objects": 6,
+      "schema8_pack_seconds": 0.011290624999999999,
+      "schema8_decode_seconds": 0.003284083,
+      "candidate_manifest_bytes": 98675,
+      "candidate_objects": 65,
+      "candidate_scope": "manifest/history root portion only; NOT an acceptance contract",
+      "roundtrip_equal": true
+    },
+    {
+      "scenario": "unchanged",
+      "rounds": 8,
+      "logical_bytes": 1508223,
+      "schema8_bytes": 110180,
+      "schema8_objects": 13,
+      "schema8_pack_seconds": 0.05835570799999999,
+      "schema8_decode_seconds": 0.027108749999999987,
+      "candidate_manifest_bytes": 99144,
+      "candidate_objects": 65,
+      "candidate_scope": "manifest/history root portion only; NOT an acceptance contract",
+      "roundtrip_equal": true
+    },
+    {
+      "scenario": "unchanged",
+      "rounds": 32,
+      "logical_bytes": 6032749,
+      "schema8_bytes": 118626,
+      "schema8_objects": 37,
+      "schema8_pack_seconds": 0.24066308399999997,
+      "schema8_decode_seconds": 0.10981233399999996,
+      "candidate_manifest_bytes": 100752,
+      "candidate_objects": 65,
+      "candidate_scope": "manifest/history root portion only; NOT an acceptance contract",
+      "roundtrip_equal": true
+    },
+    {
+      "scenario": "unchanged",
+      "rounds": 128,
+      "logical_bytes": 24130889,
+      "schema8_bytes": 152446,
+      "schema8_objects": 133,
+      "schema8_pack_seconds": 0.9639550829999999,
+      "schema8_decode_seconds": 0.4302739999999998,
+      "candidate_manifest_bytes": 107184,
+      "candidate_objects": 65,
+      "candidate_scope": "manifest/history root portion only; NOT an acceptance contract",
+      "roundtrip_equal": true
+    },
+    {
+      "scenario": "changed",
+      "rounds": 1,
+      "logical_bytes": 188576,
+      "schema8_bytes": 107723,
+      "schema8_objects": 6,
+      "schema8_pack_seconds": 0.007454791999999877,
+      "schema8_decode_seconds": 0.0033707920000001224,
+      "candidate_manifest_bytes": 98675,
+      "candidate_objects": 65,
+      "candidate_scope": "manifest/history root portion only; NOT an acceptance contract",
+      "roundtrip_equal": true
+    },
+    {
+      "scenario": "changed",
+      "rounds": 8,
+      "logical_bytes": 1508223,
+      "schema8_bytes": 858690,
+      "schema8_objects": 34,
+      "schema8_pack_seconds": 0.059680333999999835,
+      "schema8_decode_seconds": 0.027262083000000104,
+      "candidate_manifest_bytes": 142264,
+      "candidate_objects": 79,
+      "candidate_scope": "manifest/history root portion only; NOT an acceptance contract",
+      "roundtrip_equal": true
+    },
+    {
+      "scenario": "changed",
+      "rounds": 32,
+      "logical_bytes": 6032749,
+      "schema8_bytes": 3433456,
+      "schema8_objects": 130,
+      "schema8_pack_seconds": 0.24471741699999994,
+      "schema8_decode_seconds": 0.10780674999999995,
+      "candidate_manifest_bytes": 291712,
+      "candidate_objects": 127,
+      "candidate_scope": "manifest/history root portion only; NOT an acceptance contract",
+      "roundtrip_equal": true
+    },
+    {
+      "scenario": "changed",
+      "rounds": 128,
+      "logical_bytes": 24130889,
+      "schema8_bytes": 13732556,
+      "schema8_objects": 514,
+      "schema8_pack_seconds": 0.966158208,
+      "schema8_decode_seconds": 0.43281970800000025,
+      "candidate_manifest_bytes": 889504,
+      "candidate_objects": 319,
+      "candidate_scope": "manifest/history root portion only; NOT an acceptance contract",
+      "roundtrip_equal": true
+    }
+  ],
+  "counterexamples": [
+    {
+      "name": "manifest roundtrip",
+      "result": "passed"
+    },
+    {
+      "name": "point query reads root and one bucket only",
+      "result": "passed"
+    },
+    {
+      "name": "corrupt referenced bucket refuses full restore",
+      "result": "passed"
+    },
+    {
+      "name": "missing shared object refuses full restore",
+      "result": "passed"
+    },
+    {
+      "name": "first page cannot hide tail failure or imply eligibility",
+      "result": "passed"
+    },
+    {
+      "name": "fresh process recovers all blockers including final observed failure",
+      "result": "passed"
+    },
+    {
+      "name": "stale checkpoint refuses rather than reusing old conclusion",
+      "result": "passed"
+    },
+    {
+      "name": "MODELED unpublished write leaves selected head unchanged",
+      "result": "passed"
+    },
+    {
+      "name": "MODELED concurrent publication with stale expected head refuses",
+      "result": "passed"
+    },
+    {
+      "name": "no final acceptance invented from partial query",
+      "result": "passed"
+    }
+  ],
+  "page_output_sizes": [
+    {
+      "claims": 100,
+      "output_bytes": 1185
+    },
+    {
+      "claims": 1000,
+      "output_bytes": 1187
+    },
+    {
+      "claims": 10000,
+      "output_bytes": 1189
+    }
+  ],
+  "elapsed_seconds": 4.260218858718872,
+  "limits": [
+    "no production writer or real acceptance resolver in candidate",
+    "no actual Agent compaction or semantic correctness tested",
+    "no peak memory or fee measurement",
+    "candidate and schema8 bytes have different scopes; no percentage comparison"
+  ]
+}
