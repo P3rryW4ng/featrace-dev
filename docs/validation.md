@@ -63,3 +63,7 @@
 暂存99个新增/修改文件分两批扫描，原始输出[第一批](evaluations/release-0230-20261022/privacy-0.json)/[第二批](evaluations/release-0230-20261022/privacy-1.json)保留。唯一候选为retirement授权说明，与先前人工确认普通文字的精确哈希一致，[处置](evaluations/release-0230-20261022/privacy-disposition.json)未关闭规则或篡改结果。后加入的本节与发布结果文件另行精确扫描；no_matches不等于全面隐私认证。实际推送、正式安装与身份核对需执行后记，不提前声明。
 
 发布暂存核对发现一处脚本行尾空格，修正并更新发布描述后已重新冻结完整回归；仅上述最终输入作为发布凭据。原始失败日志末尾空行保持原样，格式核对排除该唯一原始日志，其哈希继续核对。
+
+## 0.23.0实际发布与安装
+
+[远端核对](evaluations/release-0230-20261022/publication.json)：正式6ace50d已原子推送，发布分支和标签解引用相同；后续main只提交核验记录，正式引用固定。[正式包探针](evaluations/release-0230-20261022/formal-probe.json)使用已提交引用、不带development选项，Claude/Codex两个隔离目录均为release身份、11文件，来源及实际字节一致。[日常CC实测](evaluations/release-0230-20261022/installation.json)版本0.23.0、来源6ace50d，11文件与正式清单一致，旧0.22.0/119备份完整。没有更新个人Codex安装、访问业务设备/后端、重新验收旧需求或验证真实Figma。新会话加载后才能观察实际工具与Agent行为；第二阶段仍未完成。

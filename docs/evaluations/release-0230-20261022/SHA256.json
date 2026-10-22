@@ -1,9 +1,12 @@
 {
+  "formal-probe.json": "6eda8fe5bec258dcd376ab8959887b01c7a056c009102e57e182072df6e30a71",
   "full.log": "82d182fec0d35fc86d6cea4da543cd6e512db74547706d1f2848e9a1b94b5c17",
   "inputs-after.json": "850558279d43b4a28668ed7f0c477025fa6b80644aa7f7ba46d1a99b4180fe16",
   "inputs-before.json": "850558279d43b4a28668ed7f0c477025fa6b80644aa7f7ba46d1a99b4180fe16",
+  "installation.json": "199ba67ddde9c87f86aee2414c4cd029baa591d5e46cde2cf31213f38c40d3c7",
   "privacy-0.json": "d2fb828c9a48712614a078f7cd13476d86b48cb383cc8b77ce1197044bbb7672",
   "privacy-1.json": "5a665c4a30d6c8aee1937abfa096298830e9f7994ca25abbe631ee4fac4e715f",
   "privacy-disposition.json": "afe4394217301b0d259f08fd2913eaceec83f26037f33e865ffc3596355d3ceb",
+  "publication.json": "af9bb9380947d60a21d2aedb712bc58dce27f2625a3ab16ef39dba3a63c6615a",
   "result.json": "4fa7d211cc9079ac715565e056b81619716685d825ee86174e37115aadfce81f"
 }

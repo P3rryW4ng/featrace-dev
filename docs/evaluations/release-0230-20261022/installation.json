@@ -1,0 +1,16 @@
+{
+  "checked_at": "2026-10-22T09:39:57.146019+00:00",
+  "installed_host": "Claude Code",
+  "version": "0.23.0",
+  "source_commit": "6ace50d7665f6762e51d491cf6e4e4397f817df0",
+  "channel": "release",
+  "runtime_files": 11,
+  "source_manifest_installed_bytes_match": true,
+  "content_sha256": "e3171b70e77fd8e4ea2f5b0ec81e71eddf70c0c66672b3dde122f3a53c00fb23",
+  "previous_version_preserved": "0.22.0",
+  "previous_manifest_files": 119,
+  "previous_backup_intact": true,
+  "business_projects_modified": false,
+  "native_progress_tool_availability": "not observed; new session required",
+  "actual_new_requirement_trial": "pending user requirement"
+}

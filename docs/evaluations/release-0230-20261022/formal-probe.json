@@ -1,0 +1,27 @@
+{
+  "identity": {
+    "version": "0.23.0",
+    "channel": "release",
+    "source_commit": "6ace50d7665f6762e51d491cf6e4e4397f817df0",
+    "installer_sha256": "647869484aae3a2fa8963d4ac10831baf124dce2a75aeb1f7f4a02b1697b4cca",
+    "content_sha256": "e3171b70e77fd8e4ea2f5b0ec81e71eddf70c0c66672b3dde122f3a53c00fb23",
+    "release_ref": "refs/tags/v0.23.0",
+    "boundary": "Matches the local pinned release ref and descriptor; not a signed remote-origin attestation."
+  },
+  "isolated_formal_packages": [
+    {
+      "host": ".claude",
+      "version": "0.23.0",
+      "channel": "release",
+      "actual_files": 11,
+      "source_and_manifest_match": true
+    },
+    {
+      "host": ".agents",
+      "version": "0.23.0",
+      "channel": "release",
+      "actual_files": 11,
+      "source_and_manifest_match": true
+    }
+  ]
+}

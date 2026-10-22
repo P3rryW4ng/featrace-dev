@@ -35,7 +35,7 @@ cd featrace-dev
 python3 scripts/install.py --agent both
 ```
 
-Preserve existing local changes and verify the official checkout before updating. Use `--update` only from that release tree; select `--agent claude` or `--agent codex` as needed. Open a new session afterward. The installer refuses unrelated or locally modified copies, backs up updates and moves uninstalled copies to backups with `--uninstall`. The installer requires a matching committed release.json, local release ref and runtime/installer content. Development trials require explicit --development with a separate identity; this is not signed remote-origin authentication.
+Preserve existing local changes and verify the official checkout before updating. Pulling an old release branch does not upgrade versions: explicitly fetch and switch to release/0.23.0. Use `--update` only from that release tree; select `--agent claude` or `--agent codex` as needed. Open a new session afterward. The installer refuses unrelated or locally modified copies, backs up updates and moves uninstalled copies to backups with `--uninstall`. The installer requires a matching committed release.json, local release ref and runtime/installer content. Development trials require explicit --development with a separate identity; this is not signed remote-origin authentication.
 
 Find legacy commands, acceptance contracts and records in the [fixed0.22.0 guide](https://github.com/P3rryW4ng/featrace-dev/blob/54c5260fd6688a0bca9c83f29bad240321a67b52/README.en.md). The replacement does not migrate or delete old application .agent-workflow data; use a pinned old version for explicit old-record continuation.
 

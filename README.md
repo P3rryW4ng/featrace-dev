@@ -35,7 +35,7 @@ cd featrace-dev
 python3 scripts/install.py --agent both
 ```
 
-已有克隆/安装先保留本地改动，核对正式分支与内容。只有在对应正式树上才使用`--update`；单独选择`--agent claude`或`--agent codex`。安装后打开新会话。安装器拒绝覆盖不属于本工具或被本地修改的副本，更新前备份；`--uninstall`移至备份。安装器校验已提交的release.json、本地固定发布引用及运行/安装器内容。开发试装必须显式--development并使用独立身份；本地匹配不等同于远端签名认证。
+已有克隆/安装先保留本地改动，核对正式分支与内容。旧release分支上git pull不会升级版本，须显式获取并切换到release/0.23.0。只有在对应正式树上才使用`--update`；单独选择`--agent claude`或`--agent codex`。安装后打开新会话。安装器拒绝覆盖不属于本工具或被本地修改的副本，更新前备份；`--uninstall`移至备份。安装器校验已提交的release.json、本地固定发布引用及运行/安装器内容。开发试装必须显式--development并使用独立身份；本地匹配不等同于远端签名认证。
 
 旧正式版的命令、验收合同和记录用法见[固定0.22.0说明](https://github.com/P3rryW4ng/featrace-dev/blob/54c5260fd6688a0bca9c83f29bad240321a67b52/README.md)，不在当前入口重复。新包不迁移或删除旧.agent-workflow业务资料；明确接续旧记录时使用固定旧版。
 
