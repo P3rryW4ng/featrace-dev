@@ -1,0 +1,37 @@
+{
+  "preparation_checks": {
+    "version": "0.23.1",
+    "runtime_files": 11,
+    "changed_runtime_files": [
+      "SKILL.md"
+    ],
+    "script_test_installer_files_byte_identical_to_0230": 11,
+    "unchanged_150_tests_rerun": false,
+    "yaml_parse": "passed",
+    "valid_local_links": 68,
+    "native_host_rendering_verified": false,
+    "business_project_operations": false,
+    "release_preparation_only": true
+  },
+  "actual_installation": {
+    "checked_at": "2026-10-22T10:08:30.932782+00:00",
+    "version": "0.23.1",
+    "release_commit": "237afd1ec8d623a2dd13f365505bda185ec61c2e",
+    "installed_host": "Claude Code",
+    "installed_channel": "release",
+    "installed_files": 11,
+    "installed_source_manifest_match": true,
+    "previous_version_backup": "0.23.0",
+    "previous_backup_intact": true,
+    "native_task_rendering_verified": false,
+    "scripts_tests_installer_changed": false,
+    "business_tests_rerun": false
+  },
+  "publication": {
+    "release_branch": "release/0.23.1",
+    "tag": "v0.23.1",
+    "remote_branch_and_tag_commit_match": "237afd1ec8d623a2dd13f365505bda185ec61c2e",
+    "atomic_push_succeeded": true,
+    "hosting_release_page_created": false
+  }
+}
