@@ -11,7 +11,7 @@ Use the user's project/worktree; script paths are relative to this installation.
 
 An empty invocation activates conversational delivery mode for this project only and starts no work. While active, prefix replies `FeatraceDev ON · 项目：<actual project>` (localize as needed). `dev off` ends the mode without changing files; show OFF once. A changed project/new conversation does not inherit activation. Natural-language development instructions are tasks, not a reason to demand internal commands.
 
-Use the host's available native task list for actual work: completed, in progress, not started. If unavailable, state current work, blocker and next action briefly. Do not install a tool or create another progress registry. After context loss, load the selected task status/details and live applicable rules; do not rely on a remembered stage.
+Let the host own progress presentation. When its native task/plan tools are actually available, use those tools and their built-in states/rendering for the request's real work; update on material starts, completions and blockers. Do not print a parallel checklist, draw checkbox/status glyphs or loading indicators, or impose a fixed stage template. If native tools are unavailable, mention that once when relevant and use ordinary concise progress prose in the host's usual style, with no prescribed labels or checklist format. Do not invent/install tools or create another progress registry. After context loss, load the selected task status/details and live applicable rules before updating progress; do not rely on remembered stages or ticks.
 
 ## One current-task path
 

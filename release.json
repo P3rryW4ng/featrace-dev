@@ -1,8 +1,8 @@
 {
   "channel": "release",
-  "version": "0.23.0",
+  "version": "0.23.1",
   "files": {
-    "SKILL.md": "32c360294456ee983c5522a37eb3f04633c5a2d0d3e32488580fa6555d66251b",
+    "SKILL.md": "1a47275ad0bb02d6c15ac00ec2a7305aee0c7b4924f9b4c2712911362ab57087",
     "agents/openai.yaml": "237666967ab617f4452194694fc91dc1fcbb3b3beda59172c74572525117a009",
     "core/references/figma-design.md": "8828473c28557e33fbb07ab5416be34e3c13c5b6f35a9eff94f14f1f6e8e12ff",
     "core/references/output-privacy.md": "8c1d43834acfb41ee1d125bdc1ec37eb97cedca3d9afbff3b408658f81c8fab3",

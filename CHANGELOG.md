@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.23.1 — 2026-10-22
+
+- Correct installed progress instructions: use the current host's actual native task/plan tools and built-in presentation; do not print a parallel hand-drawn checkbox/status/loading checklist or fixed phase template.
+- When native tools are unavailable, mention that once when relevant and use ordinary concise host-style progress prose. Remove the prescribed current-work/blocker/next-action fallback format. No UI framework, hooks, progress registry, permissions or acceptance gate added.
+- Patch version for existing runtime instruction behavior, not a new workflow/data contract. Scripts, installer and tests are byte-identical to0.23.0; do not rerun unchanged kernel/business tests. Verify selected text, references, package content and actual installation. Native host rendering and Agent adoption still require real-session observation.
+
 ## 0.23.0 — 2026-10-22
 
 - Replace the legacy feature-ledger, schema/carry/history replay, permanent module dossiers and full-history closure workflow with a bounded current-task kernel. This is an incompatible workflow/data change; old tasks require pinned0.22.0. No business record migration/deletion or Git-history rewriting.
