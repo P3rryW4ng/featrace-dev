@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.26.1 — 2026-10-23
+
+- Show safe scope-readiness causes and a detail route while preserving the original blocking marker. Unknown exceptions remain generic; scope readiness is not delivery eligibility. Query-only changes leave the execution protocol unchanged.
+- Clarify scoped requirement updates, recovery of current decisions and next actions, and selective preservation of enduring repair intent in existing tests/comments/issues. Reuse existing task fields; no new schema, ledger, permissions or automatic withdrawal/migration route.
+- Add a concise maintenance-only natural-pilot observation standard; no extra business tests or score gates. Keep untriggered/unknown outcomes explicit and use existing logs for costs.
+- Patch release for existing behavior and guidance, contract3 and12 runtime files unchanged. Reuse the frozen221/221 regression with unchanged scripts/tests and six existing assertion references; inspect changed instructions and package/install bytes separately. No new business/device/Agent trial or phase-two completion claim.
+
 ## 0.26.0 — 2026-10-23
 
 - Replace acceptance storage with new-task contract3: impact kind and proof requirements are independent, facts are retained by ID, and assessments explicitly select supporting sources. Additional observations do not overwrite original evidence or automatically become coverage. Runtime failure, authority, freshness and privacy safeguards remain.
