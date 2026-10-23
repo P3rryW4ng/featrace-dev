@@ -104,3 +104,7 @@ policy具体错误泛化已本地修复并回归，Android复用指引已补，�
 ## 0.25.0发布后的执行顺序
 
 先固定版本/清单并推送、正式安装CC及验证备份，再由CC用correct定向处理8897的C2/C3/C4/C6。既有充分结果保留，缺证据才补最小检查，不重验父需求。此批190项合成通过不消除真实业务缺口；自然独立评审范围、时效、跨上下文接续和净成本仍按第二阶段出口逐项观察。
+
+## Current deployment:0.25.0
+
+Official1fd6cf4 has been pushed and installed into daily CC;11 files and the old0.24.0 backup verified. Next: scoped OGFR-8897 correction, preserving original receipts and evidence. Installation success does not resolve business evidence gaps or complete phase two.

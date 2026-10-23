@@ -121,3 +121,7 @@ Android文档不新增解析器或强跑门禁，不能证明CC已遵守。安�
 [实际旧CLI探针](evaluations/correction-20261023/legacy-probe.json)使用本地固定v0.24.0的真实脚本字节并核对发布清单，在临时Git夹具中真实执行/评估/结项。新入口保留原回执与同一执行ID/所有执行字段，重关关联原回执；物理执行总数1，旧CLI拒读格式2。[探针程序](evaluations/correction-20261023/legacy_probe.py)可在仓库根运行，需本机固定旧引用及当前测试夹具；它是隔离程序接续，不是自然Agent试点。探针从stage改为当前源码定位并补固定提交校验后重跑通过，不因此重复190项。
 
 有界历史、输入/产物变化、权限拒绝、时效和清理拒绝反例保留。没有实际Gradle/设备/8897业务更正或当前安装变更，不宣称其证据缺口已补齐。正式CC仍0.24.0；发布身份未准备，不把候选VERSION文字冒充正式能力。
+
+## 0.25.0 publication and installation
+
+[Actual verification](evaluations/release-0250-20261023.json): official1fd6cf4, remote branch/tag verified. Daily CC and two isolated host installations matched all11 files; old0.24.0 backup complete, only daily Claude updated. Existing190 regression results reused against unchanged scripts/tests; no new full run or business operations. Metadata and links checked separately. Initial isolated verification had an incorrect Codex path; actual .agents path passed. No natural-Agent outcome or phase-two completion claim.

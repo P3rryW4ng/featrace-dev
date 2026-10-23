@@ -7,7 +7,7 @@
 | 对象 | 当前事实 | 接手注意 |
 |---|---|---|
 | 源码 | VERSION0.25.0；A115诊断/Android及A116有界更正 | 固定release/0.25.0和v0.25.0，实际推送/安装见末节核验 |
-| 日常Claude | 0.24.0，release身份，实际11文件，来源7e9ea17 | 实际字节/发布及安装清单一致，旧0.23.1备份完整；活动会话需重读或新会话加载 |
+| 日常Claude | 0.25.0，release身份，实际11文件，来源1fd6cf4 | 实际字节/发布及安装清单一致，旧0.24.0备份完整；活动会话需重读或新会话加载 |
 | 新内核 | 当前任务、独立执行输入、项目策略、生命周期清理、有界查询 | 旧运行机制已物理退出，不只是隐藏在新入口后 |
 | 当前验证 | 0.25.0运行代码190/190；固定0.24.0接续探针通过 | 8897仅有暂定场景评价，不等于独立盲测或整体成熟度 |
 | 业务接续 | 8755据CC保持complete，5163f74676未推送 | 不改业务、不重测、不迁移旧记录 |
@@ -162,3 +162,9 @@ correct保留原回执/受影响旧判断并转correcting，重新满足必要�
 用户授权提交、推送并安装CC。新correct命令及格式2改变已结项更正工作流/数据契约，按版本策略升中间位0.25.0；普通任务仍格式1，不是全项目迁移。上述未发布/安装段均为历史截点，实际核验在本节后续记录。发布复用190项冻结脚本/测试结果，仅核对元数据、正式包、安装与备份，不为版本文字重跑业务或完整套件。
 
 安装后让CC仅更正8897的C6来源、C2/C3承诺覆盖与C4表述；K3失败已有previous_failure，不修复不存在的历史丢失。证据适用性不能证明则只补相应用例，不能补造原摘要或重签时间。第二阶段仍未完成。
+
+## 0.25.0 publication and installation verified
+
+Official commit1fd6cf4a7cb2c4b67de7d7fd2bb05c818bdb196f was atomically pushed with main, release/0.25.0 and v0.25.0; remote refs matched. Daily CC and both isolated host copies contain11 files matching the release and installation manifests. Only daily Claude was updated; its old0.24.0 backup is complete and personal Codex was unchanged. No GitHub Release page was created.
+
+[Verification](docs/evaluations/release-0250-20261023.json). Reuse the190 frozen regression results: scripts/tests unchanged; metadata and links separately checked,8 staged release files scanned without matches. Initial isolated verification used the wrong Codex path; corrected to the actual .agents location and passed. The publication-note writer initially failed before writing; no incomplete evidence was committed. OGFR-8897 remains unchanged: C6 applicability and C2/C3 promised coverage require scoped correction; C4 needs narrower wording only. Phase two remains open. Earlier candidate/install statements are historical checkpoints.

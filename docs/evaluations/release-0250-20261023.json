@@ -1,0 +1,55 @@
+{
+  "version": "0.25.0",
+  "publication": {
+    "source_commit": "1fd6cf4a7cb2c4b67de7d7fd2bb05c818bdb196f",
+    "branch": "release/0.25.0",
+    "tag": "v0.25.0",
+    "remote_refs_match": true,
+    "github_release_page_created": false
+  },
+  "installation": {
+    "version": "0.25.0",
+    "source": {
+      "version": "0.25.0",
+      "channel": "release",
+      "source_commit": "1fd6cf4a7cb2c4b67de7d7fd2bb05c818bdb196f",
+      "installer_sha256": "647869484aae3a2fa8963d4ac10831baf124dce2a75aeb1f7f4a02b1697b4cca",
+      "content_sha256": "1a90412255452bc5744f1c360bef18f670796d15c0e0bc9eda975565a8329261",
+      "release_ref": "refs/tags/v0.25.0",
+      "boundary": "Matches the local pinned release ref and descriptor; not a signed remote-origin attestation."
+    },
+    "runtime_files": 11,
+    "actual_manifest_match": true,
+    "previous_version": "0.24.0",
+    "backup": "/Users/mac/.feature-delivery/backups/20261023T082528-claude-1802bbdb",
+    "backup_complete": true,
+    "only_daily_claude_updated": true
+  },
+  "isolated_install": {
+    "claude": {
+      "version": "0.25.0",
+      "files": 11,
+      "source_commit": "1fd6cf4a7cb2c4b67de7d7fd2bb05c818bdb196f",
+      "hashes_match": true
+    },
+    "codex": {
+      "version": "0.25.0",
+      "files": 11,
+      "source_commit": "1fd6cf4a7cb2c4b67de7d7fd2bb05c818bdb196f",
+      "hashes_match": true
+    }
+  },
+  "regression": {
+    "passed": 190,
+    "new_full_test_run": false,
+    "frozen_scripts_and_tests_unchanged": true,
+    "evidence": "docs/evaluations/correction-20261023/result.json"
+  },
+  "release_metadata_privacy": {
+    "files": 8,
+    "status": "no_matches"
+  },
+  "probe_note": "Isolated install succeeded; initial verification used an incorrect Codex path, corrected to .agents/skills/dev and verified both installed copies.",
+  "business_records_changed": false,
+  "phase_two_complete": false
+}
