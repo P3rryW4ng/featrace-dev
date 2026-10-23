@@ -223,7 +223,7 @@
   "field_samples": [
     {
       "id": "OGFR-8897",
-      "source": "docs/reviews/2026-10-23-ogfr8897-field-review.md",
+      "source": "https://github.com/P3rryW4ng/featrace-dev/blob/46fa61c/docs/reviews/2026-10-23-ogfr8897-field-review.md",
       "reported_skill_version": "0.24.0",
       "evidence_mode": "User-forwarded CC review and record excerpts; business originals not independently read",
       "review_state": "provisional",
@@ -250,14 +250,24 @@
         "C2/C3 promised failure coverage",
         "Supported correction route for a closed task"
       ],
-      "new_maintenance_business_execution": false
+      "new_maintenance_business_execution": false,
+      "snapshot_meaning": "Historical initial review; pending and scores describe that cutoff, not current unresolved business work",
+      "followup": {
+        "source": "docs/capabilities.md#8897更正后的证据补充与底层评审",
+        "state": "Targeted correction reported complete under 0.25.0; maintenance read-only checked relevant implementation, retained record and artifacts",
+        "new_agent_sample": false,
+        "original_scores_rewritten": false,
+        "pending_at_initial_cutoff_resolved": true,
+        "limits": "Original business limitations remain; not migrated to contract3 or evidence of all semantic capabilities"
+      }
     }
   ],
   "latest_program_evidence": {
-    "evidence": "docs/evaluations/policy-diagnostics-20261023/full.log",
-    "input_identity": "docs/evaluations/policy-diagnostics-20261023/inputs-after.json",
-    "tests": 177,
-    "mapped_checks_still_passed": 13,
-    "new_execution_for_scoring": false
+    "evidence": "docs/evaluations/core-replacement-20261023/full.log",
+    "input_identity": "docs/evaluations/core-replacement-20261023/inputs-after.json",
+    "tests": 214,
+    "contract": 3,
+    "new_execution_for_scoring": false,
+    "score_boundary": "Historical baseline mapped assertions retain their original cutoff; current suite is not a new Agent score"
   }
 }
