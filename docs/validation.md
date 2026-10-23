@@ -125,3 +125,7 @@ Android文档不新增解析器或强跑门禁，不能证明CC已遵守。安�
 ## 0.25.0 publication and installation
 
 [Actual verification](evaluations/release-0250-20261023.json): official1fd6cf4, remote branch/tag verified. Daily CC and two isolated host installations matched all11 files; old0.24.0 backup complete, only daily Claude updated. Existing190 regression results reused against unchanged scripts/tests; no new full run or business operations. Metadata and links checked separately. Initial isolated verification had an incorrect Codex path; actual .agents path passed. No natural-Agent outcome or phase-two completion claim.
+
+## 2026-10-23 验收底层评审（无新运行验证）
+
+[评审](reviews/2026-10-23-acceptance-core-review.md)对照0.25.0源码、既有测试含义和8897直接只读补核。识别主张/证据及执行身份来源的局部替换候选；未来反例只是规格，未执行。维护入口清理采用固定46fa61c原件，不改历史证据。运行脚本、测试、VERSION、release.json和个人安装未变，未重跑190项或业务测试。具体静态取消证明不外推全部并发主张可静态验收；实际设备包身份核对依赖当时CC记录，不伪称重新测量。
