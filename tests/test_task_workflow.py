@@ -174,7 +174,8 @@ class TaskWorkflowTests(unittest.TestCase):
         with patch.object(w.subprocess,'Popen',side_effect=spawn),patch.object(w.os,'killpg') as kill:
             with self.assertRaises(KeyboardInterrupt):self.execute()
         kill.assert_called_once_with(child.pid,w.signal.SIGKILL);child.wait.assert_called()
-        self.assertNotIn('target',self.doc()['executions'])
+        self.assertEqual(self.doc()['executions']['target']['status'],'unavailable')
+        self.assertEqual(self.doc()['executions']['target']['reason'],'EXECUTION_INTERRUPTED')
 
     def test_monitor_io_error_reaps_owned_child_and_records_unavailable(self):
         real=w.subprocess.Popen;child=MagicMock();child.pid=999999;child.poll.side_effect=OSError('synthetic monitor failure')

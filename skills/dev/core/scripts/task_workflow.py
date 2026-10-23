@@ -177,17 +177,27 @@ def validate_plan(root, plan):
     if not isinstance(plan['exclusions'],dict) or not all(text(x) for x in plan['exclusions'].values()): fail('EXCLUSION_REASON_REQUIRED')
     valid_inputs(root,list(plan['exclusions']))
     if set(plan['scope']) & set(plan['exclusions']): fail('SCOPE_EXCLUSION_OVERLAP')
-    if not isinstance(plan['constraints'],dict) or not all(text(x) for x in plan['constraints'].values()): fail('CONSTRAINT_DECISION_REQUIRED')
+    if not isinstance(plan['constraints'],dict): fail('CONSTRAINT_DECISION_REQUIRED')
     valid_inputs(root,list(plan['constraints']))
     if not isinstance(plan['unknowns'],list) or len(plan['unknowns'])>64:fail('INVALID_UNKNOWNS')
     if not isinstance(plan['criteria'],list) or not 1<=len(plan['criteria'])<=64: fail('CRITERIA_REQUIRED')
     seen=set()
     for c in plan['criteria']:
-        if (not isinstance(c,dict) or not {'id','expected','kind','inputs'}<=set(c) or set(c)-{'id','expected','kind','inputs','sources'} or not isinstance(c['id'],str)
+        if (not isinstance(c,dict) or not {'id','expected','kind','inputs'}<=set(c) or set(c)-{'id','expected','kind','inputs','sources','validity'} or not isinstance(c['id'],str)
                 or not ID.fullmatch(c['id']) or c['id'] in seen or not text(c['expected'])
                 or c['kind'] not in ('changed','unaffected')): fail('CRITERION_INVALID')
         valid_inputs(root,c['inputs']);valid_inputs(root,c.get('sources',[]))
         if not c['inputs'] or set(c['inputs'])-set(plan['scope']): fail('CRITERION_SCOPE_INVALID')
+        if 'validity' in c:
+            validity=c['validity']
+            if not isinstance(validity,dict):fail('CRITERION_VALIDITY_INVALID')
+            if validity.get('mode')=='as_of':
+                if set(validity)!={'mode'}:fail('CRITERION_VALIDITY_INVALID')
+            elif validity.get('mode')=='current':
+                if (set(validity)!={'mode','target','max_age_seconds','reason'} or not text(validity['target'])
+                        or not text(validity['reason']) or type(validity['max_age_seconds']) is not int
+                        or validity['max_age_seconds']<=0):fail('CRITERION_VALIDITY_INVALID')
+            else:fail('CRITERION_VALIDITY_INVALID')
         seen.add(c['id'])
     check_ids=set()
     if not isinstance(plan['checks'],list) or len(plan['checks'])>32: fail('CHECKS_INVALID')
@@ -222,9 +232,32 @@ def validate_plan(root, plan):
                 or any(not isinstance(x,str) or x not in seen for x in unknown['criteria'])
                 or any(not isinstance(x,str) or x not in check_ids for x in unknown['checks'])):fail('INVALID_UNKNOWNS')
     review=plan['review']
-    if (not isinstance(review,dict) or set(review)!={'independent','reason'} or type(review['independent']) is not bool
+    if (not isinstance(review,dict) or not {'independent','reason'}<=set(review) or set(review)-{'independent','reason','criteria'} or type(review['independent']) is not bool
             or not text(review['reason'])): fail('REVIEW_SCOPE_REQUIRED')
+    if 'criteria' in review:
+        selected=review['criteria']
+        if (not isinstance(selected,list) or any(not isinstance(x,str) or x not in seen for x in selected)
+                or len(set(selected))!=len(selected) or bool(selected)!=review['independent']):fail('REVIEW_SCOPE_REQUIRED')
     if 'shared' in plan['categories'] and not review['independent']: fail('SHARED_REVIEW_REQUIRED')
+    for rule in plan['constraints'].values():
+        if text(rule):continue  # Legacy strings explicitly retain task-wide applicability.
+        if (not isinstance(rule,dict) or set(rule)!={'decision','criteria','checks'} or not text(rule['decision'])
+                or not isinstance(rule['criteria'],list) or not isinstance(rule['checks'],list)
+                or not (rule['criteria'] or rule['checks'])
+                or any(not isinstance(x,str) or x not in seen for x in rule['criteria'])
+                or any(not isinstance(x,str) or x not in check_ids for x in rule['checks'])):fail('CONSTRAINT_SCOPE_INVALID')
+
+
+def selected_constraints(plan,criterion=None,check=None):
+    return {name:value for name,value in plan['constraints'].items()
+            if text(value) or (criterion is None and check is None)
+            or (criterion is not None and criterion['id'] in value['criteria'])
+            or (check is not None and check['id'] in value['checks'])}
+
+
+def review_required(plan,criterion):
+    review=plan['review']
+    return review['independent'] and criterion['id'] in review.get('criteria',[c['id'] for c in plan['criteria']])
 
 def analysis(root, doc, plan=None):
     p = plan or doc['plan']
@@ -274,7 +307,7 @@ def relevant_paths(doc,criterion=None,check=None):
 def ready(root,doc,criterion=None,check=None,investigate=False):
     if doc['plan'] is None: fail('PLAN_REQUIRED')
     validate_plan(root,doc['plan'])
-    selected=relevant_paths(doc,criterion,check)|set(doc['plan']['constraints'])
+    selected=relevant_paths(doc,criterion,check)|set(selected_constraints(doc['plan'],criterion,check))
     baseline=doc.get('analysis_inputs')
     if baseline is None or any(file_identity(root,p)!=baseline.get(p) for p in selected):fail('SCOPE_REVIEW_REQUIRED')
     task_policy.effective(root,relevant_paths(doc,criterion,check),environment='any')
@@ -311,13 +344,14 @@ def check_stamp(root,doc,check):
     runner=file_identity(executable.parent,executable.name,True)
     return digest({'argv':check['argv'],'inputs':task_inputs.signature(root,check['inputs'],check.get('input_sets',[]),check.get('external_inputs',[]),check.get('env_keys',[])),
                    'executable':{'path':str(executable),'identity':runner},
-                   'environment':check['environment'],'constraints':files(root,doc['plan']['constraints'],True),
+                   'environment':check['environment'],'constraints':files(root,selected_constraints(doc['plan'],check=check),True),
                    'policy':check_policy(root,doc,check),
                    'runner':{p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in (Path(__file__),Path(task_inputs.__file__),Path(task_policy.__file__))}})
 
 def criterion_stamp(root,doc,c):
     return digest({'criterion':c,'inputs':files(root,c['inputs']),'authority':files(root,c.get('sources',[]),True),
-                   'constraints':files(root,doc['plan']['constraints'],True),
+                   'constraints':files(root,selected_constraints(doc['plan'],criterion=c),True),
+                   'review_required':review_required(doc['plan'],c),
                    'policy':task_policy.effective(root,c['inputs'],environment='any')})
 
 def timely(check,record):
@@ -332,6 +366,23 @@ def observation_stamp(root,c):
     return digest(files(root,c['inputs']))
 
 
+def fact_applicability(criterion,record,environment=None):
+    """Apply a claim's temporal scope without rewriting or expiring its original fact."""
+    validity=criterion.get('validity')
+    if validity is None:return 'UNDECLARED'
+    if validity['mode']=='as_of':return 'AS_OF'
+    if environment is None:
+        if record.get('kind')!='runtime_observation':return 'CURRENT_STATE_NEEDS_RUNTIME'
+        target=record.get('observed_target');at=record.get('observed_at')
+    else:
+        target=environment.get('target');at=record.get('started_at')
+    if target!=validity['target']:return 'CURRENT_TARGET_MISMATCH'
+    try:age=(datetime.now(timezone.utc)-instant(at)).total_seconds()
+    except (ValueError,TypeError,AttributeError):return 'TIME_UNAVAILABLE'
+    if age<0:return 'TIME_UNAVAILABLE'
+    return 'CURRENT' if age<=validity['max_age_seconds'] else 'EXPIRED'
+
+
 def artifact_ok(root,record):
     return file_identity(root,record['path'],True)['sha256']==record['sha256']
 
@@ -344,14 +395,16 @@ def run_check(root,ident,check_id,investigate=False):
         ready(root,doc,check=check,investigate=investigate)
         check_policy(root,doc,check,True)
         stamp=check_stamp(root,doc,check);previous=doc['executions'].get(check_id)
-        if previous and previous['status']=='passed' and previous['input_digest']==stamp and artifact_ok(root,previous['artifact']) and reusable(check,previous):
+        current_use_expired=bool(previous and any(fact_applicability(c,previous,check['environment'])=='EXPIRED'
+                                                 for c in doc['plan']['criteria'] if c['id'] in check['covers']))
+        if previous and not current_use_expired and previous['status']=='passed' and previous['input_digest']==stamp and artifact_ok(root,previous['artifact']) and reusable(check,previous):
             return {'check':check_id,'status':'passed','reused':True,'execution':previous['id']}
         aid=uuid.uuid4().hex;rel='.featrace/artifacts/'+ident+'/'+aid+'.log';path=safe(root,rel)
         path.parent.mkdir(parents=True,exist_ok=True)
         used=sum(p.stat().st_size for p in path.parent.iterdir() if p.is_file())
         output_budget=min(MAX_LOG,64*1024*1024-used)
         if output_budget<256:fail('TASK_ARTIFACT_BUDGET')
-        status='unavailable';started=now();code=None;revision=git(root,'rev-parse','HEAD').decode().strip()
+        status='unavailable';started=now();code=None;interrupted=None;reason=None;revision=git(root,'rev-parse','HEAD').decode().strip()
         with path.open('xb') as stream:
             stream.write(('Featrace task '+ident+' attempt '+aid+'\n').encode());stream.flush()
             process=None
@@ -377,19 +430,26 @@ def run_check(root,ident,check_id,investigate=False):
                             stop_owned(process);break
             except OSError:
                 stop_owned(process);status='unavailable'
-            except BaseException:
+            except BaseException as exc:
                 stop_owned(process)
-                raise
+                interrupted=exc;status='unavailable';reason='EXECUTION_INTERRUPTED'
             finally:
                 if process is not None and process.stdout is not None:process.stdout.close()
         if path.stat().st_size>MAX_LOG: status='unavailable'
-        if check_stamp(root,doc,check)!=stamp: status='unavailable'
+        try:
+            if check_stamp(root,doc,check)!=stamp: status='unavailable';reason=reason or 'EXECUTION_INPUT_MOVED'
+        except (ValueError,OSError):
+            status='unavailable';reason=reason or 'EXECUTION_IDENTITY_UNAVAILABLE'
         record={'id':aid,'status':status,'purpose':'investigation' if investigate else 'verification','input_digest':stamp,'git_head_at_start':revision,
                 'started_at':started,'at':now(),'exit_code':code,
                 'artifact':{'path':rel,'sha256':file_identity(root,rel,True)['sha256']}}
+        if reason:record['reason']=reason
+        if previous and interrupted:
+            record['previous_result']={k:previous[k] for k in ('id','status','artifact')}
         if previous and previous['status']!='passed':
             record['previous_failure']={'id':previous['id'],'status':previous['status'],'artifact':previous['artifact']}
         doc['executions'][check_id]=record;save(root,doc)
+        if interrupted is not None:raise interrupted
         return {'check':check_id,'status':status,'reused':False,'execution':aid}
 
 def attach(root,ident,source):
@@ -442,6 +502,9 @@ def observe(root,ident,criterion,kind,observed_at,actual,evidence,status='passed
              'input_digest':stamp,'git_head_at_registration':git(root,'rev-parse','HEAD').decode().strip(),
              'observed_target':target if kind=='runtime_observation' else 'local selected sources',
              'evidence':refs}
+        applicability=fact_applicability(c,rec)
+        if status=='passed' and applicability in ('CURRENT_TARGET_MISMATCH','CURRENT_STATE_NEEDS_RUNTIME'):
+            fail(applicability)
         old=doc['observations'].get(criterion)
         failures=doc.setdefault('runtime_failures',{})
         pending=failures.get(criterion)
@@ -451,6 +514,7 @@ def observe(root,ident,criterion,kind,observed_at,actual,evidence,status='passed
         if pending and status=='passed':
             if kind!='runtime_observation':fail('RUNTIME_FAILURE_NEEDS_RUNTIME')
             if instant(observed_at)<instant(pending['observed_at']):fail('PASS_PREDATES_FAILURE')
+            if applicability not in ('UNDECLARED','AS_OF','CURRENT'):fail('CURRENT_OBSERVATION_NOT_APPLICABLE')
             rec['resolved_failure']=pending
             failures.pop(criterion,None)
         if kind=='runtime_observation' and status=='failed':
@@ -464,11 +528,12 @@ def observe(root,ident,criterion,kind,observed_at,actual,evidence,status='passed
 def facts(root,doc,c,checked=None):
     out=[]
     obs=doc['observations'].get(c['id'])
-    if obs and obs['status']=='passed' and obs['input_digest']==observation_stamp(root,c) and not (c['kind']=='changed' and obs['kind']=='static_analysis') and files(root,obs['evidence'],True)==obs['evidence']:
+    if obs and obs['status']=='passed' and obs['input_digest']==observation_stamp(root,c) and fact_applicability(c,obs) in ('UNDECLARED','AS_OF','CURRENT') and not (c['kind']=='changed' and obs['kind']=='static_analysis') and files(root,obs['evidence'],True)==obs['evidence']:
         out.append(obs['id'])
     for check in doc['plan']['checks']:
         if c['id'] not in check['covers']:continue
         result=doc['executions'].get(check['id'])
+        if result and fact_applicability(c,result,check['environment']) not in ('UNDECLARED','AS_OF','CURRENT'):continue
         if checked is not None:
             if checked.get(check['id']):out.append(result['id'])
         elif result and result['status']=='passed' and result['input_digest']==check_stamp(root,doc,check) and artifact_ok(root,result['artifact']) and timely(check,result):out.append(result['id'])
@@ -523,10 +588,11 @@ def view(root,ident,offset=0,limit=20,blocker_offset=0):
             try:
                 valid=bool(finding and finding['verdict']=='supported' and finding['criterion_digest']==criterion_stamp(root,doc,c)
                            and finding['facts']==facts(root,doc,c,checked) and finding['facts'])
-                if valid and doc['plan']['review']['independent']:
+                if valid and review_required(doc['plan'],c):
                     valid=bool(finding['independent'] and finding['provenance'] and artifact_ok(root,finding['provenance']))
             except (ValueError,OSError):valid=False
-            rows.append({'id':c['id'],'status':'supported' if valid else 'needs_review'})
+            rows.append({'id':c['id'],'status':'supported' if valid else 'needs_review',
+                         'observation_applicability':fact_applicability(c,observation) if observation else None})
             if not valid:blockers.append('CLAIM:'+c['id'])
     outside=changes(root,doc['baseline']) if doc.get('plan') else []
     owned=set(doc['plan']['scope'])|set(doc['plan']['constraints']) if doc.get('plan') else set()
@@ -706,6 +772,8 @@ def detail(root,ident,section,criterion=None,offset=0,limit=4000):
         c=next((c for c in doc['plan']['criteria'] if c['id']==criterion),None)
         if c is None:fail('CRITERION_UNKNOWN')
         value=c if section=='criterion' else {'observation':doc['observations'].get(criterion),'assessment':doc['assessments'].get(criterion),
+                  'observation_applicability':fact_applicability(c,doc['observations'][criterion]) if criterion in doc['observations'] else None,
+                  'runtime_failure':doc.get('runtime_failures',{}).get(criterion),
                   'executions':{k:v for k,v in doc['executions'].items() if k in [x['id'] for x in doc['plan']['checks'] if criterion in x['covers']]}}
     elif section in ('request','plan','receipt','limitations'):value=doc.get(section)
     else:fail('DETAIL_SECTION_INVALID')
@@ -725,7 +793,11 @@ def review_input(root,ident,criterion):
     return {'task':ident,'criterion':criterion,'criterion_digest':criterion_stamp(root,doc,c),'facts':facts(root,doc,c),
             'expected_preview':c['expected'][:500],'expected_complete':len(c['expected'])<=500,'kind':c['kind'],
             'input_count':len(c['inputs']),'inputs_preview':[p[:160] for p in c['inputs'][:10]],'inputs_complete':len(c['inputs'])<=10 and all(len(p)<=160 for p in c['inputs']), 'observation_kind':obs.get('kind') if obs else None,
-            'review':{'independent':doc['plan']['review']['independent'],'reason_preview':doc['plan']['review']['reason'][:500],'reason_complete':len(doc['plan']['review']['reason'])<=500},'details':'detail --section criterion|facts --criterion '+criterion,
+            'validity_mode':c.get('validity',{}).get('mode','undeclared'),
+            'observation_applicability':fact_applicability(c,obs) if obs else None,
+            'runtime_failure':({'id':doc['runtime_failures'][criterion]['id'],'observed_at':doc['runtime_failures'][criterion]['observed_at'],
+                                'details':'detail --section facts --criterion '+criterion} if criterion in doc.get('runtime_failures',{}) else None),
+            'review':{'independent':review_required(doc['plan'],c),'reason_preview':doc['plan']['review']['reason'][:500],'reason_complete':len(doc['plan']['review']['reason'])<=500},'details':'detail --section criterion|facts --criterion '+criterion,
             'boundary':'Review actual scoped code/claims/assertions. Host supplies genuine provenance; this is not an independent review.'}
 
 

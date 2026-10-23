@@ -1,0 +1,9 @@
+{
+  "exit_code": 0,
+  "seconds": 55.133612416999995,
+  "started_at": "2026-10-23T03:34:35.187689+00:00",
+  "finished_at": "2026-10-23T03:35:30.320489+00:00",
+  "inputs": 22,
+  "inputs_unchanged": true,
+  "scope": "Combined A112 source plus scoped observation validity; synthetic unittest discovery, no business/device/remote or host Agent trial."
+}

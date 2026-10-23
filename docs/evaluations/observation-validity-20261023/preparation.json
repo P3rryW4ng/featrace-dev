@@ -1,0 +1,18 @@
+{
+  "files": {
+    "skills/dev/core/scripts/task_workflow.py": "bb2d9900353917d4457d37eb4a199e583824883a2c2cf6fd3211777755350edb",
+    "tests/test_observation_validity.py": null
+  },
+  "first_targeted_run": {
+    "cases": 10,
+    "passed": 1,
+    "errors": 9,
+    "scope": "Original source rejects validity fields; raw tool output is retained in maintenance conversation, not reconstructed as a log."
+  },
+  "second_targeted_run": {
+    "cases": 10,
+    "passed": 10,
+    "seconds": 3.209
+  },
+  "boundary": "No business/device/remote operations, no installed copy changes."
+}

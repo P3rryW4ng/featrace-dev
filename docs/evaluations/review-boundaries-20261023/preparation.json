@@ -1,0 +1,21 @@
+{
+  "source_version": "0.23.1",
+  "source_main": "c3eb93c",
+  "files": {
+    "skills/dev/core/scripts/task_workflow.py": "facc0681fdb50c4126e96251b09ff0038202799e569a399aba9b3e4a3f23942d",
+    "tests/test_task_workflow.py": "33016aaf117570c465e3857a0bc6ddc80d62613ed9b70a759b8a1bdd53bbd94b",
+    "tests/test_review_boundaries.py": null
+  },
+  "first_targeted_run": {
+    "cases": 5,
+    "failed": 1,
+    "errors": 4,
+    "scope": "Original source copy: selected review scope, local constraint, pending failure details, interruption after prior success, post-execution identity exception. Original tool output is in this conversation; not a newly rerun log."
+  },
+  "focused_after_change": {
+    "cases": 11,
+    "passed": 11,
+    "seconds": 2.644
+  },
+  "extra_run": "Before deduplicating inherited unittest methods, 118 invocations passed. Not counted as 118 distinct protections."
+}

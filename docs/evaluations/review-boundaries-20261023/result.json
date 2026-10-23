@@ -1,0 +1,9 @@
+{
+  "exit_code": 0,
+  "seconds": 66.62893187499999,
+  "started_at": "2026-10-23T03:11:21.716200+00:00",
+  "finished_at": "2026-10-23T03:12:28.278468+00:00",
+  "inputs": 21,
+  "inputs_unchanged": true,
+  "scope": "Current source full unittest discovery; synthetic tests only, no business project/device/CC execution."
+}

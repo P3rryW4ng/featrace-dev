@@ -25,6 +25,8 @@ The old feature ledger, schema preparation, historical carry/replay, module doss
 
 Use actual source contents, connectors/exports when needed, and code references. A hash, URL, category or successful build does not establish business correctness. Preserve unrecoverable intent, important constraints and unresolved issues in tests, adjacent comments or the project's existing concise records; no permanent per-feature archive is required.
 
+For authorized development, commit each completed coherent subtask locally after its necessary scoped checks and selected-output privacy review; do not wait for final feature acceptance or closure. Stage only that subtask’s changes, including its related tests, and report the commit ID. Reuse valid checks instead of rerunning them merely because HEAD changes. Apply actual user/project commit restrictions and resolve only a genuine outstanding conflict; reuse existing same-scope permission without asking at every subtask. A subtask commit is not a feature-complete claim and does not authorize push, history rewriting or inclusion of unrelated work. See the subtask commit guidance in `core/references/task-workflow.md`.
+
 ## Execution and delivery boundaries
 
 For Android, load `profiles/android/PROFILE.md` only when applicable. Separate **behavioral impact** from **execution inputs**: broad compiler inputs do not imply broad business reacceptance. Record actual toolchain/dependency/environment identity, installed artifact and device separately. Never claim complete dynamic dependency discovery or universal cache safety.

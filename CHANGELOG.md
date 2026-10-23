@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.24.0 — 2026-10-23
+
+- Scope independent assessment with review.criteria, and bind local constraints separately to affected criteria/checks. Legacy omitted selections/string constraints retain their conservative task-wide meaning; no automatic record migration or business reacceptance.
+- Expose unresolved runtime failure details during resumption. Record caught interruptions and final identity failures as unavailable attempts rather than leaving an earlier success as the latest result; preserve prior references. SIGKILL/disk-failure recovery is not guaranteed.
+- Add optional criterion validity: as_of or current with actual target, justified max_age_seconds and original observed_at/started_at. Expiry blocks only relevant adoption, never clears real failure or rewrites facts; matching expired checks execute again, unrelated checks remain reusable. Undeclared old criteria are not silently certified current. No live environment monitor or universal screenshot timeout.
+- Commit completed coherent development subtasks locally after necessary scoped checks/privacy review, before feature closure, using actual commit permission and exact owned changes. No automatic push, history rewrite, commit ledger or HEAD-only retesting.
+- Add maintenance capability standards and scenario references outside the runtime package; mapped program assertions are not Agent scores. Preserve unknown natural-project outcomes. Repeated input reads were measured in warm synthetic cases and no persistent cache was introduced.
+- Minor version for optional assessment/data contract extensions and changed execution applicability. Combined kernel regression173/173 on frozen executable/test inputs; subsequent instruction/metadata changes are checked without rerunning unchanged tests. No old-project migration, business testing or phase-two completion claim.
+
 ## 0.23.1 — 2026-10-22
 
 - Correct installed progress instructions: use the current host's actual native task/plan tools and built-in presentation; do not print a parallel hand-drawn checkbox/status/loading checklist or fixed phase template.

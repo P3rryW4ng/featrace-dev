@@ -1,0 +1,412 @@
+{
+  "scope": "Synthetic current-source identity-cost measurement; warm OS cache, no cold-cache or Android/real SDK claims.",
+  "started_at": "2026-10-23T03:17:17.430774+00:00",
+  "inputs": {
+    "task_workflow.py": "bb2d9900353917d4457d37eb4a199e583824883a2c2cf6fd3211777755350edb",
+    "task_inputs.py": "9143dc945e478d069b501094b64265d519ad91c4519b0c09e4c825886326d3a8",
+    "task_policy.py": "ffc5a088713fe820e8d1f814bcb894713b27a1e9fedf6ad9bc4c6e7832df09b6"
+  },
+  "datasets": [
+    {
+      "source_files": 32,
+      "source_bytes": 2097152,
+      "external_files": 2,
+      "external_bytes": 2097152,
+      "initial_execution": {
+        "wall_seconds": 1.07797975,
+        "fingerprints": [
+          {
+            "seconds": 0.021366417000000026,
+            "bytes": 4194304,
+            "entries": 35
+          },
+          {
+            "seconds": 0.022457124999999967,
+            "bytes": 4194304,
+            "entries": 35
+          },
+          {
+            "seconds": 0.030060458000000012,
+            "bytes": 4194304,
+            "entries": 35
+          },
+          {
+            "seconds": 0.022276624999999994,
+            "bytes": 4194304,
+            "entries": 35
+          },
+          {
+            "seconds": 0.022132583000000094,
+            "bytes": 4194304,
+            "entries": 35
+          },
+          {
+            "seconds": 0.03772025000000001,
+            "bytes": 4194304,
+            "entries": 35
+          },
+          {
+            "seconds": 0.027243917000000062,
+            "bytes": 4194304,
+            "entries": 35
+          },
+          {
+            "seconds": 0.022918374999999935,
+            "bytes": 4194304,
+            "entries": 35
+          },
+          {
+            "seconds": 0.02778433300000005,
+            "bytes": 4194304,
+            "entries": 35
+          },
+          {
+            "seconds": 0.023458332999999998,
+            "bytes": 4194304,
+            "entries": 35
+          },
+          {
+            "seconds": 0.03216466700000009,
+            "bytes": 4194304,
+            "entries": 35
+          },
+          {
+            "seconds": 0.030796208999999797,
+            "bytes": 4194304,
+            "entries": 35
+          },
+          {
+            "seconds": 0.027712958000000176,
+            "bytes": 4194304,
+            "entries": 35
+          },
+          {
+            "seconds": 0.025531750000000075,
+            "bytes": 4194304,
+            "entries": 35
+          },
+          {
+            "seconds": 0.02365633300000014,
+            "bytes": 4194304,
+            "entries": 35
+          },
+          {
+            "seconds": 0.02361583300000003,
+            "bytes": 4194304,
+            "entries": 35
+          }
+        ]
+      },
+      "status_queries": [
+        {
+          "checks": 1,
+          "repetition": 1,
+          "wall_seconds": 0.07573529099999998,
+          "fingerprint_seconds": 0.032581250000000006,
+          "fingerprint_calls": 1,
+          "logical_bytes_hashed": 4194304,
+          "state": "blocked",
+          "readonly": true
+        },
+        {
+          "checks": 1,
+          "repetition": 2,
+          "wall_seconds": 0.06504774999999996,
+          "fingerprint_seconds": 0.035097874999999945,
+          "fingerprint_calls": 1,
+          "logical_bytes_hashed": 4194304,
+          "state": "blocked",
+          "readonly": true
+        },
+        {
+          "checks": 1,
+          "repetition": 3,
+          "wall_seconds": 0.07257795800000011,
+          "fingerprint_seconds": 0.03156254200000008,
+          "fingerprint_calls": 1,
+          "logical_bytes_hashed": 4194304,
+          "state": "blocked",
+          "readonly": true
+        },
+        {
+          "checks": 4,
+          "repetition": 1,
+          "wall_seconds": 0.22113150000000004,
+          "fingerprint_seconds": 0.15300270800000004,
+          "fingerprint_calls": 4,
+          "logical_bytes_hashed": 16777216,
+          "state": "blocked",
+          "readonly": true
+        },
+        {
+          "checks": 4,
+          "repetition": 2,
+          "wall_seconds": 0.15466791699999982,
+          "fingerprint_seconds": 0.10113766700000015,
+          "fingerprint_calls": 4,
+          "logical_bytes_hashed": 16777216,
+          "state": "blocked",
+          "readonly": true
+        },
+        {
+          "checks": 4,
+          "repetition": 3,
+          "wall_seconds": 0.14919575000000007,
+          "fingerprint_seconds": 0.1012756239999999,
+          "fingerprint_calls": 4,
+          "logical_bytes_hashed": 16777216,
+          "state": "blocked",
+          "readonly": true
+        },
+        {
+          "checks": 8,
+          "repetition": 1,
+          "wall_seconds": 0.2450730000000001,
+          "fingerprint_seconds": 0.17548979300000056,
+          "fingerprint_calls": 8,
+          "logical_bytes_hashed": 33554432,
+          "state": "ready",
+          "readonly": true
+        },
+        {
+          "checks": 8,
+          "repetition": 2,
+          "wall_seconds": 0.24384629199999974,
+          "fingerprint_seconds": 0.17383950100000023,
+          "fingerprint_calls": 8,
+          "logical_bytes_hashed": 33554432,
+          "state": "ready",
+          "readonly": true
+        },
+        {
+          "checks": 8,
+          "repetition": 3,
+          "wall_seconds": 0.24359579100000017,
+          "fingerprint_seconds": 0.1745900420000006,
+          "fingerprint_calls": 8,
+          "logical_bytes_hashed": 33554432,
+          "state": "ready",
+          "readonly": true
+        }
+      ],
+      "selected_input_mutation": {
+        "eligible": false,
+        "blocking_checks": [
+          "CHECK:CHECK-0",
+          "CHECK:CHECK-1",
+          "CHECK:CHECK-2",
+          "CHECK:CHECK-3",
+          "CHECK:CHECK-4",
+          "CHECK:CHECK-5",
+          "CHECK:CHECK-6",
+          "CHECK:CHECK-7"
+        ],
+        "fingerprint_calls": 8
+      }
+    },
+    {
+      "source_files": 128,
+      "source_bytes": 67108864,
+      "external_files": 8,
+      "external_bytes": 16777216,
+      "initial_execution": {
+        "wall_seconds": 1.5064321659999997,
+        "fingerprints": [
+          {
+            "seconds": 0.05496416699999962,
+            "bytes": 83886080,
+            "entries": 137
+          },
+          {
+            "seconds": 0.05894258299999988,
+            "bytes": 83886080,
+            "entries": 137
+          },
+          {
+            "seconds": 0.0556015000000003,
+            "bytes": 83886080,
+            "entries": 137
+          },
+          {
+            "seconds": 0.05561270899999915,
+            "bytes": 83886080,
+            "entries": 137
+          },
+          {
+            "seconds": 0.0563561659999996,
+            "bytes": 83886080,
+            "entries": 137
+          },
+          {
+            "seconds": 0.06092591699999961,
+            "bytes": 83886080,
+            "entries": 137
+          },
+          {
+            "seconds": 0.05485691600000031,
+            "bytes": 83886080,
+            "entries": 137
+          },
+          {
+            "seconds": 0.05556358400000061,
+            "bytes": 83886080,
+            "entries": 137
+          },
+          {
+            "seconds": 0.054718000000000266,
+            "bytes": 83886080,
+            "entries": 137
+          },
+          {
+            "seconds": 0.05731054100000055,
+            "bytes": 83886080,
+            "entries": 137
+          },
+          {
+            "seconds": 0.055500916999999816,
+            "bytes": 83886080,
+            "entries": 137
+          },
+          {
+            "seconds": 0.0554569159999998,
+            "bytes": 83886080,
+            "entries": 137
+          },
+          {
+            "seconds": 0.055641333000000515,
+            "bytes": 83886080,
+            "entries": 137
+          },
+          {
+            "seconds": 0.05566566699999953,
+            "bytes": 83886080,
+            "entries": 137
+          },
+          {
+            "seconds": 0.05670704199999932,
+            "bytes": 83886080,
+            "entries": 137
+          },
+          {
+            "seconds": 0.05711308299999995,
+            "bytes": 83886080,
+            "entries": 137
+          }
+        ]
+      },
+      "status_queries": [
+        {
+          "checks": 1,
+          "repetition": 1,
+          "wall_seconds": 0.10399216600000027,
+          "fingerprint_seconds": 0.05700925000000012,
+          "fingerprint_calls": 1,
+          "logical_bytes_hashed": 83886080,
+          "state": "blocked",
+          "readonly": true
+        },
+        {
+          "checks": 1,
+          "repetition": 2,
+          "wall_seconds": 0.10420079200000032,
+          "fingerprint_seconds": 0.056875040999999626,
+          "fingerprint_calls": 1,
+          "logical_bytes_hashed": 83886080,
+          "state": "blocked",
+          "readonly": true
+        },
+        {
+          "checks": 1,
+          "repetition": 3,
+          "wall_seconds": 0.10584454199999982,
+          "fingerprint_seconds": 0.05940954200000004,
+          "fingerprint_calls": 1,
+          "logical_bytes_hashed": 83886080,
+          "state": "blocked",
+          "readonly": true
+        },
+        {
+          "checks": 4,
+          "repetition": 1,
+          "wall_seconds": 0.29322287499999966,
+          "fingerprint_seconds": 0.21987975000000137,
+          "fingerprint_calls": 4,
+          "logical_bytes_hashed": 335544320,
+          "state": "blocked",
+          "readonly": true
+        },
+        {
+          "checks": 4,
+          "repetition": 2,
+          "wall_seconds": 0.3089855420000003,
+          "fingerprint_seconds": 0.2385666249999998,
+          "fingerprint_calls": 4,
+          "logical_bytes_hashed": 335544320,
+          "state": "blocked",
+          "readonly": true
+        },
+        {
+          "checks": 4,
+          "repetition": 3,
+          "wall_seconds": 0.29230525000000007,
+          "fingerprint_seconds": 0.22220891699999878,
+          "fingerprint_calls": 4,
+          "logical_bytes_hashed": 335544320,
+          "state": "blocked",
+          "readonly": true
+        },
+        {
+          "checks": 8,
+          "repetition": 1,
+          "wall_seconds": 0.5410379579999995,
+          "fingerprint_seconds": 0.43841520699999936,
+          "fingerprint_calls": 8,
+          "logical_bytes_hashed": 671088640,
+          "state": "ready",
+          "readonly": true
+        },
+        {
+          "checks": 8,
+          "repetition": 2,
+          "wall_seconds": 0.5665543749999999,
+          "fingerprint_seconds": 0.4605242080000007,
+          "fingerprint_calls": 8,
+          "logical_bytes_hashed": 671088640,
+          "state": "ready",
+          "readonly": true
+        },
+        {
+          "checks": 8,
+          "repetition": 3,
+          "wall_seconds": 0.5849323330000011,
+          "fingerprint_seconds": 0.4729000009999993,
+          "fingerprint_calls": 8,
+          "logical_bytes_hashed": 671088640,
+          "state": "ready",
+          "readonly": true
+        }
+      ],
+      "selected_input_mutation": {
+        "eligible": false,
+        "blocking_checks": [
+          "CHECK:CHECK-0",
+          "CHECK:CHECK-1",
+          "CHECK:CHECK-2",
+          "CHECK:CHECK-3",
+          "CHECK:CHECK-4",
+          "CHECK:CHECK-5",
+          "CHECK:CHECK-6",
+          "CHECK:CHECK-7"
+        ],
+        "fingerprint_calls": 8
+      }
+    }
+  ],
+  "observation_probe": {
+    "simulated_days_elapsed": 30,
+    "eligible_with_unchanged_selected_files": true,
+    "interpretation": "Existing observation has no expiry. This is appropriate only for an as-of claim, not proof a live remote state remains current."
+  },
+  "source_unchanged": true,
+  "finished_at": "2026-10-23T03:17:26.952516+00:00"
+}
