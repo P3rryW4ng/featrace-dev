@@ -10,22 +10,254 @@
     "holdout_status": "No genuine unseen agent evaluation executed or reserved yet"
   },
   "capabilities": [
-    {"id":"IMP-01","module":"impact","ability":"Declared scope stays local","checks":["test_hardening.HardeningTests.test_unrelated_branch_commit_does_not_expand_claims","test_task_extensions.FullReplacementTests.test_build_input_breadth_does_not_expand_semantic_claims"],"agent_score":null},
-    {"id":"IMP-02","module":"impact","ability":"Discover actual callers, shared dependencies and behavior changes","checks":[],"agent_score":null},
-    {"id":"IMP-03","module":"impact","ability":"Local unknowns isolate related actions without allowing closure","checks":["test_hardening.HardeningTests.test_scoped_unknown_allows_independent_check_but_blocks_closure"],"agent_score":null},
-    {"id":"SEL-01","module":"selection","ability":"Choose necessary and sufficient checks from actual risk","checks":[],"agent_score":null},
-    {"id":"SEL-02","module":"selection","ability":"Reuse valid results and reject changed execution identity","checks":["test_task_workflow.TaskWorkflowTests.test_repeated_check_reuses_actual_success","test_task_extensions.FullReplacementTests.test_external_toolchain_bytes_and_environment_invalidate_check","test_review_boundaries.ReviewBoundaryTests.test_local_rule_change_preserves_unrelated_execution_and_assessment"],"agent_score":null},
-    {"id":"SEL-03","module":"selection","ability":"Investigation results are usable without registration rerun","checks":["test_hardening.HardeningTests.test_investigation_can_resolve_unknown_without_double_execution","test_hardening.HardeningTests.test_investigation_does_not_bypass_actual_permissions"],"agent_score":null},
-    {"id":"ACC-01","module":"acceptance","ability":"Judge assertion and observation sufficiency against actual intent","checks":[],"agent_score":null},
-    {"id":"ACC-02","module":"acceptance","ability":"Enforce selected independent review without expanding unrelated claims","checks":["test_review_boundaries.ReviewBoundaryTests.test_selected_independent_review_does_not_expand_to_other_claim","test_review_boundaries.ReviewBoundaryTests.test_selected_claim_still_requires_independent_proof"],"agent_score":null},
-    {"id":"ACC-03","module":"acceptance","ability":"Preserve failures and apply temporal scope locally","checks":["test_hardening.HardeningTests.test_runtime_failure_survives_unavailable_static_and_plan_removal","test_observation_validity.ObservationValidityTests.test_current_expiry_does_not_invalidate_independent_check","test_observation_validity.ObservationValidityTests.test_expired_pass_cannot_remove_pending_runtime_failure"],"agent_score":null}
+    {
+      "id": "IMP-01",
+      "module": "impact",
+      "ability": "Declared scope stays local",
+      "checks": [
+        "test_hardening.HardeningTests.test_unrelated_branch_commit_does_not_expand_claims",
+        "test_task_extensions.FullReplacementTests.test_build_input_breadth_does_not_expand_semantic_claims"
+      ],
+      "agent_score": null
+    },
+    {
+      "id": "IMP-02",
+      "module": "impact",
+      "ability": "Discover actual callers, shared dependencies and behavior changes",
+      "checks": [],
+      "agent_score": null
+    },
+    {
+      "id": "IMP-03",
+      "module": "impact",
+      "ability": "Local unknowns isolate related actions without allowing closure",
+      "checks": [
+        "test_hardening.HardeningTests.test_scoped_unknown_allows_independent_check_but_blocks_closure"
+      ],
+      "agent_score": null
+    },
+    {
+      "id": "SEL-01",
+      "module": "selection",
+      "ability": "Choose necessary and sufficient checks from actual risk",
+      "checks": [],
+      "agent_score": null
+    },
+    {
+      "id": "SEL-02",
+      "module": "selection",
+      "ability": "Reuse valid results and reject changed execution identity",
+      "checks": [
+        "test_task_workflow.TaskWorkflowTests.test_repeated_check_reuses_actual_success",
+        "test_task_extensions.FullReplacementTests.test_external_toolchain_bytes_and_environment_invalidate_check",
+        "test_review_boundaries.ReviewBoundaryTests.test_local_rule_change_preserves_unrelated_execution_and_assessment"
+      ],
+      "agent_score": null
+    },
+    {
+      "id": "SEL-03",
+      "module": "selection",
+      "ability": "Investigation results are usable without registration rerun",
+      "checks": [
+        "test_hardening.HardeningTests.test_investigation_can_resolve_unknown_without_double_execution",
+        "test_hardening.HardeningTests.test_investigation_does_not_bypass_actual_permissions"
+      ],
+      "agent_score": null
+    },
+    {
+      "id": "ACC-01",
+      "module": "acceptance",
+      "ability": "Judge assertion and observation sufficiency against actual intent",
+      "checks": [],
+      "agent_score": null
+    },
+    {
+      "id": "ACC-02",
+      "module": "acceptance",
+      "ability": "Enforce selected independent review without expanding unrelated claims",
+      "checks": [
+        "test_review_boundaries.ReviewBoundaryTests.test_selected_independent_review_does_not_expand_to_other_claim",
+        "test_review_boundaries.ReviewBoundaryTests.test_selected_claim_still_requires_independent_proof"
+      ],
+      "agent_score": null
+    },
+    {
+      "id": "ACC-03",
+      "module": "acceptance",
+      "ability": "Preserve failures and apply temporal scope locally",
+      "checks": [
+        "test_hardening.HardeningTests.test_runtime_failure_survives_unavailable_static_and_plan_removal",
+        "test_observation_validity.ObservationValidityTests.test_current_expiry_does_not_invalidate_independent_check",
+        "test_observation_validity.ObservationValidityTests.test_expired_pass_cannot_remove_pending_runtime_failure"
+      ],
+      "agent_score": null
+    }
   ],
   "scenarios": [
-    {"id":"SC-01","type":"local_presentation","capabilities":["IMP-01","SEL-01","ACC-01"],"request":"Change icon and text gap in a private error component; preserve all logic","must_cover":["target rendering and affected adjacent layout","actual resource/component use","artifact and reference identity"],"must_not_require":["whole parent PRD reacceptance without causal impact","unchanged business-flow retests without a mandatory rule"],"acceptable_variation":"Scoped rendering test, preview or actual screen observation may suffice if they demonstrate the requested state","agent_status":"not_run"},
-    {"id":"SC-02","type":"shared_rendering","capabilities":["IMP-02","SEL-01","ACC-02"],"request":"Change a shared error component used in two screens","must_cover":["actual callers and affected render variants","relevant inherited theme/layout","independent assessment of shared claims"],"must_not_require":["every business flow merely because rendering is shared"],"acceptable_variation":"Representative equivalent callers need an explicit code basis, not necessarily one test per caller","agent_status":"not_run"},
-    {"id":"SC-03","type":"interaction_counterexample","capabilities":["IMP-02","SEL-01","ACC-01"],"request":"Fix a keyboard-obscured input area with scroll/inset changes","must_cover":["focus and scrolling with keyboard","affected hit areas and layout","actual device/system limitation"],"must_not_require":["claiming the change is pure appearance","unrelated payment or network regression"],"acceptable_variation":"Choose an appropriate runtime target; do not generalize one device to an untested model","agent_status":"not_run"},
-    {"id":"SC-04","type":"interface_state_counterexample","capabilities":["IMP-02","SEL-01","ACC-01"],"request":"Map a structured server error to a local message with a legacy fallback","must_cover":["structured error precedence","unrelated errors and fallback boundary","affected state and dispatch paths"],"must_not_require":["classifying as only text because the visible change is a message","executing real payment as an unrequested side effect"],"acceptable_variation":"Use actual parser/state tests and necessary targeted runtime checks; no exact suite prescribed","agent_status":"not_run"},
-    {"id":"SC-05","type":"reuse_and_rule_change","capabilities":["SEL-02","SEL-03","IMP-03"],"request":"Resolve a local unknown after a successful authorized investigation; clarify an unrelated display criterion","must_cover":["preserve original execution identity","reassess affected wording","continue independent work without closing unresolved unknown"],"must_not_require":["rerun unchanged execution solely for registration","treat changed real toolchain or execution rules as reusable"],"acceptable_variation":"Related changed inputs may justify rerun; the causal reason must be explicit","agent_status":"not_run"},
-    {"id":"SC-06","type":"failure_and_current_state","capabilities":["ACC-03","ACC-01"],"request":"Resume after a genuine failure; one claim requires current remote state while an unrelated UI capture remains applicable","must_cover":["original failure remains blocking","current environment identity and defensible validity","original observation timestamps"],"must_not_require":["erase failure on expiry","make every screenshot expire","use a stale pass or static inference to clear runtime failure"],"acceptable_variation":"Refresh only the related current fact; unreported external changes remain a stated limitation","agent_status":"not_run"}
-  ]
+    {
+      "id": "SC-01",
+      "type": "local_presentation",
+      "capabilities": [
+        "IMP-01",
+        "SEL-01",
+        "ACC-01"
+      ],
+      "request": "Change icon and text gap in a private error component; preserve all logic",
+      "must_cover": [
+        "target rendering and affected adjacent layout",
+        "actual resource/component use",
+        "artifact and reference identity"
+      ],
+      "must_not_require": [
+        "whole parent PRD reacceptance without causal impact",
+        "unchanged business-flow retests without a mandatory rule"
+      ],
+      "acceptable_variation": "Scoped rendering test, preview or actual screen observation may suffice if they demonstrate the requested state",
+      "agent_status": "not_run"
+    },
+    {
+      "id": "SC-02",
+      "type": "shared_rendering",
+      "capabilities": [
+        "IMP-02",
+        "SEL-01",
+        "ACC-02"
+      ],
+      "request": "Change a shared error component used in two screens",
+      "must_cover": [
+        "actual callers and affected render variants",
+        "relevant inherited theme/layout",
+        "independent assessment of shared claims"
+      ],
+      "must_not_require": [
+        "every business flow merely because rendering is shared"
+      ],
+      "acceptable_variation": "Representative equivalent callers need an explicit code basis, not necessarily one test per caller",
+      "agent_status": "not_run"
+    },
+    {
+      "id": "SC-03",
+      "type": "interaction_counterexample",
+      "capabilities": [
+        "IMP-02",
+        "SEL-01",
+        "ACC-01"
+      ],
+      "request": "Fix a keyboard-obscured input area with scroll/inset changes",
+      "must_cover": [
+        "focus and scrolling with keyboard",
+        "affected hit areas and layout",
+        "actual device/system limitation"
+      ],
+      "must_not_require": [
+        "claiming the change is pure appearance",
+        "unrelated payment or network regression"
+      ],
+      "acceptable_variation": "Choose an appropriate runtime target; do not generalize one device to an untested model",
+      "agent_status": "not_run"
+    },
+    {
+      "id": "SC-04",
+      "type": "interface_state_counterexample",
+      "capabilities": [
+        "IMP-02",
+        "SEL-01",
+        "ACC-01"
+      ],
+      "request": "Map a structured server error to a local message with a legacy fallback",
+      "must_cover": [
+        "structured error precedence",
+        "unrelated errors and fallback boundary",
+        "affected state and dispatch paths"
+      ],
+      "must_not_require": [
+        "classifying as only text because the visible change is a message",
+        "executing real payment as an unrequested side effect"
+      ],
+      "acceptable_variation": "Use actual parser/state tests and necessary targeted runtime checks; no exact suite prescribed",
+      "agent_status": "not_run"
+    },
+    {
+      "id": "SC-05",
+      "type": "reuse_and_rule_change",
+      "capabilities": [
+        "SEL-02",
+        "SEL-03",
+        "IMP-03"
+      ],
+      "request": "Resolve a local unknown after a successful authorized investigation; clarify an unrelated display criterion",
+      "must_cover": [
+        "preserve original execution identity",
+        "reassess affected wording",
+        "continue independent work without closing unresolved unknown"
+      ],
+      "must_not_require": [
+        "rerun unchanged execution solely for registration",
+        "treat changed real toolchain or execution rules as reusable"
+      ],
+      "acceptable_variation": "Related changed inputs may justify rerun; the causal reason must be explicit",
+      "agent_status": "not_run"
+    },
+    {
+      "id": "SC-06",
+      "type": "failure_and_current_state",
+      "capabilities": [
+        "ACC-03",
+        "ACC-01"
+      ],
+      "request": "Resume after a genuine failure; one claim requires current remote state while an unrelated UI capture remains applicable",
+      "must_cover": [
+        "original failure remains blocking",
+        "current environment identity and defensible validity",
+        "original observation timestamps"
+      ],
+      "must_not_require": [
+        "erase failure on expiry",
+        "make every screenshot expire",
+        "use a stale pass or static inference to clear runtime failure"
+      ],
+      "acceptable_variation": "Refresh only the related current fact; unreported external changes remain a stated limitation",
+      "agent_status": "not_run"
+    }
+  ],
+  "field_samples": [
+    {
+      "id": "OGFR-8897",
+      "source": "docs/reviews/2026-10-23-ogfr8897-field-review.md",
+      "reported_skill_version": "0.24.0",
+      "evidence_mode": "User-forwarded CC review and record excerpts; business originals not independently read",
+      "review_state": "provisional",
+      "blind_test": false,
+      "capability_scores": {
+        "IMP-01": null,
+        "IMP-02": 1,
+        "IMP-03": 2,
+        "SEL-01": 1,
+        "SEL-02": 1,
+        "SEL-03": null,
+        "ACC-01": 1,
+        "ACC-02": null,
+        "ACC-03": null
+      },
+      "score_limits": {
+        "IMP-03": "Only the reported unknown gate",
+        "ACC-03": "Failure-link slice supported; current validity not exercised"
+      },
+      "full_acceptance_supported": false,
+      "business_code_failure_established": false,
+      "pending": [
+        "C6 original result applicability",
+        "C2/C3 promised failure coverage",
+        "Supported correction route for a closed task"
+      ],
+      "new_maintenance_business_execution": false
+    }
+  ],
+  "latest_program_evidence": {
+    "evidence": "docs/evaluations/policy-diagnostics-20261023/full.log",
+    "input_identity": "docs/evaluations/policy-diagnostics-20261023/inputs-after.json",
+    "tests": 177,
+    "mapped_checks_still_passed": 13,
+    "new_execution_for_scoring": false
+  }
 }

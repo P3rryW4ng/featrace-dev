@@ -109,3 +109,7 @@
 只修已知policy错误及CLI安全透传，未知异常不输出私有内容。4项CLI用例旧实现3失败/1通过，修复后4通过：[原反例](evaluations/policy-diagnostics-20261023/red.log)。完整177/177，外层124.361秒，23输入冻结一致：[结果](evaluations/policy-diagnostics-20261023/result.json)、[完整输出](evaluations/policy-diagnostics-20261023/full.log)、[前](evaluations/policy-diagnostics-20261023/inputs-before.json)/[后](evaluations/policy-diagnostics-20261023/inputs-after.json)。合成临时Git/CLI，不是业务/Gradle/设备/自然Agent验证；之后只补维护文字，脚本测试未变。
 
 Android文档不新增解析器或强跑门禁，不能证明CC已遵守。安装仍0.24.0。用户转述与未独立读业务原件的边界见能力看板，不用程序通过替代业务缺口。
+
+## OGFR-8897自然样本的证据等级
+
+[转回摘录与更正](reviews/2026-10-23-ogfr8897-field-review.md)、[暂定能力评价](capabilities.md)。维护未直接读业务原件/执行补测，不把CC自述升级为独立验证。K3有previous_failure，原分析已撤回；C6旧XML和当前引用不对应，原执行摘要缺失，适用性待核；C2/C3承诺失败行为未被充分验证，C4仅成功路径。局部评分仅对本场景有效，没有总分或节省率，阶段仍未完成。此文档更新不重跑177项。
