@@ -14,7 +14,7 @@ class HardeningTests(TaskWorkflowTests):
         with self.assertRaisesRegex(ValueError,'UNRESOLVED_OBSERVATION_REMOVED'):w.set_plan(self.root,self.ident,other)
         self.observe('C1','runtime_observation',w.now(),'Targeted runtime pass',['app.py'])
         self.support();self.assertTrue(w.view(self.root,self.ident)['eligible'])
-        self.assertEqual(self.doc()['observations']['C1']['resolved_failure']['actual'],'Actual runtime failure')
+        self.assertEqual(self.doc()['facts'][self.observation('C1')['resolved_failure']]['actual'],'Actual runtime failure')
 
     def test_execution_input_rule_not_only_semantic_scope(self):
         cfg=w.task_policy.load(self.root)

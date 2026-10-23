@@ -11,7 +11,7 @@ class TaskCorrectionTests(TaskWorkflowTests):
         self.plan['criteria'].append({'id':'C2','expected':'Other unchanged','kind':'unaffected','inputs':['other.py']})
         self.refresh();self.execute();self.support()
         self.observe('C2','static_analysis',w.now(),'No influence',['other.py'])
-        w.assess(self.root,self.ident,'C2','supported','Causal proof')
+        self.assess('C2','supported','Causal proof')
         w.close(self.root,self.ident,['Original limit'])
         return copy.deepcopy(self.doc())
 
@@ -69,21 +69,10 @@ class TaskCorrectionTests(TaskWorkflowTests):
         self.support();w.close(self.root,self.ident,['Original limit'])
         self.age();w.cleanup(self.root,self.ident,True)
         doc=self.doc()
-        self.assertEqual(doc['task_contract'],2)
+        self.assertEqual(doc['task_contract'],3)
         self.assertEqual(doc['corrections'][0]['prior_receipt'],original['receipt'])
         self.assertNotIn('prior_claims',doc['corrections'][0])
 
-    def test_known_predecessor_identity_does_not_renew_fact_or_hide_input_change(self):
-        self.execute();doc=self.doc();check=self.plan['checks'][0]
-        payload=w.check_identity_payload(self.root,doc,check)
-        payload['runner']=w.CORRECTION_PREDECESSOR['runner']
-        doc['executions']['target']['input_digest']=w.digest(payload)
-        # Simulate a stored record produced with the pinned predecessor identity.
-        w.save(self.root,doc)
-        self.assertIsNone(w.execution_profile(self.root,self.doc(),check,self.doc()['executions']['target']))
-        doc=self.doc();doc['execution_identity_profiles']=['v0.24.0'];w.save(self.root,doc)
-        # A flag alone must not admit legacy identity outside a genuine correction record.
-        self.assertIsNone(w.execution_profile(self.root,self.doc(),check,self.doc()['executions']['target']))
 
     def test_correction_history_has_bound_and_does_not_silently_discard(self):
         self.completed_two_claims()
@@ -93,57 +82,17 @@ class TaskCorrectionTests(TaskWorkflowTests):
         with self.assertRaisesRegex(ValueError,'CORRECTION_LIMIT'):self.correct()
         self.assertEqual(before,w.task_path(self.root,self.ident).read_bytes())
 
-    def legacy_record(self):
-        original=self.completed_two_claims();doc=self.doc()
-        payload=w.check_identity_payload(self.root,doc,self.plan['checks'][0])
-        payload['runner']=w.CORRECTION_PREDECESSOR['runner']
-        doc['executions']['target']['input_digest']=w.digest(payload)
-        w.save(self.root,doc)
-        return copy.deepcopy(doc['executions']['target'])
 
-    def test_known_predecessor_reuses_exact_result_and_changed_inputs_still_rerun(self):
-        old=self.legacy_record();self.correct()
-        result=self.execute()
-        self.assertTrue(result['reused']);self.assertEqual(result['identity_profile'],'v0.24.0')
-        self.assertEqual(self.doc()['executions']['target'],old)
-        self.assertEqual((self.root/'run-count').read_text(),'1')
-        (self.root/'check.py').write_text((self.root/'check.py').read_text()+'\n# Real test input change\n')
-        self.refresh();self.assertFalse(self.execute()['reused'])
-        self.assertEqual((self.root/'run-count').read_text(),'2')
 
-    def test_predecessor_does_not_accept_unknown_digest_or_damaged_log(self):
-        self.legacy_record();self.correct()
-        doc=self.doc();doc['executions']['target']['input_digest']='0'*64;w.save(self.root,doc)
-        self.assertFalse(w.view(self.root,self.ident)['eligible'])
-        self.assertFalse(self.execute()['reused'])
-        record=self.doc()['executions']['target']
-        (self.root/record['artifact']['path']).write_text('damaged output')
-        self.assertFalse(self.execute()['reused'])
 
     def test_correction_record_overflow_refuses_atomically(self):
         self.completed_two_claims()
-        doc=self.doc();doc['observations']['C2']['actual']='x'*(w.MAX_RECORD//2)
+        doc=self.doc();doc['plan']['criteria'][1]['expected']='x'*(w.MAX_RECORD//2)
         w.save(self.root,doc);before=w.task_path(self.root,self.ident).read_bytes()
         with self.assertRaisesRegex(ValueError,'TASK_SIZE_LIMIT'):self.correct(['C2'])
         self.assertEqual(before,w.task_path(self.root,self.ident).read_bytes())
 
-    def test_predecessor_result_cannot_bypass_current_denied_policy(self):
-        self.legacy_record();self.correct()
-        config=w.task_policy.load(self.root)
-        config['rules']=[{'source':'rules.md','sha256':'prepared','paths':['app.py'],'operations':['test'],
-                          'environment':'local','decision':'No execution','permission':'denied','authority':'Synthetic current rule'}]
-        w.task_policy.prepare(self.root,config,w.git)
-        with self.assertRaisesRegex(ValueError,'POLICY_DENIED'):self.execute()
-        self.assertEqual((self.root/'run-count').read_text(),'1')
 
-    def test_predecessor_result_expiry_is_not_renewed_by_correction(self):
-        self.legacy_record();self.correct()
-        self.plan['checks'][0]['cache']={'mode':'content','max_age_seconds':60};self.refresh()
-        doc=self.doc();doc['executions']['target']['at']=(datetime.now(timezone.utc)-timedelta(seconds=61)).isoformat()
-        w.save(self.root,doc)
-        self.assertFalse(w.view(self.root,self.ident)['eligible'])
-        self.assertFalse(self.execute()['reused'])
-        self.assertEqual((self.root/'run-count').read_text(),'2')
 
 
 for name in list(dir(TaskCorrectionTests)):

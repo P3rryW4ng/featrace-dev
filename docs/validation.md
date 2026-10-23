@@ -34,7 +34,7 @@
 | 材料 | 用途与边界 |
 |---|---|
 | [A108首批纵切](evaluations/2026-10-22-task-workflow.md) | 791项及当时200任务数据，旧模块尚未裁剪；不作为当前通过证明，不执行其旧下一步 |
-| [记录增长评审](reviews/2026-10-22-record-growth-and-retrieval.md) | codec增长和局部原型测量；永久对象库/历史兼容建议已被A109替代，不据此重开开发 |
+| [记录增长评审](https://github.com/P3rryW4ng/featrace-dev/blob/fe508f0/docs/reviews/2026-10-22-record-growth-and-retrieval.md) | codec增长和局部原型测量；永久对象库/历史兼容建议已被A109替代，不据此重开开发 |
 
 这些同日材料尚未进入已提交旧版本，保留原始结果与哈希，不将其唯一原件假称已存在于远端Git。
 
@@ -84,7 +84,7 @@
 
 ## 2026-10-23 时效探针与扫描成本（不变内核）
 
-[评审与口径](reviews/2026-10-23-observation-freshness-and-scan-cost.md)、[原始测量](evaluations/freshness-scan-20261023/results.json)、[程序](evaluations/freshness-scan-20261023/measure.py)。两组4MiB/80MiB合成输入，1/4/8项各3次状态查询；共18次查询任务字节未变，两组输入突变均使8项失效。80MiB/8项查询0.541–0.585秒、重复逻辑哈希640MiB，暖缓存结果不能外推真实Android或磁盘I/O。手工观察模拟30天后仍可采用，说明当前没有自动时效约束，不代表远端状态实际不变。三个运行源码哈希不变，未重跑161项、未实施缓存优化或时效字段、未操作业务/设备、未发布安装。
+[评审与口径](https://github.com/P3rryW4ng/featrace-dev/blob/fe508f0/docs/reviews/2026-10-23-observation-freshness-and-scan-cost.md)、[原始测量](evaluations/freshness-scan-20261023/results.json)、[程序](evaluations/freshness-scan-20261023/measure.py)。两组4MiB/80MiB合成输入，1/4/8项各3次状态查询；共18次查询任务字节未变，两组输入突变均使8项失效。80MiB/8项查询0.541–0.585秒、重复逻辑哈希640MiB，暖缓存结果不能外推真实Android或磁盘I/O。手工观察模拟30天后仍可采用，说明当前没有自动时效约束，不代表远端状态实际不变。三个运行源码哈希不变，未重跑161项、未实施缓存优化或时效字段、未操作业务/设备、未发布安装。
 
 ## 2026-10-23 A113时效实现与合并候选验证
 
@@ -112,7 +112,7 @@ Android文档不新增解析器或强跑门禁，不能证明CC已遵守。安�
 
 ## OGFR-8897自然样本的证据等级
 
-[转回摘录与更正](reviews/2026-10-23-ogfr8897-field-review.md)、[暂定能力评价](capabilities.md)。维护未直接读业务原件/执行补测，不把CC自述升级为独立验证。K3有previous_failure，原分析已撤回；C6旧XML和当前引用不对应，原执行摘要缺失，适用性待核；C2/C3承诺失败行为未被充分验证，C4仅成功路径。局部评分仅对本场景有效，没有总分或节省率，阶段仍未完成。此文档更新不重跑177项。
+[转回摘录与更正](https://github.com/P3rryW4ng/featrace-dev/blob/fe508f0/docs/reviews/2026-10-23-ogfr8897-field-review.md)、[暂定能力评价](capabilities.md)。维护未直接读业务原件/执行补测，不把CC自述升级为独立验证。K3有previous_failure，原分析已撤回；C6旧XML和当前引用不对应，原执行摘要缺失，适用性待核；C2/C3承诺失败行为未被充分验证，C4仅成功路径。局部评分仅对本场景有效，没有总分或节省率，阶段仍未完成。此文档更新不重跑177项。
 
 ## 有界更正与固定0.24接续：候选验证
 
@@ -129,3 +129,13 @@ Android文档不新增解析器或强跑门禁，不能证明CC已遵守。安�
 ## 2026-10-23 验收底层评审（无新运行验证）
 
 [评审](reviews/2026-10-23-acceptance-core-review.md)对照0.25.0源码、既有测试含义和8897直接只读补核。识别主张/证据及执行身份来源的局部替换候选；未来反例只是规格，未执行。维护入口清理采用固定46fa61c原件，不改历史证据。运行脚本、测试、VERSION、release.json和个人安装未变，未重跑190项或业务测试。具体静态取消证明不外推全部并发主张可静态验收；实际设备包身份核对依赖当时CC记录，不伪称重新测量。
+
+## 2026-10-23 合同3底层替换最终验证
+
+完整当前回归 **214/214**，外层81.091秒，26份输入前后一致：[结果](evaluations/core-replacement-20261023/result.json)、[全量](evaluations/core-replacement-20261023/full.log)、[前](evaluations/core-replacement-20261023/inputs-before.json)/[后](evaluations/core-replacement-20261023/inputs-after.json)。185项保留保护用例加29项新增反例；五项仅服务已退出前驱桥接的旧用例退休，两个静态判定用例改为明确证明需求，不放宽真实失败保护。开发期间失败/修正说明见[记录](evaluations/core-replacement-20261023/development-notes.json)，不是隐藏失败或额外独立样本。
+
+[探针结果](evaluations/core-replacement-20261023/probe-result.json)、[程序](evaluations/core-replacement-20261023/probe.py)：64标准/128事实，实际155215字节低于262144上限；不保证任意长文字/输入组合都适合该上限。新进程只读恢复、分页无写入；读取固定v0.25.0真实脚本并核对清单，旧CLI拒读合同3且记录字节未变。双宿主隔离开发安装均12文件匹配，正式安装未变。探针程序移至可从仓库根执行的位置，不更改已执行逻辑或重跑完整套件。
+
+[五份退出文档原件清单](evaluations/core-replacement-20261023/retired-docs.json)：当前字节与固定fe508f0核对后退出，链接改为固定Git；未删除Git历史或业务记录。运行指引/日常流程已替换，旧方案不作为当前路由。旧测试/证据仍只代表其当时合同；没有更新版本/发布清单、推送或个人安装。本轮不是自然Agent、真机/后端、50人并发或提效对照试验，第二阶段仍未完成。
+
+本轮Skill快速校验脚本因本机缺少PyYAML未能运行；未安装依赖或声称其通过。独立Ruby YAML解析核对入口frontmatter与agents元信息通过，全部当前Markdown本地链接及能力用例引用可定位，冻结26份运行/测试/元数据字节仍一致。

@@ -15,7 +15,7 @@ class ReviewBoundaryTests(TaskWorkflowTests):
         p.update(verdict='supported',fresh_context=True,host='synthetic',context_id='synthetic',reviewer='synthetic',reason='Synthetic provenance only')
         name='.featrace/proof-'+criterion+'.json'
         (self.root/name).write_text(json.dumps(p))
-        w.assess(self.root,self.ident,criterion,'supported','Fixture only',True,name)
+        self.assess(criterion,'supported','Fixture only',True,name)
 
     def test_selected_independent_review_does_not_expand_to_other_claim(self):
         self.two_claims()
@@ -23,7 +23,7 @@ class ReviewBoundaryTests(TaskWorkflowTests):
         self.plan['review']={'independent':True,'reason':'Only C1 has shared effects','criteria':['C1']}
         self.refresh();self.execute();self.proof('C1')
         self.observe('C2','static_analysis',w.now(),'Independent caller unaffected',['other.py'])
-        w.assess(self.root,self.ident,'C2','supported','No shared influence')
+        self.assess('C2','supported','No shared influence')
         self.assertTrue(w.view(self.root,self.ident)['eligible'])
 
     def test_review_scope_cannot_name_missing_claim_or_empty_shared_scope(self):
@@ -37,7 +37,7 @@ class ReviewBoundaryTests(TaskWorkflowTests):
         self.plan['review']={'independent':True,'reason':'Only C1','criteria':['C1']}
         self.refresh();self.execute();self.support()
         self.observe('C2','static_analysis',w.now(),'No influence',['other.py'])
-        w.assess(self.root,self.ident,'C2','supported','No influence')
+        self.assess('C2','supported','No influence')
         self.assertFalse(w.view(self.root,self.ident)['eligible'])
 
     def test_adding_review_requirement_invalidates_old_self_assessment(self):
@@ -75,7 +75,7 @@ class ReviewBoundaryTests(TaskWorkflowTests):
 
     def test_pending_failure_details_survive_latest_unavailable_observation(self):
         self.observe('C1','runtime_observation',w.now(),'Actual synthetic failure',['app.py'],'failed')
-        original=self.doc()['runtime_failures']['C1']
+        original=self.runtime_failure('C1')
         self.observe('C1','runtime_observation',w.now(),'Latest evidence unavailable',['app.py'],'unavailable')
         detail=w.detail(self.root,self.ident,'facts','C1',limit=8000)
         body=detail['text'];offset=detail['next_offset']
@@ -93,10 +93,10 @@ class ReviewBoundaryTests(TaskWorkflowTests):
         def spawn(command,**kwargs):return child if command==argv else real(command,**kwargs)
         with patch.object(w.subprocess,'Popen',side_effect=spawn),patch.object(w.os,'killpg'):
             with self.assertRaises(KeyboardInterrupt):self.execute()
-        record=self.doc()['executions']['target']
+        record=self.execution()
         self.assertEqual(record['status'],'unavailable')
         self.assertEqual(record['reason'],'EXECUTION_INTERRUPTED')
-        self.assertEqual(record['previous_result']['id'],previous['execution'])
+        self.assertEqual(record['previous_result'],previous['execution'])
         self.assertFalse(w.view(self.root,self.ident)['eligible'])
 
     def test_post_execution_identity_failure_is_recorded(self):
@@ -108,7 +108,7 @@ class ReviewBoundaryTests(TaskWorkflowTests):
         with patch.object(w,'check_stamp',side_effect=stamp):
             result=self.execute()
         self.assertEqual(result['status'],'unavailable')
-        self.assertEqual(self.doc()['executions']['target']['reason'],'EXECUTION_IDENTITY_UNAVAILABLE')
+        self.assertEqual(self.execution()['reason'],'EXECUTION_IDENTITY_UNAVAILABLE')
 
 
 for name in list(dir(ReviewBoundaryTests)):

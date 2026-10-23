@@ -1,0 +1,18 @@
+{
+  "criteria": 64,
+  "facts": 128,
+  "record_bytes": 155215,
+  "record_limit": 262144,
+  "new_process_read_only_ready": true,
+  "query_paginated": true,
+  "fixed025_reader_refuses_without_write": true,
+  "old_reader_bytes_match_tag": true,
+  "business_operations": false,
+  "natural_agent_trial": false,
+  "isolated_package": {
+    "files": 12,
+    "both_hosts_match": true,
+    "channel": "development",
+    "daily_install_changed": false
+  }
+}

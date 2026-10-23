@@ -1,0 +1,41 @@
+{
+  "scope": "Synthetic development iterations, not additional independent samples",
+  "initial_ported_suite": {
+    "tests": 185,
+    "failures": 4,
+    "errors": 1,
+    "reason": "Two retired kind-based assertions needed proof-requirement assertions; fixture selection errors now explicit; overflow fixture and minimum log-header budget corrected"
+  },
+  "first_new_focused": {
+    "tests": 23,
+    "failures": 1,
+    "errors": 1,
+    "reason": "Prune treated command producer metadata as an ID; fixed reference typing. Old-XML fixture initially predates task, adjusted to a real earlier retained attempt"
+  },
+  "intermediate_suite": {
+    "tests": 211,
+    "passed": true
+  },
+  "final_suite": {
+    "tests": 214,
+    "passed": true
+  },
+  "retired_tests": [
+    "five pinned-predecessor compatibility tests only; old released producer bridge no longer supported"
+  ],
+  "preserved_protections": [
+    "actual runtime failure",
+    "explicit support",
+    "permissions",
+    "input/environment/output/protocol identity",
+    "time applicability",
+    "independent provenance",
+    "privacy",
+    "ownership and bounded cleanup"
+  ],
+  "caveats": [
+    "First py_compile tried a non-writable default Python cache; subsequent commands used a task-specific temporary cache",
+    "One read-only diff command used a non-repository working directory; rerun in the source repository",
+    "No business tests, natural Agent trial, personal install or source release"
+  ]
+}

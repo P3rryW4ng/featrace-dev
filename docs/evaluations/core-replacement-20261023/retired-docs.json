@@ -1,0 +1,27 @@
+[
+  {
+    "path": "docs/designs/task-workflow-complete.md",
+    "sha256": "69ff9cda0632e9a66647827ea525247f79f9dd85a9ee7e2e206d9c99ffc2ac4f",
+    "retained_at": "fe508f0"
+  },
+  {
+    "path": "docs/designs/task-workflow-retirement.json",
+    "sha256": "f363c012efe58794fe5dbcf2cdf72bfa65b62d9ce24fd09fde4b44aff0002124",
+    "retained_at": "fe508f0"
+  },
+  {
+    "path": "docs/reviews/2026-10-22-record-growth-and-retrieval.md",
+    "sha256": "b2582416ea1792f0c69d2ab1892030cb927fa1ceff2a87244ff9e84cc093137f",
+    "retained_at": "fe508f0"
+  },
+  {
+    "path": "docs/reviews/2026-10-23-observation-freshness-and-scan-cost.md",
+    "sha256": "f2f232b4ee84d724438882c33066d890421a46931829818e67889d97b79ec70f",
+    "retained_at": "fe508f0"
+  },
+  {
+    "path": "docs/reviews/2026-10-23-ogfr8897-field-review.md",
+    "sha256": "36004cce34e20f6004e9b9645c725d2ed0e02da6b1145850a3f8e53100456002",
+    "retained_at": "fe508f0"
+  }
+]

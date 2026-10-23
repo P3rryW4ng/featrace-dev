@@ -88,7 +88,7 @@ class FullReplacementTests(TaskWorkflowTests):
         with self.assertRaisesRegex(ValueError,'MUTABLE_ENVIRONMENT'):self.refresh()
         c['cache']={'mode':'never','max_age_seconds':60};self.refresh();self.execute()
         self.assertFalse(self.execute()['reused']);self.support();self.assertTrue(w.view(self.root,self.ident)['eligible'])
-        doc=self.doc();doc['executions']['target']['at']=(datetime.now(timezone.utc)-timedelta(seconds=61)).isoformat();w.save(self.root,doc)
+        doc=self.doc();doc['facts'][doc['executions']['target']]['at']=(datetime.now(timezone.utc)-timedelta(seconds=61)).isoformat();w.save(self.root,doc)
         self.assertFalse(w.view(self.root,self.ident)['eligible'])
 
     def test_policy_standing_grant_applies_only_to_matching_scope_environment(self):
@@ -157,7 +157,7 @@ class FullReplacementTests(TaskWorkflowTests):
     def test_scoped_review_input_returns_current_fact_ids_not_other_task_history(self):
         self.execute();self.support();before=w.task_path(self.root,self.ident).read_bytes()
         proof=w.review_input(self.root,self.ident,'C1')
-        self.assertEqual(proof['facts'],[self.doc()['executions']['target']['id']]);self.assertEqual(proof['criterion'],'C1')
+        self.assertEqual(proof['facts'],[self.execution()['id']]);self.assertEqual(proof['criterion'],'C1')
         self.assertEqual(before,w.task_path(self.root,self.ident).read_bytes())
 
     def test_code_query_is_literal_current_source_only_with_explicit_paging(self):
@@ -168,10 +168,10 @@ class FullReplacementTests(TaskWorkflowTests):
 
     def test_fast_output_is_refused_without_exceeding_hard_log_cap(self):
         self.plan['checks'][0]['argv']=[sys.executable,'-c','import os;os.write(1,b"X"*65536)'];self.refresh()
-        with patch.object(w,'MAX_LOG',1024):
+        with patch.object(w,'MAX_LOG',4096):
             self.assertEqual(self.execute()['status'],'unavailable')
-        artifact=self.doc()['executions']['target']['artifact']
-        self.assertLessEqual((self.root/artifact['path']).stat().st_size,1024)
+        artifact=self.execution()['artifact']
+        self.assertLessEqual((self.root/artifact['path']).stat().st_size,4096)
         self.assertFalse(w.view(self.root,self.ident)['eligible'])
 
     def test_closed_stdout_does_not_evade_timeout(self):
@@ -231,7 +231,7 @@ class FullReplacementTests(TaskWorkflowTests):
     def test_status_hashes_shared_execution_inputs_once_not_per_criterion(self):
         self.plan['criteria']=[{'id':f'C{i}','expected':'Same synthetic target assertion','kind':'changed','inputs':['app.py']} for i in range(30)]
         self.plan['checks'][0]['covers']=[c['id'] for c in self.plan['criteria']];self.refresh();self.execute()
-        for c in self.plan['criteria']:w.assess(self.root,self.ident,c['id'],'supported','Same synthetic target fact')
+        for c in self.plan['criteria']:self.assess(c['id'],'supported','Same synthetic target fact')
         with patch.object(w.task_inputs,'signature',wraps=w.task_inputs.signature) as capture:
             self.assertTrue(w.view(self.root,self.ident)['eligible'])
             self.assertEqual(capture.call_count,1)
@@ -271,30 +271,32 @@ class FullReplacementTests(TaskWorkflowTests):
     def test_observation_survives_wording_revision_but_assessment_must_be_renewed(self):
         self.plan['checks']=[];self.refresh()
         self.observe('C1','runtime_observation',w.now(),'Synthetic fixture observation',['app.py'])
-        self.support();original=self.doc()['observations']['C1'].copy()
+        self.support();original=self.observation('C1').copy()
         self.plan['criteria'][0]['expected']='The same after label, clarified';self.refresh()
         self.assertFalse(w.view(self.root,self.ident)['eligible'])
         self.assertEqual(w.review_input(self.root,self.ident,'C1')['facts'],[original['id']])
         self.support();self.assertTrue(w.view(self.root,self.ident)['eligible'])
-        self.assertEqual(self.doc()['observations']['C1'],original)
+        self.assertEqual(self.observation('C1'),original)
 
     def test_authority_revision_invalidates_only_its_assessment_not_execution(self):
         (self.root/'prd.md').write_text('Label shall read after')
         self.plan['criteria'][0]['sources']=['prd.md']
         self.plan['criteria'].append({'id':'C2','expected':'Same label rendering from independent intent','kind':'changed','inputs':['app.py']})
         self.plan['checks'][0]['covers'].append('C2');self.refresh();self.execute();self.support()
-        w.assess(self.root,self.ident,'C2','supported','Same fixture assertion')
+        self.assess('C2','supported','Same fixture assertion')
         (self.root/'prd.md').write_text('Clarification: after is exact lowercase')
         self.refresh();status=w.view(self.root,self.ident)
         self.assertEqual({c['id']:c['status'] for c in status['items']},{'C1':'needs_review','C2':'supported'})
         self.assertTrue(self.execute()['reused']);self.assertEqual((self.root/'run-count').read_text(),'1')
 
-    def test_old_static_fact_never_becomes_runtime_by_changing_claim_kind(self):
+    def test_old_static_fact_does_not_satisfy_changed_runtime_requirement(self):
         self.plan['criteria'][0]['kind']='unaffected';self.plan['checks']=[];self.refresh()
         self.observe('C1','static_analysis',w.now(),'Synthetic no influence',['app.py']);self.support()
-        self.plan['criteria'][0]['kind']='changed';self.refresh()
-        self.assertEqual(w.review_input(self.root,self.ident,'C1')['facts'],[])
-        with self.assertRaisesRegex(ValueError,'CURRENT_FACT'):self.support()
+        self.plan['criteria'][0]['kind']='changed'
+        self.plan['criteria'][0]['proof']={'any_of':[['runtime_observation']], 'reason':'Changed requirement now promises actual rendering'}
+        self.refresh()
+        self.assertEqual(self.observation('C1')['kind'],'static_analysis')
+        with self.assertRaisesRegex(ValueError,'PROOF_REQUIREMENTS_UNMET'):self.support()
 
 # Prevent inherited cases being counted again in this module; expose only extension cases.
 for _name in list(dir(FullReplacementTests)):

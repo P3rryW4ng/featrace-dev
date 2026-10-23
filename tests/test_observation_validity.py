@@ -23,10 +23,10 @@ class ObservationValidityTests(TaskWorkflowTests):
         self.plan['criteria'][0]['validity']={'mode':'as_of'}
         self.plan['checks']=[];self.refresh()
         self.observe('C1','runtime_observation',w.now(),'Captured layout',['app.py']);self.support()
-        before=self.doc()['observations']['C1']
+        before=self.observation('C1')
         self.later(30*86400)
         self.assertTrue(w.view(self.root,self.ident)['eligible'])
-        self.assertEqual(self.doc()['observations']['C1'],before)
+        self.assertEqual(self.observation('C1'),before)
 
     def test_expired_current_observation_blocks_without_rewriting_fact(self):
         self.current();self.capture();self.support()
@@ -39,10 +39,10 @@ class ObservationValidityTests(TaskWorkflowTests):
         with self.assertRaisesRegex(ValueError,'DELIVERY_BLOCKED'):w.close(self.root,self.ident,[])
 
     def test_registration_or_reassessment_cannot_refresh_old_observation_time(self):
-        self.current();self.capture();self.support();original=self.doc()['observations']['C1']['observed_at']
+        self.current();self.capture();self.support();original=self.observation('C1')['observed_at']
         self.later(61)
-        with self.assertRaisesRegex(ValueError,'CURRENT_FACT_REQUIRED'):self.support()
-        self.assertEqual(self.doc()['observations']['C1']['observed_at'],original)
+        with self.assertRaisesRegex(ValueError,'CURRENT_FACT_REQUIRED|SUPPORT_SELECTION_REQUIRED'):self.support()
+        self.assertEqual(self.observation('C1')['observed_at'],original)
 
     def test_target_change_invalidates_fact_inside_time_window(self):
         self.current(600);self.capture();self.support()
@@ -62,12 +62,12 @@ class ObservationValidityTests(TaskWorkflowTests):
     def test_expired_failure_still_blocks_and_new_current_runtime_pass_resolves(self):
         self.current()
         self.observe('C1','runtime_observation',w.now(),'Synthetic failure',['app.py'],'failed',target='synthetic-current-environment')
-        original=self.doc()['runtime_failures']['C1']['id']
+        original=self.runtime_failure('C1')['id']
         self.later(61)
         self.assertIn('RUNTIME_FAILURE:C1',w.view(self.root,self.ident)['blockers'])
         self.capture();self.support()
         self.assertTrue(w.view(self.root,self.ident)['eligible'])
-        self.assertEqual(self.doc()['observations']['C1']['resolved_failure']['id'],original)
+        self.assertEqual(self.observation('C1')['resolved_failure'],original)
 
     def test_current_expiry_does_not_invalidate_independent_check(self):
         self.current()
@@ -75,7 +75,7 @@ class ObservationValidityTests(TaskWorkflowTests):
         self.plan['checks']=[{'id':'target','argv':[__import__('sys').executable,'check.py'],
                              'inputs':['app.py','check.py'],'covers':['C2'],'reason':'Local deterministic label',
                              'timeout':5,'environment':{'kind':'local','target':'local label'}}]
-        self.refresh();self.execute();w.assess(self.root,self.ident,'C2','supported','Actual local assertion')
+        self.refresh();self.execute();self.assess('C2','supported','Actual local assertion')
         self.capture();self.support();self.later(61)
         status=w.view(self.root,self.ident)
         self.assertEqual({x['id']:x['status'] for x in status['items']},{'C1':'needs_review','C2':'supported'})
@@ -87,7 +87,7 @@ class ObservationValidityTests(TaskWorkflowTests):
                'covers':['C1'],'reason':'Synthetic environment assertion','timeout':5,
                'environment':{'kind':'local','target':'synthetic-current-environment'}}
         self.plan['checks']=[check];self.refresh();self.execute();self.support()
-        doc=self.doc();doc['executions']['target']['started_at']=(datetime.now(timezone.utc)-timedelta(seconds=61)).isoformat()
+        doc=self.doc();doc['facts'][doc['executions']['target']]['started_at']=(datetime.now(timezone.utc)-timedelta(seconds=61)).isoformat()
         w.save(self.root,doc)
         self.assertEqual(w.facts(self.root,self.doc(),self.plan['criteria'][0]),[])
 

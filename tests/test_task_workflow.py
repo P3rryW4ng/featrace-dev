@@ -14,6 +14,11 @@ if not CORE.exists(): CORE=Path('/Users/mac/Entrepôt/featrace-dev/skills/dev/c
 sys.path.insert(0,str(CORE))
 import task_workflow as w
 
+def fixture_proofs(plan):
+    for c in plan['criteria']:
+        c.setdefault('proof',{'any_of':[['command'],['runtime_observation'],['static_analysis']],
+                             'reason':'Synthetic fixture has explicit evidence chosen by its individual test'})
+
 class TaskWorkflowTests(unittest.TestCase):
     def setUp(self):
         self.temp=tempfile.TemporaryDirectory();self.addCleanup(self.temp.cleanup)
@@ -34,6 +39,7 @@ class TaskWorkflowTests(unittest.TestCase):
             'checks':[{'id':'target','argv':[sys.executable,'check.py'],'inputs':['app.py','check.py'],
                 'covers':['C1'],'reason':'Executable assertion for this label only','timeout':5,'environment':{'target':'synthetic local Python','kind':'local'}}],
             'review':{'independent':False,'reason':'Local presentation; no shared behavior changed'}}
+        fixture_proofs(self.plan)
         w.set_plan(self.root,self.ident,self.plan)
 
     def git(self,*args):
@@ -42,9 +48,21 @@ class TaskWorkflowTests(unittest.TestCase):
 
     def doc(self):return w.load(self.root,self.ident)
     def execute(self):return w.run_check(self.root,self.ident,'target')
-    def support(self):return w.assess(self.root,self.ident,'C1','supported','Actual selected assertion covers this criterion.')
+    def execution(self):
+        d=self.doc();return d['facts'][d['executions']['target']]
+    def observation(self,c):
+        d=self.doc();return d['facts'][d['observations'][c]]
+    def runtime_failure(self,c):
+        d=self.doc();return d['facts'][d['runtime_failures'][c]]
+    def assess(self,c,*args,**kwargs):
+        criterion=next(x for x in self.doc()['plan']['criteria'] if x['id']==c)
+        kwargs.setdefault('fact_ids',w.facts(self.root,self.doc(),criterion))
+        return w.assess(self.root,self.ident,c,*args,**kwargs)
+    def support(self):return self.assess('C1','supported','Actual selected assertion covers this criterion.')
     def close(self):self.execute();self.support();return w.close(self.root,self.ident,['Synthetic local environment only'])
-    def refresh(self):w.set_plan(self.root,self.ident,self.plan)
+    def refresh(self):
+        fixture_proofs(self.plan)
+        w.set_plan(self.root,self.ident,self.plan)
     def observe(self,*args,**kwargs):
         kwargs.setdefault("target","synthetic current fixture, not a real device")
         return w.observe(self.root,self.ident,*args,**kwargs)
@@ -121,7 +139,7 @@ class TaskWorkflowTests(unittest.TestCase):
     def test_failed_check_cannot_be_turned_green_by_assessment(self):
         (self.root/'app.py').write_text('label="before"\n');self.refresh()
         self.assertEqual(self.execute()['status'],'failed')
-        with self.assertRaisesRegex(ValueError,'CURRENT_FACT'):self.support()
+        with self.assertRaisesRegex(ValueError,'CURRENT_FACT|SUPPORT_SELECTION_REQUIRED'):self.support()
         with self.assertRaisesRegex(ValueError,'DELIVERY_BLOCKED'):w.close(self.root,self.ident,[])
 
     def test_failed_check_cannot_be_removed_from_plan_to_escape_failure(self):
@@ -135,7 +153,7 @@ class TaskWorkflowTests(unittest.TestCase):
         self.support();self.assertFalse(w.view(self.root,self.ident)['eligible'])
         self.observe('C1','runtime_observation',w.now(),'Synthetic targeted verification passed',['app.py'])
         self.support();self.assertTrue(w.view(self.root,self.ident)['eligible'])
-        self.assertEqual(self.doc()['observations']['C1']['previous_failure']['status'],'failed')
+        self.assertEqual(self.doc()['facts'][self.observation('C1')['previous_failure']]['status'],'failed')
 
     def test_failed_observation_cannot_be_removed_with_criterion(self):
         self.observe('C1','runtime_observation',w.now(),'Synthetic failure',['app.py'],'failed')
@@ -154,13 +172,13 @@ class TaskWorkflowTests(unittest.TestCase):
 
     def test_targeted_pass_resolves_failure_without_erasing_original_artifact(self):
         (self.root/'app.py').write_text('label="before"\n');self.refresh();failed=self.execute()
-        old=self.doc()['executions']['target']['artifact']['path']
+        old=self.execution()['artifact']['path']
         (self.root/'app.py').write_text('label="after"\n');self.refresh();self.close()
         self.assertTrue((self.root/old).exists())
-        self.assertEqual(self.doc()['executions']['target']['previous_failure']['id'],failed['execution'])
+        self.assertEqual(self.execution()['previous_failure'],failed['execution'])
 
     def test_log_corruption_prevents_reuse(self):
-        self.execute();ref=self.doc()['executions']['target']['artifact'];(self.root/ref['path']).write_text('tampered')
+        self.execute();ref=self.execution()['artifact'];(self.root/ref['path']).write_text('tampered')
         self.assertFalse(self.execute()['reused'])
 
     def test_timeout_records_unavailable(self):
@@ -173,9 +191,9 @@ class TaskWorkflowTests(unittest.TestCase):
         def spawn(command,**kwargs):return child if command==argv else real(command,**kwargs)
         with patch.object(w.subprocess,'Popen',side_effect=spawn),patch.object(w.os,'killpg') as kill:
             with self.assertRaises(KeyboardInterrupt):self.execute()
-        kill.assert_called_once_with(child.pid,w.signal.SIGKILL);child.wait.assert_called()
-        self.assertEqual(self.doc()['executions']['target']['status'],'unavailable')
-        self.assertEqual(self.doc()['executions']['target']['reason'],'EXECUTION_INTERRUPTED')
+        kill.assert_called_once_with(child.pid,w.task_execution.signal.SIGKILL);child.wait.assert_called()
+        self.assertEqual(self.execution()['status'],'unavailable')
+        self.assertEqual(self.execution()['reason'],'EXECUTION_INTERRUPTED')
 
     def test_monitor_io_error_reaps_owned_child_and_records_unavailable(self):
         real=w.subprocess.Popen;child=MagicMock();child.pid=999999;child.poll.side_effect=OSError('synthetic monitor failure')
@@ -183,21 +201,23 @@ class TaskWorkflowTests(unittest.TestCase):
         def spawn(command,**kwargs):return child if command==argv else real(command,**kwargs)
         with patch.object(w.subprocess,'Popen',side_effect=spawn),patch.object(w.os,'killpg') as kill:
             result=self.execute()
-        kill.assert_called_once_with(child.pid,w.signal.SIGKILL);child.wait.assert_called()
+        kill.assert_called_once_with(child.pid,w.task_execution.signal.SIGKILL);child.wait.assert_called()
         self.assertEqual(result['status'],'unavailable')
 
     def test_input_drift_during_execution_is_not_a_pass(self):
         self.plan['checks'][0]['argv']=[sys.executable,'-c','from pathlib import Path;Path("app.py").write_text("after drift")'];self.refresh()
         self.assertEqual(self.execute()['status'],'unavailable')
 
-    def test_static_analysis_does_not_prove_changed_runtime(self):
-        with self.assertRaisesRegex(ValueError,'STATIC_NOT_RUNTIME'):
-            self.observe('C1','static_analysis',w.now(),'Only inspected code',['app.py'])
+    def test_static_analysis_does_not_satisfy_runtime_proof(self):
+        self.plan['criteria'][0]['proof']={'any_of':[['runtime_observation']], 'reason':'Actual new rendering needs observation'};self.refresh()
+        fact=self.observe('C1','static_analysis',w.now(),'Only inspected code',['app.py'])
+        with self.assertRaisesRegex(ValueError,'PROOF_REQUIREMENTS_UNMET'):
+            w.assess(self.root,self.ident,'C1','supported','Not rendering proof',fact_ids=[fact['fact']])
 
     def test_static_unaffected_claim_needs_no_extra_runtime(self):
         self.plan['criteria'].append({'id':'C2','expected':'Existing callbacks unaffected','kind':'unaffected','inputs':['app.py']});self.refresh()
         self.observe('C2','static_analysis',w.now(),'Fixture diff excludes callbacks; no runtime claim',['app.py'])
-        w.assess(self.root,self.ident,'C2','supported','Static exclusion adequate for unchanged behavior')
+        self.assess('C2','supported','Static exclusion adequate for unchanged behavior')
         self.close();self.assertEqual((self.root/'run-count').read_text(),'1')
 
     def test_future_observation_refuses(self):
@@ -224,7 +244,7 @@ class TaskWorkflowTests(unittest.TestCase):
     def test_fake_independent_provenance_refuses(self):
         self.execute();path=self.root/'.featrace/proof.json';path.write_text('{}')
         with self.assertRaisesRegex(ValueError,'PROVENANCE_INVALID'):
-            w.assess(self.root,self.ident,'C1','supported','claimed independent',True,'.featrace/proof.json')
+            self.assess('C1','supported','claimed independent',True,'.featrace/proof.json')
 
     def test_independent_structural_provenance_binds_exact_facts(self):
         self.plan['review']={'independent':True,'reason':'Fixture-only structural check'};self.refresh();self.execute()
@@ -233,7 +253,7 @@ class TaskWorkflowTests(unittest.TestCase):
                'facts':w.facts(self.root,doc,c),'verdict':'supported','fresh_context':True,
                'host':'synthetic host','context_id':'synthetic-context','reviewer':'synthetic reviewer','reason':'Synthetic structure only, not a real Agent review'}
         path=self.root/'.featrace/proof.json';path.write_text(json.dumps(proof))
-        w.assess(self.root,self.ident,'C1','supported','Fixture provenance validates fields only',True,'.featrace/proof.json')
+        self.assess('C1','supported','Fixture provenance validates fields only',True,'.featrace/proof.json')
         self.assertTrue(w.view(self.root,self.ident)['eligible'])
 
     def test_closed_result_is_as_of_not_recertification_of_future_code(self):
@@ -261,7 +281,7 @@ class TaskWorkflowTests(unittest.TestCase):
 
     def test_runtime_target_and_registration_revision_are_distinct(self):
         self.observe('C1','runtime_observation',w.now(),'Synthetic local observation',['app.py'])
-        fact=self.doc()['observations']['C1']
+        fact=self.observation('C1')
         self.assertIn('observed_target',fact);self.assertIn('git_head_at_registration',fact)
         self.assertNotIn('tested_revision',fact)
 
