@@ -1,0 +1,11 @@
+{
+  "predecessor": "v0.24.0",
+  "pinned_bytes_match": true,
+  "old_reader_refuses_corrected_record": true,
+  "physical_execution_count": 1,
+  "same_execution_id": true,
+  "original_execution_fields_unchanged": true,
+  "original_receipt_preserved": true,
+  "corrected_receipt_links_original": true,
+  "business_operations": false
+}

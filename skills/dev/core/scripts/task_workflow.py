@@ -22,6 +22,15 @@ import task_policy
 from zoneinfo import ZoneInfo
 
 CONTRACT = 1
+CORRECTION_CONTRACT = 2
+MAX_CORRECTIONS = 8
+# Only this reviewed predecessor's identity formula is compatible. Never accept caller hashes.
+CORRECTION_PREDECESSOR = {
+    'id':'v0.24.0', 'source_commit':'7e9ea174617b2e3854c38aaadaee7a776f7a7422',
+    'runner':{
+        'task_workflow.py':'5c3724651cb1201628d6f8238740cc8b030007fb92d11b4d9ca451852f8219ae',
+        'task_inputs.py':'9143dc945e478d069b501094b64265d519ad91c4519b0c09e4c825886326d3a8',
+        'task_policy.py':'ffc5a088713fe820e8d1f814bcb894713b27a1e9fedf6ad9bc4c6e7832df09b6'}}
 MAX_RECORD = 256 * 1024
 MAX_LOG = 16 * 1024 * 1024
 MAX_OUTPUT = 16384
@@ -103,8 +112,19 @@ def read_json(path):
 
 def load(root, ident):
     doc = read_json(task_path(root, ident))
-    if doc.get('task_contract') != CONTRACT or doc.get('id') != ident: fail('TASK_CONTRACT_UNSUPPORTED')
+    if doc.get('task_contract') not in (CONTRACT,CORRECTION_CONTRACT) or doc.get('id') != ident: fail('TASK_CONTRACT_UNSUPPORTED')
     if doc.get('checksum') != digest({k:v for k,v in doc.items() if k != 'checksum'}): fail('TASK_CHANGED')
+    if doc['task_contract']==CORRECTION_CONTRACT:
+        entries=doc.get('corrections')
+        if (not isinstance(entries,list) or not 1<=len(entries)<=MAX_CORRECTIONS
+                or doc.get('execution_identity_profiles',[])!=[CORRECTION_PREDECESSOR['id']]):fail('CORRECTION_CONTRACT_INVALID')
+        for entry in entries:
+            if (not isinstance(entry,dict) or entry.get('status') not in ('open','complete')
+                    or not text(entry.get('reason')) or not text(entry.get('authority'))
+                    or not isinstance(entry.get('affected'),list) or not entry['affected']
+                    or entry.get('prior_receipt_digest')!=digest(entry.get('prior_receipt'))):fail('CORRECTION_CONTRACT_INVALID')
+        if any(e['status']!='complete' for e in entries[:-1]):fail('CORRECTION_CONTRACT_INVALID')
+        if (doc.get('state')=='complete')!=(entries[-1]['status']=='complete'):fail('CORRECTION_CONTRACT_INVALID')
     return doc
 
 def save(root, doc):
@@ -136,6 +156,38 @@ def locked(root, ident, control=False):
 
 def mutable(doc):
     if doc['state'] == 'complete': fail('TASK_ALREADY_COMPLETE')
+
+
+def open_correction(doc):
+    entries=doc.get('corrections',[])
+    return entries[-1] if entries and entries[-1]['status']=='open' else None
+
+
+def correct(root,ident,affected,reason,authority):
+    if (not text(reason) or not text(authority) or not isinstance(affected,list) or not affected
+            or any(not isinstance(x,str) for x in affected) or len(set(affected))!=len(affected)):
+        fail('CORRECTION_SCOPE_REQUIRED')
+    with locked(root,ident):
+        doc=load(root,ident)
+        if doc['state']!='complete':fail('CORRECTION_REQUIRES_COMPLETE')
+        if not doc.get('plan') or 'executions' not in doc:fail('CORRECTION_SOURCE_EXPIRED')
+        validate_plan(root,doc['plan']);task_policy.check_local(root,git)
+        criteria={c['id']:c for c in doc['plan']['criteria']}
+        if set(affected)-set(criteria):fail('CORRECTION_SCOPE_REQUIRED')
+        entries=doc.setdefault('corrections',[])
+        if len(entries)>=MAX_CORRECTIONS:fail('CORRECTION_LIMIT')
+        entry={'id':uuid.uuid4().hex,'status':'open','opened_at':now(),'reason':reason,'authority':authority,
+               'affected':sorted(affected),'prior_receipt':doc['receipt'],'prior_receipt_digest':digest(doc['receipt']),
+               'prior_claims':{c:{'criterion':criteria[c],'assessment':doc['assessments'].get(c),
+                                  'observation':doc['observations'].get(c)} for c in affected},
+               'prior_checks':{c['id']:doc['executions'].get(c['id']) for c in doc['plan']['checks'] if set(c['covers'])&set(affected)}}
+        entries.append(entry)
+        for c in affected:doc['assessments'].pop(c,None)
+        doc['task_contract']=CORRECTION_CONTRACT;doc['state']='correcting'
+        doc['execution_identity_profiles']=[CORRECTION_PREDECESSOR['id']]
+        save(root,doc)
+    return {'id':ident,'state':'correcting','correction':entry['id'],'affected':entry['affected'],
+            'boundary':'Original receipt/facts retained. Reassess selected claims; legacy execution identity is checked against actual current inputs, not renewed.'}
 
 def file_identity(root, name, required=False):
     path = safe(root, name)
@@ -286,6 +338,8 @@ def set_plan(root,ident,plan):
     with locked(root,ident):
         doc=load(root,ident);mutable(doc)
         selected={c['id'] for c in plan['checks']};criteria={c['id'] for c in plan['criteria']}
+        correction=open_correction(doc)
+        if correction and set(correction['affected'])-criteria:fail('CORRECTION_CLAIM_REMOVED')
         if any(c not in selected and result['status']!='passed' for c,result in doc['executions'].items()):
             fail('UNRESOLVED_CHECK_REMOVED')
         if set(doc.get('runtime_failures',{}))-criteria:fail('UNRESOLVED_OBSERVATION_REMOVED')
@@ -293,7 +347,7 @@ def set_plan(root,ident,plan):
             fail('UNRESOLVED_OBSERVATION_REMOVED')
         stamp,unexplained=analysis(root,doc,plan)
         doc['analysis_inputs']=files(root,set(plan['scope'])|set(plan['constraints']))
-        doc['plan']=plan;doc['analysis_digest']=stamp;doc['state']='planned';save(root,doc)
+        doc['plan']=plan;doc['analysis_digest']=stamp;doc['state']='correcting' if correction else 'planned';save(root,doc)
     return {'id':ident,'state':'planned','unknowns':plan['unknowns'],'outside_scope_change_count':len(unexplained),
             'boundary':'Scope is declared task ownership, not all branch changes. Inspect actually related callers; outside changes do not certify no influence.'}
 
@@ -332,7 +386,7 @@ def check_policy(root,doc,check,enforce=False):
                                  check.get('input_sets',[]))
 
 
-def check_stamp(root,doc,check):
+def check_identity_payload(root,doc,check):
     command=check['argv'][0]
     if '/' in command:executable=Path(command) if Path(command).is_absolute() else root/command
     else:
@@ -342,11 +396,25 @@ def check_stamp(root,doc,check):
         executable=Path(found)
     executable=executable.resolve()
     runner=file_identity(executable.parent,executable.name,True)
-    return digest({'argv':check['argv'],'inputs':task_inputs.signature(root,check['inputs'],check.get('input_sets',[]),check.get('external_inputs',[]),check.get('env_keys',[])),
+    return {'argv':check['argv'],'inputs':task_inputs.signature(root,check['inputs'],check.get('input_sets',[]),check.get('external_inputs',[]),check.get('env_keys',[])),
                    'executable':{'path':str(executable),'identity':runner},
                    'environment':check['environment'],'constraints':files(root,selected_constraints(doc['plan'],check=check),True),
                    'policy':check_policy(root,doc,check),
-                   'runner':{p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in (Path(__file__),Path(task_inputs.__file__),Path(task_policy.__file__))}})
+                   'runner':{p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in (Path(__file__),Path(task_inputs.__file__),Path(task_policy.__file__))}}
+
+
+def check_stamp(root,doc,check):
+    return digest(check_identity_payload(root,doc,check))
+
+
+def execution_profile(root,doc,check,record,payload=None):
+    payload=check_identity_payload(root,doc,check) if payload is None else payload
+    if record.get('input_digest')==digest(payload):return 'current'
+    if (doc.get('task_contract')==CORRECTION_CONTRACT and doc.get('corrections')
+            and doc.get('execution_identity_profiles')==[CORRECTION_PREDECESSOR['id']]):
+        previous={**payload,'runner':CORRECTION_PREDECESSOR['runner']}
+        if record.get('input_digest')==digest(previous):return CORRECTION_PREDECESSOR['id']
+    return None
 
 def criterion_stamp(root,doc,c):
     return digest({'criterion':c,'inputs':files(root,c['inputs']),'authority':files(root,c.get('sources',[]),True),
@@ -395,10 +463,12 @@ def run_check(root,ident,check_id,investigate=False):
         ready(root,doc,check=check,investigate=investigate)
         check_policy(root,doc,check,True)
         stamp=check_stamp(root,doc,check);previous=doc['executions'].get(check_id)
+        profile=('current' if previous and previous['input_digest']==stamp else
+                 execution_profile(root,doc,check,previous) if previous and doc.get('task_contract')==CORRECTION_CONTRACT else None)
         current_use_expired=bool(previous and any(fact_applicability(c,previous,check['environment'])=='EXPIRED'
                                                  for c in doc['plan']['criteria'] if c['id'] in check['covers']))
-        if previous and not current_use_expired and previous['status']=='passed' and previous['input_digest']==stamp and artifact_ok(root,previous['artifact']) and reusable(check,previous):
-            return {'check':check_id,'status':'passed','reused':True,'execution':previous['id']}
+        if previous and not current_use_expired and previous['status']=='passed' and profile and artifact_ok(root,previous['artifact']) and reusable(check,previous):
+            return {'check':check_id,'status':'passed','reused':True,'execution':previous['id'],'identity_profile':profile}
         aid=uuid.uuid4().hex;rel='.featrace/artifacts/'+ident+'/'+aid+'.log';path=safe(root,rel)
         path.parent.mkdir(parents=True,exist_ok=True)
         used=sum(p.stat().st_size for p in path.parent.iterdir() if p.is_file())
@@ -536,7 +606,7 @@ def facts(root,doc,c,checked=None):
         if result and fact_applicability(c,result,check['environment']) not in ('UNDECLARED','AS_OF','CURRENT'):continue
         if checked is not None:
             if checked.get(check['id']):out.append(result['id'])
-        elif result and result['status']=='passed' and result['input_digest']==check_stamp(root,doc,check) and artifact_ok(root,result['artifact']) and timely(check,result):out.append(result['id'])
+        elif result and result['status']=='passed' and execution_profile(root,doc,check,result) and artifact_ok(root,result['artifact']) and timely(check,result):out.append(result['id'])
     return sorted(out)
 
 def assess(root,ident,criterion,verdict,reason,independent=False,provenance=None):
@@ -569,7 +639,8 @@ def view(root,ident,offset=0,limit=20,blocker_offset=0):
     doc=load(root,ident)
     if doc['state']=='complete':
         return {'id':ident,'state':'complete','as_of':{k:v for k,v in doc['receipt'].items() if k!='limitations'},
-                'limitation_count':len(doc['receipt']['limitations']),'details':'detail --section receipt', 'current_revision_certified':False}
+                'limitation_count':len(doc['receipt']['limitations']),'details':'detail --section receipt',
+                'correction_count':len(doc.get('corrections',[])), 'current_revision_certified':False}
     blockers=[];rows=[];checked={}
     try:ready(root,doc)
     except (ValueError,OSError):blockers.append('SCOPE_NOT_READY')
@@ -577,7 +648,7 @@ def view(root,ident,offset=0,limit=20,blocker_offset=0):
     if doc['plan']:
         for check in doc['plan']['checks']:
             result=doc['executions'].get(check['id'])
-            try:current=bool(result and result['input_digest']==check_stamp(root,doc,check) and artifact_ok(root,result['artifact']) and timely(check,result))
+            try:current=bool(result and execution_profile(root,doc,check,result) and artifact_ok(root,result['artifact']) and timely(check,result))
             except (ValueError,OSError):current=False
             checked[check['id']]=bool(current and result['status']=='passed')
             if not checked[check['id']]:blockers.append('CHECK:'+check['id'])
@@ -602,6 +673,8 @@ def view(root,ident,offset=0,limit=20,blocker_offset=0):
             'next_blocker_offset':blocker_offset+25 if blocker_offset+25<len(blockers) else None,
             'request_preview':doc['request'][:500],'request_complete':len(doc['request'])<=500,
             'limitation_count':len(doc['limitations']),'eligible':not blockers,
+            'correction':({'id':open_correction(doc)['id'],'affected_count':len(open_correction(doc)['affected']),
+                           'details':'detail --section corrections'} if open_correction(doc) else None),
             'boundary':'Local structure/identity checked; semantic coverage and host independence require real review.'}
 
 def _close(root,ident,limitations):
@@ -618,6 +691,12 @@ def _close(root,ident,limitations):
                         'retention':{k:task_policy.load(root)[k] for k in ('retention_days','timezone','cleanup','handoff')},
                         'criteria':len(doc['plan']['criteria']),
                         'limitations':limitations,'evidence_retention':'task-local; no permanent replay promised'}
+        correction=open_correction(doc)
+        if correction:
+            doc['receipt']['corrects_receipt']=correction['prior_receipt_digest']
+            doc['receipt']['correction_id']=correction['id']
+            correction['status']='complete';correction['completed_at']=doc['receipt']['completed_at']
+            correction['replacement_receipt_digest']=digest(doc['receipt'])
         doc['state']='complete';save(root,doc)
         return doc['receipt']
 
@@ -662,11 +741,15 @@ def cleanup(root,ident,apply=False,timezone_name='UTC',forget=False,handoff=None
         if apply:
             # Keep a valid completed task if cleanup is interrupted; update receipt BEFORE deleting logs.
             receipt=dict(doc['receipt']);receipt['evidence_retention']='local logs expired by explicit cleanup'
-            save(root,{'task_contract':CONTRACT,'id':ident,'state':'complete','receipt':receipt,'attachments':doc.get('attachments',{})})
+            retained={'task_contract':doc['task_contract'],'id':ident,'state':'complete','receipt':receipt}
+            if doc.get('corrections'):
+                retained['corrections']=[{k:v for k,v in e.items() if k not in ('prior_claims','prior_checks')} for e in doc['corrections']]
+                retained['execution_identity_profiles']=doc['execution_identity_profiles']
+            save(root,{**retained,'attachments':doc.get('attachments',{})})
             for path in candidates:path.unlink()
             if folder.exists():folder.rmdir()
             if forget:task_path(root,ident).unlink()
-            else:save(root,{'task_contract':CONTRACT,'id':ident,'state':'complete','receipt':receipt})
+            else:save(root,retained)
         return result
 
 def locate(root,query,offset=0,limit=20):
@@ -775,7 +858,7 @@ def detail(root,ident,section,criterion=None,offset=0,limit=4000):
                   'observation_applicability':fact_applicability(c,doc['observations'][criterion]) if criterion in doc['observations'] else None,
                   'runtime_failure':doc.get('runtime_failures',{}).get(criterion),
                   'executions':{k:v for k,v in doc['executions'].items() if k in [x['id'] for x in doc['plan']['checks'] if criterion in x['covers']]}}
-    elif section in ('request','plan','receipt','limitations'):value=doc.get(section)
+    elif section in ('request','plan','receipt','limitations','corrections'):value=doc.get(section)
     else:fail('DETAIL_SECTION_INVALID')
     body=json.dumps(value,ensure_ascii=False,sort_keys=True)
     # UTF-8 bytes are bounded even for four-byte codepoints.
@@ -833,7 +916,7 @@ def code_query(root,query,offset=0,limit=20):
 
 def main():
     parser=Parser(description=__doc__)
-    parser.add_argument('action',choices=['begin','plan','run','observe','assess','status','close','cleanup','locate','list','policy','maintain','detail','review-input','code','attach','storage'])
+    parser.add_argument('action',choices=['begin','plan','run','observe','assess','status','close','correct','cleanup','locate','list','policy','maintain','detail','review-input','code','attach','storage'])
     parser.add_argument('root');parser.add_argument('id',nargs='?')
     parser.add_argument('--json');parser.add_argument('--request');parser.add_argument('--check');parser.add_argument('--criterion')
     parser.add_argument('--kind');parser.add_argument('--observed-at');parser.add_argument('--actual')
@@ -844,6 +927,7 @@ def main():
     parser.add_argument('--limitation',action='append',default=[]);parser.add_argument('--offset',type=int,default=0);parser.add_argument('--limit',type=int,default=20)
     parser.add_argument('--blocker-offset',type=int,default=0);parser.add_argument('--apply',action='store_true');parser.add_argument('--timezone',default='UTC')
     parser.add_argument('--forget',action='store_true');parser.add_argument('--handoff')
+    parser.add_argument('--affected',action='append',default=[]);parser.add_argument('--authority')
     a=parser.parse_args();root=project(a.root)
     if a.action=='policy':out=task_policy.prepare(root,read_json(Path(a.json)),git)
     elif a.action=='storage':out=storage(root,a.offset,a.limit)
@@ -857,6 +941,7 @@ def main():
     elif a.action=='attach':out=attach(root,a.id,a.file)
     elif a.action=='observe':out=observe(root,a.id,a.criterion,a.kind,a.observed_at,a.actual,a.evidence,a.status,a.target)
     elif a.action=='assess':out=assess(root,a.id,a.criterion,a.verdict,a.reason,a.independent,a.provenance)
+    elif a.action=='correct':out=correct(root,a.id,a.affected,a.reason,a.authority)
     elif a.action=='status':out=view(root,a.id,a.offset,a.limit,a.blocker_offset)
     elif a.action=='close':
         receipt=close(root,a.id,a.limitation);out={'id':a.id,'state':'complete','completed_at':receipt['completed_at'],'limitation_count':len(receipt['limitations']),'details':'detail --section receipt'}

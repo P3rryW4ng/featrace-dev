@@ -1,0 +1,9 @@
+{
+  "exit_code": 0,
+  "seconds": 59.159076166000006,
+  "started_at": "2026-10-23T08:05:55.461962+00:00",
+  "finished_at": "2026-10-23T08:06:54.621655+00:00",
+  "inputs": 24,
+  "inputs_unchanged": true,
+  "scope": "Current kernel with bounded closed-task correction and exact-input pinned predecessor identity; synthetic tests only, no business/Gradle/device/Agent execution."
+}

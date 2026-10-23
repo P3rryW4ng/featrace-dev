@@ -1,0 +1,89 @@
+test_cleanup_refuses_open_correction_and_preserves_closed_correction_receipt (test_task_correction.TaskCorrectionTests) ... ERROR
+test_compacted_task_cannot_be_reopened_without_original_inputs (test_task_correction.TaskCorrectionTests) ... ERROR
+test_correction_history_has_bound_and_does_not_silently_discard (test_task_correction.TaskCorrectionTests) ... ERROR
+test_correction_keeps_receipt_and_only_requires_selected_reassessment (test_task_correction.TaskCorrectionTests) ... ERROR
+test_correction_refuses_unclosed_unknown_selection_and_missing_authority (test_task_correction.TaskCorrectionTests) ... ERROR
+test_known_predecessor_identity_does_not_renew_fact_or_hide_input_change (test_task_correction.TaskCorrectionTests) ... ERROR
+test_open_correction_cannot_drop_affected_claim (test_task_correction.TaskCorrectionTests) ... ERROR
+test_refreshed_plan_keeps_correction_state_and_real_failures_block (test_task_correction.TaskCorrectionTests) ... ERROR
+
+======================================================================
+ERROR: test_cleanup_refuses_open_correction_and_preserves_closed_correction_receipt (test_task_correction.TaskCorrectionTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/mac/Documents/Codex/2026-09-16/https-chatgpt-com-s-cx-6aaa36eed1208191be4fa6502194e3e2/outputs/correction-20261023/stage/tests/test_task_correction.py", line 67, in test_cleanup_refuses_open_correction_and_preserves_closed_correction_receipt
+    original=self.completed_two_claims();self.correct()
+  File "/Users/mac/Documents/Codex/2026-09-16/https-chatgpt-com-s-cx-6aaa36eed1208191be4fa6502194e3e2/outputs/correction-20261023/stage/tests/test_task_correction.py", line 19, in correct
+    return w.correct(self.root,self.ident,criteria or ['C1'],'Wrong evidence attribution','Synthetic user decision')
+AttributeError: module 'task_workflow' has no attribute 'correct'
+
+======================================================================
+ERROR: test_compacted_task_cannot_be_reopened_without_original_inputs (test_task_correction.TaskCorrectionTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/mac/Documents/Codex/2026-09-16/https-chatgpt-com-s-cx-6aaa36eed1208191be4fa6502194e3e2/outputs/correction-20261023/stage/tests/test_task_correction.py", line 63, in test_compacted_task_cannot_be_reopened_without_original_inputs
+    with self.assertRaisesRegex(ValueError,'CORRECTION_SOURCE_EXPIRED'):self.correct()
+  File "/Users/mac/Documents/Codex/2026-09-16/https-chatgpt-com-s-cx-6aaa36eed1208191be4fa6502194e3e2/outputs/correction-20261023/stage/tests/test_task_correction.py", line 19, in correct
+    return w.correct(self.root,self.ident,criteria or ['C1'],'Wrong evidence attribution','Synthetic user decision')
+AttributeError: module 'task_workflow' has no attribute 'correct'
+
+======================================================================
+ERROR: test_correction_history_has_bound_and_does_not_silently_discard (test_task_correction.TaskCorrectionTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/mac/Documents/Codex/2026-09-16/https-chatgpt-com-s-cx-6aaa36eed1208191be4fa6502194e3e2/outputs/correction-20261023/stage/tests/test_task_correction.py", line 90, in test_correction_history_has_bound_and_does_not_silently_discard
+    for _ in range(w.MAX_CORRECTIONS):
+AttributeError: module 'task_workflow' has no attribute 'MAX_CORRECTIONS'
+
+======================================================================
+ERROR: test_correction_keeps_receipt_and_only_requires_selected_reassessment (test_task_correction.TaskCorrectionTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/mac/Documents/Codex/2026-09-16/https-chatgpt-com-s-cx-6aaa36eed1208191be4fa6502194e3e2/outputs/correction-20261023/stage/tests/test_task_correction.py", line 22, in test_correction_keeps_receipt_and_only_requires_selected_reassessment
+    original=self.completed_two_claims();self.correct()
+  File "/Users/mac/Documents/Codex/2026-09-16/https-chatgpt-com-s-cx-6aaa36eed1208191be4fa6502194e3e2/outputs/correction-20261023/stage/tests/test_task_correction.py", line 19, in correct
+    return w.correct(self.root,self.ident,criteria or ['C1'],'Wrong evidence attribution','Synthetic user decision')
+AttributeError: module 'task_workflow' has no attribute 'correct'
+
+======================================================================
+ERROR: test_correction_refuses_unclosed_unknown_selection_and_missing_authority (test_task_correction.TaskCorrectionTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/mac/Documents/Codex/2026-09-16/https-chatgpt-com-s-cx-6aaa36eed1208191be4fa6502194e3e2/outputs/correction-20261023/stage/tests/test_task_correction.py", line 42, in test_correction_refuses_unclosed_unknown_selection_and_missing_authority
+    with self.assertRaisesRegex(ValueError,'CORRECTION_REQUIRES_COMPLETE'):self.correct()
+  File "/Users/mac/Documents/Codex/2026-09-16/https-chatgpt-com-s-cx-6aaa36eed1208191be4fa6502194e3e2/outputs/correction-20261023/stage/tests/test_task_correction.py", line 19, in correct
+    return w.correct(self.root,self.ident,criteria or ['C1'],'Wrong evidence attribution','Synthetic user decision')
+AttributeError: module 'task_workflow' has no attribute 'correct'
+
+======================================================================
+ERROR: test_known_predecessor_identity_does_not_renew_fact_or_hide_input_change (test_task_correction.TaskCorrectionTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/mac/Documents/Codex/2026-09-16/https-chatgpt-com-s-cx-6aaa36eed1208191be4fa6502194e3e2/outputs/correction-20261023/stage/tests/test_task_correction.py", line 78, in test_known_predecessor_identity_does_not_renew_fact_or_hide_input_change
+    payload=w.check_identity_payload(self.root,doc,check)
+AttributeError: module 'task_workflow' has no attribute 'check_identity_payload'
+
+======================================================================
+ERROR: test_open_correction_cannot_drop_affected_claim (test_task_correction.TaskCorrectionTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/mac/Documents/Codex/2026-09-16/https-chatgpt-com-s-cx-6aaa36eed1208191be4fa6502194e3e2/outputs/correction-20261023/stage/tests/test_task_correction.py", line 48, in test_open_correction_cannot_drop_affected_claim
+    self.completed_two_claims();self.correct()
+  File "/Users/mac/Documents/Codex/2026-09-16/https-chatgpt-com-s-cx-6aaa36eed1208191be4fa6502194e3e2/outputs/correction-20261023/stage/tests/test_task_correction.py", line 19, in correct
+    return w.correct(self.root,self.ident,criteria or ['C1'],'Wrong evidence attribution','Synthetic user decision')
+AttributeError: module 'task_workflow' has no attribute 'correct'
+
+======================================================================
+ERROR: test_refreshed_plan_keeps_correction_state_and_real_failures_block (test_task_correction.TaskCorrectionTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/mac/Documents/Codex/2026-09-16/https-chatgpt-com-s-cx-6aaa36eed1208191be4fa6502194e3e2/outputs/correction-20261023/stage/tests/test_task_correction.py", line 53, in test_refreshed_plan_keeps_correction_state_and_real_failures_block
+    self.completed_two_claims();self.correct();self.refresh()
+  File "/Users/mac/Documents/Codex/2026-09-16/https-chatgpt-com-s-cx-6aaa36eed1208191be4fa6502194e3e2/outputs/correction-20261023/stage/tests/test_task_correction.py", line 19, in correct
+    return w.correct(self.root,self.ident,criteria or ['C1'],'Wrong evidence attribution','Synthetic user decision')
+AttributeError: module 'task_workflow' has no attribute 'correct'
+
+----------------------------------------------------------------------
+Ran 8 tests in 1.823s
+
+FAILED (errors=8)

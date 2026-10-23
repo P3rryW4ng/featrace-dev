@@ -1,0 +1,16 @@
+{
+  "before": {
+    "skills/dev/core/scripts/task_workflow.py": "6e39b6fc23dbca710696b95261bcb9642887c06e55a9ab9f97b2b5e959e839d7",
+    "tests/test_task_correction.py": null
+  },
+  "first_red": {
+    "tests": 8,
+    "errors": 8,
+    "log": "red.log"
+  },
+  "focused_after_change": {
+    "tests": 13,
+    "note": "Final focused output preserved in maintenance conversation"
+  },
+  "intermediate_test_design_error": "Overflow case initially enlarged an assessment removed from the live map, so no duplication occurred. Corrected the fixture to duplicate a retained observation; did not loosen runtime to satisfy it."
+}

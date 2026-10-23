@@ -113,3 +113,11 @@ Android文档不新增解析器或强跑门禁，不能证明CC已遵守。安�
 ## OGFR-8897自然样本的证据等级
 
 [转回摘录与更正](reviews/2026-10-23-ogfr8897-field-review.md)、[暂定能力评价](capabilities.md)。维护未直接读业务原件/执行补测，不把CC自述升级为独立验证。K3有previous_failure，原分析已撤回；C6旧XML和当前引用不对应，原执行摘要缺失，适用性待核；C2/C3承诺失败行为未被充分验证，C4仅成功路径。局部评分仅对本场景有效，没有总分或节省率，阶段仍未完成。此文档更新不重跑177项。
+
+## 有界更正与固定0.24接续：候选验证
+
+13项定向更正用例通过；旧实现8项因无入口报错，[原始反例](evaluations/correction-20261023/red.log)。完整190/190，外层59.159秒，24输入前后一致：[结果](evaluations/correction-20261023/result.json)、[全量](evaluations/correction-20261023/full.log)、[前](evaluations/correction-20261023/inputs-before.json)/[后](evaluations/correction-20261023/inputs-after.json)。冻结后仅同步指引/维护文字，脚本测试未变。
+
+[实际旧CLI探针](evaluations/correction-20261023/legacy-probe.json)使用本地固定v0.24.0的真实脚本字节并核对发布清单，在临时Git夹具中真实执行/评估/结项。新入口保留原回执与同一执行ID/所有执行字段，重关关联原回执；物理执行总数1，旧CLI拒读格式2。[探针程序](evaluations/correction-20261023/legacy_probe.py)可在仓库根运行，需本机固定旧引用及当前测试夹具；它是隔离程序接续，不是自然Agent试点。探针从stage改为当前源码定位并补固定提交校验后重跑通过，不因此重复190项。
+
+有界历史、输入/产物变化、权限拒绝、时效和清理拒绝反例保留。没有实际Gradle/设备/8897业务更正或当前安装变更，不宣称其证据缺口已补齐。正式CC仍0.24.0；发布身份未准备，不把候选VERSION文字冒充正式能力。
