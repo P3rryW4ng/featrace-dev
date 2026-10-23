@@ -11,5 +11,59 @@
     "inputs_unchanged": true,
     "scope": "Combined A112 source plus scoped observation validity; synthetic unittest discovery, no business/device/remote or host Agent trial."
   },
-  "new_full_test_run": false
+  "new_full_test_run": false,
+  "publication": {
+    "source_commit": "7e9ea174617b2e3854c38aaadaee7a776f7a7422",
+    "branch": "release/0.24.0",
+    "tag": "v0.24.0",
+    "remote_refs_match": true,
+    "github_release_page_created": false
+  },
+  "installation": {
+    "version": "0.24.0",
+    "channel": "release",
+    "source_commit": "7e9ea174617b2e3854c38aaadaee7a776f7a7422",
+    "runtime_files": 11,
+    "actual_manifest_source_match": true,
+    "previous_version": "0.23.1",
+    "backup": "/Users/mac/.feature-delivery/backups/20261023T060131-claude-a093ef9e",
+    "backup_complete": true,
+    "only_daily_claude_updated": true,
+    "actual_host_progress_or_agent_outcomes_verified": false
+  },
+  "formal_isolated_probe": {
+    "claude": {
+      "version": "0.24.0",
+      "source": {
+        "version": "0.24.0",
+        "channel": "release",
+        "source_commit": "7e9ea174617b2e3854c38aaadaee7a776f7a7422",
+        "installer_sha256": "647869484aae3a2fa8963d4ac10831baf124dce2a75aeb1f7f4a02b1697b4cca",
+        "content_sha256": "80e20d2d89e76d3deb43b5c93348cd8b0753dc8bedd1a8d27d939b510c171b2d",
+        "release_ref": "refs/tags/v0.24.0",
+        "boundary": "Matches the local pinned release ref and descriptor; not a signed remote-origin attestation."
+      },
+      "files": 11,
+      "hashes_match": true
+    },
+    "codex": {
+      "version": "0.24.0",
+      "source": {
+        "version": "0.24.0",
+        "channel": "release",
+        "source_commit": "7e9ea174617b2e3854c38aaadaee7a776f7a7422",
+        "installer_sha256": "647869484aae3a2fa8963d4ac10831baf124dce2a75aeb1f7f4a02b1697b4cca",
+        "content_sha256": "80e20d2d89e76d3deb43b5c93348cd8b0753dc8bedd1a8d27d939b510c171b2d",
+        "release_ref": "refs/tags/v0.24.0",
+        "boundary": "Matches the local pinned release ref and descriptor; not a signed remote-origin attestation."
+      },
+      "files": 11,
+      "hashes_match": true
+    }
+  },
+  "precommit_privacy": {
+    "status": "no_matches",
+    "files": 33,
+    "scope": "Selected staged additions; not a privacy certificate"
+  }
 }
