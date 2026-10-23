@@ -1,0 +1,70 @@
+{
+  "kind": "Documentation implementation and static consistency review; no new test execution",
+  "baseline": "docs/evaluations/readiness-diagnostics-20261023/full.log",
+  "baseline_tests": 221,
+  "unchanged_code_input_count": 17,
+  "unchanged_code_inputs": {
+    "scripts/install.py": "647869484aae3a2fa8963d4ac10831baf124dce2a75aeb1f7f4a02b1697b4cca",
+    "skills/dev/core/scripts/output_privacy.py": "54be161d474b4bc55ae1a28207de80f4077f0093172114b7079a12ce672fee6e",
+    "skills/dev/core/scripts/task_execution.py": "c9b5e52cbb2e3724716af7bdd8a328425b6809b68f8e4916c6e14393e35fcf43",
+    "skills/dev/core/scripts/task_inputs.py": "9143dc945e478d069b501094b64265d519ad91c4519b0c09e4c825886326d3a8",
+    "skills/dev/core/scripts/task_policy.py": "183cc7c5c146578879fb33b2dd1dd8a60a47e9e073d6823fca122d7cbe78856a",
+    "skills/dev/core/scripts/task_workflow.py": "d83b8ed28184a8c282aab3bc5b7454f95a2bbea4126d5da02155b357fa65f8c7",
+    "tests/test_evidence_core.py": "4f23e9a0bd14ea07ce54424dff71fbe18f6785a7a197dcd5c73b1b736085d587",
+    "tests/test_hardening.py": "3d159ecdf08c1f9a73c8a9ff09b433ef6f9a6748b355893221b0efc943e8c747",
+    "tests/test_install.py": "4cf58cfbed0022faf1cf95d96c9ff043da3489f3c381fe25bb533319cc7ce383",
+    "tests/test_observation_validity.py": "9f5f663dde239c26e5c9898c21f3cb63769b8806085bd0579f73b3f40e0e5077",
+    "tests/test_output_privacy.py": "cdc145520efefccb9453399c9dc1242a25ad42ac94dcb4eb24408dc1ecb5ddc2",
+    "tests/test_policy_diagnostics.py": "ae40c153a28245b9a7232a43b5aafea5654d5b7cbb1d506b493f66bc6a969f20",
+    "tests/test_release_identity.py": "7934842b9ac3c50db03351e323f795550a2bfa4ed55b6ab6727647110046928b",
+    "tests/test_review_boundaries.py": "4b8cc373511b7b4be2ee80dc896d396dac501e1924e70ced1cc8b45477da9893",
+    "tests/test_task_correction.py": "cc31fbf7e7187c7c045b2886a51c55b62c96bdd22217edf3ba1e32f283a21b6c",
+    "tests/test_task_extensions.py": "febb678e77484604fb0cb9eac94e804449f254e3eb179b0a86de7ca07d0beeea",
+    "tests/test_task_workflow.py": "878ba96a387cba1119ada156665c9fd6aace20688738bfaddb3a1e2c2f50b7c1"
+  },
+  "reused_assertion_references": [
+    "test_task_workflow.TaskWorkflowTests.test_changed_criterion_requires_new_assessment_but_reuses_check",
+    "test_task_extensions.FullReplacementTests.test_observation_survives_wording_revision_but_assessment_must_be_renewed",
+    "test_task_extensions.FullReplacementTests.test_authority_revision_invalidates_only_its_assessment_not_execution",
+    "test_task_extensions.FullReplacementTests.test_old_static_fact_does_not_satisfy_changed_runtime_requirement",
+    "test_task_workflow.TaskWorkflowTests.test_new_process_resumes_without_conversation_or_reexecution",
+    "test_task_workflow.TaskWorkflowTests.test_forget_requires_limitations_handoff_and_removes_task_record"
+  ],
+  "new_runtime_files": 0,
+  "new_contract_fields": 0,
+  "new_agent_trials": 0,
+  "natural_effect": "unknown",
+  "boundaries": [
+    "No automatic classification of intent changes",
+    "No automatic context compression or guaranteed recovery",
+    "No automatic completeness check for durable knowledge",
+    "No new failure-withdrawal route"
+  ],
+  "scenario_walkthroughs": [
+    {
+      "case": "UI clarification without changed inputs",
+      "guidance": "Reassess affected claim; applicable original execution retained",
+      "mode": "static walkthrough, not Agent trial"
+    },
+    {
+      "case": "Shared or changed interaction",
+      "guidance": "Investigate actual affected callers/behavior and needed assertions, no parent-PRD default",
+      "mode": "static walkthrough, not Agent trial"
+    },
+    {
+      "case": "Context change after scoped failure",
+      "guidance": "Recover actual selected facts, negative and authority before next authorized action",
+      "mode": "static walkthrough, not Agent trial"
+    },
+    {
+      "case": "Expiry with important non-obvious constraint",
+      "guidance": "Use existing durable test/comment/issue or selective handoff; do not invent full archive",
+      "mode": "static walkthrough, not cleanup execution"
+    },
+    {
+      "case": "Product withdrawal while runtime failure unresolved",
+      "guidance": "Expose unsupported contract boundary; no false pass or ID replacement",
+      "mode": "static walkthrough, not new mechanism"
+    }
+  ]
+}

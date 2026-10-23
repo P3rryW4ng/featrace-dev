@@ -155,3 +155,9 @@ Android文档不新增解析器或强跑门禁，不能证明CC已遵守。安�
 [完整结果](evaluations/readiness-diagnostics-20261023/result.json)、[原始日志](evaluations/readiness-diagnostics-20261023/full.log)、[冻结前](evaluations/readiness-diagnostics-20261023/inputs-before.json)/[后](evaluations/readiness-diagnostics-20261023/inputs-after.json)：221/221，214项原保护加7项新诊断反例，执行期间输入一致。覆盖范围未知/输入漂移/缺策略/适用规则变化、范围就绪不等于交付资格、未知异常和伪代码消息不泄露、不执行不写入且结项仍阻塞。[协议对照](evaluations/readiness-diagnostics-20261023/protocol-check.json)核对实际修前/当前执行闭包相同，查询小修不使执行身份失效。
 
 外层实测用时84.219秒；起止及输入数见result。新反例在修前均暴露字段缺失，最初测试编辑缩进错误及证据边界见[开发说明](evaluations/readiness-diagnostics-20261023/development-notes.json)，原红结果仅在维护工具回执，不伪造独立日志。验证后只更新维护文档和能力证据指针，脚本/测试代码不变。未操作业务、设备、后端或安装，不把本轮程序回归当真实Agent能力得分。
+
+## 2026-10-23 北极星相关指引完善（无新程序执行）
+
+[核对结果](evaluations/northstar-guidance-20261023.json)：三项依次完善现有运行指引，无新命令/字段/运行文件，源码与测试等既有Python输入全部匹配221项冻结身份。核对6个现有方法AST及原完整日志中的精确通过行，覆盖改字仅重判、原观察身份不变、来源局部失效、静态不能替代新增运行承诺、新进程恢复不重跑、限制交接后遗忘；没有新执行或新Agent得分。
+
+五个边界仅作静态指引走查：UI澄清、共享/交互反例、失败后接续、到期知识去向、真实撤回与失败保护冲突。它们不是自然试点或新自动化保护；不宣称语义理解、自然压缩、知识交接完整性已验证。使用说明图同步必要知识去向；真实观察按[精简标准](pilot-observation.md)。未推送/安装，当前运行脚本和正式身份不变。
