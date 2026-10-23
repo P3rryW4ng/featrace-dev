@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.25.0 — 2026-10-23
+
+- Add explicit bounded correction of retained completed tasks: preserve the original receipt, affected claims and facts; enter correcting and reassess selected criteria before creating a linked replacement receipt. Compacted sources refuse; at most eight corrections and the existing 256KiB record limit apply. No permanent ledger or project-wide migration.
+- Corrected tasks use task_contract2; ordinary tasks remain1 and old readers reject corrected records. Only the reviewed, pinned0.24.0 producer identity can be reused against exact current inputs, permissions, artifacts and validity; never renew IDs/timestamps or reconstruct missing execution metadata.
+- Preserve actionable known project-policy diagnostics without exposing arbitrary exception content. Clarify Android command execution versus Gradle task/result reuse; do not mandate blanket reruns.
+- Minor release for a new completed-task workflow and data contract. Reuse the frozen190/190 regression and real pinned-predecessor CLI probe (one physical synthetic execution); release metadata and installation are checked separately. No business correction, device testing or phase-two completion claim.
+
 ## 0.24.0 — 2026-10-23
 
 - Scope independent assessment with review.criteria, and bind local constraints separately to affected criteria/checks. Legacy omitted selections/string constraints retain their conservative task-wide meaning; no automatic record migration or business reacceptance.
