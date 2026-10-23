@@ -6,7 +6,7 @@
 
 ## 实现与退出范围
 
-首批草案已被替代，当前范围见[A109方案](../designs/task-workflow-complete.md)；以下保留首批当时的事实。普通新工作入口已改为当前任务路径；显式旧工作才加载legacy指令。新内核没有旧验收/模块台账的导入和隐式准备，不生成verification/world/event/Markdown镜像。项目关系由Agent通过当前代码/资源/调用/测试调查，filename locate仅给候选。
+首批草案已被替代，当前范围见[A109方案](https://github.com/P3rryW4ng/featrace-dev/blob/46fa61c/docs/designs/task-workflow-complete.md)；以下保留首批当时的事实。普通新工作入口已改为当前任务路径；显式旧工作才加载legacy指令。新内核没有旧验收/模块台账的导入和隐式准备，不生成verification/world/event/Markdown镜像。项目关系由Agent通过当前代码/资源/调用/测试调查，filename locate仅给候选。
 
 已实现：单份当前状态、按实际影响选检查、每项输入/实际执行文件身份复用、静态与运行事实区分、观察目标/登记HEAD分离、当前失败不能删选择逃避、分页状态、简短结项、新进程接续及到期显式清理/可选移除任务文件。旧脚本尚未从包中全部物理删除，因此这是首批完整路径，不是全系统重构完成。
 

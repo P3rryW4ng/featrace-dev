@@ -14,7 +14,7 @@
 
 ## A109：整套替代，不长期双栈
 
-已选择并实现[当前合同](https://github.com/P3rryW4ng/featrace-dev/blob/fe508f0/docs/designs/task-workflow-complete.md)：一份项目策略、一份有期限的活动任务、单项执行/事实/判定和按需读取。旧台账、schema准备/展开、延续/采用、永久档案、全量终审绑定及重复路由实际退出；[逐文件退出证明](https://github.com/P3rryW4ng/featrace-dev/blob/fe508f0/docs/designs/task-workflow-retirement.json)保留范围和替代保护。旧工作使用固定旧版，新包不迁移或删除业务资料/Git历史。原隐私检查器与安装所有权/备份保护保留。
+已选择并实现[当前合同](https://github.com/P3rryW4ng/featrace-dev/blob/46fa61c/docs/designs/task-workflow-complete.md)：一份项目策略、一份有期限的活动任务、单项执行/事实/判定和按需读取。旧台账、schema准备/展开、延续/采用、永久档案、全量终审绑定及重复路由实际退出；[逐文件退出证明](https://github.com/P3rryW4ng/featrace-dev/blob/46fa61c/docs/designs/task-workflow-retirement.json)保留范围和替代保护。旧工作使用固定旧版，新包不迁移或删除业务资料/Git历史。原隐私检查器与安装所有权/备份保护保留。
 
 - **因果影响、产品依据、执行输入分开**：编译可能读很多模块，不代表验收要重看全部业务；相关来源/标准改变影响对应判定，不使未变执行重跑。
 - **观察与判定分开**：实际输入未变时，原观察ID、时间和对象保留，重新判断是否支持新表述；静态无影响不能冒充改变后的运行表现，也不能冲掉真实失败。

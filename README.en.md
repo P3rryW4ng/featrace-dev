@@ -14,6 +14,9 @@ Help Claude Code and Codex investigate impact, implement changes, repair failure
 
 0.25.0 adds bounded correction retaining original receipts and safe policy diagnostics, alongside scoped review/constraints and temporal applicability; it does not read/migrate legacy ledgers. Use pinned0.22.0 for old-record continuation. See [maintenance status](MAINTAINER.md) for release/actual installation identities.
 
+
+Current main also contains a tested contract3 source replacement, not yet published or installed. Official0.25.0 uses the pinned release ref above; the new source does not read/write or migrate contract1/2 tasks. See maintenance status.
+
 ## Replacement capabilities
 
 - Combine presentation, interaction, state, interface, shared and device checks from causal impact, rather than reaccept the entire parent requirement.
