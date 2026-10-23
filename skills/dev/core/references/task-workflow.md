@@ -25,6 +25,14 @@ Split promises only when they need independently different dependencies, proof, 
 
 `review:{independent:bool,reason,criteria:[IDs]}` selects actual shared/high-risk or project-required claims; omit unrelated claims. An absent selection with independent true conservatively applies task-wide. Shared changes require independent review but do not force all other criteria into it. Unknown host capability is not permission to invent provenance.
 
+## Handle a new instruction by its actual delta
+
+Before acting on a material new instruction, compare it with the current accepted intent and actual code. Identify whether it adds a promise, clarifies the same promise, changes an agreed outcome, or corrects the Agent's earlier interpretation. These are reasoning distinctions, not new required labels or an approval questionnaire. Mixed instructions may affect different claims differently. Ask only when the product meaning or authority is genuinely unresolved; reuse applicable authorization for execution.
+
+Preserve the original request. Update only affected criteria.expected/proof/inputs/sources and their necessary checks; use plan.reason briefly for the current decision, its real authority and affected IDs. Existing sources should identify actual authoritative material; remote/chat authority can be identified honestly in existing text without inventing a source file. Keep unrelated plan entries and original fact IDs/times. Reassess affected judgments; rerun a physical check only when its real inputs, validity or required coverage demand it. If code already satisfies the clarified requirement, implementation may be unnecessary. A correction to a completed retained task uses correct; genuinely additional work may be a separately agreed scoped task, without concealing the original failure.
+
+Do not redefine an observed failure as a clarification, silently exclude an unmet promise, or create another ID to bypass it. A real product withdrawal that conflicts with retained failure protections must be surfaced as a contract boundary for an explicit supported decision, not fabricated as a successful runtime resolution. No automatic withdrawal or migration route is provided. The kernel validates declared relationships, not whether the new instruction was interpreted correctly.
+
 ## Checks and execution identity
 
 Each check declares `{id,argv,inputs,covers,reason,timeout,environment}`. It may include input_sets, external_inputs, env_keys, cache and operation. Inspect real assertions and mandatory project gates; deduplicate commands. `covers` is a proposed causal mapping, not proof from a test name.
