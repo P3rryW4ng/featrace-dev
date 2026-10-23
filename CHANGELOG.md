@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.26.0 — 2026-10-23
+
+- Replace acceptance storage with new-task contract3: impact kind and proof requirements are independent, facts are retained by ID, and assessments explicitly select supporting sources. Additional observations do not overwrite original evidence or automatically become coverage. Runtime failure, authority, freshness and privacy safeguards remain.
+- Extract bounded process execution and protocol identity into task_execution.py. Bind actual execution/collection/policy and reachable workflow execution logic; retain the full workflow hash as producer provenance. Reader-only changes do not force execution, while relevant protocol/input/tool/environment/output changes still invalidate. No arbitrary equivalence or predecessor allowlist.
+- Preserve original result producers and command start/result metadata; distinguish invocation success from nested test execution. Reserve record capacity before running. Add explicit prune for unreferenced passing metadata, protecting current/selected/negative/producer/correction references; records remain bounded to128 facts and256KiB.
+- Retire old contract1/2 readers/writers and the pinned0.24 producer bridge. Old tasks use their fixed old tool; no automatic business migration, reacceptance or deletion. Remove five superseded maintenance documents with exact originals retained in fixed Git.
+- Minor release for the replaced workflow/data contract,12 runtime files. Reuse the frozen214/214 current regression, bounded-record/fresh-process/old-reader probes; formal package/install checks are separate. No natural-Agent, device/backend, concurrency or phase-two completion claim.
+
 ## 0.25.0 — 2026-10-23
 
 - Add explicit bounded correction of retained completed tasks: preserve the original receipt, affected claims and facts; enter correcting and reassess selected criteria before creating a linked replacement receipt. Compacted sources refuse; at most eight corrections and the existing 256KiB record limit apply. No permanent ledger or project-wide migration.

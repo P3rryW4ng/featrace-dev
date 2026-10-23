@@ -1,6 +1,6 @@
 # Current-task contract3: replacement contract
 
-2026-10-23. User approved re-review and implementation, inheriting useful protections rather than old formats. Source candidate, not a release or automatic project migration. This contract supersedes the A109 record-format details and the 0.25.0 predecessor-compatibility route, while retaining current-task ownership and finite lifecycle.
+2026-10-23. User approved re-review and implementation, inheriting useful protections rather than old formats. Released as0.26.0; actual publication/install verification is separate and no project migration is implied. This contract supersedes the A109 record-format details and the 0.25.0 predecessor-compatibility route, while retaining current-task ownership and finite lifecycle.
 
 ## Authority and proof
 
@@ -40,4 +40,4 @@ Retired writers: observations-per-criterion payload replacement; auto-all-candid
 
 New counterexamples cover static-vs-runtime requirements, multi-fact/subset adoption, artifact/input/TTL/protocol drift, source/producer attribution, old-format refusal, fresh-process read-only recovery, independent selected proof, metadata privacy, failure preservation, pruning/limits and capacity refusal before execution. Full current-suite evidence and actual size/old-reader probes are indexed in validation. Program results do not certify natural Agent judgment, context compression, Android/Figma outcomes, 50-person concurrency or net savings.
 
-Old daily instructions/designs/reviews that duplicate retired contracts are removed from the current tree; original tracked bytes remain in already-pushed fixed Git `46fa61c`. Current runtime instructions and usage diagram describe only this source; MAINTAINER distinguishes it from installed0.25.0. Required long-term intent/constraints and negative knowledge remain in current code/tests/concise policy or fixed evidence, not a parallel old system.
+Old daily instructions/designs/reviews that duplicate retired contracts are removed from the current tree; original tracked bytes remain in already-pushed fixed Git `46fa61c`. Runtime instructions and usage describe0.26.0; MAINTAINER records actual publication and installation. Required long-term intent/constraints and negative knowledge remain in current code/tests/concise policy or fixed evidence, not a parallel old system.
