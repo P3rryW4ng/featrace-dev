@@ -1,0 +1,75 @@
+{
+  "version": "0.26.1",
+  "publication": {
+    "source_commit": "abac4f1a272e79b5916b808e1cbfb992875fda3e",
+    "branch": "release/0.26.1",
+    "tag": "v0.26.1",
+    "remote_refs_match": true,
+    "remote_identity": "P3rryW4ng/featrace-dev",
+    "viewer_permission_verified": "ADMIN",
+    "github_release_page_created": false
+  },
+  "installation": {
+    "version": "0.26.1",
+    "source": {
+      "version": "0.26.1",
+      "channel": "release",
+      "source_commit": "abac4f1a272e79b5916b808e1cbfb992875fda3e",
+      "installer_sha256": "647869484aae3a2fa8963d4ac10831baf124dce2a75aeb1f7f4a02b1697b4cca",
+      "content_sha256": "3ce485f12211b8f5a0dfbe44fbabeffae62632f6c3ac0afd9ac543bcfd9c2a46",
+      "release_ref": "refs/tags/v0.26.1",
+      "boundary": "Matches the local pinned release ref and descriptor; not a signed remote-origin attestation."
+    },
+    "runtime_files": 12,
+    "actual_manifest_source_match": true,
+    "previous_version": "0.26.0",
+    "backup": "/Users/mac/.feature-delivery/backups/20261023T141708-claude-5cf38173",
+    "backup_complete": true,
+    "only_daily_claude_updated": true,
+    "business_records_changed": false
+  },
+  "isolated_formal_install": {
+    "claude": {
+      "version": "0.26.1",
+      "source": {
+        "version": "0.26.1",
+        "channel": "release",
+        "source_commit": "abac4f1a272e79b5916b808e1cbfb992875fda3e",
+        "installer_sha256": "647869484aae3a2fa8963d4ac10831baf124dce2a75aeb1f7f4a02b1697b4cca",
+        "content_sha256": "3ce485f12211b8f5a0dfbe44fbabeffae62632f6c3ac0afd9ac543bcfd9c2a46",
+        "release_ref": "refs/tags/v0.26.1",
+        "boundary": "Matches the local pinned release ref and descriptor; not a signed remote-origin attestation."
+      },
+      "runtime_files": 12,
+      "hashes_match": true
+    },
+    "codex": {
+      "version": "0.26.1",
+      "source": {
+        "version": "0.26.1",
+        "channel": "release",
+        "source_commit": "abac4f1a272e79b5916b808e1cbfb992875fda3e",
+        "installer_sha256": "647869484aae3a2fa8963d4ac10831baf124dce2a75aeb1f7f4a02b1697b4cca",
+        "content_sha256": "3ce485f12211b8f5a0dfbe44fbabeffae62632f6c3ac0afd9ac543bcfd9c2a46",
+        "release_ref": "refs/tags/v0.26.1",
+        "boundary": "Matches the local pinned release ref and descriptor; not a signed remote-origin attestation."
+      },
+      "runtime_files": 12,
+      "hashes_match": true
+    }
+  },
+  "regression": {
+    "passed": 221,
+    "new_full_test_run": false,
+    "executable_and_test_inputs_unchanged": 17,
+    "evidence": "docs/evaluations/readiness-diagnostics-20261023/result.json",
+    "instruction_review": "docs/evaluations/northstar-guidance-20261023.json",
+    "scope": "Only runtime instruction/release metadata changed after frozen test; no business or natural-Agent execution"
+  },
+  "precommit_privacy": {
+    "files": 8,
+    "status": "no_matches"
+  },
+  "phase_two_complete": false,
+  "natural_agent_outcome_verified": false
+}
