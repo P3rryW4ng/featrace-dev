@@ -1,0 +1,42 @@
+test_ask_and_denied_codes_survive_cli_without_execution (test_policy_diagnostics.PolicyDiagnosticsTests) ... FAIL
+test_invalid_policy_schema_has_specific_code_not_source_contents (test_policy_diagnostics.PolicyDiagnosticsTests) ... FAIL
+test_missing_policy_has_specific_code_without_creating_task (test_policy_diagnostics.PolicyDiagnosticsTests) ... FAIL
+test_unexpected_json_error_remains_generic_without_echoing_input (test_policy_diagnostics.PolicyDiagnosticsTests) ... ok
+
+======================================================================
+FAIL: test_ask_and_denied_codes_survive_cli_without_execution (test_policy_diagnostics.PolicyDiagnosticsTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/mac/Documents/Codex/2026-09-16/https-chatgpt-com-s-cx-6aaa36eed1208191be4fa6502194e3e2/outputs/8897-followup-20261023/stage/tests/test_policy_diagnostics.py", line 29, in test_ask_and_denied_codes_survive_cli_without_execution
+    self.assertEqual(value['reason'],'OPERATION_POLICY_'+permission.upper())
+AssertionError: 'TASK_OPERATION_REFUSED; inspect selected inputs privately' != 'OPERATION_POLICY_ASK'
+- TASK_OPERATION_REFUSED; inspect selected inputs privately
++ OPERATION_POLICY_ASK
+
+
+======================================================================
+FAIL: test_invalid_policy_schema_has_specific_code_not_source_contents (test_policy_diagnostics.PolicyDiagnosticsTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/mac/Documents/Codex/2026-09-16/https-chatgpt-com-s-cx-6aaa36eed1208191be4fa6502194e3e2/outputs/8897-followup-20261023/stage/tests/test_policy_diagnostics.py", line 35, in test_invalid_policy_schema_has_specific_code_not_source_contents
+    self.assertEqual(value['reason'],'POLICY_FIELDS_INVALID')
+AssertionError: 'TASK_OPERATION_REFUSED; inspect selected inputs privately' != 'POLICY_FIELDS_INVALID'
+- TASK_OPERATION_REFUSED; inspect selected inputs privately
++ POLICY_FIELDS_INVALID
+
+
+======================================================================
+FAIL: test_missing_policy_has_specific_code_without_creating_task (test_policy_diagnostics.PolicyDiagnosticsTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/mac/Documents/Codex/2026-09-16/https-chatgpt-com-s-cx-6aaa36eed1208191be4fa6502194e3e2/outputs/8897-followup-20261023/stage/tests/test_policy_diagnostics.py", line 17, in test_missing_policy_has_specific_code_without_creating_task
+    self.assertEqual(value['reason'],'PROJECT_POLICY_REQUIRED')
+AssertionError: 'TASK_OPERATION_REFUSED; inspect selected inputs privately' != 'PROJECT_POLICY_REQUIRED'
+- TASK_OPERATION_REFUSED; inspect selected inputs privately
++ PROJECT_POLICY_REQUIRED
+
+
+----------------------------------------------------------------------
+Ran 4 tests in 1.096s
+
+FAILED (failures=3)

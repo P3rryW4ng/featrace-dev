@@ -1,0 +1,8 @@
+{
+  "before": {
+    "skills/dev/core/scripts/task_policy.py": "ffc5a088713fe820e8d1f814bcb894713b27a1e9fedf6ad9bc4c6e7832df09b6",
+    "skills/dev/core/scripts/task_workflow.py": "5c3724651cb1201628d6f8238740cc8b030007fb92d11b4d9ca451852f8219ae",
+    "tests/test_policy_diagnostics.py": null
+  },
+  "scope": "Typed policy diagnostics only; no generic exception-message passthrough, no business operations."
+}

@@ -1,0 +1,9 @@
+{
+  "exit_code": 0,
+  "seconds": 124.360865125,
+  "started_at": "2026-10-23T07:34:44.292876+00:00",
+  "finished_at": "2026-10-23T07:36:48.655745+00:00",
+  "inputs": 23,
+  "inputs_unchanged": true,
+  "scope": "Typed policy diagnostics plus existing current-task kernel; synthetic tests only, no business/Gradle/device/Agent execution."
+}

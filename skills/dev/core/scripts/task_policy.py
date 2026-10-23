@@ -14,7 +14,11 @@ BLOCK=START+'\n/.featrace/\n'+END+'\n'
 MAX=256*1024
 
 
-def fail(code):raise ValueError(code)
+class PolicyError(ValueError):
+    """A known, position-free policy diagnostic safe for the CLI to return."""
+
+
+def fail(code):raise PolicyError(code)
 
 
 def path(root,name):

@@ -870,7 +870,7 @@ def main():
 
 if __name__=='__main__':
     try:sys.exit(main())
-    except TaskError as exc:
+    except (TaskError,task_policy.PolicyError) as exc:
         print(json.dumps({'state':'unavailable','reason':str(exc)}));sys.exit(2)
     except (ValueError,OSError,KeyError,TypeError,AttributeError):
         print(json.dumps({'state':'unavailable','reason':'TASK_OPERATION_REFUSED; inspect selected inputs privately'}));sys.exit(2)

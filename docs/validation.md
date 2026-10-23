@@ -103,3 +103,9 @@
 ## 0.24.0实际发布与安装核验
 
 [正式核验](evaluations/release-0240-20261023.json)：7e9ea17已推送main/固定发布分支/标签，远端一致；双宿主隔离正式包与实际CC均11文件哈希匹配。日常仅Claude更新，旧0.23.1完整备份。未重跑不变173项，后续指引与元数据单独核对；33文件选定暂存隐私扫描无匹配，YAML与链接正常。未创建GitHub Release页面、未操作业务或个人Codex；自然Agent评分/宿主呈现/净收益仍未知。
+
+## OGFR-8897反馈后的policy诊断与Android指引候选
+
+只修已知policy错误及CLI安全透传，未知异常不输出私有内容。4项CLI用例旧实现3失败/1通过，修复后4通过：[原反例](evaluations/policy-diagnostics-20261023/red.log)。完整177/177，外层124.361秒，23输入冻结一致：[结果](evaluations/policy-diagnostics-20261023/result.json)、[完整输出](evaluations/policy-diagnostics-20261023/full.log)、[前](evaluations/policy-diagnostics-20261023/inputs-before.json)/[后](evaluations/policy-diagnostics-20261023/inputs-after.json)。合成临时Git/CLI，不是业务/Gradle/设备/自然Agent验证；之后只补维护文字，脚本测试未变。
+
+Android文档不新增解析器或强跑门禁，不能证明CC已遵守。安装仍0.24.0。用户转述与未独立读业务原件的边界见能力看板，不用程序通过替代业务缺口。
