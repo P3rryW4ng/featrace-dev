@@ -1,0 +1,10 @@
+{
+  "pre_fix_counterexamples": {
+    "tests": 7,
+    "result": "All seven exposed missing scope_readiness; one subtest group produced three errors (nine errors total)",
+    "raw_output": "Maintenance tool transcript only; no independent red.log retained"
+  },
+  "preparation_error": "A test-import edit left an indentation error; corrected before meaningful red cases, not counted as a runtime regression",
+  "after_run_changes": "Maintenance docs and capability evidence pointer only; runtime scripts and test code remain frozen",
+  "scope": "Synthetic repositories; no business tests, devices, service calls, independent Agent trial or installation"
+}

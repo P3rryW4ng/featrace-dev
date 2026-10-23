@@ -1,0 +1,9 @@
+{
+  "exit_code": 0,
+  "seconds": 84.219060083,
+  "started_at": "2026-10-23T13:05:31.379250+00:00",
+  "finished_at": "2026-10-23T13:06:55.599139+00:00",
+  "inputs": 27,
+  "inputs_unchanged": true,
+  "scope": "Safe status readiness diagnostics; existing protection plus seven synthetic diagnostic counterexamples; no business or device execution"
+}

@@ -64,7 +64,7 @@ Independent assessment also uses `--independent --provenance PATH`. A real fresh
 
 ## Query, correct and retain
 
-status/list/storage/locate/code/detail/review-input are read-only and do not run checks. Use previews/cursors; detail sections request/plan/receipt/limitations/criterion/facts/fact/corrections recover selected content. Output is capped at16KiB rather than silently claiming a truncated source complete. Recover current intent, selected facts and failures after context loss, not every historical receipt.
+status/list/storage/locate/code/detail/review-input are read-only and do not run checks. Active-task status keeps SCOPE_NOT_READY as a blocking marker and adds scope_readiness with a known safe cause and detail route; scope readiness alone does not mean delivery eligibility. Unknown exceptions remain generic. Use previews/cursors; detail sections request/plan/receipt/limitations/criterion/facts/fact/corrections recover selected content. Output is capped at16KiB rather than silently claiming a truncated source complete. Recover current intent, selected facts and failures after context loss, not every historical receipt.
 
 `correct ROOT ID --affected C --reason "specific error" --authority "real scoped approval"` works only on a retained complete contract3 task. It preserves original receipts, selected old judgments and fact references; clears only affected assessments; cannot remove affected criteria/failures or clean an open correction. Reclose links the original receipt. At most8 corrections; compacted/forgotten sources refuse. Old format1/2 needs its pinned old tool, without new-package migration or compatibility bridges.
 

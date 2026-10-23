@@ -263,11 +263,11 @@
     }
   ],
   "latest_program_evidence": {
-    "evidence": "docs/evaluations/core-replacement-20261023/full.log",
-    "input_identity": "docs/evaluations/core-replacement-20261023/inputs-after.json",
-    "tests": 214,
+    "evidence": "docs/evaluations/readiness-diagnostics-20261023/full.log",
+    "input_identity": "docs/evaluations/readiness-diagnostics-20261023/inputs-after.json",
+    "tests": 221,
     "contract": 3,
     "new_execution_for_scoring": false,
-    "score_boundary": "Historical baseline mapped assertions retain their original cutoff; current suite is not a new Agent score"
+    "score_boundary": "Runtime maintenance regression only; original assertion scores and Agent unknowns unchanged; evidence pointer updated after frozen run"
   }
 }

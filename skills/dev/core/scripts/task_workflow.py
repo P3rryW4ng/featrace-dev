@@ -664,9 +664,16 @@ def view(root,ident,offset=0,limit=20,blocker_offset=0):
         return {'id':ident,'state':'complete','as_of':{k:v for k,v in doc['receipt'].items() if k!='limitations'},
                 'limitation_count':len(doc['receipt']['limitations']),'details':'detail --section receipt',
                 'correction_count':len(doc.get('corrections',[])), 'current_revision_certified':False}
-    blockers=[];rows=[];checked={}
+    blockers=[];rows=[];checked={};scope_readiness={'ready':True}
     try:ready(root,doc)
-    except (ValueError,OSError):blockers.append('SCOPE_NOT_READY')
+    except (ValueError,OSError) as exc:
+        # Only known position-free codes are public; never return arbitrary exception text.
+        known={'PLAN_REQUIRED','SCOPE_REVIEW_REQUIRED','SCOPE_UNKNOWN','PROJECT_POLICY_REQUIRED',
+               'APPLICABLE_RULE_CHANGED','POLICY_FIELDS_INVALID','POLICY_UNAVAILABLE','POLICY_RULE_INVALID'}
+        reason=str(exc) if isinstance(exc,(TaskError,task_policy.PolicyError)) and str(exc) in known else 'SCOPE_NOT_READY'
+        scope_readiness={'ready':False,'reason':reason,
+                         'details':'detail --section plan' if doc['plan'] else 'detail --section request'}
+        blockers.append('SCOPE_NOT_READY')
     blockers.extend('RUNTIME_FAILURE:'+key for key in sorted(doc.get('runtime_failures',{})))
     if doc['plan']:
         for check in doc['plan']['checks']:
@@ -691,6 +698,7 @@ def view(root,ident,offset=0,limit=20,blocker_offset=0):
     outside=changes(root,doc['baseline']) if doc.get('plan') else []
     owned=set(doc['plan']['scope'])|set(doc['plan']['constraints']) if doc.get('plan') else set()
     return {'outside_scope_change_count':len(set(outside)-owned),'id':ident,'state':'ready' if not blockers else 'blocked' if doc['plan'] else 'draft',
+            'scope_readiness':scope_readiness,
             'total':len(rows),'items':rows[offset:offset+limit], 'next_offset':offset+limit if offset+limit<len(rows) else None,
             'blocker_count':len(blockers),'blockers':blockers[blocker_offset:blocker_offset+25],
             'next_blocker_offset':blocker_offset+25 if blocker_offset+25<len(blockers) else None,

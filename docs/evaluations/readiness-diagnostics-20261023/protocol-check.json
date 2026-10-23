@@ -1,0 +1,14 @@
+{
+  "same_execution_protocol": true,
+  "source_before": "555c1c1",
+  "protocol": {
+    "version": 1,
+    "implementation": {
+      "task_execution.py": "c9b5e52cbb2e3724716af7bdd8a328425b6809b68f8e4916c6e14393e35fcf43",
+      "task_inputs.py": "9143dc945e478d069b501094b64265d519ad91c4519b0c09e4c825886326d3a8",
+      "task_policy.py": "183cc7c5c146578879fb33b2dd1dd8a60a47e9e073d6823fca122d7cbe78856a"
+    },
+    "workflow_execution": "0a5e9984a5e7fda157ffbf07503f9929752c7bfc6d0f26e44d5e0e7a5cb820bb"
+  },
+  "scope": "Actual before/current execution closure; query-only change has no execution protocol drift"
+}
