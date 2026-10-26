@@ -1,0 +1,81 @@
+{
+  "version": "0.27.0",
+  "publication": {
+    "source_commit": "2c755394c92def7b0f1049de43a013316de06e87",
+    "branch": "release/0.27.0",
+    "tag": "v0.27.0",
+    "remote_refs_match": true,
+    "remote_identity": "P3rryW4ng/featrace-dev",
+    "viewer_permission_verified": "ADMIN",
+    "github_release_page_created": false
+  },
+  "installation": {
+    "version": "0.27.0",
+    "source": {
+      "version": "0.27.0",
+      "channel": "release",
+      "source_commit": "2c755394c92def7b0f1049de43a013316de06e87",
+      "installer_sha256": "647869484aae3a2fa8963d4ac10831baf124dce2a75aeb1f7f4a02b1697b4cca",
+      "content_sha256": "cb5f6a3a02cc88e29a4d4c477a93f9c1094e9267fe7684b99eb49d8032cf86d0",
+      "release_ref": "refs/tags/v0.27.0",
+      "boundary": "Matches the local pinned release ref and descriptor; not a signed remote-origin attestation."
+    },
+    "runtime_files": 12,
+    "actual_manifest_source_match": true,
+    "previous_version": "0.26.1",
+    "backup": "/Users/mac/.feature-delivery/backups/20261026T060831-claude-893b8e99",
+    "backup_complete": true,
+    "only_daily_claude_updated": true,
+    "business_records_changed": false
+  },
+  "isolated_formal_install": {
+    "claude": {
+      "version": "0.27.0",
+      "source": {
+        "version": "0.27.0",
+        "channel": "release",
+        "source_commit": "2c755394c92def7b0f1049de43a013316de06e87",
+        "installer_sha256": "647869484aae3a2fa8963d4ac10831baf124dce2a75aeb1f7f4a02b1697b4cca",
+        "content_sha256": "cb5f6a3a02cc88e29a4d4c477a93f9c1094e9267fe7684b99eb49d8032cf86d0",
+        "release_ref": "refs/tags/v0.27.0",
+        "boundary": "Matches the local pinned release ref and descriptor; not a signed remote-origin attestation."
+      },
+      "runtime_files": 12,
+      "hashes_match": true
+    },
+    "codex": {
+      "version": "0.27.0",
+      "source": {
+        "version": "0.27.0",
+        "channel": "release",
+        "source_commit": "2c755394c92def7b0f1049de43a013316de06e87",
+        "installer_sha256": "647869484aae3a2fa8963d4ac10831baf124dce2a75aeb1f7f4a02b1697b4cca",
+        "content_sha256": "cb5f6a3a02cc88e29a4d4c477a93f9c1094e9267fe7684b99eb49d8032cf86d0",
+        "release_ref": "refs/tags/v0.27.0",
+        "boundary": "Matches the local pinned release ref and descriptor; not a signed remote-origin attestation."
+      },
+      "runtime_files": 12,
+      "hashes_match": true
+    }
+  },
+  "regression": {
+    "passed": 228,
+    "new_full_test_run": false,
+    "unchanged_nonmetadata_inputs": 25,
+    "metadata_changes": [
+      "VERSION",
+      "release.json"
+    ],
+    "evidence": "docs/evaluations/shared-review-fix-20261026/result.json",
+    "scope": "Same runtime/test/installer bytes as frozen228; release metadata separately checked"
+  },
+  "precommit_privacy": {
+    "release_files": 8,
+    "status": "no_matches",
+    "metadata_clarification_files": 2
+  },
+  "release_preflight_correction": "Initial frozen-input expectation counted VERSION only; release.json is also changed release metadata. Verified exactly these two differ and remaining25 match; corrected preparation note before final pin. No runtime change or repeated tests.",
+  "compatibility": "Initial protocol split does not automatically reuse old executions. Active original tasks stay pinned; no fact or receipt migration.",
+  "phase_two_complete": false,
+  "natural_cc_new_version_outcome_verified": false
+}
