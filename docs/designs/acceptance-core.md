@@ -1,6 +1,6 @@
-# Current-task contract3: replacement contract
+# Current-task contract4: explicit failure lifecycle
 
-2026-10-23. User approved re-review and implementation, inheriting useful protections rather than old formats. Released as0.26.0; actual publication/install verification is separate and no project migration is implied. This contract supersedes the A109 record-format details and the 0.25.0 predecessor-compatibility route, while retaining current-task ownership and finite lifecycle.
+2026-10-26. User approved the local failure-lifecycle replacement. Contract3 was released as0.26.0/0.27.0; contract4 is the current candidate until separately verified publication/install; actual publication/install verification is separate and no project migration is implied. This contract supersedes the A109 record-format details and the 0.25.0 predecessor-compatibility route, while retaining current-task ownership and finite lifecycle.
 
 ## Authority and proof
 
@@ -16,7 +16,7 @@ Observation: ID/kind/criterion/status, original observed_at, registration at, ac
 
 Command: ID/kind/check/status, purpose/input digest/check-definition digest/environment, actual producer, original started_at/at, start HEAD, exit status and log identity. Necessary negative/prior references are IDs. Raw stdout/argv/environment values are not copied into a separate event ledger.
 
-Facts are append-only through normal registration; assessment may change explicitly. Real runtime failures have independent retained references. Unavailable/static evidence, relabeling, selecting another success or dropping a criterion cannot clear them. A newer applicable targeted runtime pass retains the resolved failure reference. Latest failed/unavailable selected checks still block closure even when an older success survives.
+Facts are append-only through normal registration; assessment may change explicitly. Real runtime failures have independent retained references. Unavailable/static evidence, relabeling, selecting another success or dropping a criterion cannot clear them. Registering a pass never resolves failures. Each failed runtime fact stays pending until explicit resolution identifies current passing runtime evidence under the same declared necessary conditions, not earlier than that failure. Multiple failures require separate disposition. Missing conditions require clarification from original evidence, without rewriting its fact/time. Reopen corrects a wrong resolution without manufacturing another runtime execution. Latest failed/unavailable selected checks still block closure even when an older success survives.
 
 ## Execution protocol
 
@@ -28,7 +28,7 @@ Log starts with the exact runner ownership line, then input format/digest, attem
 
 ## Readers, correction and limits
 
-Plan, observe, run, assess, status, detail, review-input, correct, close, prune and cleanup all use contract3. Old formats1/2 refuse without writes; no fallback writer/importer or fixed0.24 producer bridge remains. Old tasks use fixed0.25.0 or their applicable original tool. A new ID cannot hide old failure. No business data is modified by installation/development.
+Plan, observe, run, assess, status, detail, review-input, correct, close, prune and cleanup all use contract4. Old formats1/2/3 refuse without writes; no fallback writer/importer or fixed0.24 producer bridge remains. Old contract3 tasks use fixed0.27.0 or their applicable original tool; earlier tasks retain their own original tool. A new ID cannot hide old failure. No business data is modified by installation/development.
 
 Bounded correct preserves prior receipts and selected original judgments/fact references, enters correcting and clears only selected assessments. Affected claims cannot disappear. Reclose links the original receipt; at most8 corrections, no correction after source compaction. All failure/permission/privacy/freshness protections remain. New records cannot be downgraded to old readers; rollback means use the fixed tool for its own data, not delete facts/change schema tags.
 
@@ -40,7 +40,7 @@ Retired writers: observations-per-criterion payload replacement; auto-all-candid
 
 New counterexamples cover static-vs-runtime requirements, multi-fact/subset adoption, artifact/input/TTL/protocol drift, source/producer attribution, old-format refusal, fresh-process read-only recovery, independent selected proof, metadata privacy, failure preservation, pruning/limits and capacity refusal before execution. Full current-suite evidence and actual size/old-reader probes are indexed in validation. Program results do not certify natural Agent judgment, context compression, Android/Figma outcomes, 50-person concurrency or net savings.
 
-Old daily instructions/designs/reviews that duplicate retired contracts are removed from the current tree; original tracked bytes remain in already-pushed fixed Git `46fa61c`. Runtime instructions and usage describe0.26.0; MAINTAINER records actual publication and installation. Required long-term intent/constraints and negative knowledge remain in current code/tests/concise policy or fixed evidence, not a parallel old system.
+Old daily instructions/designs/reviews that duplicate retired contracts are removed from the current tree; original tracked bytes remain in already-pushed fixed Git `46fa61c`. Runtime instructions and usage describe the current supported contract; MAINTAINER records actual publication and installation. Required long-term intent/constraints and negative knowledge remain in current code/tests/concise policy or fixed evidence, not a parallel old system.
 
 ## 2026-10-26候选：review policy is not execution identity
 
@@ -49,3 +49,9 @@ User approved the local replacement after the shared-trigger review. Shared rema
 validate_execution_plan and execution_ready retain execution-relevant plan/input/coverage/validity/unknown/constraint validation and normal permission checks. validate_acceptance_plan validates proof and review selection through plan/assessment/status/closure entrypoints. run_check depends on the execution branch, so protocol AST discovery naturally excludes acceptance-only validation without a name/hash exception. Execution validation, wrapper, policy and actual invocation code remain in the closure. Some conservative common criterion metadata remains in execution validation; this is not a universal semantic-equivalence guarantee.
 
 The initial split changes the recorded old protocol identity. Existing active tasks stay on their pinned tool; no predecessor allowance, migration or historic receipt/fact rewrite. Later acceptance-only implementation changes can preserve new-protocol command identity while producer provenance still distinguishes the complete workflow bytes. Published as0.27.0; current identity is in MAINTAINER. The initial split does not migrate old active tasks or certify their prior executions.
+
+## Explicit product exclusion and durable issue context
+
+failure_actions and claim_deferrals store bounded append-only dispositions separately from canonical facts. Resolve/clarify/reopen never erase original failure. Whole-criterion defer --exclude-from-delivery needs actual authority/time, reason and surviving handoff; delaying a still-required promise does not waive it. Assess cannot call a deferred claim supported. Reopen-claim restores its obligation; new negatives or mismatched criterion/context invalidate prior deferral. Complete scoped receipts declare supported count, exclusions and unresolved IDs.
+
+Handoff preserves the exact compact failure summary exposed by paged detail: original actual/target/time, effective conditions and evidence identities, plus expected promise and real reason/authority. This is concise negative knowledge, not permanent logs. Missing handoff blocks cleanup, retained issue references protect prune, and compacted storage still counts unresolved failures. A criterion cannot disappear while carrying pending failure/disposition. Changing expected/kind/condition text is not a repair. See A122 and validation for current implementation evidence.

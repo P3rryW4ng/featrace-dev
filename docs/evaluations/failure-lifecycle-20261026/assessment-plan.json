@@ -1,0 +1,18 @@
+{
+  "source_commit": "ce891f96e95d51f78b50fbe78ab1f11e8a631e6b",
+  "approved_scope": [
+    "No automatic resolution on observation",
+    "Explicit per-failure conditions/evidence resolution and reopen",
+    "Product-authorized whole-claim deferral with surviving handoff, never called supported",
+    "All negative facts retained; multiple unresolved failures; bounded storage",
+    "New contract for new tasks only, pinned old tools and no migration",
+    "Meaningful counterexamples then release/install; natural next-project evidence pending real input"
+  ],
+  "excluded_work": [
+    "Business task OGFR9060 correction",
+    "Generic unknown investigation API",
+    "Permission identity redesign",
+    "Browser environment fix"
+  ],
+  "condition_policy": "Observations may retain unknown conditions; resolving requires nonempty known matching conditions. Explicit clarification from original evidence is possible without re-signing the failure. No universal semantic equivalence promised."
+}

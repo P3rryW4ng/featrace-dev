@@ -1,0 +1,109 @@
+test_action_history_is_bounded_and_never_discarded (test_failure_lifecycle.FailureLifecycleTests) ... ok
+test_actual_code_change_can_resolve_same_conditions (test_failure_lifecycle.FailureLifecycleTests) ... ok
+test_changed_statement_or_kind_does_not_resolve_failure (test_failure_lifecycle.FailureLifecycleTests) ... ok
+test_closed_deferral_cleanup_stops_if_handoff_is_lost (test_failure_lifecycle.FailureLifecycleTests) ... ERROR
+test_control_pass_does_not_automatically_resolve_or_certify (test_failure_lifecycle.FailureLifecycleTests) ... ok
+test_deferral_does_not_automatically_apply_to_new_failures (test_failure_lifecycle.FailureLifecycleTests) ... ERROR
+test_deferral_requires_surviving_unchanged_handoff (test_failure_lifecycle.FailureLifecycleTests) ... ERROR
+test_delay_that_remains_in_delivery_does_not_bypass (test_failure_lifecycle.FailureLifecycleTests) ... ok
+test_expired_resolution_evidence_refuses (test_failure_lifecycle.FailureLifecycleTests) ... ok
+test_explicit_control_resolution_is_rejected (test_failure_lifecycle.FailureLifecycleTests) ... ok
+test_format3_refuses_without_rewriting (test_failure_lifecycle.FailureLifecycleTests) ... ok
+test_older_observation_is_kept_but_cannot_resolve (test_failure_lifecycle.FailureLifecycleTests) ... ok
+test_one_of_two_failures_does_not_clear_the_other (test_failure_lifecycle.FailureLifecycleTests) ... ok
+test_partial_deferral_does_not_waive_shared_required_check (test_failure_lifecycle.FailureLifecycleTests) ... ERROR
+test_product_deferral_is_explicit_exclusion_not_support_or_repair (test_failure_lifecycle.FailureLifecycleTests) ... ERROR
+test_prune_keeps_original_failure_and_resolution_support (test_failure_lifecycle.FailureLifecycleTests) ... ok
+test_reopen_keeps_original_resolution_without_new_runtime (test_failure_lifecycle.FailureLifecycleTests) ... ok
+test_restoring_a_deferred_promise_restores_its_failure (test_failure_lifecycle.FailureLifecycleTests) ... ERROR
+test_static_and_unavailable_results_never_resolve (test_failure_lifecycle.FailureLifecycleTests) ... ok
+test_unknown_conditions_can_be_recorded_then_clarified_without_resigning (test_failure_lifecycle.FailureLifecycleTests) ... ok
+
+======================================================================
+ERROR: test_closed_deferral_cleanup_stops_if_handoff_is_lost (test_failure_lifecycle.FailureLifecycleTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/mac/Entrepôt/featrace-dev/tests/test_failure_lifecycle.py", line 138, in test_closed_deferral_cleanup_stops_if_handoff_is_lost
+    f=self.f;self.capture('failed');self.defer();w.close(f.root,f.ident,[])
+  File "/Users/mac/Entrepôt/featrace-dev/tests/test_failure_lifecycle.py", line 26, in defer
+    return w.defer_claim(f.root,f.ident,'C1',reason,authority,w.now(),'ISSUES.md',exclude=exclude)
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/task_workflow.py", line 664, in defer_claim
+    or canonical(failure_handoff(doc,criterion)).decode() not in contents):fail('DEFERRAL_HANDOFF_INCOMPLETE')
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/task_workflow.py", line 38, in fail
+    raise TaskError(message)
+task_workflow.TaskError: DEFERRAL_HANDOFF_INCOMPLETE
+
+======================================================================
+ERROR: test_deferral_does_not_automatically_apply_to_new_failures (test_failure_lifecycle.FailureLifecycleTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/mac/Entrepôt/featrace-dev/tests/test_failure_lifecycle.py", line 110, in test_deferral_does_not_automatically_apply_to_new_failures
+    f=self.f;self.capture('failed');self.defer();self.assertTrue(w.view(f.root,f.ident)['eligible'])
+  File "/Users/mac/Entrepôt/featrace-dev/tests/test_failure_lifecycle.py", line 26, in defer
+    return w.defer_claim(f.root,f.ident,'C1',reason,authority,w.now(),'ISSUES.md',exclude=exclude)
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/task_workflow.py", line 664, in defer_claim
+    or canonical(failure_handoff(doc,criterion)).decode() not in contents):fail('DEFERRAL_HANDOFF_INCOMPLETE')
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/task_workflow.py", line 38, in fail
+    raise TaskError(message)
+task_workflow.TaskError: DEFERRAL_HANDOFF_INCOMPLETE
+
+======================================================================
+ERROR: test_deferral_requires_surviving_unchanged_handoff (test_failure_lifecycle.FailureLifecycleTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/mac/Entrepôt/featrace-dev/tests/test_failure_lifecycle.py", line 116, in test_deferral_requires_surviving_unchanged_handoff
+    f=self.f;self.capture('failed');self.defer();(f.root/'ISSUES.md').unlink()
+  File "/Users/mac/Entrepôt/featrace-dev/tests/test_failure_lifecycle.py", line 26, in defer
+    return w.defer_claim(f.root,f.ident,'C1',reason,authority,w.now(),'ISSUES.md',exclude=exclude)
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/task_workflow.py", line 664, in defer_claim
+    or canonical(failure_handoff(doc,criterion)).decode() not in contents):fail('DEFERRAL_HANDOFF_INCOMPLETE')
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/task_workflow.py", line 38, in fail
+    raise TaskError(message)
+task_workflow.TaskError: DEFERRAL_HANDOFF_INCOMPLETE
+
+======================================================================
+ERROR: test_partial_deferral_does_not_waive_shared_required_check (test_failure_lifecycle.FailureLifecycleTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/mac/Entrepôt/featrace-dev/tests/test_failure_lifecycle.py", line 106, in test_partial_deferral_does_not_waive_shared_required_check
+    self.capture('failed');self.defer()
+  File "/Users/mac/Entrepôt/featrace-dev/tests/test_failure_lifecycle.py", line 26, in defer
+    return w.defer_claim(f.root,f.ident,'C1',reason,authority,w.now(),'ISSUES.md',exclude=exclude)
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/task_workflow.py", line 664, in defer_claim
+    or canonical(failure_handoff(doc,criterion)).decode() not in contents):fail('DEFERRAL_HANDOFF_INCOMPLETE')
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/task_workflow.py", line 38, in fail
+    raise TaskError(message)
+task_workflow.TaskError: DEFERRAL_HANDOFF_INCOMPLETE
+
+======================================================================
+ERROR: test_product_deferral_is_explicit_exclusion_not_support_or_repair (test_failure_lifecycle.FailureLifecycleTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/mac/Entrepôt/featrace-dev/tests/test_failure_lifecycle.py", line 86, in test_product_deferral_is_explicit_exclusion_not_support_or_repair
+    self.defer();status=w.view(f.root,f.ident)
+  File "/Users/mac/Entrepôt/featrace-dev/tests/test_failure_lifecycle.py", line 26, in defer
+    return w.defer_claim(f.root,f.ident,'C1',reason,authority,w.now(),'ISSUES.md',exclude=exclude)
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/task_workflow.py", line 664, in defer_claim
+    or canonical(failure_handoff(doc,criterion)).decode() not in contents):fail('DEFERRAL_HANDOFF_INCOMPLETE')
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/task_workflow.py", line 38, in fail
+    raise TaskError(message)
+task_workflow.TaskError: DEFERRAL_HANDOFF_INCOMPLETE
+
+======================================================================
+ERROR: test_restoring_a_deferred_promise_restores_its_failure (test_failure_lifecycle.FailureLifecycleTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/mac/Entrepôt/featrace-dev/tests/test_failure_lifecycle.py", line 122, in test_restoring_a_deferred_promise_restores_its_failure
+    f=self.f;a=self.capture('failed');self.defer()
+  File "/Users/mac/Entrepôt/featrace-dev/tests/test_failure_lifecycle.py", line 26, in defer
+    return w.defer_claim(f.root,f.ident,'C1',reason,authority,w.now(),'ISSUES.md',exclude=exclude)
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/task_workflow.py", line 664, in defer_claim
+    or canonical(failure_handoff(doc,criterion)).decode() not in contents):fail('DEFERRAL_HANDOFF_INCOMPLETE')
+  File "/Users/mac/Entrepôt/featrace-dev/skills/dev/core/scripts/task_workflow.py", line 38, in fail
+    raise TaskError(message)
+task_workflow.TaskError: DEFERRAL_HANDOFF_INCOMPLETE
+
+----------------------------------------------------------------------
+Ran 20 tests in 6.110s
+
+FAILED (errors=6)

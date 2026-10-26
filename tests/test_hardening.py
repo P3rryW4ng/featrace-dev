@@ -8,13 +8,15 @@ class HardeningTests(TaskWorkflowTests):
         self.plan['criteria'][0]['kind']='unaffected';self.plan['checks']=[];self.refresh()
         self.observe('C1','runtime_observation',w.now(),'Actual runtime failure',['app.py'],'failed')
         self.observe('C1','static_analysis',w.now(),'Evidence unavailable',['app.py'],'unavailable')
-        with self.assertRaisesRegex(ValueError,'RUNTIME_FAILURE_NEEDS_RUNTIME'):
-            self.observe('C1','static_analysis',w.now(),'No influence',['app.py'],'passed')
+        self.observe('C1','static_analysis',w.now(),'No influence',['app.py'],'passed')
+        with self.assertRaisesRegex(ValueError,'TARGETED_RUNTIME_PROOF_REQUIRED'):self.resolve()
         other=copy.deepcopy(self.plan);other['criteria'][0]['id']='C2'
         with self.assertRaisesRegex(ValueError,'UNRESOLVED_OBSERVATION_REMOVED'):w.set_plan(self.root,self.ident,other)
         self.observe('C1','runtime_observation',w.now(),'Targeted runtime pass',['app.py'])
+        old=self.runtime_failure('C1')['id'];self.resolve()
         self.support();self.assertTrue(w.view(self.root,self.ident)['eligible'])
-        self.assertEqual(self.doc()['facts'][self.observation('C1')['resolved_failure']]['actual'],'Actual runtime failure')
+        self.assertEqual(self.doc()['facts'][old]['actual'],'Actual runtime failure')
+        self.assertIn(old,self.doc()['failure_actions'])
 
     def test_execution_input_rule_not_only_semantic_scope(self):
         cfg=w.task_policy.load(self.root)
@@ -114,7 +116,8 @@ class HardeningTests(TaskWorkflowTests):
     def test_pass_older_than_pending_failure_does_not_resolve_it(self):
         self.plan['criteria'][0]['kind']='unaffected';self.plan['checks']=[];self.refresh()
         earlier=w.now();self.observe('C1','runtime_observation',w.now(),'Observed failure',['app.py'],'failed')
-        with self.assertRaisesRegex(ValueError,'PASS_PREDATES_FAILURE'):self.observe('C1','runtime_observation',earlier,'Older result',['app.py'])
+        self.observe('C1','runtime_observation',earlier,'Older result',['app.py'])
+        with self.assertRaisesRegex(ValueError,'PASS_PREDATES_FAILURE'):self.resolve()
         self.assertFalse(w.view(self.root,self.ident)['eligible'])
 
     def test_nonexistent_rule_path_does_not_block_actual_input_set(self):

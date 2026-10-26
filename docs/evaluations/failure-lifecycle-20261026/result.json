@@ -1,0 +1,32 @@
+{
+  "contract": 4,
+  "runtime_files": 13,
+  "full_regression": {
+    "passed": 252,
+    "failed": 0,
+    "seconds": 90.564,
+    "inputs_match": true,
+    "inputs": 29
+  },
+  "first_full_regression": {
+    "passed": 251,
+    "errors": 1,
+    "cause": "Legacy single-failure query assertion not ported; changed test reader only, then reran full suite."
+  },
+  "independent_source_review": {
+    "findings": 3,
+    "closed": 3,
+    "tests_executed_by_reviewer": false
+  },
+  "forward_agent": {
+    "state": "unavailable",
+    "attempts": 2,
+    "reason": "Selected model is at capacity; both turns failed before execution",
+    "counted_as_pass": false
+  },
+  "cli_probe": "passed; control resolution refused; explicit product exclusion; old/new readers refuse without writes",
+  "development_failures": "Initial reader/writer shape error, interrupted edit, wrong field and fixture configuration retained in development logs. Not relabeled passing.",
+  "business_tasks_changed": false,
+  "natural_pilot": "pending; no natural new business request supplied",
+  "boundary": "Program and source evidence only, not complete phase two or proven net savings."
+}

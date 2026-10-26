@@ -4,7 +4,11 @@
 
 ## 当前验证入口
 
-正式0.26.1/合同3：复用[221项冻结结果](evaluations/readiness-diagnostics-20261023/result.json)及[实际发布安装核验](evaluations/release-0261-20261023.json)；原214项保留在历史截点。[模块顺序评审](reviews/2026-10-23-module-review-0260.md)是只读源码核对，未新增测试或Agent试验。下列按时间保留原始截点，不把旧标题/当时版本当当前身份。
+合同4候选：完整 **252/252**，90.564秒，冻结输入前后一致。[结果](evaluations/failure-lifecycle-20261026/result.json)、[完整日志](evaluations/failure-lifecycle-20261026/full.log)、[首轮日志](evaluations/failure-lifecycle-20261026/full-first.log)。首轮251通过、1处旧单失败查询测试未移植；修正该测试后完整重跑。新增24个因果反例，旧负面/权限/来源保护保留；开发中错误及失败日志单列，不改写为通过。
+
+[独立源码复看](evaluations/failure-lifecycle-20261026/independent-review.json)发现3项清理边界并核对修复闭合，评审者没有执行测试。[实际命令探针](evaluations/failure-lifecycle-20261026/cli-probe.json)验证对照不能解除、显式排除不算支持、新旧固定工具双向拒读且不改文件。[双宿主隔离开发安装](evaluations/failure-lifecycle-20261026/isolated-install.json)各13文件匹配。独立Agent演练两次因模型容量不足在执行前失败，记为unavailable，不算通过。真实试点、自然上下文恢复和同质量净成本仍未知。
+
+旧正式0.27.0的228项及实际安装见[旧正式核验](evaluations/release-0270-20261026.json)。不将旧回归冒充新合同验证；新正式发布安装另记，不迁移业务。
 
 ## 历史截点：0.24.0发布前后，A109–A114及173项
 

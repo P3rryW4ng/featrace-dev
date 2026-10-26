@@ -64,10 +64,10 @@ class ObservationValidityTests(TaskWorkflowTests):
         self.observe('C1','runtime_observation',w.now(),'Synthetic failure',['app.py'],'failed',target='synthetic-current-environment')
         original=self.runtime_failure('C1')['id']
         self.later(61)
-        self.assertIn('RUNTIME_FAILURE:C1',w.view(self.root,self.ident)['blockers'])
-        self.capture();self.support()
+        self.assertTrue(any(b.startswith('RUNTIME_FAILURE:') for b in w.view(self.root,self.ident)['blockers']))
+        self.capture();self.resolve();self.support()
         self.assertTrue(w.view(self.root,self.ident)['eligible'])
-        self.assertEqual(self.observation('C1')['resolved_failure'],original)
+        self.assertEqual(self.doc()['failure_actions'][original][-1]['action'],'resolve')
 
     def test_current_expiry_does_not_invalidate_independent_check(self):
         self.current()
@@ -113,9 +113,9 @@ class ObservationValidityTests(TaskWorkflowTests):
         self.observe('C1','runtime_observation',at,'Failure',['app.py'],'failed',target='synthetic-current-environment')
         self.later(120)
         old_pass=(datetime.fromisoformat(at)+timedelta(seconds=1)).isoformat()
-        with self.assertRaisesRegex(ValueError,'CURRENT_OBSERVATION_NOT_APPLICABLE'):
-            self.observe('C1','runtime_observation',old_pass,'Old targeted pass',['app.py'],target='synthetic-current-environment')
-        self.assertIn('C1',self.doc()['runtime_failures'])
+        self.observe('C1','runtime_observation',old_pass,'Old targeted pass',['app.py'],target='synthetic-current-environment')
+        with self.assertRaisesRegex(ValueError,'CURRENT_FACT_REQUIRED'):self.resolve()
+        self.assertTrue(w.task_failures.pending(self.doc(),'C1'))
 
 
 for name in list(dir(ObservationValidityTests)):

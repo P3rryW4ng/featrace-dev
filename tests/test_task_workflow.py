@@ -53,7 +53,13 @@ class TaskWorkflowTests(unittest.TestCase):
     def observation(self,c):
         d=self.doc();return d['facts'][d['observations'][c]]
     def runtime_failure(self,c):
-        d=self.doc();return d['facts'][d['runtime_failures'][c]]
+        return next(iter(w.task_failures.pending(self.doc(),c).values()))
+    def resolve(self,c='C1',failure=None,evidence=None):
+        d=self.doc();pending=w.task_failures.pending(d,c)
+        fid=failure or next(iter(pending))
+        pid=evidence or d['observations'][c]
+        return w.failure_action(self.root,self.ident,fid,'resolve','Inspected same synthetic reproduction conditions',[pid])
+
     def assess(self,c,*args,**kwargs):
         criterion=next(x for x in self.doc()['plan']['criteria'] if x['id']==c)
         kwargs.setdefault('fact_ids',w.facts(self.root,self.doc(),criterion))
@@ -65,6 +71,7 @@ class TaskWorkflowTests(unittest.TestCase):
         w.set_plan(self.root,self.ident,self.plan)
     def observe(self,*args,**kwargs):
         kwargs.setdefault("target","synthetic current fixture, not a real device")
+        if args[1]=='runtime_observation':kwargs.setdefault('conditions',{'case':'default fixture'})
         return w.observe(self.root,self.ident,*args,**kwargs)
 
     def test_vertical_closure_has_no_legacy_files(self):
@@ -155,6 +162,7 @@ class TaskWorkflowTests(unittest.TestCase):
         self.observe('C1','runtime_observation',w.now(),'Synthetic actual visual failure',['app.py'],'failed')
         self.support();self.assertFalse(w.view(self.root,self.ident)['eligible'])
         self.observe('C1','runtime_observation',w.now(),'Synthetic targeted verification passed',['app.py'])
+        self.assertFalse(w.view(self.root,self.ident)['eligible']);self.resolve()
         self.support();self.assertTrue(w.view(self.root,self.ident)['eligible'])
         self.assertEqual(self.doc()['facts'][self.observation('C1')['previous_failure']]['status'],'failed')
 
@@ -166,8 +174,9 @@ class TaskWorkflowTests(unittest.TestCase):
     def test_actual_runtime_failure_cannot_be_cleared_by_static_no_influence(self):
         self.plan['criteria'][0]['kind']='unaffected';self.refresh()
         self.observe('C1','runtime_observation',w.now(),'Actual synthetic regression',['app.py'],'failed')
-        with self.assertRaisesRegex(ValueError,'RUNTIME_FAILURE_NEEDS_RUNTIME'):
-            self.observe('C1','static_analysis',w.now(),'Merely inferred no influence',['app.py'])
+        self.observe('C1','static_analysis',w.now(),'Merely inferred no influence',['app.py'])
+        with self.assertRaisesRegex(ValueError,'TARGETED_RUNTIME_PROOF_REQUIRED'):self.resolve()
+        self.assertFalse(w.view(self.root,self.ident)['eligible'])
 
     def test_check_cannot_omit_declared_criterion_dependency(self):
         self.plan['checks'][0]['inputs']=['check.py']

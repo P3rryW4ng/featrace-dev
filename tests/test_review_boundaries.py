@@ -82,8 +82,8 @@ class ReviewBoundaryTests(TaskWorkflowTests):
         while offset is not None:
             page=w.detail(self.root,self.ident,'facts','C1',offset,8000)
             body+=page['text'];offset=page['next_offset']
-        self.assertEqual(json.loads(body)['runtime_failure'],original)
-        self.assertEqual(w.review_input(self.root,self.ident,'C1')['runtime_failure']['id'],original['id'])
+        self.assertEqual(json.loads(body)['runtime_failures'],{original['id']:original})
+        self.assertEqual(w.review_input(self.root,self.ident,'C1')['runtime_failures'][0]['id'],original['id'])
 
     def test_interrupted_attempt_replaces_previous_success_as_unavailable(self):
         self.plan['checks'][0]['cache']={'mode':'never','max_age_seconds':300}

@@ -17,9 +17,10 @@ import uuid
 import task_inputs
 import task_policy
 import task_execution
+import task_failures
 from zoneinfo import ZoneInfo
 
-CONTRACT = 3
+CONTRACT = 4
 MAX_CORRECTIONS = 8
 MAX_FACTS = 128
 EVIDENCE_KINDS = {'static_analysis', 'runtime_observation', 'command'}
@@ -115,9 +116,11 @@ def load(root, ident):
             if fact.get('id')!=fid or fact.get('kind') not in EVIDENCE_KINDS:fail('FACT_INVALID')
         for section in ('executions','observations'):
             if any(fid not in doc['facts'] for fid in doc[section].values()):fail('FACT_REFERENCE_MISSING')
+    task_failures.validate(doc,fail)
     return doc
 
 def save(root, doc):
+    task_failures.validate(doc,fail)
     path = task_path(root, doc['id'])
     doc['updated_at'] = now()
     doc['checksum'] = digest({k:v for k,v in doc.items() if k != 'checksum'})
@@ -336,7 +339,7 @@ def begin(root, ident, request):
         if task_path(root,ident).exists(): fail('TASK_EXISTS')
         doc={'task_contract':CONTRACT,'id':ident,'request':request,'baseline':git(root,'rev-parse','HEAD').decode().strip(),
              'created_at':now(),'state':'draft','plan':None,'analysis_digest':None,'executions':{},
-             'observations':{},'facts':{},'runtime_failures':{},'assessments':{},'limitations':[],'receipt':None}
+             'observations':{},'facts':{},'failure_actions':{},'claim_deferrals':{},'assessments':{},'limitations':[],'receipt':None}
         save(root,doc)
     return {'id':ident,'state':'draft','maintenance':maintenance}
 
@@ -349,7 +352,8 @@ def set_plan(root,ident,plan):
         if correction and set(correction['affected'])-criteria:fail('CORRECTION_CLAIM_REMOVED')
         if any(c not in selected and doc['facts'][fid]['status']!='passed' for c,fid in doc['executions'].items()):
             fail('UNRESOLVED_CHECK_REMOVED')
-        if set(doc.get('runtime_failures',{}))-criteria:fail('UNRESOLVED_OBSERVATION_REMOVED')
+        if {f['criterion'] for f in task_failures.pending(doc).values()}-criteria:fail('UNRESOLVED_OBSERVATION_REMOVED')
+        if set(doc.get('claim_deferrals',{}))-criteria:fail('DISPOSITION_CLAIM_REMOVED')
         if any(c not in criteria and doc['facts'][fid].get('status') in ('failed','unavailable') for c,fid in doc['observations'].items()):
             fail('UNRESOLVED_OBSERVATION_REMOVED')
         stamp,unexplained=analysis(root,doc,plan)
@@ -365,13 +369,13 @@ def relevant_paths(doc,criterion=None,check=None):
     return set(doc['plan']['scope'])
 
 
-def ready(root,doc,criterion=None,check=None,investigate=False):
+def ready(root,doc,criterion=None,check=None,investigate=False,excluded=()):
     if doc['plan'] is None: fail('PLAN_REQUIRED')
-    execution_ready(root,doc,criterion,check,investigate)
+    execution_ready(root,doc,criterion,check,investigate,excluded)
     validate_acceptance_plan(root,doc['plan'])
 
 
-def execution_ready(root,doc,criterion=None,check=None,investigate=False):
+def execution_ready(root,doc,criterion=None,check=None,investigate=False,excluded=()):
     if doc['plan'] is None: fail('PLAN_REQUIRED')
     validate_execution_plan(root,doc['plan'])
     selected=relevant_paths(doc,criterion,check)|set(selected_constraints(doc['plan'],criterion,check))
@@ -379,6 +383,7 @@ def execution_ready(root,doc,criterion=None,check=None,investigate=False):
     if baseline is None or any(file_identity(root,p)!=baseline.get(p) for p in selected):fail('SCOPE_REVIEW_REQUIRED')
     task_policy.effective(root,relevant_paths(doc,criterion,check),environment='any')
     criteria={criterion['id']} if criterion else set(check['covers']) if check else {c['id'] for c in doc['plan']['criteria']}
+    criteria-=set(excluded)
     checks={check['id']} if check else {c['id'] for c in doc['plan']['checks'] if criteria.intersection(c['covers'])}
     for unknown in doc['plan']['unknowns']:
         if investigate:continue
@@ -542,7 +547,7 @@ def attach(root,ident,source):
         return {'attachment':key,'path':rel,'bytes':written,'original_preserved':True}
 
 
-def observe(root,ident,criterion,kind,observed_at,actual,evidence,status='passed',target=None,producer=None):
+def observe(root,ident,criterion,kind,observed_at,actual,evidence,status='passed',target=None,producer=None,conditions=None):
     if (kind not in ('static_analysis','runtime_observation') or not text(actual) or not evidence
             or status not in ('passed','failed','unavailable')):fail('OBSERVATION_REQUIRED')
     if instant(observed_at)>datetime.now(timezone.utc):fail('FUTURE_OBSERVATION')
@@ -560,6 +565,8 @@ def observe(root,ident,criterion,kind,observed_at,actual,evidence,status='passed
              'at':now(),'actual':actual,'input_digest':stamp,
              'git_head_at_registration':git(root,'rev-parse','HEAD').decode().strip(),
              'observed_target':target if kind=='runtime_observation' else 'local selected sources','evidence':refs}
+        if kind=='runtime_observation':rec['conditions']=task_failures.conditions({} if conditions is None else conditions,fail)
+        elif conditions is not None:fail('CONDITIONS_REQUIRE_RUNTIME')
         if producer:
             run=doc['facts'].get(producer)
             check=next((x for x in doc['plan']['checks'] if run and x['id']==run.get('check')),None)
@@ -569,18 +576,103 @@ def observe(root,ident,criterion,kind,observed_at,actual,evidence,status='passed
             rec['producer']=producer
         applicability=fact_applicability(c,rec)
         if status=='passed' and applicability in ('CURRENT_TARGET_MISMATCH','CURRENT_STATE_NEEDS_RUNTIME'):fail(applicability)
-        pending=doc['runtime_failures'].get(criterion)
-        if pending and status=='passed':
-            if kind!='runtime_observation':fail('RUNTIME_FAILURE_NEEDS_RUNTIME')
-            failure=doc['facts'][pending]
-            if instant(observed_at)<instant(failure['observed_at']):fail('PASS_PREDATES_FAILURE')
-            if applicability not in ('UNDECLARED','AS_OF','CURRENT'):fail('CURRENT_OBSERVATION_NOT_APPLICABLE')
-            rec['resolved_failure']=pending;doc['runtime_failures'].pop(criterion)
-        if kind=='runtime_observation' and status=='failed':doc['runtime_failures'][criterion]=rec['id']
         old=doc['facts'].get(doc['observations'].get(criterion))
         if old and old['status']!='passed':rec['previous_failure']=old['id']
         doc['facts'][rec['id']]=rec;doc['observations'][criterion]=rec['id'];save(root,doc)
         return {'criterion':criterion,'fact':rec['id'],'kind':kind}
+
+def active_deferrals(root,doc):
+    result={}
+    for cid,entries in doc.get('claim_deferrals',{}).items():
+        entry=entries[-1]
+        if entry['action']!='defer':continue
+        c=next((c for c in doc['plan']['criteria'] if c['id']==cid),None)
+        try:
+            known=set(entry['failures'])
+            changed_negative=any(f['status']!='passed' and f['id'] not in entry['checks']
+                                 for f in doc['facts'].values() if f['kind']=='command'
+                                 and any(x['id']==f['check'] and cid in x['covers'] for x in doc['plan']['checks']))
+            if (c and criterion_stamp(root,doc,c)==entry['criterion_digest']
+                    and artifact_ok(root,entry['handoff'])
+                    and canonical(failure_handoff(doc,cid)).decode() in safe(root,entry['handoff']['path']).read_text()
+                    and set(task_failures.failure_facts(doc,cid))<=known and not changed_negative):
+                result[cid]=entry
+        except (ValueError,OSError,KeyError,TypeError):pass
+    return result
+
+
+def failure_action(root,ident,failure_id,action,reason,evidence=None,conditions=None):
+    if action not in ('resolve','clarify','reopen') or not text(reason):fail('FAILURE_ACTION_REQUIRED')
+    with locked(root,ident):
+        doc=load(root,ident);mutable(doc);task_policy.check_local(root,git)
+        failure=task_failures.failure_facts(doc).get(failure_id)
+        if failure is None:fail('FAILURE_REFERENCE_REQUIRED')
+        cid=failure['criterion'];entry={'id':uuid.uuid4().hex,'at':now(),'action':action,'reason':reason}
+        if action=='clarify':
+            if evidence:fail('FAILURE_ACTION_INVALID')
+            task_failures.conditions(conditions,fail,True)
+            if files(root,failure['evidence'],True)!=failure['evidence']:fail('FAILURE_EVIDENCE_UNAVAILABLE')
+            entry['conditions']=conditions
+        elif action=='resolve':
+            if conditions is not None:fail('FAILURE_ACTION_INVALID')
+            c=next((c for c in doc['plan']['criteria'] if c['id']==cid),None)
+            if c is None:fail('CRITERION_UNKNOWN')
+            ready(root,doc,criterion=c)
+            expected=task_failures.conditions(task_failures.reproduction(doc,failure_id),fail,True)
+            if (not isinstance(evidence,list) or not evidence or len(evidence)>32
+                    or any(not isinstance(fid,str) for fid in evidence) or len(set(evidence))!=len(evidence)):
+                fail('TARGETED_RUNTIME_PROOF_REQUIRED')
+            runtime=[]
+            for fid in evidence:
+                f=doc['facts'].get(fid)
+                if not f or not fact_available(root,doc,c,f):fail('CURRENT_FACT_REQUIRED')
+                if f['kind']=='runtime_observation':
+                    if f['criterion']!=cid or f.get('conditions')!=expected:fail('FAILURE_CONDITIONS_MISMATCH')
+                    if instant(f['observed_at'])<instant(failure['observed_at']):fail('PASS_PREDATES_FAILURE')
+                    runtime.append(f)
+            if not runtime:fail('TARGETED_RUNTIME_PROOF_REQUIRED')
+            entry['evidence']=sorted(evidence)
+        elif evidence or conditions is not None:fail('FAILURE_ACTION_INVALID')
+        task_failures.append(doc['failure_actions'],failure_id,entry,fail)
+        doc['assessments'].pop(cid,None);save(root,doc)
+        return {'failure':failure_id,'criterion':cid,'action':action,'action_id':entry['id'],
+                'boundary':'Original facts/times retained; condition declarations and authority need actual investigation.'}
+
+
+def failure_handoff(doc,criterion):
+    """Small durable issue context, not an everlasting copy of logs/attachments."""
+    return {fid:{'actual':f['actual'],'target':f['observed_target'],'observed_at':f['observed_at'],
+                 'conditions':task_failures.reproduction(doc,fid),'evidence':f['evidence']}
+            for fid,f in task_failures.pending(doc,criterion).items()}
+
+
+def defer_claim(root,ident,criterion,reason,authority,decision_at,handoff=None,reopen=False,exclude=False):
+    if not reopen and not exclude:fail('EXPLICIT_DELIVERY_EXCLUSION_REQUIRED')
+    if not text(reason) or not text(authority) or not text(decision_at):fail('PRODUCT_DECISION_REQUIRED')
+    if instant(decision_at)>datetime.now(timezone.utc):fail('FUTURE_DECISION')
+    with locked(root,ident):
+        doc=load(root,ident);mutable(doc);task_policy.check_local(root,git)
+        c=next((c for c in doc['plan']['criteria'] if c['id']==criterion),None)
+        if c is None:fail('CRITERION_UNKNOWN')
+        entry={'id':uuid.uuid4().hex,'at':now(),'action':'reopen' if reopen else 'defer','reason':reason,
+               'authority':authority,'decision_at':decision_at}
+        if not reopen:
+            if not text(handoff) or handoff.startswith(('.featrace/','.agent-workflow/')):fail('DEFERRAL_HANDOFF_MUST_SURVIVE')
+            path=safe(root,handoff)
+            if not path.is_file() or path.stat().st_size>MAX_RECORD:fail('DEFERRAL_HANDOFF_UNAVAILABLE')
+            contents=path.read_text()
+            if (reason not in contents or authority not in contents or c['expected'] not in contents
+                    or canonical(failure_handoff(doc,criterion)).decode() not in contents):fail('DEFERRAL_HANDOFF_INCOMPLETE')
+            entry.update(handoff={'path':handoff,'sha256':file_identity(root,handoff,True)['sha256']},
+                         criterion_digest=criterion_stamp(root,doc,c),
+                         failures=sorted(task_failures.failure_facts(doc,criterion)),
+                         checks=sorted(fid for fid,f in doc['facts'].items() if f['kind']=='command'
+                                       and any(x['id']==f['check'] and criterion in x['covers'] for x in doc['plan']['checks'])))
+        task_failures.append(doc['claim_deferrals'],criterion,entry,fail)
+        doc['assessments'].pop(criterion,None);save(root,doc)
+        return {'criterion':criterion,'disposition':entry['action'],'decision_at':decision_at,
+                'boundary':'Entire named promise excluded from this delivery, never repaired or supported; an unchanged prior product decision needs no repeated approval.'}
+
 
 def fact_available(root,doc,c,fact,checked=None):
     try:return _fact_available(root,doc,c,fact,checked)
@@ -615,10 +707,15 @@ def prune(root,ident,apply=False):
     """Explicitly forget only unreferenced passing facts, never current/negative/correction roots."""
     with locked(root,ident):
         doc=load(root,ident);mutable(doc)
-        keep=set(doc['observations'].values())|set(doc['executions'].values())|set(doc['runtime_failures'].values())
+        keep=set(doc['observations'].values())|set(doc['executions'].values())|set(task_failures.failure_facts(doc))
+        for entries in doc['failure_actions'].values():
+            for action in entries:keep.update(action.get('evidence',[]))
+        for entries in doc['claim_deferrals'].values():
+            for action in entries:
+                keep.update(action.get('checks',[]));keep.update(action.get('failures',[]))
         for finding in doc['assessments'].values():keep.update(finding['facts'])
         for fid,fact in doc['facts'].items():
-            if fact['status']!='passed' or fact.get('resolved_failure') or fact.get('previous_failure'):keep.add(fid)
+            if fact['status']!='passed' or fact.get('previous_failure'):keep.add(fid)
         for entry in doc.get('corrections',[]):
             keep.update(fid for fid in entry.get('prior_checks',{}).values() if fid)
             for claim in entry.get('prior_claims',{}).values():
@@ -628,7 +725,7 @@ def prune(root,ident,apply=False):
         while pending:
             fact=doc['facts'].get(pending.pop())
             if not fact:fail('FACT_REFERENCE_MISSING')
-            for key in ('producer','previous_failure','previous_result','resolved_failure'):
+            for key in ('producer','previous_failure','previous_result'):
                 ref=fact.get(key)
                 if isinstance(ref,str) and ref and ref not in keep:keep.add(ref);pending.append(ref)
         candidates=sorted(set(doc['facts'])-keep)
@@ -657,6 +754,7 @@ def assess(root,ident,criterion,verdict,reason,independent=False,provenance=None
         c=next((c for c in doc['plan']['criteria'] if c['id']==criterion),None)
         if c is None:fail('CRITERION_UNKNOWN')
         ready(root,doc,criterion=c)
+        if criterion in active_deferrals(root,doc):fail('CLAIM_DEFERRED_NOT_SUPPORTED')
         refs=selected_support(root,doc,c,fact_ids) if verdict=='supported' else sorted(fact_ids or [])
         if any(fid not in doc['facts'] for fid in refs):fail('FACT_REFERENCE_MISSING')
         proof=None
@@ -678,11 +776,12 @@ def view(root,ident,offset=0,limit=20,blocker_offset=0):
             or type(blocker_offset) is not int or blocker_offset<0):fail('PAGE_INVALID')
     doc=load(root,ident)
     if doc['state']=='complete':
-        return {'id':ident,'state':'complete','as_of':{k:v for k,v in doc['receipt'].items() if k!='limitations'},
-                'limitation_count':len(doc['receipt']['limitations']),'details':'detail --section receipt',
+        return {'id':ident,'state':'complete','as_of':{k:v for k,v in doc['receipt'].items() if k not in ('limitations','deferrals')},
+                'limitation_count':len(doc['receipt']['limitations']),'deferred_count':len(doc['receipt'].get('deferrals',{})),'details':'detail --section receipt',
                 'correction_count':len(doc.get('corrections',[])), 'current_revision_certified':False}
     blockers=[];rows=[];checked={};scope_readiness={'ready':True}
-    try:ready(root,doc)
+    deferred=active_deferrals(root,doc) if doc['plan'] else {}
+    try:ready(root,doc,excluded=deferred)
     except (ValueError,OSError) as exc:
         # Only known position-free codes are public; never return arbitrary exception text.
         known={'PLAN_REQUIRED','SCOPE_REVIEW_REQUIRED','SCOPE_UNKNOWN','PROJECT_POLICY_REQUIRED',
@@ -691,18 +790,23 @@ def view(root,ident,offset=0,limit=20,blocker_offset=0):
         scope_readiness={'ready':False,'reason':reason,
                          'details':'detail --section plan' if doc['plan'] else 'detail --section request'}
         blockers.append('SCOPE_NOT_READY')
-    blockers.extend('RUNTIME_FAILURE:'+key for key in sorted(doc.get('runtime_failures',{})))
+    blockers.extend('DEFERRAL_STALE:'+cid for cid,entries in doc.get('claim_deferrals',{}).items() if entries[-1]['action']=='defer' and cid not in deferred)
+    blockers.extend('RUNTIME_FAILURE:'+fid for fid,f in sorted(task_failures.pending(doc).items()) if f['criterion'] not in deferred)
     if doc['plan']:
         for check in doc['plan']['checks']:
+            if set(check['covers'])<=set(deferred):continue
             result=doc['facts'].get(doc['executions'].get(check['id']))
             try:current=bool(result and execution_profile(root,doc,check,result) and artifact_ok(root,result['artifact']) and timely(check,result))
             except (ValueError,OSError):current=False
             if result:checked[result['id']]=bool(current and result['status']=='passed')
             if not result or not checked[result['id']]:blockers.append('CHECK:'+check['id'])
         for c in doc['plan']['criteria']:
+            if c['id'] in deferred:
+                rows.append({'id':c['id'],'status':'deferred','unresolved_failure_count':len(task_failures.pending(doc,c['id']))});continue
             finding=doc['assessments'].get(c['id']);valid=False
             observation=doc['facts'].get(doc['observations'].get(c['id']))
-            if observation and observation['status']!='passed':blockers.append('OBSERVATION:'+c['id'])
+            if (observation and observation['status']!='passed'
+                    and not task_failures.resolved(doc,observation['id'])):blockers.append('OBSERVATION:'+c['id'])
             try:
                 valid=bool(finding and finding['verdict']=='supported' and finding['criterion_digest']==criterion_stamp(root,doc,c)
                            and selected_support(root,doc,c,finding['facts'],checked)==finding['facts'])
@@ -720,7 +824,7 @@ def view(root,ident,offset=0,limit=20,blocker_offset=0):
             'blocker_count':len(blockers),'blockers':blockers[blocker_offset:blocker_offset+25],
             'next_blocker_offset':blocker_offset+25 if blocker_offset+25<len(blockers) else None,
             'request_preview':doc['request'][:500],'request_complete':len(doc['request'])<=500,
-            'limitation_count':len(doc['limitations']),'eligible':not blockers,
+            'limitation_count':len(doc['limitations']),'eligible':not blockers,'deferred_count':len(deferred),
             'correction':({'id':open_correction(doc)['id'],'affected_count':len(open_correction(doc)['affected']),
                            'details':'detail --section corrections'} if open_correction(doc) else None),
             'boundary':'Local structure/identity checked; semantic coverage and host independence require real review.'}
@@ -738,6 +842,10 @@ def _close(root,ident,limitations):
                         'task':ident,'plan_digest':digest(doc['plan']),'input_digest':doc['analysis_digest'],
                         'retention':{k:task_policy.load(root)[k] for k in ('retention_days','timezone','cleanup','handoff')},
                         'criteria':len(doc['plan']['criteria']),
+                        'supported_criteria':len(doc['plan']['criteria'])-len(active_deferrals(root,doc)),
+                        'outcome':'scoped_delivery_with_deferrals' if active_deferrals(root,doc) else 'fully_supported',
+                        'deferrals':{cid:{**entry,'unresolved_failures':sorted(task_failures.pending(doc,cid))}
+                                     for cid,entry in active_deferrals(root,doc).items()},
                         'limitations':limitations,'evidence_retention':'task-local; no permanent replay promised'}
         correction=open_correction(doc)
         if correction:
@@ -762,6 +870,8 @@ def cleanup(root,ident,apply=False,timezone_name='UTC',forget=False,handoff=None
         zone=ZoneInfo(timezone_name)
         days=(datetime.now(zone).date()-instant(doc['receipt']['completed_at']).astimezone(zone).date()).days
         if days<doc['receipt'].get('retention',{}).get('retention_days',7):fail('RETENTION_NOT_ELAPSED')
+        for entry in doc['receipt'].get('deferrals',{}).values():
+            if not artifact_ok(root,entry['handoff']):fail('DEFERRAL_HANDOFF_UNAVAILABLE')
         if forget and doc['receipt']['limitations']:
             if not handoff:fail('LIMITATIONS_HANDOFF_REQUIRED')
             source=safe(root,handoff)
@@ -848,7 +958,8 @@ def storage(root,offset=0,limit=20):
             counts['complete' if completed else 'incomplete']+=1
             age=max(0,(datetime.now(timezone.utc)-instant(doc.get('updated_at') or doc.get('created_at') or (doc.get('receipt') or {}).get('completed_at'))).days)
             stale=not completed and age>=policy['retention_days']
-            pending=len(doc.get('runtime_failures',{}))
+            pending=(len(task_failures.pending(doc)) if 'facts' in doc else
+                     len({fid for e in doc['receipt'].get('deferrals',{}).values() for fid in e['unresolved_failures']}))
             counts['stale_incomplete']+=int(stale);counts['pending_runtime_failure']+=pending
             if path in selected:items.append({'id':path.stem,'state':doc['state'],'record_bytes':path.stat().st_size,
                 'inactive_days':age,'stale_incomplete':stale,'pending_runtime_failures':pending})
@@ -903,14 +1014,19 @@ def detail(root,ident,section,criterion=None,offset=0,limit=4000):
         if c is None:fail('CRITERION_UNKNOWN')
         value=c if section=='criterion' else {'observation':doc['facts'].get(doc['observations'].get(criterion)),'assessment':doc['assessments'].get(criterion),
                   'observation_applicability':fact_applicability(c,doc['facts'][doc['observations'][criterion]]) if criterion in doc['observations'] else None,
-                  'runtime_failure':doc.get('facts',{}).get(doc.get('runtime_failures',{}).get(criterion)),
+                  'runtime_failures':task_failures.pending(doc,criterion),
+                  'failure_actions':{fid:actions for fid,actions in doc.get('failure_actions',{}).items() if fid in task_failures.failure_facts(doc,criterion)},
+                  'claim_deferrals':doc.get('claim_deferrals',{}).get(criterion,[]),
                   'facts':{fid:f for fid,f in doc['facts'].items() if f.get('criterion')==criterion or (f['kind']=='command' and f['check'] in [x['id'] for x in doc['plan']['checks'] if criterion in x['covers']])}}
+    elif section=='failure-handoff':
+        if not doc.get('plan') or criterion not in {c['id'] for c in doc['plan']['criteria']}:fail('CRITERION_UNKNOWN')
+        value=failure_handoff(doc,criterion)
     elif section=='fact':
         value=doc.get('facts',{}).get(criterion)
         if value is None:fail('FACT_REFERENCE_MISSING')
     elif section in ('request','plan','receipt','limitations','corrections'):value=doc.get(section)
     else:fail('DETAIL_SECTION_INVALID')
-    body=json.dumps(value,ensure_ascii=False,sort_keys=True)
+    body=canonical(value).decode() if section=='failure-handoff' else json.dumps(value,ensure_ascii=False,sort_keys=True)
     # UTF-8 bytes are bounded even for four-byte codepoints.
     chunk=body[offset:offset+min(limit,2000)];end=offset+len(chunk)
     return {'id':ident,'section':section,'total_characters':len(body),'offset':offset,'text':chunk,
@@ -929,8 +1045,9 @@ def review_input(root,ident,criterion):
             'input_count':len(c['inputs']),'inputs_preview':[p[:160] for p in c['inputs'][:10]],'inputs_complete':len(c['inputs'])<=10 and all(len(p)<=160 for p in c['inputs']), 'observation_kind':obs.get('kind') if obs else None,
             'validity_mode':c.get('validity',{}).get('mode','undeclared'),
             'observation_applicability':fact_applicability(c,obs) if obs else None,
-            'runtime_failure':({'id':doc['runtime_failures'][criterion],'observed_at':doc['facts'][doc['runtime_failures'][criterion]]['observed_at'],
-                                'details':'detail --section facts --criterion '+criterion} if criterion in doc.get('runtime_failures',{}) else None),
+            'runtime_failures':[{'id':fid,'observed_at':f['observed_at'],'details':'detail --section facts --criterion '+criterion}
+                                for fid,f in list(task_failures.pending(doc,criterion).items())[:10]],
+            'runtime_failure_count':len(task_failures.pending(doc,criterion)),
             'review':{'independent':review_required(doc['plan'],c),'reason_preview':doc['plan']['review']['reason'][:500],'reason_complete':len(doc['plan']['review']['reason'])<=500},'details':'detail --section criterion|facts --criterion '+criterion,
             'boundary':'Review actual scoped code/claims/assertions. Host supplies genuine provenance; this is not an independent review.'}
 
@@ -967,7 +1084,7 @@ def code_query(root,query,offset=0,limit=20):
 
 def main():
     parser=Parser(description=__doc__)
-    parser.add_argument('action',choices=['begin','plan','run','observe','assess','status','close','correct','prune','cleanup','locate','list','policy','maintain','detail','review-input','code','attach','storage'])
+    parser.add_argument('action',choices=['begin','plan','run','observe','assess','status','close','correct','prune','cleanup','locate','list','policy','maintain','detail','review-input','code','attach','storage','failure','defer','reopen-claim'])
     parser.add_argument('root');parser.add_argument('id',nargs='?')
     parser.add_argument('--json');parser.add_argument('--request');parser.add_argument('--check');parser.add_argument('--criterion')
     parser.add_argument('--kind');parser.add_argument('--observed-at');parser.add_argument('--actual')
@@ -980,6 +1097,9 @@ def main():
     parser.add_argument('--forget',action='store_true');parser.add_argument('--handoff')
     parser.add_argument('--fact',action='append',default=[]);parser.add_argument('--producer')
     parser.add_argument('--affected',action='append',default=[]);parser.add_argument('--authority')
+    parser.add_argument('--failure');parser.add_argument('--disposition',choices=['resolve','clarify','reopen'])
+    parser.add_argument('--conditions-json');parser.add_argument('--decision-at')
+    parser.add_argument('--exclude-from-delivery',action='store_true')
     a=parser.parse_args();root=project(a.root)
     if a.action=='policy':out=task_policy.prepare(root,read_json(Path(a.json)),git)
     elif a.action=='storage':out=storage(root,a.offset,a.limit)
@@ -991,13 +1111,15 @@ def main():
     elif a.action=='plan':out=set_plan(root,a.id,read_json(Path(a.json)))
     elif a.action=='run':out=run_check(root,a.id,a.check,a.investigate)
     elif a.action=='attach':out=attach(root,a.id,a.file)
-    elif a.action=='observe':out=observe(root,a.id,a.criterion,a.kind,a.observed_at,a.actual,a.evidence,a.status,a.target,a.producer)
+    elif a.action=='observe':out=observe(root,a.id,a.criterion,a.kind,a.observed_at,a.actual,a.evidence,a.status,a.target,a.producer,read_json(Path(a.conditions_json)) if a.conditions_json else None)
+    elif a.action=='failure':out=failure_action(root,a.id,a.failure,a.disposition,a.reason,a.fact,read_json(Path(a.conditions_json)) if a.conditions_json else None)
+    elif a.action in ('defer','reopen-claim'):out=defer_claim(root,a.id,a.criterion,a.reason,a.authority,a.decision_at,a.handoff,a.action=='reopen-claim',a.exclude_from_delivery)
     elif a.action=='assess':out=assess(root,a.id,a.criterion,a.verdict,a.reason,a.independent,a.provenance,a.fact)
     elif a.action=='correct':out=correct(root,a.id,a.affected,a.reason,a.authority)
     elif a.action=='prune':out=prune(root,a.id,a.apply)
     elif a.action=='status':out=view(root,a.id,a.offset,a.limit,a.blocker_offset)
     elif a.action=='close':
-        receipt=close(root,a.id,a.limitation);out={'id':a.id,'state':'complete','completed_at':receipt['completed_at'],'limitation_count':len(receipt['limitations']),'details':'detail --section receipt'}
+        receipt=close(root,a.id,a.limitation);out={'id':a.id,'state':'complete','completed_at':receipt['completed_at'],'limitation_count':len(receipt['limitations']),'outcome':receipt['outcome'],'deferred_count':len(receipt.get('deferrals',{})),'details':'detail --section receipt'}
     elif a.action=='cleanup':out=cleanup(root,a.id,a.apply,a.timezone,a.forget,a.handoff)
     elif a.action=='list':out=task_list(root,a.offset,a.limit)
     else:out=locate(root,a.id,a.offset,a.limit)

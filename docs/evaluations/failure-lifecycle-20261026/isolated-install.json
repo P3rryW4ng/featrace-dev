@@ -1,0 +1,6 @@
+{
+  "runtime_files": 13,
+  "both_hosts_match_source_and_install_manifest": true,
+  "channel": "development",
+  "daily_install_changed": false
+}

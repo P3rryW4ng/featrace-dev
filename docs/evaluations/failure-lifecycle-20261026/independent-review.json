@@ -1,0 +1,244 @@
+{
+  "context_id": "/root/failure_lifecycle_review",
+  "review_type": "independent read-only source review; no tests executed",
+  "reviewed_at": "2026-10-26T07:17:27.783350+00:00",
+  "repository": "/Users/mac/Entrepôt/featrace-dev",
+  "scope": {
+    "full_read": [
+      "AGENTS.md",
+      "PRODUCT.md",
+      "skills/dev/core/scripts/task_workflow.py",
+      "skills/dev/core/scripts/task_failures.py",
+      "skills/dev/core/scripts/task_execution.py",
+      "tests/test_failure_lifecycle.py",
+      "tests/test_task_correction.py",
+      "skills/dev/core/references/task-workflow.md"
+    ],
+    "targeted_read": [
+      "skills/dev/SKILL.md",
+      "docs/usage.md",
+      "tests/test_task_workflow.py",
+      "tests/test_evidence_core.py",
+      "tests/test_hardening.py",
+      "tests/test_observation_validity.py"
+    ],
+    "filename_inventory_or_text_search_only": [
+      "tests/test_task_extensions.py"
+    ],
+    "not_read": [
+      "parent conversation",
+      "other projects",
+      "historical task/business data"
+    ],
+    "restrictions_honored": [
+      "no repository modifications",
+      "no test execution",
+      "no subprocess invoking reviewed runtime",
+      "no subagents",
+      "only this report written"
+    ]
+  },
+  "verdict": "Targeted read-only re-review finds all three previously reported defects closed in the current source. No remaining confirmed defect in those three boundaries. This is source-level closure, not an independently executed test result or release certification.",
+  "findings": [
+    {
+      "id": "FL-IR-1",
+      "priority": "P1",
+      "confidence": "high",
+      "status": "closed by source-level targeted re-review",
+      "title": "Intact generic deferral handoff permits loss of unresolved reproduction facts during cleanup",
+      "locations": [
+        {
+          "file": "skills/dev/core/scripts/task_workflow.py",
+          "start": 652,
+          "end": 661
+        },
+        {
+          "file": "skills/dev/core/scripts/task_workflow.py",
+          "start": 835,
+          "end": 836
+        },
+        {
+          "file": "skills/dev/core/scripts/task_workflow.py",
+          "start": 861,
+          "end": 862
+        },
+        {
+          "file": "skills/dev/core/scripts/task_workflow.py",
+          "start": 888,
+          "end": 897
+        }
+      ],
+      "causal_chain": "defer_claim only requires handoff text to contain reason and authority. It snapshots failed fact IDs, but neither the surviving handoff nor the receipt is required to contain actual, conditions, target or a usable failure summary. cleanup checks the same handoff hash, then drops facts/actions and removes task-owned evidence. A minimal generic issue accepted by the API therefore survives, while the distinguishing first-cold-start failure and normal-restart control can become unrecoverable. Receipt unresolved_failures IDs do not recover deleted facts; forget also removes that receipt.",
+      "minimal_counterexample": [
+        "Capture first-launch failed runtime observation with conditions and task-owned evidence.",
+        "Write ISSUES.md containing only the generic exclusion reason and product-authority reference, as the existing lifecycle fixture effectively does.",
+        "Defer C1, close, let retention elapse, compact or forget with intact ISSUES.md.",
+        "Original failure content and conditions vanish from retained task state; no requirement ensures they exist in ISSUES.md."
+      ],
+      "impact": "The tool can satisfy its cleanup gate while losing the unresolved business fact necessary for a future developer to resume the issue. It does not falsely mark the failure resolved, but it defeats useful handoff.",
+      "recommendation": "Preserve a bounded useful summary of each unresolved excluded failure and the excluded promise in the surviving existing issue or bounded receipt, and require useful external handoff before forget. Do not introduce full permanent history replay or require retesting solely to write the summary.",
+      "test_suggestions": [
+        "Reject or safely retain unresolved details when the handoff contains generic reason/authority only.",
+        "Compact and forget a deferred first-launch failure with owned evidence; verify a later context can recover the promise, failed case, necessary conditions and unresolved status from the intended surviving location.",
+        "Keep existing lost/changed-handoff tests."
+      ],
+      "historical_status": "confirmed in reviewed source; parent notified",
+      "closure": {
+        "status": "closed by source-level targeted re-review",
+        "evidence": "failure_handoff retains per-failed-ID actual, target, original observed_at, latest clarified reproduction conditions and evidence identities. defer_claim requires expected/reason/authority plus its exact canonical JSON in an external surviving issue. active_deferrals recomputes that summary, so later condition clarification cannot leave an outdated issue active. detail failure-handoff returns the exact canonical payload with normal pagination. cleanup retains the issue through its existing unchanged-hash gate before dropping local facts/logs. Thus generic reason/authority alone no longer authorizes loss of the unresolved reproduction summary.",
+        "reviewed_current_locations": [
+          "skills/dev/core/scripts/task_workflow.py:584",
+          "skills/dev/core/scripts/task_workflow.py:642",
+          "skills/dev/core/scripts/task_workflow.py:650",
+          "skills/dev/core/scripts/task_workflow.py:866",
+          "skills/dev/core/scripts/task_workflow.py:1021"
+        ],
+        "existing_new_assertions_read": [
+          "test_generic_handoff_cannot_discard_reproduction_context",
+          "test_compacted_deferral_still_counts_unresolved_failure",
+          "test_later_condition_clarification_invalidates_old_handoff"
+        ],
+        "remaining_limits": "Summaries preserve useful issue context and evidence identity; they do not promise raw logs/attachments remain or establish the truth of declared conditions. No new physical retest is needed solely to generate/copy this handoff."
+      }
+    },
+    {
+      "id": "FL-IR-2",
+      "priority": "P2",
+      "confidence": "high",
+      "status": "closed by source-level targeted re-review",
+      "title": "Prune forgets deferral command references and reports candidates that cannot be applied",
+      "locations": [
+        {
+          "file": "skills/dev/core/scripts/task_workflow.py",
+          "start": 697,
+          "end": 722
+        },
+        {
+          "file": "skills/dev/core/scripts/task_failures.py",
+          "start": 65,
+          "end": 75
+        }
+      ],
+      "causal_chain": "defer_claim stores every applicable command fact ID in entry.checks, and task_failures.validate requires those IDs to remain facts. prune roots latest execution, failure actions, assessments and correction references, but never roots claim_deferrals checks. A superseded successful command referenced by any retained deferral action may therefore be advertised as removable. --apply removes it in memory and save refuses CLAIM_DEFERRAL_INVALID. Disk stays intact, but prune fails its own reference contract.",
+      "minimal_counterexample": [
+        "Use a local nonreusable check; execute passing attempt A.",
+        "Defer its sole criterion, so checks includes A.",
+        "Execute passing attempt B on the same inputs, replacing the latest execution pointer without previous_failure.",
+        "Prune previews A as removable, but apply fails validation. The same issue applies to historical deferrals after reopen."
+      ],
+      "impact": "False cleanup candidate and unnecessary refusal; at fact capacity this can prevent bounded task management even though metadata claimed removable. This is not silent on-disk corruption.",
+      "recommendation": "Include all retained deferral references in prune reachability, or deliberately revise the retained disposition reference contract without destroying needed negative history. Keep preview/apply behavior consistent.",
+      "test_suggestions": [
+        "Supersede a passing command after defer with cache never, then compare prune preview and apply.",
+        "Repeat after reopen-claim so inactive disposition history remains internally valid.",
+        "Ensure unrelated unreferenced successful facts are still prunable."
+      ],
+      "historical_status": "confirmed in reviewed source; parent notified",
+      "closure": {
+        "status": "closed by source-level targeted re-review",
+        "evidence": "prune now roots checks and failures from every retained claim_deferrals action before computing transitive fact reachability and candidates. This includes inactive historical deferrals; retained validation references can no longer be advertised as removable merely because a newer execution became current.",
+        "reviewed_current_locations": [
+          "skills/dev/core/scripts/task_workflow.py:706"
+        ],
+        "existing_new_assertions_read": [
+          "test_prune_keeps_prior_deferral_command_references"
+        ],
+        "remaining_limits": "The added fixture checks a superseded passing command reference. Source loops over all historical actions, covering reopened historical deferrals as well; that variation was not independently executed."
+      }
+    },
+    {
+      "id": "FL-IR-3",
+      "priority": "P2",
+      "confidence": "high",
+      "status": "closed by source-level targeted re-review",
+      "title": "Storage reports zero unresolved failures after compacting an explicitly deferred failure",
+      "locations": [
+        {
+          "file": "skills/dev/core/scripts/task_workflow.py",
+          "start": 945,
+          "end": 952
+        },
+        {
+          "file": "skills/dev/core/scripts/task_failures.py",
+          "start": 16,
+          "end": 28
+        }
+      ],
+      "causal_chain": "Compaction retains receipt.deferrals[*].unresolved_failures but removes facts. task_failures.failure_facts then returns an empty map, and storage counts only task_failures.pending(doc). The same task thus changes pending_runtime_failures from a positive count to zero solely because retention cleanup ran, while its receipt still says the failure is unresolved.",
+      "minimal_counterexample": [
+        "Create one failed runtime observation, defer the whole criterion and close.",
+        "Query storage and retain its pending count.",
+        "After retention, compact without forget and query storage again.",
+        "The inventory reports zero although receipt still lists the unresolved failed fact ID."
+      ],
+      "impact": "A read-only inventory can hide deferred unresolved work and contradict receipt/status semantics. Cleanup is not a resolution.",
+      "recommendation": "Count compacted unresolved IDs from the retained receipt with deduplication, or expose a clearly distinct unknown/compacted state. Do not silently translate missing fact detail to zero pending business issues.",
+      "test_suggestions": [
+        "Compare storage pending counts and receipt unresolved IDs before and after compaction.",
+        "Verify resolved-only and no-failure complete tasks still count zero.",
+        "Verify read-only query performs no execution or task mutation."
+      ],
+      "historical_status": "confirmed in reviewed source; parent notified",
+      "closure": {
+        "status": "closed by source-level targeted re-review",
+        "evidence": "storage uses live pending facts while facts exist, and otherwise deduplicates unresolved IDs from receipt.deferrals. Compaction no longer turns retained unresolved issues into a zero count; complete tasks without deferrals produce an empty set and zero.",
+        "reviewed_current_locations": [
+          "skills/dev/core/scripts/task_workflow.py:960"
+        ],
+        "existing_new_assertions_read": [
+          "test_compacted_deferral_still_counts_unresolved_failure"
+        ],
+        "remaining_limits": "Inventory preserves count and receipt semantics, while full expired task facts remain intentionally unavailable. Forget removes the task from inventory; its unresolved business context survives in the verified external issue."
+      }
+    }
+  ],
+  "verified_by_source_inspection": [
+    "observe appends facts and does not automatically append resolve actions.",
+    "failure_action(resolve) explicitly requires same criterion, nonempty matching conditions, passing current applicable runtime evidence and no observation earlier than the failure.",
+    "pending enumerates every failed runtime observation independently; resolving one cannot clear another failed fact.",
+    "static/unavailable facts cannot satisfy targeted resolution; reopen and clarify append actions without rewriting original facts.",
+    "defer is explicitly an entire-promise exclusion, rejects omission of exclude, removes no failure and refuses supported assessment while active.",
+    "view skips only checks whose full covers set is deferred; shared checks for remaining promises still apply.",
+    "close distinguishes supported_criteria and scoped_delivery_with_deferrals; an all-deferred receipt claims zero supported criteria.",
+    "correct preserves prior receipt and selected roots, clears only affected assessments; open corrections cannot be cleaned.",
+    "Ordinary observation, status and support paths require no disposition step when there is no failure. Queries do not execute checks.",
+    "Execution identity binds reachable execution logic rather than the full workflow producer hash; reader-only source changes need not force reruns."
+  ],
+  "unknowns_and_limits": [
+    "No tests were run, so source-described behavior and existing assertions are not newly observed runtime evidence.",
+    "Actual condition equivalence, target/build applicability and truth of product authority remain human/agent semantic investigation; matching labels and hashes cannot prove them.",
+    "No evidence here establishes behavior of real devices, installed releases, old tasks or production business records.",
+    "The full task_policy and task_inputs implementations were not reread in this bounded review; their preexisting protections were only inspected through callers and selected existing tests.",
+    "Review is bounded to source read at the recorded re-review time; later source edits require their own relevant checks. Historical finding descriptions are retained as pre-fix causal evidence and are no longer open defects."
+  ],
+  "documentation_followup": {
+    "initial_problem": "Guidance initially described contract3, automatic-era resolution and no supported product-exclusion route.",
+    "recheck": "Parent updated guidance during review; reread confirms contract4 plus explicit conditions/failure/defer/reopen guidance. Initial stale-guidance finding withdrawn.",
+    "minor_remaining": "Closed on re-read: docs/usage.md now labels the bounded task candidate contract4."
+  },
+  "suggested_validation_scope": "Focused synthetic lifecycle and reader/cleanup integration cases above, plus required existing repository regression checks as chosen by the implementation owner. No real-project retest, whole-product recertification or architecture expansion is implied by these findings.",
+  "re_review": {
+    "context_id": "/root/failure_lifecycle_review",
+    "at": "2026-10-26T07:23:42.244995+00:00",
+    "scope": [
+      "task_workflow.py: active_deferrals, failure_handoff, defer_claim, prune, cleanup, storage, detail",
+      "tests/test_failure_lifecycle.py: updated fixture and new handoff/prune/storage/clarification cases",
+      "task-workflow.md: surviving compact JSON guidance",
+      "docs/usage.md: candidate contract4 wording"
+    ],
+    "no_tests_executed": true,
+    "no_source_or_task_modified": true,
+    "parent_reported_validation": {
+      "result": "23/23 focused tests passed",
+      "independently_verified": false,
+      "note": "Reported by parent; this reviewer did not run tests or inspect development test logs."
+    },
+    "remaining_confirmed_findings": [],
+    "bounded_limit": "Only the three reported lifecycle integrations were reopened for review; no additional architecture or unrelated subsystem audit performed.",
+    "test_quality_suggestion": {
+      "blocking": false,
+      "detail": "The generic-handoff negative fixture omits both expected text and canonical failure summary. For more diagnostic coverage, include expected/reason/authority while omitting the canonical reproduction payload, so the test specifically exercises preservation of failure context. The current source explicitly checks the payload and therefore closes the reported defect regardless."
+    }
+  },
+  "open_findings": []
+}

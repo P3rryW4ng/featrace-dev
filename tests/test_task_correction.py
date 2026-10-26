@@ -55,7 +55,7 @@ class TaskCorrectionTests(TaskWorkflowTests):
         self.observe('C1','runtime_observation',w.now(),'Actual failure',['app.py'],'failed')
         self.support();self.assertFalse(w.view(self.root,self.ident)['eligible'])
         self.observe('C1','runtime_observation',w.now(),'New targeted pass',['app.py'])
-        self.support();self.assertTrue(w.view(self.root,self.ident)['eligible'])
+        self.resolve();self.support();self.assertTrue(w.view(self.root,self.ident)['eligible'])
 
     def test_compacted_task_cannot_be_reopened_without_original_inputs(self):
         self.completed_two_claims();self.age();w.cleanup(self.root,self.ident,True)
@@ -69,7 +69,7 @@ class TaskCorrectionTests(TaskWorkflowTests):
         self.support();w.close(self.root,self.ident,['Original limit'])
         self.age();w.cleanup(self.root,self.ident,True)
         doc=self.doc()
-        self.assertEqual(doc['task_contract'],3)
+        self.assertEqual(doc['task_contract'],4)
         self.assertEqual(doc['corrections'][0]['prior_receipt'],original['receipt'])
         self.assertNotIn('prior_claims',doc['corrections'][0])
 

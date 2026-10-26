@@ -1,0 +1,119 @@
+{
+  "passed": true,
+  "events": [
+    {
+      "action": "observe",
+      "returncode": 0,
+      "result": {
+        "criterion": "C1",
+        "fact": "85a0f2c98b12456ab914bc783b8171dd",
+        "kind": "runtime_observation"
+      }
+    },
+    {
+      "action": "observe",
+      "returncode": 0,
+      "result": {
+        "criterion": "C1",
+        "fact": "5a7d81c2646342c7bf417e2ff075638f",
+        "kind": "runtime_observation"
+      }
+    },
+    {
+      "action": "failure",
+      "returncode": 2,
+      "result": {
+        "state": "unavailable",
+        "reason": "FAILURE_CONDITIONS_MISMATCH"
+      }
+    },
+    {
+      "action": "status",
+      "returncode": 2,
+      "result": {
+        "outside_scope_change_count": 2,
+        "id": "UI-1",
+        "state": "blocked",
+        "scope_readiness": {
+          "ready": true
+        },
+        "total": 1,
+        "items": [
+          {
+            "id": "C1",
+            "status": "needs_review",
+            "observation_applicability": "UNDECLARED"
+          }
+        ],
+        "next_offset": null,
+        "blocker_count": 3,
+        "blockers": [
+          "RUNTIME_FAILURE:85a0f2c98b12456ab914bc783b8171dd",
+          "CHECK:target",
+          "CLAIM:C1"
+        ],
+        "next_blocker_offset": null,
+        "request_preview": "Change one local label; no business behavior changes.",
+        "request_complete": true,
+        "limitation_count": 0,
+        "eligible": false,
+        "deferred_count": 0,
+        "correction": null,
+        "boundary": "Local structure/identity checked; semantic coverage and host independence require real review."
+      }
+    },
+    {
+      "action": "detail",
+      "returncode": 0,
+      "result": {
+        "id": "UI-1",
+        "section": "failure-handoff",
+        "total_characters": 350,
+        "offset": 0,
+        "text": "{\"85a0f2c98b12456ab914bc783b8171dd\":{\"actual\":\"Synthetic first-session failure\",\"conditions\":{\"language\":\"empty\",\"session\":\"first\"},\"evidence\":{\"app.py\":{\"executable\":false,\"sha256\":\"71a3607191525d70cbf21bf88765e2dcba73c80fc843f5e281a5e6922dbbcfba\",\"state\":\"file\"}},\"observed_at\":\"2026-10-26T07:28:01.835041+00:00\",\"target\":\"Synthetic local target\"}}",
+        "next_offset": null,
+        "complete": true
+      }
+    },
+    {
+      "action": "defer",
+      "returncode": 0,
+      "result": {
+        "criterion": "C1",
+        "disposition": "defer",
+        "decision_at": "2026-10-26T07:28:02.159102+00:00",
+        "boundary": "Entire named promise excluded from this delivery, never repaired or supported; an unchanged prior product decision needs no repeated approval."
+      }
+    },
+    {
+      "action": "close",
+      "returncode": 0,
+      "result": {
+        "id": "UI-1",
+        "state": "complete",
+        "completed_at": "2026-10-26T07:28:02.316961+00:00",
+        "limitation_count": 0,
+        "outcome": "scoped_delivery_with_deferrals",
+        "deferred_count": 1,
+        "details": "detail --section receipt"
+      }
+    },
+    {
+      "action": "status",
+      "returncode": 2,
+      "result": {
+        "state": "unavailable",
+        "reason": "TASK_CONTRACT_UNSUPPORTED_USE_PINNED_TOOL"
+      }
+    },
+    {
+      "action": "status",
+      "returncode": 2,
+      "result": {
+        "state": "unavailable",
+        "reason": "TASK_CONTRACT_UNSUPPORTED_USE_PINNED_TOOL"
+      }
+    }
+  ],
+  "boundary": "Synthetic subprocess CLI and pinned-reader checks only; not an Agent/business pilot."
+}

@@ -65,11 +65,11 @@ class ReviewSelectionTests(unittest.TestCase):
         f.plan['categories']=['shared','presentation']
         f.plan['review']={'independent':False,'criteria':[],'reason':'No separate review needed does not resolve failure'}
         f.refresh()
-        with self.assertRaisesRegex(ValueError,'RUNTIME_FAILURE_NEEDS_RUNTIME'):
-            f.observe('C1','static_analysis',w.now(),'Code inspection is not a repair observation',['app.py'])
+        f.observe('C1','static_analysis',w.now(),'Code inspection is not a repair observation',['app.py'])
+        with self.assertRaisesRegex(ValueError,'TARGETED_RUNTIME_PROOF_REQUIRED'):f.resolve()
         f.support()
         self.assertEqual(f.runtime_failure('C1')['id'],failed)
-        self.assertIn('RUNTIME_FAILURE:C1',w.view(f.root,f.ident)['blockers'])
+        self.assertIn('RUNTIME_FAILURE:'+failed,w.view(f.root,f.ident)['blockers'])
         with self.assertRaisesRegex(ValueError,'DELIVERY_BLOCKED'):w.close(f.root,f.ident,[])
 
     def test_execution_path_keeps_environment_and_cache_validation(self):
