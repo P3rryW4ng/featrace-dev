@@ -23,7 +23,7 @@ Help Claude Code and Codex investigate impact, implement changes, repair failure
 - Clean owned task outputs under the confirmed calendar-day policy; query and page necessary content instead of preserving every feature's complete process forever.
 - Reuse genuine same-scope authorization; ask only for actual conflicts, missing sources/accounts or host restrictions. Use the host's actual native task/plan tools and presentation; otherwise ordinary concise progress prose, without drawn checkbox/status lists or fixed phases.
 
-Explicitly correct selected claims in retained completed tasks while preserving the original receipt. New and corrected contract3 records require supporting readers; compacted sources cannot be reconstructed and business records are not automatically migrated.
+Explicitly correct selected claims in retained completed tasks while preserving the original receipt. New and corrected contract4 records require supporting readers; compacted sources cannot be reconstructed and business records are not automatically migrated.
 
 Commit each completed working subtask locally after necessary checks, before feature closure; actual commit restrictions still apply and push is separate. Current-state claims use the real environment and original observation time; as-of screenshots do not expire uniformly.
 

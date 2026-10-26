@@ -1,0 +1,72 @@
+{
+  "version": "0.28.0",
+  "publication": {
+    "source_commit": "0d23f3b9f504853f5dbd7a8aea05154b58376648",
+    "branch": "release/0.28.0",
+    "tag": "v0.28.0",
+    "remote_refs_match": true,
+    "viewer_permission_verified": "ADMIN",
+    "github_release_page_created": false
+  },
+  "installation": {
+    "version": "0.28.0",
+    "source": {
+      "version": "0.28.0",
+      "channel": "release",
+      "source_commit": "0d23f3b9f504853f5dbd7a8aea05154b58376648",
+      "installer_sha256": "647869484aae3a2fa8963d4ac10831baf124dce2a75aeb1f7f4a02b1697b4cca",
+      "content_sha256": "a227c6e8fb1aa6a8578821ec556d20e28c5f0e055793352704cee2cd0aa27313",
+      "release_ref": "refs/tags/v0.28.0",
+      "boundary": "Matches the local pinned release ref and descriptor; not a signed remote-origin attestation."
+    },
+    "runtime_files": 13,
+    "actual_manifest_source_match": true,
+    "previous_version": "0.27.0",
+    "backup": "/Users/mac/.feature-delivery/backups/20261026T073149-claude-53a4a2e4",
+    "backup_complete": true,
+    "only_daily_claude_updated": true,
+    "business_records_changed": false
+  },
+  "isolated_formal_install": {
+    "claude": {
+      "version": "0.28.0",
+      "files": 13,
+      "source": {
+        "version": "0.28.0",
+        "channel": "release",
+        "source_commit": "0d23f3b9f504853f5dbd7a8aea05154b58376648",
+        "installer_sha256": "647869484aae3a2fa8963d4ac10831baf124dce2a75aeb1f7f4a02b1697b4cca",
+        "content_sha256": "a227c6e8fb1aa6a8578821ec556d20e28c5f0e055793352704cee2cd0aa27313",
+        "release_ref": "refs/tags/v0.28.0",
+        "boundary": "Matches the local pinned release ref and descriptor; not a signed remote-origin attestation."
+      },
+      "exact_match": true
+    },
+    "codex": {
+      "version": "0.28.0",
+      "files": 13,
+      "source": {
+        "version": "0.28.0",
+        "channel": "release",
+        "source_commit": "0d23f3b9f504853f5dbd7a8aea05154b58376648",
+        "installer_sha256": "647869484aae3a2fa8963d4ac10831baf124dce2a75aeb1f7f4a02b1697b4cca",
+        "content_sha256": "a227c6e8fb1aa6a8578821ec556d20e28c5f0e055793352704cee2cd0aa27313",
+        "release_ref": "refs/tags/v0.28.0",
+        "boundary": "Matches the local pinned release ref and descriptor; not a signed remote-origin attestation."
+      },
+      "exact_match": true
+    }
+  },
+  "regression": {
+    "passed": 252,
+    "rerun_for_release": false,
+    "frozen_inputs_changed_only": [
+      "VERSION",
+      "release.json"
+    ],
+    "boundary": "Runtime/test bytes match the completed regression; version and release descriptor deliberately changed."
+  },
+  "forward_agent": "unavailable: two pre-execution capacity failures, not a pass",
+  "natural_trial": "pending",
+  "phase_two_complete": false
+}

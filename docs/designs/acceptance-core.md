@@ -1,6 +1,6 @@
 # Current-task contract4: explicit failure lifecycle
 
-2026-10-26. User approved the local failure-lifecycle replacement. Contract3 was released as0.26.0/0.27.0; contract4 is the current candidate until separately verified publication/install; actual publication/install verification is separate and no project migration is implied. This contract supersedes the A109 record-format details and the 0.25.0 predecessor-compatibility route, while retaining current-task ownership and finite lifecycle.
+2026-10-26. User approved the local failure-lifecycle replacement. Contract3 was released as0.26.0/0.27.0; contract4 is released as0.28.0, with publication/install verified separately; actual publication/install verification is separate and no project migration is implied. This contract supersedes the A109 record-format details and the 0.25.0 predecessor-compatibility route, while retaining current-task ownership and finite lifecycle.
 
 ## Authority and proof
 
