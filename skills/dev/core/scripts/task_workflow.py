@@ -210,6 +210,12 @@ def valid_inputs(root, values):
         if name.startswith(('.featrace/', '.agent-workflow/')): fail('GENERATED_SCOPE_INPUT')
 
 def validate_plan(root, plan):
+    validate_execution_plan(root,plan)
+    validate_acceptance_plan(root,plan)
+
+
+def validate_execution_plan(root, plan):
+    """Validate causal inputs, execution shape and freshness; no review-policy decision."""
     if not isinstance(plan,dict) or set(plan) != {'reason','categories','scope','exclusions','constraints','unknowns','criteria','checks','review'}:
         fail('PLAN_FIELDS_INVALID')
     if not text(plan['reason']) or not isinstance(plan['categories'],list) or not plan['categories'] or set(plan['categories'])-CATEGORIES:
@@ -228,12 +234,6 @@ def validate_plan(root, plan):
         if (not isinstance(c,dict) or not {'id','expected','kind','inputs','proof'}<=set(c) or set(c)-{'id','expected','kind','inputs','sources','validity','proof'} or not isinstance(c['id'],str)
                 or not ID.fullmatch(c['id']) or c['id'] in seen or not text(c['expected'])
                 or c['kind'] not in ('changed','unaffected')): fail('CRITERION_INVALID')
-        proof=c['proof']
-        if (not isinstance(proof,dict) or set(proof)!={'any_of','reason'} or not text(proof['reason'])
-                or not isinstance(proof['any_of'],list) or not 1<=len(proof['any_of'])<=8
-                or any(not isinstance(group,list) or not group or len(set(group))!=len(group)
-                       or any(not isinstance(k,str) or k not in EVIDENCE_KINDS for k in group) for group in proof['any_of'])):
-            fail('PROOF_REQUIREMENTS_INVALID')
         valid_inputs(root,c['inputs']);valid_inputs(root,c.get('sources',[]))
         if not c['inputs'] or set(c['inputs'])-set(plan['scope']): fail('CRITERION_SCOPE_INVALID')
         if 'validity' in c:
@@ -279,14 +279,6 @@ def validate_plan(root, plan):
                 or not (unknown['criteria'] or unknown['checks'])
                 or any(not isinstance(x,str) or x not in seen for x in unknown['criteria'])
                 or any(not isinstance(x,str) or x not in check_ids for x in unknown['checks'])):fail('INVALID_UNKNOWNS')
-    review=plan['review']
-    if (not isinstance(review,dict) or not {'independent','reason'}<=set(review) or set(review)-{'independent','reason','criteria'} or type(review['independent']) is not bool
-            or not text(review['reason'])): fail('REVIEW_SCOPE_REQUIRED')
-    if 'criteria' in review:
-        selected=review['criteria']
-        if (not isinstance(selected,list) or any(not isinstance(x,str) or x not in seen for x in selected)
-                or len(set(selected))!=len(selected) or bool(selected)!=review['independent']):fail('REVIEW_SCOPE_REQUIRED')
-    if 'shared' in plan['categories'] and not review['independent']: fail('SHARED_REVIEW_REQUIRED')
     for rule in plan['constraints'].values():
         if text(rule):continue  # Legacy strings explicitly retain task-wide applicability.
         if (not isinstance(rule,dict) or set(rule)!={'decision','criteria','checks'} or not text(rule['decision'])
@@ -294,6 +286,25 @@ def validate_plan(root, plan):
                 or not (rule['criteria'] or rule['checks'])
                 or any(not isinstance(x,str) or x not in seen for x in rule['criteria'])
                 or any(not isinstance(x,str) or x not in check_ids for x in rule['checks'])):fail('CONSTRAINT_SCOPE_INVALID')
+
+
+def validate_acceptance_plan(root, plan):
+    """Validate proof and selected review; semantic necessity remains an actual investigation."""
+    seen={c['id'] for c in plan['criteria']}
+    for c in plan['criteria']:
+        proof=c['proof']
+        if (not isinstance(proof,dict) or set(proof)!={'any_of','reason'} or not text(proof['reason'])
+                or not isinstance(proof['any_of'],list) or not 1<=len(proof['any_of'])<=8
+                or any(not isinstance(group,list) or not group or len(set(group))!=len(group)
+                       or any(not isinstance(k,str) or k not in EVIDENCE_KINDS for k in group) for group in proof['any_of'])):
+            fail('PROOF_REQUIREMENTS_INVALID')
+    review=plan['review']
+    if (not isinstance(review,dict) or not {'independent','reason'}<=set(review) or set(review)-{'independent','reason','criteria'} or type(review['independent']) is not bool
+            or not text(review['reason'])): fail('REVIEW_SCOPE_REQUIRED')
+    if 'criteria' in review:
+        selected=review['criteria']
+        if (not isinstance(selected,list) or any(not isinstance(x,str) or x not in seen for x in selected)
+                or len(set(selected))!=len(selected) or bool(selected)!=review['independent']):fail('REVIEW_SCOPE_REQUIRED')
 
 
 def selected_constraints(plan,criterion=None,check=None):
@@ -356,7 +367,13 @@ def relevant_paths(doc,criterion=None,check=None):
 
 def ready(root,doc,criterion=None,check=None,investigate=False):
     if doc['plan'] is None: fail('PLAN_REQUIRED')
-    validate_plan(root,doc['plan'])
+    execution_ready(root,doc,criterion,check,investigate)
+    validate_acceptance_plan(root,doc['plan'])
+
+
+def execution_ready(root,doc,criterion=None,check=None,investigate=False):
+    if doc['plan'] is None: fail('PLAN_REQUIRED')
+    validate_execution_plan(root,doc['plan'])
     selected=relevant_paths(doc,criterion,check)|set(selected_constraints(doc['plan'],criterion,check))
     baseline=doc.get('analysis_inputs')
     if baseline is None or any(file_identity(root,p)!=baseline.get(p) for p in selected):fail('SCOPE_REVIEW_REQUIRED')
@@ -449,7 +466,7 @@ def run_check(root,ident,check_id,investigate=False):
         task_policy.check_local(root,git)
         check=next((c for c in doc['plan']['checks'] if c['id']==check_id),None)
         if check is None:fail('CHECK_NOT_SELECTED')
-        ready(root,doc,check=check,investigate=investigate);check_policy(root,doc,check,True)
+        execution_ready(root,doc,check=check,investigate=investigate);check_policy(root,doc,check,True)
         stamp=check_stamp(root,doc,check);previous=doc['facts'].get(doc['executions'].get(check_id))
         expired=bool(previous and any(fact_applicability(c,previous,check['environment'])=='EXPIRED'
                                       for c in doc['plan']['criteria'] if c['id'] in check['covers']))

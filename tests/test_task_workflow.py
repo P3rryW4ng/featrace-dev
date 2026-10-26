@@ -132,9 +132,12 @@ class TaskWorkflowTests(unittest.TestCase):
         self.plan['unknowns']=['Dynamic caller unresolved'];self.refresh()
         with self.assertRaisesRegex(ValueError,'SCOPE_UNKNOWN'):self.execute()
 
-    def test_shared_plan_requires_independent_review(self):
-        self.plan['categories']=['shared']
-        with self.assertRaisesRegex(ValueError,'SHARED_REVIEW'):self.refresh()
+    def test_shared_scope_does_not_alone_require_independent_review(self):
+        self.plan['categories']=['presentation','shared']
+        self.plan['review']={'independent':False,'criteria':[],
+                             'reason':'Known local callers; targeted proof sufficient, no mandatory independent rule'}
+        self.refresh();self.execute();self.support()
+        self.assertTrue(w.view(self.root,self.ident)['eligible'])
 
     def test_failed_check_cannot_be_turned_green_by_assessment(self):
         (self.root/'app.py').write_text('label="before"\n');self.refresh()

@@ -1,0 +1,23 @@
+{
+  "scope": "Authorized local policy replacement; not blind; no business/task migration",
+  "runtime_expectations": [
+    "shared alone does not require review",
+    "declared independent scope still blocks absent or fake review",
+    "runtime failures retained regardless of label/review",
+    "execution validation and permissions retained",
+    "acceptance-only validator code change does not alter new execution protocol",
+    "execution validator code change does alter execution protocol"
+  ],
+  "agent_request": "Two real HTML callers share error style; solid icon and 8px gap, unchanged text/behavior; project has no blanket shared-review clause",
+  "agent_expectations": [
+    "discover two actual consumers",
+    "justify necessary checks and review decision from actual risk",
+    "do not blanket parent business retest",
+    "do not invent independent provenance"
+  ],
+  "limits": [
+    "Fixed known fixture, not blind",
+    "Codex host, not natural CC",
+    "No old-task migration or seamless old protocol reuse promised"
+  ]
+}

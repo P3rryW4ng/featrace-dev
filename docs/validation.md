@@ -185,3 +185,11 @@ Android文档不新增解析器或强跑门禁，不能证明CC已遵守。安�
 ## 2026-10-26共享分类与独立评审触发评审（只读）
 
 [专项报告](reviews/2026-10-26-shared-review-trigger-review.md)核对0.26.1指引、validate_plan/review_required/assess/view/criterion_stamp、现有测试与SC02/04/05原件。确认shared强制独审条件；未新增测试或Agent，不能把旧221项视为候选政策验证。SC04/05缺实际生产调用依据，夹具共享评审条款使成本归因存在混杂；不宣称独审全部多余。静态AST查询确认run_check→ready→validate_plan进入执行协议采集，未执行升级或复用探针。候选分离共享调查与风险/项目规则驱动独审，开发反例尚未执行，运行/版本/安装和业务记录均未改。
+
+## 2026-10-26共享评审策略局部替换：程序验证
+
+完整当前回归228/228，外层88.130秒，27份运行/测试/安装/版本输入前后一致：[结果](evaluations/shared-review-fix-20261026/result.json)、[全量](evaluations/shared-review-fix-20261026/full.log)、[前](evaluations/shared-review-fix-20261026/inputs-before.json)/[后](evaluations/shared-review-fix-20261026/inputs-after.json)。新增7个反例；原shared强制独审测试改为真实低风险共享可自评，不减少实际失败、权限、时效、出处/选定事实等保护。项目必要评审反例验证的是已声明选择的程序强制，不冒充自动读懂项目规范。
+
+定向开发首次测试1项预期写错：静态覆盖运行失败应被RUNTIME_FAILURE_NEEDS_RUNTIME拒绝，而非登记后再阻塞；修正反例，未改保护。首次定向导入也额外发现基类被unittest收集，改为模块引用，避免新文件增加无关基类重复；7项定向及完整228项均通过。首轮62项结果为开发工具回执，未伪造独立红日志。
+
+[旧/新协议边界](evaluations/shared-review-fix-20261026/initial-protocol-boundary.json)实际采集固定abac4f1源码及候选源码，确认首次拆分协议不同；不会自动认可旧任务执行。新增反例核对验收校验源码变化不改变新协议、原执行ID/全部字段/日志/时间保持，真实执行校验变化仍物理执行。该变异测试改变被采集源码而非宣称部署任意版本兼容；完整模块仍保守绑定。真实Agent前向验证单列，不把程序结果充作主观范围选择证明。
