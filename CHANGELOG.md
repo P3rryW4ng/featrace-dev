@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.27.0 — 2026-10-26
+
+- Separate shared propagation from independent-review necessity. Investigate actual consumers and choose scoped review from explicit project rules, material risk or meaningful blind spots; a shared label alone no longer forces another Agent. Preserve required provenance, selected facts and failure safeguards.
+- Separate execution-ready validation from acceptance proof/review validation. Actual execution/input/environment/permission/cache/unknown checks remain in the protocol; acceptance-only validator changes no longer invalidate new-protocol runs. The initial split changes the old protocol: active old tasks stay on their pinned tool, with no automatic migration, predecessor allowance or rewritten facts.
+- Current regression228/228 with27 frozen inputs; add7 counterexamples and revise the old unconditional-shared policy test. A scoped Agent run retained shared classification and self-assessed two real HTML callers; a separate fresh-context read-only plan honored an explicit project review mandate. Fixed synthetic samples, not blind tests, native-device proof or net-efficiency evidence.
+- Minor release for the workflow-policy and execution-protocol boundary change; contract3 storage and12 runtime files retained. Phase two remains open; existing requirement outcomes are not replayed or certified as new-version trials.
+
 ## 0.26.1 — 2026-10-23
 
 - Show safe scope-readiness causes and a detail route while preserving the original blocking marker. Unknown exceptions remain generic; scope readiness is not delivery eligibility. Query-only changes leave the execution protocol unchanged.
