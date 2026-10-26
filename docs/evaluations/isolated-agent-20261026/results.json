@@ -1,0 +1,689 @@
+{
+  "format": 1,
+  "at": "2026-10-26T03:12:25.607413+00:00",
+  "skill_version": "0.26.1",
+  "source": {
+    "version": "0.26.1",
+    "channel": "release",
+    "source_commit": "abac4f1a272e79b5916b808e1cbfb992875fda3e",
+    "installer_sha256": "647869484aae3a2fa8963d4ac10831baf124dce2a75aeb1f7f4a02b1697b4cca",
+    "content_sha256": "3ce485f12211b8f5a0dfbe44fbabeffae62632f6c3ac0afd9ac543bcfd9c2a46",
+    "release_ref": "refs/tags/v0.26.1",
+    "boundary": "Matches the local pinned release ref and descriptor; not a signed remote-origin attestation."
+  },
+  "runtime_files_unchanged": [
+    {
+      "path": "SKILL.md",
+      "sha256": "ba8fcb0f4fbbaf4f98b36bfcd972012a4a01df742a480a75c75a5f13d423bd4a"
+    },
+    {
+      "path": "agents/openai.yaml",
+      "sha256": "237666967ab617f4452194694fc91dc1fcbb3b3beda59172c74572525117a009"
+    },
+    {
+      "path": "core/references/figma-design.md",
+      "sha256": "8828473c28557e33fbb07ab5416be34e3c13c5b6f35a9eff94f14f1f6e8e12ff"
+    },
+    {
+      "path": "core/references/output-privacy.md",
+      "sha256": "8c1d43834acfb41ee1d125bdc1ec37eb97cedca3d9afbff3b408658f81c8fab3"
+    },
+    {
+      "path": "core/references/project-compatibility.md",
+      "sha256": "05e0da0988a766acb1068338c0e55deaf6d74eb77799bcc9bdbb8da2621897eb"
+    },
+    {
+      "path": "core/references/task-workflow.md",
+      "sha256": "0364e470c3e959adb0890b8b3d09104a0e84598e0689b01b9f2f494fa8f3cec2"
+    },
+    {
+      "path": "core/scripts/output_privacy.py",
+      "sha256": "54be161d474b4bc55ae1a28207de80f4077f0093172114b7079a12ce672fee6e"
+    },
+    {
+      "path": "core/scripts/task_execution.py",
+      "sha256": "c9b5e52cbb2e3724716af7bdd8a328425b6809b68f8e4916c6e14393e35fcf43"
+    },
+    {
+      "path": "core/scripts/task_inputs.py",
+      "sha256": "9143dc945e478d069b501094b64265d519ad91c4519b0c09e4c825886326d3a8"
+    },
+    {
+      "path": "core/scripts/task_policy.py",
+      "sha256": "183cc7c5c146578879fb33b2dd1dd8a60a47e9e073d6823fca122d7cbe78856a"
+    },
+    {
+      "path": "core/scripts/task_workflow.py",
+      "sha256": "d83b8ed28184a8c282aab3bc5b7454f95a2bbea4126d5da02155b357fa65f8c7"
+    },
+    {
+      "path": "profiles/android/PROFILE.md",
+      "sha256": "b4ef9f54763f9e8c0ef51f910daf14e941a27343f01dde2edd6ea960707305ab"
+    }
+  ],
+  "method": {
+    "host": "Codex fresh subagents reading Claude-installed Skill bytes",
+    "not_claude_code_host_trial": true,
+    "not_blind": true,
+    "instructional_path_confinement_not_os_sandbox": true,
+    "raw_task_ledgers_committed": false,
+    "source_fixture_reproduction_verified": true,
+    "all_three_batches_completed": true
+  },
+  "cases": [
+    {
+      "case": "SC-01",
+      "head": "059467f9a320b035545dc64de28d33c8d2e82624",
+      "worktree_status": "",
+      "tasks": [
+        {
+          "task_id": "SC-01",
+          "state": "complete",
+          "receipt_id": null,
+          "task_bytes": 17731,
+          "commands": [
+            {
+              "id": "fe8952a389974c508a872fb54bdbc692",
+              "check": "email-render",
+              "status": "failed",
+              "input_digest": "626730d4113c600f34a690d7ce19abe6f630012db88041b4e345cc731dd7f3dd",
+              "started_at": "2026-10-26T02:14:26.087517+00:00",
+              "at": "2026-10-26T02:14:26.519494+00:00",
+              "artifact_sha256": "7315bad227138ef14d423299316cc16ccc8e2b661c011d691832eab7519866a3",
+              "previous_failure": null
+            },
+            {
+              "id": "0a6d7599d6894e4e9650a4f06b08d439",
+              "check": "email-render",
+              "status": "passed",
+              "input_digest": "fe404864d08e0f6c129919edff9d9ae8bbf93df1ef6a1907d60666b2dda6375d",
+              "started_at": "2026-10-26T02:17:26.426918+00:00",
+              "at": "2026-10-26T02:17:28.135135+00:00",
+              "artifact_sha256": "6294d806e1922771124ff68d74fc3cd1356fbb772f7248838477bfe546938217",
+              "previous_failure": "fe8952a389974c508a872fb54bdbc692"
+            },
+            {
+              "id": "d885fa1e4fe0499caab18499973d4961",
+              "check": "email-render",
+              "status": "passed",
+              "input_digest": "c5138193204f46f0a57b34dd5324d93678024ed99157f1bddea64f14c1e768f9",
+              "started_at": "2026-10-26T02:19:54.954769+00:00",
+              "at": "2026-10-26T02:20:00.342061+00:00",
+              "artifact_sha256": "6e7a776583279e8699a2cfe8be18fb62ea74429bb7c7033b8a2bc43460437748",
+              "previous_failure": null
+            }
+          ],
+          "command_record_span_seconds": 7.527486,
+          "fact_ids": [
+            "fe8952a389974c508a872fb54bdbc692",
+            "0a6d7599d6894e4e9650a4f06b08d439",
+            "6173e1a024164870b9e7ae6ac1375a69",
+            "fde1072bb115490d9d53b6068759e97b",
+            "d885fa1e4fe0499caab18499973d4961",
+            "4614f63329874503a3d1b1481025d550"
+          ],
+          "criteria": [
+            "email",
+            "preserved"
+          ],
+          "review_scope": []
+        }
+      ],
+      "worker_summary": {
+        "context": "/root/sc01_resume",
+        "received_at": "2026-10-26T02:21:46.614453+00:00",
+        "case": "SC-01",
+        "reported_state": "complete",
+        "commit": "059467f9a320b035545dc64de28d33c8d2e82624",
+        "worker_command_attempts": 3,
+        "worker_passes": 2,
+        "worker_failures": 1,
+        "preflight_separate": true,
+        "issues": [
+          "Chrome sandbox launch refusal in original task attempt",
+          "Explicit TMPDIR was overridden across tool invocations; first success not selected, stable in-process environment retry used"
+        ],
+        "claimed_limits": [
+          "Only registration dynamically rendered",
+          "Residence and existing interactions justified by source diff",
+          "No durable new knowledge beyond existing visual expectation"
+        ],
+        "usage_tokens": null,
+        "evidence": "private-evaluation/SC-01.json",
+        "observer": "Actual retained task, commands, receipt and source diff inspected; no extra browser run"
+      },
+      "simulated_export_attempted": false
+    },
+    {
+      "case": "SC-02",
+      "head": "3c67ffd77943f794085c4918002f83545498b710",
+      "worktree_status": "",
+      "tasks": [
+        {
+          "task_id": "SC-02",
+          "state": "complete",
+          "receipt_id": null,
+          "task_bytes": 20046,
+          "commands": [
+            {
+              "id": "21c7856ce8ab4bacbc53ff4494bbdc43",
+              "check": "registration",
+              "status": "failed",
+              "input_digest": "ecac16ed936aa920eea720edc41cdc9c9fa14adcb70227e577693dae42728df8",
+              "started_at": "2026-10-26T02:22:59.331787+00:00",
+              "at": "2026-10-26T02:22:59.751985+00:00",
+              "artifact_sha256": "7de8172cfde6e31cd7fa01fa3f3e0e1f0dbf987145c91e0b010604684ed73c4c",
+              "previous_failure": null
+            },
+            {
+              "id": "1afbed705122417698cf6368b65056f0",
+              "check": "registration",
+              "status": "passed",
+              "input_digest": "2186c9cc91d528a04373cf6705c301de22b3b5f3d743ff19e8e4841ffab2a897",
+              "started_at": "2026-10-26T02:23:29.225884+00:00",
+              "at": "2026-10-26T02:23:30.424820+00:00",
+              "artifact_sha256": "697fb654218184913ec7b96d1a2b886dced16f7dcc132cbc7b02ba46ff684a01",
+              "previous_failure": "21c7856ce8ab4bacbc53ff4494bbdc43"
+            },
+            {
+              "id": "7e15a23331374ffb9f8484a0943a459d",
+              "check": "residence",
+              "status": "passed",
+              "input_digest": "43719a3b361eed9dcc9f06fb5664e551cb72f412ceca88c3116aff1db92d6537",
+              "started_at": "2026-10-26T02:23:30.598295+00:00",
+              "at": "2026-10-26T02:23:31.732588+00:00",
+              "artifact_sha256": "58fd2cda04aa10e05378f0963eae4cbae386e63f490c8f02aea1e279103776d9",
+              "previous_failure": null
+            }
+          ],
+          "command_record_span_seconds": 2.753427,
+          "fact_ids": [
+            "21c7856ce8ab4bacbc53ff4494bbdc43",
+            "1afbed705122417698cf6368b65056f0",
+            "7e15a23331374ffb9f8484a0943a459d",
+            "b88a6f899d7d461288e1a8dceed0d759",
+            "cb5d7691a9db46f4b6064a876169a12f",
+            "ff00d1cc2a034a1abde2fe1e55125eb6",
+            "ab4a35c936b74a149149a936b2b33dd0"
+          ],
+          "criteria": [
+            "shared-style",
+            "preserved-behavior"
+          ],
+          "review_scope": [
+            "shared-style"
+          ]
+        }
+      ],
+      "worker_summary": {
+        "case": "SC-02",
+        "context": "/root/sc02_shared_ui",
+        "review_context": "/root/sc02_review",
+        "reported_state": "complete",
+        "commit": "3c67ffd77943f794085c4918002f83545498b710",
+        "worker_command_attempts": 3,
+        "worker_failures": 1,
+        "worker_passes": 2,
+        "post_review_reruns": 0,
+        "review_scope": [
+          "shared-style"
+        ],
+        "review_verdict": "supported",
+        "evidence": "private-evaluation/SC-02.json",
+        "usage_tokens": null,
+        "at": "2026-10-26T02:28:50.122100+00:00"
+      },
+      "simulated_export_attempted": false
+    },
+    {
+      "case": "SC-03",
+      "head": "ae1e3f452d808cae30d232eedad3d5144b37ad7e",
+      "worktree_status": "",
+      "tasks": [
+        {
+          "task_id": "SC-03",
+          "state": "complete",
+          "receipt_id": null,
+          "task_bytes": 25230,
+          "commands": [
+            {
+              "id": "3002c542274f40dda7f287b1c0a394e6",
+              "check": "keyboard",
+              "status": "failed",
+              "input_digest": "ea910f0dd7173e27225b5db182060d13403a72bfd2566b5e552e853c5439b9c8",
+              "started_at": "2026-10-26T02:30:24.803017+00:00",
+              "at": "2026-10-26T02:30:25.208833+00:00",
+              "artifact_sha256": "4771889f47a9afee6c4ea48e2c03e78b239810bfd1aac0b7ef9b0cdbe7d5c7a1",
+              "previous_failure": null
+            },
+            {
+              "id": "3a4a43601bb040f58f1d1ee2087a3b81",
+              "check": "keyboard",
+              "status": "failed",
+              "input_digest": "ea910f0dd7173e27225b5db182060d13403a72bfd2566b5e552e853c5439b9c8",
+              "started_at": "2026-10-26T02:30:44.955346+00:00",
+              "at": "2026-10-26T02:30:46.015513+00:00",
+              "artifact_sha256": "bbc620775fad62332059f52f8d45354cd4601ac30e5b302f48f530d4967b8392",
+              "previous_failure": "3002c542274f40dda7f287b1c0a394e6"
+            },
+            {
+              "id": "4734da2034034e4794415e2831b2de66",
+              "check": "keyboard",
+              "status": "passed",
+              "input_digest": "93d7f335c9005d801fdf74773af894476739303578380186d083cf820be1ed64",
+              "started_at": "2026-10-26T02:31:36.001322+00:00",
+              "at": "2026-10-26T02:31:38.681042+00:00",
+              "artifact_sha256": "b1331a6e227b051de103614109d1016382fd7e960ee4dc1537ddf7f526045681",
+              "previous_failure": "3a4a43601bb040f58f1d1ee2087a3b81"
+            },
+            {
+              "id": "44650f737b7442adbc595b64e74422ee",
+              "check": "residence",
+              "status": "passed",
+              "input_digest": "b2778b98b699df84f92e9feaab0f5dbe24a43116b536eea72205dc531f00ed42",
+              "started_at": "2026-10-26T02:31:48.376329+00:00",
+              "at": "2026-10-26T02:31:49.342438+00:00",
+              "artifact_sha256": "7856069aed7e827faae4c66b031d50653ddc2d0e96c7f41af42d513d3e210f50",
+              "previous_failure": null
+            },
+            {
+              "id": "8da8c4a5352f4a079323ca9dd1603448",
+              "check": "registration",
+              "status": "passed",
+              "input_digest": "7d18f7a735434bb01b80a583687468b9e73f865bae8ece3d6755132958a2de10",
+              "started_at": "2026-10-26T02:32:00.921481+00:00",
+              "at": "2026-10-26T02:32:02.323830+00:00",
+              "artifact_sha256": "769c43aff9d868a74fe8353c1fb853264a3dd0dc371ab5fed24d0971dc11104e",
+              "previous_failure": null
+            }
+          ],
+          "command_record_span_seconds": 6.514161,
+          "fact_ids": [
+            "3002c542274f40dda7f287b1c0a394e6",
+            "3a4a43601bb040f58f1d1ee2087a3b81",
+            "4734da2034034e4794415e2831b2de66",
+            "44650f737b7442adbc595b64e74422ee",
+            "8da8c4a5352f4a079323ca9dd1603448",
+            "e77007985bd049aeac78b9ba55cdd3d8",
+            "8f45137466ce464e87f3fe57fd336605",
+            "786bcabd47ba49c8be08fbd5a8246564",
+            "17b00c0425fb4758ab6ae2a5d06bc841",
+            "1c732e5c1ecb46bea04c188dd29e0e88"
+          ],
+          "criteria": [
+            "visibility",
+            "preserve"
+          ],
+          "review_scope": [
+            "visibility",
+            "preserve"
+          ]
+        }
+      ],
+      "worker_summary": {
+        "case": "SC-03",
+        "context": "/root/sc03_keyboard",
+        "review_context": "/root/sc03_review",
+        "reported_state": "complete",
+        "commit": "ae1e3f452d808cae30d232eedad3d5144b37ad7e",
+        "worker_command_attempts": 5,
+        "worker_failures": 2,
+        "worker_passes": 3,
+        "post_review_reruns": 0,
+        "review_scope": [
+          "visibility",
+          "preserve"
+        ],
+        "review_verdict": "supported",
+        "refusals_before_execution": [
+          "SCOPE_REVIEW_REQUIRED",
+          "TASK_BUSY"
+        ],
+        "claimed_limits": [
+          "Desktop simulated keyboard only",
+          "Actual devices/native keyboards/other viewports/real backend not tested"
+        ],
+        "evidence": "private-evaluation/SC-03.json",
+        "usage_tokens": null,
+        "at": "2026-10-26T02:37:07.399974+00:00"
+      },
+      "simulated_export_attempted": false
+    },
+    {
+      "case": "SC-04",
+      "head": "84a447bf7f523a652caa302d5f4e158b1db8fb9c",
+      "worktree_status": "",
+      "tasks": [
+        {
+          "task_id": "SC-04",
+          "state": "complete",
+          "receipt_id": null,
+          "task_bytes": 11837,
+          "commands": [
+            {
+              "id": "0989cde7d4fe4a868be7ee1d5e235be8",
+              "check": "domain-unit",
+              "status": "passed",
+              "input_digest": "269ebbfc333d019350e23f07344226245c8c7f1d21436178ebb80ed405165a64",
+              "started_at": "2026-10-26T02:38:48.837491+00:00",
+              "at": "2026-10-26T02:38:48.910283+00:00",
+              "artifact_sha256": "4d1bbf06732bdc699fc62672e3f9cdba53ffa16add9d26c3fbe99c334ecfaef7",
+              "previous_failure": null
+            }
+          ],
+          "command_record_span_seconds": 0.072792,
+          "fact_ids": [
+            "0989cde7d4fe4a868be7ee1d5e235be8",
+            "37a7919de951441daf84a3f6f7b40855",
+            "d5837a3f3a8e4e16b4bfdf414d0f20bf"
+          ],
+          "criteria": [
+            "expiry-contract",
+            "no-side-effects"
+          ],
+          "review_scope": [
+            "expiry-contract",
+            "no-side-effects"
+          ]
+        }
+      ],
+      "worker_summary": {
+        "case": "SC-04",
+        "context": "/root/sc04_error_mapping",
+        "review_context": "/root/sc04_review",
+        "reported_state": "complete",
+        "commit": "84a447bf7f523a652caa302d5f4e158b1db8fb9c",
+        "worker_command_attempts": 1,
+        "worker_passes": 1,
+        "unit_methods": 9,
+        "render_commands": 0,
+        "post_review_reruns": 0,
+        "review_scope": [
+          "expiry-contract",
+          "no-side-effects"
+        ],
+        "review_verdict": "supported",
+        "scope_caveat": "Actual mapper callers in this fixture are only unit tests; reviewer confirmed no browser/service integration. Worker shared classification and independent-review necessity need separate scrutiny, not automatic generalization.",
+        "evidence": "private-evaluation/SC-04.json",
+        "usage_tokens": null,
+        "at": "2026-10-26T02:45:01.041638+00:00"
+      },
+      "simulated_export_attempted": false
+    },
+    {
+      "case": "SC-05",
+      "head": "66f143e36de8d4f56ad03cf21adbad548015bbf4",
+      "worktree_status": "",
+      "tasks": [
+        {
+          "task_id": "SC-05",
+          "state": "complete",
+          "receipt_id": null,
+          "task_bytes": 12724,
+          "commands": [
+            {
+              "id": "b3b8f0979d13421e864b34ef0fe0a687",
+              "check": "domain-units",
+              "status": "passed",
+              "input_digest": "e7de68ec66e3dfa3021ca349321680f384f3ee7b7aad34161c8c352764dee4ef",
+              "started_at": "2026-10-26T02:47:20.212497+00:00",
+              "at": "2026-10-26T02:47:20.315867+00:00",
+              "artifact_sha256": "c5d20bc84881709eeedbcecfa637a3f693118542f569887b9dfeb5684494f041",
+              "previous_failure": null
+            }
+          ],
+          "command_record_span_seconds": 0.10337,
+          "fact_ids": [
+            "b3b8f0979d13421e864b34ef0fe0a687",
+            "ec03ff32144242468b8720d1a52f22bf"
+          ],
+          "criteria": [
+            "error-message",
+            "expiry-navigation"
+          ],
+          "review_scope": [
+            "error-message"
+          ]
+        }
+      ],
+      "worker_summary": {
+        "case": "SC-05",
+        "context": "/root/sc05_change_and_reuse",
+        "review_context": "/root/sc05_review",
+        "reported_state": "complete",
+        "commits": [
+          "7bb7cdd",
+          "66f143e"
+        ],
+        "worker_command_attempts": 1,
+        "worker_passes": 1,
+        "unit_methods": 5,
+        "post_clarification_physical_reruns": 0,
+        "review_scope": [
+          "error-message"
+        ],
+        "review_verdict": "supported",
+        "simulated_export_attempted": false,
+        "navigation_handoff": "ISSUES.md",
+        "claim_boundary": "Original task had scoped unresolved navigation; explicit subsequent product exclusion resolved its scope, not a runtime failure",
+        "nested_build_cache_branch": "No second helper invocation required; original command fact reused. Does not exercise falsely attributing a reused report to a later physical command.",
+        "usage_tokens": null,
+        "evidence": "private-evaluation/SC-05.json",
+        "at": "2026-10-26T02:55:00.735820+00:00",
+        "compared_original_command_fields_unchanged": true,
+        "comparison_scope": "Pre-clarification extraction omitted producer object; retained command ID/status/input/times/artifact fields compared exactly. Original producer remains traceable in immutable command log; no missing historical object reconstructed."
+      },
+      "simulated_export_attempted": false
+    },
+    {
+      "case": "SC-06",
+      "head": "9dd4294fe0bf238fa957476f32cb0dcaaf43e1e8",
+      "worktree_status": "M mock_state.json",
+      "tasks": [
+        {
+          "task_id": "SC-06",
+          "state": "complete",
+          "receipt_id": null,
+          "task_bytes": 15465,
+          "commands": [
+            {
+              "id": "02019d1696a84ddcaefd2cfbabbc024f",
+              "check": "expiry-reproduction",
+              "status": "failed",
+              "input_digest": "53f87756546299038841eed39053faaaab2c584d6a7a22f8e75c2598e3943aba",
+              "started_at": "2026-10-26T02:56:06.998538+00:00",
+              "at": "2026-10-26T02:56:07.070958+00:00",
+              "artifact_sha256": "cfb6335dc3b714050d978ba80498c3f38021bf90c4f40338504f26cac80792af",
+              "previous_failure": null
+            },
+            {
+              "id": "ad5b988e5ff64289a0b4951c2dc9f19c",
+              "check": "expiry-reproduction",
+              "status": "passed",
+              "input_digest": "030d90310f8f0389fb0a9e0bd2358ac4d0efbd7e709f59759e5bc2f791cba025",
+              "started_at": "2026-10-26T03:03:00.491416+00:00",
+              "at": "2026-10-26T03:03:00.564698+00:00",
+              "artifact_sha256": "0029baa52c63dd19c7c60c0f2d34fbab9687fa1c8c08e35db5a4f4924954e8e1",
+              "previous_failure": "02019d1696a84ddcaefd2cfbabbc024f"
+            },
+            {
+              "id": "871c08e571584e0f85655605dc56c1b6",
+              "check": "expiry-reproduction",
+              "status": "passed",
+              "input_digest": "005a3754d7da673471aded4f6c76a8b3ca062576c945f0208024aab5c0d1e2bd",
+              "started_at": "2026-10-26T03:03:43.371964+00:00",
+              "at": "2026-10-26T03:03:43.439795+00:00",
+              "artifact_sha256": "8bb5d1841d9a145bb64b84471a7a7af70e7b04072399667f2129159d5d32e8d6",
+              "previous_failure": null
+            }
+          ],
+          "command_record_span_seconds": 0.213533,
+          "fact_ids": [
+            "02019d1696a84ddcaefd2cfbabbc024f",
+            "be87c9adbf1e4904a75846e0c1837e1c",
+            "ad5b988e5ff64289a0b4951c2dc9f19c",
+            "871c08e571584e0f85655605dc56c1b6",
+            "f89f4ebb88a945239fbed95ae376cd3a"
+          ],
+          "criteria": [
+            "quote-expiry"
+          ],
+          "review_scope": [
+            "quote-expiry"
+          ]
+        }
+      ],
+      "worker_summary": {
+        "case": "SC-06",
+        "contexts": [
+          "/root/sc06_diagnose",
+          "/root/sc06_repair"
+        ],
+        "review_context": "/root/sc06_review",
+        "reported_state": "complete",
+        "commit": "9dd4294fe0bf238fa957476f32cb0dcaaf43e1e8",
+        "worker_command_attempts": 3,
+        "worker_failures": 1,
+        "worker_passes": 2,
+        "post_review_reruns": 0,
+        "unit_methods_final": 5,
+        "initial_failure_methods": 2,
+        "refusals_before_execution": 1,
+        "rerun_reason": "Second pass after actual code and subtest changes for null/nonstring descriptions and falsy detail compatibility; not a context/registration rerun",
+        "original_facts_including_producer_unchanged": true,
+        "environment_scope": "Controlled local mock revision1 to revision2; no real remote or temporal expiry assertion",
+        "review_scope": [
+          "quote-expiry"
+        ],
+        "review_verdict": "supported",
+        "usage_tokens": null,
+        "at": "2026-10-26T03:07:20.147785+00:00"
+      },
+      "simulated_export_attempted": false
+    },
+    {
+      "case": "SC-06-followon",
+      "head": "b18f8db40ce2130830aebc274aefd9a7fe8be2bc",
+      "worktree_status": "",
+      "tasks": [
+        {
+          "task_id": "SC06FOLLOW",
+          "state": "complete",
+          "receipt_id": null,
+          "task_bytes": 10213,
+          "commands": [
+            {
+              "id": "68c477ecca824d10b0d60bd39a3ab09f",
+              "check": "domain",
+              "status": "passed",
+              "input_digest": "094529729bb7c67ea590924059363c0f2bd992a1bf60316180f403aa4b821638",
+              "started_at": "2026-10-26T03:08:54.396252+00:00",
+              "at": "2026-10-26T03:08:54.472410+00:00",
+              "artifact_sha256": "e1322d4c089472ad4191befabe70e12586b1a8de039a73d6a70a13abe39d5a99",
+              "previous_failure": null
+            }
+          ],
+          "command_record_span_seconds": 0.076158,
+          "fact_ids": [
+            "68c477ecca824d10b0d60bd39a3ab09f",
+            "a027df5dee1a450fa8204353e3dff858"
+          ],
+          "criteria": [
+            "billing",
+            "existing"
+          ],
+          "review_scope": [
+            "billing",
+            "existing"
+          ]
+        }
+      ],
+      "worker_summary": {
+        "case": "SC-06-followon",
+        "context": "/root/sc06_followon",
+        "review_context": "/root/sc06_followon_review",
+        "reported_state": "complete",
+        "commit": "b18f8db40ce2130830aebc274aefd9a7fe8be2bc",
+        "worker_command_attempts": 1,
+        "worker_passes": 1,
+        "unit_methods": 9,
+        "post_review_reruns": 0,
+        "refusals_before_execution": [
+          "SCOPE_REVIEW_REQUIRED"
+        ],
+        "review_scope": [
+          "billing",
+          "existing"
+        ],
+        "review_verdict": "supported",
+        "knowledge_sources": [
+          "API.md",
+          "app/domain.py",
+          "tests/test_expiry.py",
+          "tests/test_domain.py"
+        ],
+        "old_task_copied": false,
+        "old_task_deleted": false,
+        "scope": "Local tracked-code/test/API handoff, no natural seven-day cleanup or real payment proof",
+        "usage_tokens": null,
+        "at": "2026-10-26T03:12:20.261984+00:00"
+      },
+      "simulated_export_attempted": false
+    }
+  ],
+  "original_sc06_facts_unchanged": true,
+  "followon_origin": {
+    "at": "2026-10-26T03:06:27.298815+00:00",
+    "source_commit": "9dd4294fe0bf238fa957476f32cb0dcaaf43e1e8",
+    "method": "local Git clone --no-hardlinks of tracked commit only",
+    "old_task_copied": false,
+    "original_task_deleted": false,
+    "claim": "Durable tracked-code/test/API handoff, not seven-day cleanup execution"
+  },
+  "environment_change": {
+    "at": "2026-10-26T02:57:55.033866+00:00",
+    "actor": "coordinator",
+    "file": "mock_state.json",
+    "old_sha256": "1432efb2add435405369d5d23d7b6e33340669195b8988f6705dd1452a739574",
+    "new_sha256": "2d5e5a21e78a254d262034776910b286faa4c7ac59c8bd5f8b9f6b2f133c7040",
+    "reason": "Controlled local mutable-state change between genuine contexts; task and old facts not rewritten",
+    "not_real_remote_state": true
+  },
+  "cost_boundary": "Command-record spans only; not Agent labor. No equal-quality baseline; no saving ratio. Tokens, fees and separable review/maintenance labor unavailable.",
+  "preflight_browser_attempts_excluded": 2,
+  "repository_regression": {
+    "exit_code": 0,
+    "seconds": 75.95537708399999,
+    "started_at": "2026-10-26T02:41:03.473145+00:00",
+    "finished_at": "2026-10-26T02:42:19.429567+00:00",
+    "inputs": 30,
+    "inputs_unchanged": true,
+    "scope": "Repository-required unchanged core regression after adding synthetic fixture reconstruction helper; separate from Agent trial outcomes. No business operations."
+  },
+  "remaining_unknowns": [
+    "Natural CC loading/progress",
+    "Natural context compression",
+    "Native mobile keyboard/device A55",
+    "Real remote freshness/expiry",
+    "Figma adapter",
+    "Actual seven-day cleanup",
+    "Nested build-cache reused-report attribution",
+    "Equal-quality cost comparison",
+    "Team concurrency"
+  ],
+  "findings": [
+    "No parent-PRD blanket reacceptance in these six adapted fixtures",
+    "No unchanged check rerun solely for clarification or review adoption",
+    "Browser sandbox and explicit volatile environment selection caused retries",
+    "Shared classification/review necessity in SC04/05 lacks actual production caller basis",
+    "SC06 first passing implementation needed self-discovered compatibility refinement"
+  ],
+  "phase_two_complete": false,
+  "post_run_input_check": {
+    "unchanged": 29,
+    "changed": [
+      "tests/capability-cases.json"
+    ],
+    "reason": "After the frozen 221-test run only evaluation metadata gained scoped Agent evidence references; no runtime/source test assertion changed. No code or test reader references this catalog. JSON parsed and local references checked; suite not repeated."
+  }
+}

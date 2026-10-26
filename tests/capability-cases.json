@@ -113,7 +113,9 @@
         "unchanged business-flow retests without a mandatory rule"
       ],
       "acceptable_variation": "Scoped rendering test, preview or actual screen observation may suffice if they demonstrate the requested state",
-      "agent_status": "not_run"
+      "agent_status": "executed_on_adapted_isolated_fixture",
+      "agent_evidence": "docs/evaluations/isolated-agent-20261026/results.json#SC-01",
+      "agent_scope_limits": "Private HTML rendering at one desktop viewport; no native app"
     },
     {
       "id": "SC-02",
@@ -133,7 +135,9 @@
         "every business flow merely because rendering is shared"
       ],
       "acceptable_variation": "Representative equivalent callers need an explicit code basis, not necessarily one test per caller",
-      "agent_status": "not_run"
+      "agent_status": "executed_on_adapted_isolated_fixture",
+      "agent_evidence": "docs/evaluations/isolated-agent-20261026/results.json#SC-02",
+      "agent_scope_limits": "Two actual HTML callers, scoped review; no native app"
     },
     {
       "id": "SC-03",
@@ -154,7 +158,9 @@
         "unrelated payment or network regression"
       ],
       "acceptable_variation": "Choose an appropriate runtime target; do not generalize one device to an untested model",
-      "agent_status": "not_run"
+      "agent_status": "executed_on_adapted_isolated_fixture",
+      "agent_evidence": "docs/evaluations/isolated-agent-20261026/results.json#SC-03",
+      "agent_scope_limits": "Simulated desktop keyboard only; no physical device/native IME"
     },
     {
       "id": "SC-04",
@@ -175,7 +181,9 @@
         "executing real payment as an unrequested side effect"
       ],
       "acceptable_variation": "Use actual parser/state tests and necessary targeted runtime checks; no exact suite prescribed",
-      "agent_status": "not_run"
+      "agent_status": "executed_on_adapted_isolated_fixture",
+      "agent_evidence": "docs/evaluations/isolated-agent-20261026/results.json#SC-04",
+      "agent_scope_limits": "Standalone Python mapper and tests, no live parser/state/service integration; shared-review necessity unestablished"
     },
     {
       "id": "SC-05",
@@ -196,7 +204,9 @@
         "treat changed real toolchain or execution rules as reusable"
       ],
       "acceptable_variation": "Related changed inputs may justify rerun; the causal reason must be explicit",
-      "agent_status": "not_run"
+      "agent_status": "executed_on_adapted_isolated_fixture",
+      "agent_evidence": "docs/evaluations/isolated-agent-20261026/results.json#SC-05",
+      "agent_scope_limits": "Original fact reuse exercised; nested build-tool reused-report attribution not triggered; review necessity unestablished"
     },
     {
       "id": "SC-06",
@@ -217,7 +227,9 @@
         "use a stale pass or static inference to clear runtime failure"
       ],
       "acceptable_variation": "Refresh only the related current fact; unreported external changes remain a stated limitation",
-      "agent_status": "not_run"
+      "agent_status": "executed_on_adapted_isolated_fixture",
+      "agent_evidence": "docs/evaluations/isolated-agent-20261026/results.json#SC-06",
+      "agent_scope_limits": "Failure recovery and fresh-context durable follow-on exercised; controlled local label only, current/expiry validity not declared or fully exercised"
     }
   ],
   "field_samples": [
@@ -263,11 +275,21 @@
     }
   ],
   "latest_program_evidence": {
-    "evidence": "docs/evaluations/readiness-diagnostics-20261023/full.log",
-    "input_identity": "docs/evaluations/readiness-diagnostics-20261023/inputs-after.json",
+    "evidence": "docs/evaluations/isolated-agent-20261026/repository-validation/full.log",
+    "input_identity": "docs/evaluations/isolated-agent-20261026/repository-validation/inputs-after.json",
     "tests": 221,
     "contract": 3,
     "new_execution_for_scoring": false,
-    "score_boundary": "Runtime maintenance regression only; original assertion scores and Agent unknowns unchanged; evidence pointer updated after frozen run"
+    "score_boundary": "Actual required repository regression after fixture reconstruction script; not evidence of Agent semantic coverage"
+  },
+  "isolated_agent_evaluation": {
+    "date": "2026-10-26",
+    "source_commit": "abac4f1a272e79b5916b808e1cbfb992875fda3e",
+    "result": "docs/evaluations/isolated-agent-20261026/results.json",
+    "review": "docs/reviews/2026-10-26-isolated-agent-review.md",
+    "not_blind": true,
+    "baseline_scores_unchanged": true,
+    "overall_agent_score": null,
+    "reason": "Six adapted fixtures and one durable follow-on are scoped observations; no whole-module or natural-host competence score inferred."
   }
 }
