@@ -1,0 +1,5 @@
+{
+  "request": "Read-only plan for the same shared UI change, no implementation or tests",
+  "expected": "Actual explicit project requirement is honored for relevant shared presentation claims; no blanket business retest",
+  "frozen_before_worker": true
+}

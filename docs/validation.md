@@ -193,3 +193,5 @@ Android文档不新增解析器或强跑门禁，不能证明CC已遵守。安�
 定向开发首次测试1项预期写错：静态覆盖运行失败应被RUNTIME_FAILURE_NEEDS_RUNTIME拒绝，而非登记后再阻塞；修正反例，未改保护。首次定向导入也额外发现基类被unittest收集，改为模块引用，避免新文件增加无关基类重复；7项定向及完整228项均通过。首轮62项结果为开发工具回执，未伪造独立红日志。
 
 [旧/新协议边界](evaluations/shared-review-fix-20261026/initial-protocol-boundary.json)实际采集固定abac4f1源码及候选源码，确认首次拆分协议不同；不会自动认可旧任务执行。新增反例核对验收校验源码变化不改变新协议、原执行ID/全部字段/日志/时间保持，真实执行校验变化仍物理执行。该变异测试改变被采集源码而非宣称部署任意版本兼容；完整模块仍保守绑定。真实Agent前向验证单列，不把程序结果充作主观范围选择证明。
+
+共享评审候选前向验证：[实际报告](reviews/2026-10-26-shared-review-fix-result.md)、[共享UI运行](evaluations/shared-review-fix-20261026/agent-forward-result.json)、[明确强制条款只读规划](evaluations/shared-review-fix-20261026/mandatory-rule-result.json)。第一例3次浏览器尝试（1启动失败，2页面通过），无领域/键盘重测，shared保留而有据自评；第二例0运行/0写入，明确要求局部独审。原任务/运行日志/产物摘要已核对，不将只读计划算新验收或真实独审。日常CC仍固定0.26.1；候选安装只在会话独立目录，12文件字节匹配。通用quick_validate因缺PyYAML不可运行，frontmatter未改，未声称该工具通过。

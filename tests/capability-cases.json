@@ -129,7 +129,7 @@
       "must_cover": [
         "actual callers and affected render variants",
         "relevant inherited theme/layout",
-        "independent assessment of shared claims"
+        "justified independent-review necessity under actual risk/project rules; genuine scoped review when required"
       ],
       "must_not_require": [
         "every business flow merely because rendering is shared"
@@ -137,7 +137,8 @@
       "acceptable_variation": "Representative equivalent callers need an explicit code basis, not necessarily one test per caller",
       "agent_status": "executed_on_adapted_isolated_fixture",
       "agent_evidence": "docs/evaluations/isolated-agent-20261026/results.json#SC-02",
-      "agent_scope_limits": "Two actual HTML callers, scoped review; no native app"
+      "agent_scope_limits": "Two actual HTML callers, scoped review; no native app",
+      "candidate_policy_note": "2026-10-26 candidate policy separates shared impact from review necessity; historical SC02 mandate and results remain at their original cutoff."
     },
     {
       "id": "SC-03",
@@ -275,12 +276,12 @@
     }
   ],
   "latest_program_evidence": {
-    "evidence": "docs/evaluations/isolated-agent-20261026/repository-validation/full.log",
-    "input_identity": "docs/evaluations/isolated-agent-20261026/repository-validation/inputs-after.json",
-    "tests": 221,
+    "evidence": "docs/evaluations/shared-review-fix-20261026/full.log",
+    "input_identity": "docs/evaluations/shared-review-fix-20261026/inputs-after.json",
+    "tests": 228,
     "contract": 3,
     "new_execution_for_scoring": false,
-    "score_boundary": "Actual required repository regression after fixture reconstruction script; not evidence of Agent semantic coverage"
+    "score_boundary": "Required repository regression for candidate policy replacement; not semantic Agent scoring"
   },
   "isolated_agent_evaluation": {
     "date": "2026-10-26",
@@ -291,5 +292,14 @@
     "baseline_scores_unchanged": true,
     "overall_agent_score": null,
     "reason": "Six adapted fixtures and one durable follow-on are scoped observations; no whole-module or natural-host competence score inferred."
+  },
+  "shared_review_candidate_evaluation": {
+    "source_commit": "b9866f4",
+    "review": "docs/reviews/2026-10-26-shared-review-fix-result.md",
+    "forward_runtime": "docs/evaluations/shared-review-fix-20261026/agent-forward-result.json",
+    "explicit_rule_planning": "docs/evaluations/shared-review-fix-20261026/mandatory-rule-result.json",
+    "not_blind": true,
+    "historical_scores_unchanged": true,
+    "overall_score": null
   }
 }

@@ -1,0 +1,13 @@
+{
+  "index.html": "191940d717735f06973ac955cf92a9bc6ca24b29bf4e899c9ccb63e4a5be1cd6",
+  "README.md": "c2a94f3bfa9b43857e8c7e1b4bfa3a56512413639238536cab5f2eba23f853e1",
+  ".gitignore": "6dd4a8b5aa64d1bb046ac974e03bd945525e780bfa6a88bd653c3cd03a09bf38",
+  "AGENTS.md": "0ef090cd20095a81f1d9e299ffd2671dcf391ef2f60d92290c8985135dbe3870",
+  "tools/check.mjs": "b08d7826eb4e99ea26cf72f3b428612db7b3de27d2a49726af12404e80bb5daa",
+  "app/domain.py": "4a46bb5cc594a9eb4e81965afffc1f3b5c3c2cad43e9f73a54867d5587f79f1a",
+  "app/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "app/style.css": "d42a75714f6e8fa60ef6da085fef6b4ac2068ad85e3dc2ea7802daba90674b78",
+  "app/view.js": "3239db129baf68d994be94b3201ea073b93389cc3e7be89025c1929d33f6847d",
+  "tests/visual.json": "68769aeeae61f83a320c60c50ff7adc531721f400be34ee6db68e2cd8d989f9f",
+  "tests/test_domain.py": "c4c01de474d89e02d92eb09f1a6be8ffd1f33fa7ceb89f8b518282803aa28553"
+}

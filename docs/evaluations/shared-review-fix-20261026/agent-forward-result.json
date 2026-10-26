@@ -1,0 +1,136 @@
+{
+  "at": "2026-10-26T04:00:50.757748+00:00",
+  "context": "/root/shared_ui_forward",
+  "state": "complete",
+  "head": "fdc2654175f4ae92c05ad727a85b16134b17af4d",
+  "worktree_status": "",
+  "categories": [
+    "presentation",
+    "shared"
+  ],
+  "review": {
+    "independent": false,
+    "reason": "Self-assessment is sufficient for two fully inspected private shared render variants and a presentation-only substitution; no rule or serious public, financial, authorization or data-loss risk requires another context.",
+    "criteria": []
+  },
+  "criteria": [
+    "STYLE",
+    "PRESERVED"
+  ],
+  "receipt": {
+    "completed_at": "2026-10-26T03:59:12.160831+00:00",
+    "git_head_at_close": "fdc2654175f4ae92c05ad727a85b16134b17af4d",
+    "task": "SHARED-UI",
+    "plan_digest": "468c62bd2785d0bc602300de6a30b9885784a2e19f8720743acf875e47ad68c2",
+    "input_digest": "c398f684195a6de0f153f852e3eef963a23d807ed7faaeccc3eb1e00ca7440e5",
+    "retention": {
+      "retention_days": 7,
+      "timezone": "Asia/Shanghai",
+      "cleanup": "compact",
+      "handoff": null
+    },
+    "criteria": 2,
+    "limitations": [
+      "Validated local deterministic desktop simulation at 390x760; no real mobile device or native keyboard claim. No new durable knowledge required: shared behavior is in app/view.js and app/style.css, style expectations in tests/visual.json."
+    ],
+    "evidence_retention": "task-local; no permanent replay promised"
+  },
+  "commands": [
+    {
+      "id": "77469640b3e94ef8b17442e139f99e6e",
+      "check": "render-registration",
+      "status": "failed",
+      "input_digest": "41319763a9c5a30da03af8661ec03f2951c018d19108d23b9c60036c5e1adf12",
+      "started_at": "2026-10-26T03:57:18.487111+00:00",
+      "at": "2026-10-26T03:57:22.904984+00:00",
+      "producer": {
+        "workflow_sha256": "8cae71f5dbdfea5638fcea72fdd2b47adc4bfef2fed7c5df60ab704066f013c0",
+        "protocol": {
+          "version": 1,
+          "implementation": {
+            "task_execution.py": "c9b5e52cbb2e3724716af7bdd8a328425b6809b68f8e4916c6e14393e35fcf43",
+            "task_inputs.py": "9143dc945e478d069b501094b64265d519ad91c4519b0c09e4c825886326d3a8",
+            "task_policy.py": "183cc7c5c146578879fb33b2dd1dd8a60a47e9e073d6823fca122d7cbe78856a"
+          },
+          "workflow_execution": "2f56673323c6c8660625b9c92b640fad4423bdd16481f74e482af409799676d8"
+        }
+      },
+      "artifact": {
+        "path": ".featrace/artifacts/SHARED-UI/77469640b3e94ef8b17442e139f99e6e.log",
+        "sha256": "4df358c0c689c9907cf4c56850f60d7e664ddd86682cb5b1c66e3feea85f44ae"
+      },
+      "previous_failure": null
+    },
+    {
+      "id": "d5fc24e8143f48ffa05f95ae1d50327c",
+      "check": "render-registration",
+      "status": "passed",
+      "input_digest": "41319763a9c5a30da03af8661ec03f2951c018d19108d23b9c60036c5e1adf12",
+      "started_at": "2026-10-26T03:57:53.855739+00:00",
+      "at": "2026-10-26T03:57:56.115675+00:00",
+      "producer": {
+        "workflow_sha256": "8cae71f5dbdfea5638fcea72fdd2b47adc4bfef2fed7c5df60ab704066f013c0",
+        "protocol": {
+          "version": 1,
+          "implementation": {
+            "task_execution.py": "c9b5e52cbb2e3724716af7bdd8a328425b6809b68f8e4916c6e14393e35fcf43",
+            "task_inputs.py": "9143dc945e478d069b501094b64265d519ad91c4519b0c09e4c825886326d3a8",
+            "task_policy.py": "183cc7c5c146578879fb33b2dd1dd8a60a47e9e073d6823fca122d7cbe78856a"
+          },
+          "workflow_execution": "2f56673323c6c8660625b9c92b640fad4423bdd16481f74e482af409799676d8"
+        }
+      },
+      "artifact": {
+        "path": ".featrace/artifacts/SHARED-UI/d5fc24e8143f48ffa05f95ae1d50327c.log",
+        "sha256": "da5287bfc7b30c03fff5414e6f096019fe2871e55da8094ebe2fbd0c3c55e397"
+      },
+      "previous_failure": "77469640b3e94ef8b17442e139f99e6e"
+    },
+    {
+      "id": "3e1f12f9d81345e6a82caff27179e5ad",
+      "check": "render-residence",
+      "status": "passed",
+      "input_digest": "d8f827fcb43702299710e72ec14aaf99a57044529bea2aab80994531e034ad1f",
+      "started_at": "2026-10-26T03:57:56.353714+00:00",
+      "at": "2026-10-26T03:57:57.630039+00:00",
+      "producer": {
+        "workflow_sha256": "8cae71f5dbdfea5638fcea72fdd2b47adc4bfef2fed7c5df60ab704066f013c0",
+        "protocol": {
+          "version": 1,
+          "implementation": {
+            "task_execution.py": "c9b5e52cbb2e3724716af7bdd8a328425b6809b68f8e4916c6e14393e35fcf43",
+            "task_inputs.py": "9143dc945e478d069b501094b64265d519ad91c4519b0c09e4c825886326d3a8",
+            "task_policy.py": "183cc7c5c146578879fb33b2dd1dd8a60a47e9e073d6823fca122d7cbe78856a"
+          },
+          "workflow_execution": "2f56673323c6c8660625b9c92b640fad4423bdd16481f74e482af409799676d8"
+        }
+      },
+      "artifact": {
+        "path": ".featrace/artifacts/SHARED-UI/3e1f12f9d81345e6a82caff27179e5ad.log",
+        "sha256": "fcbf1e92e0a5b6a15b400044af13b9c4e51aab6e8928633a99f7ce53aacdb81d"
+      },
+      "previous_failure": null
+    }
+  ],
+  "raw_ledgers_committed": false,
+  "render_results": {
+    "registration": {
+      "gap": 8,
+      "font": 14,
+      "text": "This email is already registered.\nUse a different email.",
+      "icon": "<svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M12 3L2 21h20Z\" fill=\"currentColor\"></path><path d=\"M12 9v6m0 2v1\" stroke=\"white\" stroke-width=\"2\"></path></svg>",
+      "overflow": false
+    },
+    "residence": {
+      "gap": 8,
+      "font": 14,
+      "text": "Registration is not available in this country.",
+      "icon": "<svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M12 3L2 21h20Z\" fill=\"currentColor\"></path><path d=\"M12 9v6m0 2v1\" stroke=\"white\" stroke-width=\"2\"></path></svg>",
+      "overflow": false
+    }
+  },
+  "scope": "Known synthetic fixture on Codex host, local 390x760 Chrome; no blind or natural CC evidence",
+  "comparison": "Old shared-rule fixture and this no-mandate fixture have different governance inputs; no equal-quality savings ratio inferred",
+  "cache_or_review_reruns": 0,
+  "usage_tokens": null
+}
