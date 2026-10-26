@@ -8,11 +8,11 @@ Help Claude Code and Codex investigate impact, implement changes, repair failure
 
 | Object | Current state |
 |---|---|
-| Release version | **0.27.0**, current-task workflow,12 runtime files |
-| Validation scope | 228 current kernel tests; program safeguards and Agent competence evaluated separately, with natural trials still pending |
+| Release version | **0.28.0**, current-task workflow,13 runtime files |
+| Validation scope | 252 current kernel tests; program safeguards and Agent competence evaluated separately, with natural trials still pending |
 | Real-world outcome | Phase two remains open: natural classification, resumption and net cost need new-project evidence |
 
-0.27.0 uses new-task contract3: declare proof requirements, explicitly select supporting facts, retain original result provenance, and separate execution protocol from query-only changes. Contract1/2 tasks use pinned0.25.0 or their applicable old tool; legacy .agent-workflow uses pinned0.22.0. No automatic business migration, reacceptance or deletion. 0.27.0 retains safe readiness diagnostics and scoped intent-change/resumption/durable-knowledge guidance, without another contract or business acceptance gate. See [maintenance status](MAINTAINER.md) for release and actual installation identities. In0.27.0 shared impact no longer alone forces independent review: select scoped review from actual risk and explicit project rules. Execution and acceptance validation are separate. The initial protocol split does not automatically reuse old executions; keep active0.26.1 tasks on their pinned tool without migration or re-signing.
+0.28.0 uses task contract4: observations only record facts; resolve original failures explicitly using targeted runtime evidence under declared reproduction conditions. Later control passes do not erase failures. Product-authorized deferrals are delivery exclusions, never repairs or supported claims; concise unresolved issue context survives cleanup. Scoped checks, original provenance and bounded retention remain. Contract3 tasks stay on pinned0.27.0 or their original tool; earlier records retain their matching version. No business migration or replay. See [maintenance status](MAINTAINER.md) for verified publication and installation.
 
 ## Replacement capabilities
 
@@ -27,19 +27,19 @@ Explicitly correct selected claims in retained completed tasks while preserving 
 
 Commit each completed working subtask locally after necessary checks, before feature closure; actual commit restrictions still apply and push is separate. Current-state claims use the real environment and original observation time; as-of screenshots do not expire uniformly.
 
-These are0.27.0 capability boundaries. Installing old0.22.0 does not enable this workflow. It does not guarantee full dynamic dependencies, objective visual judgment or genuine host independence. Code and structural validity do not establish product correctness.
+These are0.28.0 capability boundaries. Installing old0.22.0 does not enable this workflow. It does not guarantee full dynamic dependencies, objective visual judgment or genuine host independence. Code and structural validity do not establish product correctness.
 
 ## Install and update an official release
 
-Requires Python3.9+,Git and the chosen host; Android also needs the project's JDK/SDK. Install from the pinned0.27.0 release branch:
+Requires Python3.9+,Git and the chosen host; Android also needs the project's JDK/SDK. Install from the pinned0.28.0 release branch:
 
 ```bash
-git clone --branch release/0.27.0 --single-branch https://github.com/P3rryW4ng/featrace-dev.git
+git clone --branch release/0.28.0 --single-branch https://github.com/P3rryW4ng/featrace-dev.git
 cd featrace-dev
 python3 scripts/install.py --agent both
 ```
 
-Preserve existing local changes and verify the official checkout before updating. Pulling an old release branch does not upgrade versions: explicitly fetch and switch to release/0.27.0. Use `--update` only from that release tree; select `--agent claude` or `--agent codex` as needed. Open a new session afterward. The installer refuses unrelated or locally modified copies, backs up updates and moves uninstalled copies to backups with `--uninstall`. The installer requires a matching committed release.json, local release ref and runtime/installer content. Development trials require explicit --development with a separate identity; this is not signed remote-origin authentication.
+Preserve existing local changes and verify the official checkout before updating. Pulling an old release branch does not upgrade versions: explicitly fetch and switch to release/0.28.0. Use `--update` only from that release tree; select `--agent claude` or `--agent codex` as needed. Open a new session afterward. The installer refuses unrelated or locally modified copies, backs up updates and moves uninstalled copies to backups with `--uninstall`. The installer requires a matching committed release.json, local release ref and runtime/installer content. Development trials require explicit --development with a separate identity; this is not signed remote-origin authentication.
 
 Find legacy commands, acceptance contracts and records in the [fixed0.22.0 guide](https://github.com/P3rryW4ng/featrace-dev/blob/54c5260fd6688a0bca9c83f29bad240321a67b52/README.en.md). The replacement does not migrate or delete old application .agent-workflow data; use a pinned old version for explicit old-record continuation.
 

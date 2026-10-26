@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.28.0 — 2026-10-26
+
+- Replace automatic latest-pass resolution and the single pending pointer with contract4: observations retain facts; explicit per-failure resolve/clarify/reopen requires declared reproduction conditions and actual targeted current runtime evidence. Multiple failures stay independently pending; equal code digests do not prove equal scenarios.
+- Add explicit product-authorized whole-criterion delivery exclusion and reopening. Deferred issues are never supported or repaired. Surviving concise handoffs preserve original failure context; pruning keeps disposition references and compacted storage preserves unresolved counts. Existing authority can be reused without repeated approval.
+- Old contracts1/2/3 refuse without writes; keep old tasks on their pinned tool. No automatic business migration or replay. Keep bounded facts, dispositions, permissions, privacy, freshness and scoped proof.
+- Full regression252/252; add24 failure-lifecycle counterexamples and port existing protection readers. Three independent source-review findings fixed; actual CLI/pinned-reader probes and13-file isolated development installs passed. Independent Agent forward testing was unavailable twice due model capacity before execution, not a pass. Natural pilot/net cost and phase-two completion remain unproven.
+- Minor release because failure semantics, commands and persisted task contract change;13 runtime files. No daily install or remote publication is implied until separately verified.
+
 ## 0.27.0 — 2026-10-26
 
 - Separate shared propagation from independent-review necessity. Investigate actual consumers and choose scoped review from explicit project rules, material risk or meaningful blind spots; a shared label alone no longer forces another Agent. Preserve required provenance, selected facts and failure safeguards.
