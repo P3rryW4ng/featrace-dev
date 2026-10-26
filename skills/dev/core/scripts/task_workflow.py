@@ -18,9 +18,10 @@ import task_inputs
 import task_policy
 import task_execution
 import task_failures
+import task_authorization
 from zoneinfo import ZoneInfo
 
-CONTRACT = 4
+CONTRACT = 5
 MAX_CORRECTIONS = 8
 MAX_FACTS = 128
 EVIDENCE_KINDS = {'static_analysis', 'runtime_observation', 'command'}
@@ -117,10 +118,12 @@ def load(root, ident):
         for section in ('executions','observations'):
             if any(fid not in doc['facts'] for fid in doc[section].values()):fail('FACT_REFERENCE_MISSING')
     task_failures.validate(doc,fail)
+    task_authorization.validate(doc,fail)
     return doc
 
 def save(root, doc):
     task_failures.validate(doc,fail)
+    task_authorization.validate(doc,fail)
     path = task_path(root, doc['id'])
     doc['updated_at'] = now()
     doc['checksum'] = digest({k:v for k,v in doc.items() if k != 'checksum'})
@@ -327,7 +330,7 @@ def analysis(root, doc, plan=None):
     authority={name for c in p['criteria'] for name in c.get('sources',[])}
     unexplained=sorted(set(changed)-set(p['scope'])-set(p['exclusions'])-set(p['constraints'])-authority)
     value={'scope':files(root,p['scope']), 'authority':files(root,authority,True),
-           'constraints':files(root,p['constraints'],True), 'policy':task_policy.effective(root,p['scope'],environment='any'),}
+           'constraints':files(root,p['constraints'],True), 'policy':task_authorization.material(task_policy.effective(root,p['scope'],environment='any')),}
     return digest(value), unexplained
 
 def begin(root, ident, request):
@@ -339,7 +342,7 @@ def begin(root, ident, request):
         if task_path(root,ident).exists(): fail('TASK_EXISTS')
         doc={'task_contract':CONTRACT,'id':ident,'request':request,'baseline':git(root,'rev-parse','HEAD').decode().strip(),
              'created_at':now(),'state':'draft','plan':None,'analysis_digest':None,'executions':{},
-             'observations':{},'facts':{},'failure_actions':{},'claim_deferrals':{},'assessments':{},'limitations':[],'receipt':None}
+             'observations':{},'facts':{},'authorizations':{},'failure_actions':{},'claim_deferrals':{},'assessments':{},'limitations':[],'receipt':None}
         save(root,doc)
     return {'id':ident,'state':'draft','maintenance':maintenance}
 
@@ -417,7 +420,7 @@ def check_identity_payload(root,doc,check):
     return {'argv':check['argv'],'inputs':task_inputs.signature(root,check['inputs'],check.get('input_sets',[]),check.get('external_inputs',[]),check.get('env_keys',[])),
             'executable':{'path':str(executable),'identity':runner},'environment':check['environment'],
             'constraints':files(root,selected_constraints(doc['plan'],check=check),True),
-            'policy':check_policy(root,doc,check),'protocol':task_execution.protocol(__file__)}
+            'policy':task_authorization.material(check_policy(root,doc,check)),'protocol':task_execution.protocol(__file__)}
 
 def check_stamp(root,doc,check):
     return digest(check_identity_payload(root,doc,check))
@@ -431,7 +434,7 @@ def criterion_stamp(root,doc,c):
     return digest({'criterion':c,'inputs':files(root,c['inputs']),'authority':files(root,c.get('sources',[]),True),
                    'constraints':files(root,selected_constraints(doc['plan'],criterion=c),True),
                    'review_required':review_required(doc['plan'],c),
-                   'policy':task_policy.effective(root,c['inputs'],environment='any')})
+                   'policy':task_authorization.material(task_policy.effective(root,c['inputs'],environment='any'))})
 
 def timely(check,record):
     age=check.get('cache',{}).get('max_age_seconds')
@@ -465,13 +468,42 @@ def fact_applicability(criterion,record,environment=None):
 def artifact_ok(root,record):
     return file_identity(root,record['path'],True)['sha256']==record['sha256']
 
+def authorization_stamp(doc,check):
+    correction=open_correction(doc)
+    return digest({'check':{k:v for k,v in check.items() if k not in ('reason','covers')},
+                   'paths':sorted(relevant_paths(doc,check=check)),
+                   'correction':correction['id'] if correction else None})
+
+
+def authorize(root,ident,check_id,mode,authority,decision_at,expires_at,reason):
+    if mode not in ('once','task') or not all(text(x) for x in (authority,decision_at,expires_at,reason)):fail('AUTHORIZATION_REQUIRED')
+    decision=instant(decision_at);expiry=instant(expires_at);current=datetime.now(timezone.utc)
+    if decision>current or not current<expiry or (expiry-current).total_seconds()>7*86400:fail('AUTHORIZATION_TIME_INVALID')
+    with locked(root,ident):
+        doc=load(root,ident);mutable(doc);task_policy.check_local(root,git)
+        check=next((c for c in doc['plan']['checks'] if c['id']==check_id),None)
+        if check is None:fail('CHECK_NOT_SELECTED')
+        execution_ready(root,doc,check=check,investigate=True)
+        rules=check_policy(root,doc,check)
+        if any(r['permission']=='denied' for r in rules):fail('OPERATION_POLICY_DENIED')
+        if len(doc['authorizations'])>=task_authorization.MAX_GRANTS:fail('AUTHORIZATION_LIMIT')
+        gid=uuid.uuid4().hex
+        doc['authorizations'][gid]={'id':gid,'check':check_id,'definition_digest':authorization_stamp(doc,check),
+            'execution_digest':check_stamp(root,doc,check) if mode=='once' else None,
+            'policy_digest':digest(task_authorization.material(rules)),'mode':mode,
+            'authority':authority,'decision_at':decision_at,'reason':reason,'expires_at':expiry.isoformat(),'uses':[]}
+        save(root,doc)
+        return {'authorization':gid,'mode':mode,'check':check_id,'expires_at':expiry.isoformat(),
+                'boundary':'Actual scoped human authority must exist; no standing policy or host permission changed.'}
+
+
 def run_check(root,ident,check_id,investigate=False):
     with locked(root,ident):
         doc=load(root,ident);mutable(doc)
         task_policy.check_local(root,git)
         check=next((c for c in doc['plan']['checks'] if c['id']==check_id),None)
         if check is None:fail('CHECK_NOT_SELECTED')
-        execution_ready(root,doc,check=check,investigate=investigate);check_policy(root,doc,check,True)
+        execution_ready(root,doc,check=check,investigate=investigate)
         stamp=check_stamp(root,doc,check);previous=doc['facts'].get(doc['executions'].get(check_id))
         expired=bool(previous and any(fact_applicability(c,previous,check['environment'])=='EXPIRED'
                                       for c in doc['plan']['criteria'] if c['id'] in check['covers']))
@@ -484,17 +516,26 @@ def run_check(root,ident,check_id,investigate=False):
         used=sum(p.stat().st_size for p in path.parent.iterdir() if p.is_file())
         budget=min(MAX_LOG,64*1024*1024-used)
         if budget<4096:fail('TASK_ARTIFACT_BUDGET')
-        started=now();revision=git(root,'rev-parse','HEAD').decode().strip()
+        started=now()
+        rules=check_policy(root,doc,check)
+        authorization=task_authorization.select(doc,check,stamp,digest(task_authorization.material(rules)),authorization_stamp(doc,check),rules,started,fail)
+        authorization['authority']=(doc['authorizations'][authorization['grant']]['authority'] if authorization['kind']=='grant' else task_policy.load(root)['authority'])
+        authorization['rule_sources']=[{'source':rule['source'],'sha256':rule['sha256'],'authority':rule['authority']} for rule in rules]
+        revision=git(root,'rev-parse','HEAD').decode().strip()
         source=task_execution.producer(__file__)
         start={'task':ident,'id':aid,'check':check_id,'input_digest':stamp,'input_format':1,
-               'started_at':started,'producer':source,'definition_digest':digest(check)}
+               'started_at':started,'producer':source,'definition_digest':digest(check),'authorization':authorization}
         reservation={'id':aid,'kind':'command','check':check_id,'status':'unavailable',
-                     'purpose':'investigation','input_digest':stamp,'definition_digest':digest(check),
+                     'purpose':'investigation','authorization':authorization,'input_digest':stamp,'definition_digest':digest(check),
                      'environment':check['environment'],'producer':source,'git_head_at_start':revision,
                      'started_at':started,'at':started,'exit_code':-999,'reason':'x'*128,
                      'artifact':{'path':rel,'sha256':'0'*64},'previous_result':aid,'previous_failure':aid}
         projected={**doc,'facts':{**doc['facts'],aid:reservation},'executions':{**doc['executions'],check_id:aid}}
         if len(json.dumps(projected,ensure_ascii=False,indent=2).encode())+512>MAX_RECORD:fail('TASK_SIZE_LIMIT_BEFORE_EXECUTION')
+        if authorization['kind']=='grant':
+            g=doc['authorizations'][authorization['grant']]
+            if len(g['uses'])>=128:fail('AUTHORIZATION_LIMIT')
+            g['uses'].append(aid);save(root,doc)  # Consume under the task lock before launching, including failed/interrupted attempts.
         status,code,interrupted,reason=task_execution.invoke(check['argv'],root,path,budget,check['timeout'],start)
         try:
             if check_stamp(root,doc,check)!=stamp:status='unavailable';reason=reason or 'EXECUTION_INPUT_MOVED'
@@ -502,7 +543,7 @@ def run_check(root,ident,check_id,investigate=False):
             status='unavailable';reason=reason or 'EXECUTION_IDENTITY_UNAVAILABLE'
         ended=now()
         record={'id':aid,'kind':'command','check':check_id,'status':status,
-                'purpose':'investigation' if investigate else 'verification','input_digest':stamp,
+                'purpose':'investigation' if investigate else 'verification','authorization':authorization,'input_digest':stamp,
                 'definition_digest':digest(check),'environment':check['environment'],'producer':source,
                 'git_head_at_start':revision,'started_at':started,'at':ended,'exit_code':code}
         if reason:record['reason']=reason
@@ -1024,7 +1065,7 @@ def detail(root,ident,section,criterion=None,offset=0,limit=4000):
     elif section=='fact':
         value=doc.get('facts',{}).get(criterion)
         if value is None:fail('FACT_REFERENCE_MISSING')
-    elif section in ('request','plan','receipt','limitations','corrections'):value=doc.get(section)
+    elif section in ('request','plan','receipt','limitations','corrections','authorizations'):value=doc.get(section)
     else:fail('DETAIL_SECTION_INVALID')
     body=canonical(value).decode() if section=='failure-handoff' else json.dumps(value,ensure_ascii=False,sort_keys=True)
     # UTF-8 bytes are bounded even for four-byte codepoints.
@@ -1084,7 +1125,7 @@ def code_query(root,query,offset=0,limit=20):
 
 def main():
     parser=Parser(description=__doc__)
-    parser.add_argument('action',choices=['begin','plan','run','observe','assess','status','close','correct','prune','cleanup','locate','list','policy','maintain','detail','review-input','code','attach','storage','failure','defer','reopen-claim'])
+    parser.add_argument('action',choices=['begin','plan','run','observe','assess','status','close','correct','prune','cleanup','locate','list','policy','maintain','detail','review-input','code','attach','storage','failure','defer','reopen-claim','authorize'])
     parser.add_argument('root');parser.add_argument('id',nargs='?')
     parser.add_argument('--json');parser.add_argument('--request');parser.add_argument('--check');parser.add_argument('--criterion')
     parser.add_argument('--kind');parser.add_argument('--observed-at');parser.add_argument('--actual')
@@ -1100,6 +1141,7 @@ def main():
     parser.add_argument('--failure');parser.add_argument('--disposition',choices=['resolve','clarify','reopen'])
     parser.add_argument('--conditions-json');parser.add_argument('--decision-at')
     parser.add_argument('--exclude-from-delivery',action='store_true')
+    parser.add_argument('--mode',choices=['once','task']);parser.add_argument('--expires-at')
     a=parser.parse_args();root=project(a.root)
     if a.action=='policy':out=task_policy.prepare(root,read_json(Path(a.json)),git)
     elif a.action=='storage':out=storage(root,a.offset,a.limit)
@@ -1109,6 +1151,7 @@ def main():
     elif a.action=='code':out=code_query(root,a.id,a.offset,a.limit)
     elif a.action=='begin':out=begin(root,a.id,a.request)
     elif a.action=='plan':out=set_plan(root,a.id,read_json(Path(a.json)))
+    elif a.action=='authorize':out=authorize(root,a.id,a.check,a.mode,a.authority,a.decision_at,a.expires_at,a.reason)
     elif a.action=='run':out=run_check(root,a.id,a.check,a.investigate)
     elif a.action=='attach':out=attach(root,a.id,a.file)
     elif a.action=='observe':out=observe(root,a.id,a.criterion,a.kind,a.observed_at,a.actual,a.evidence,a.status,a.target,a.producer,read_json(Path(a.conditions_json)) if a.conditions_json else None)

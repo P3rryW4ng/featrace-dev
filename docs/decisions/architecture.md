@@ -138,3 +138,9 @@ Android指引区分命令与嵌套测试执行：never不禁用Gradle增量；�
 读写者包括observe/failure/defer/plan/assess/view/review-input/close/correct/prune/cleanup/storage/detail。回执区分fully_supported和scoped_delivery_with_deferrals，排除项不算支持；清理后未解决计数仍来自原回执。prune保护所有负面、解除及延期引用。128事实/256KiB、每对象最多8次处置与既有权限/隐私/产物保护保留；语义条件及权威真实性仍需实际调查，不是自动因果证明。
 
 旧合同1/2/3读写分支不保留，不自动迁移、改标签或重验旧业务；原任务固定原工具。未知范围调查性观察、授权身份及浏览器环境重试后续单独评审。程序、隔离Agent、发布安装和自然试点分别报告。
+
+## A123：授权与资料引用边界共同替换
+
+2026-10-26，用户在[顺序评审](../reviews/2026-10-26-authorization-input-review.md)后批准继续。共同边界定为合同5：长期策略、当前执行许可、原执行授权出处分开；合法历史事实不因一次批准用完而变成未执行。策略投影只剥离permission/authority，实质decision/source/hash/scope/operation/environment继续参与适用性。授权按真实once/task含义，有界、到期、原子占用且不扩展新命令/目标/更正。deny、来源变更及宿主限制保留；不保留临时改长期allowed作为新运行例外入口。
+
+资料沿用已有附件UUID/预算，新增明确input角色及原来源、快照身份；检查input_assets与标准source_assets引用选定输入ID，实际argv使用对应副本。普通路径、外部输入和已登记快照的控制数据边界一致，不将整个生成目录作为输入，不建永久对象库。新输入收集与授权进入实际执行协议；旧4及更早任务固定原工具，不迁移9058。代码、查询、更正、失败处置及清理须共同核对。具体实现/反例在开发完成后更新，不把共同合同定稿算为全部功能完成。

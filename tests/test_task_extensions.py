@@ -96,7 +96,7 @@ class FullReplacementTests(TaskWorkflowTests):
                 'decision':'Only test sandbox execution','permission':'allowed','authority':'Synthetic same-scope grant'}]
         self.configure(self.policy(rules=rules));self.plan['checks'][0]['environment']['kind']='test';self.refresh()
         self.assertEqual(self.execute()['status'],'passed')
-        rules[0]['permission']='denied';self.configure(self.policy(rules=rules));self.refresh()
+        rules[0]['permission']='denied';self.configure(self.policy(rules=rules));self.plan['checks'][0]['cache']={'mode':'never'};self.refresh()
         with self.assertRaisesRegex(ValueError,'POLICY_DENIED'):self.execute()
         self.plan['checks'][0]['environment']['kind']='local';self.refresh()
         self.assertEqual(self.execute()['status'],'passed')
