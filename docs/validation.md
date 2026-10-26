@@ -1,6 +1,6 @@
 # 当前验证与历史查证入口
 
-更新：2026-10-23。只索引当前实现和必要对照；不把过去测试记作本轮新跑，不以数量证明语义正确或净收益。执行顺序见[ROADMAP](../ROADMAP.md)，实际发布/安装见[MAINTAINER](../MAINTAINER.md)。
+更新：2026-10-26。只索引当前实现和必要对照；不把过去测试记作本轮新跑，不以数量证明语义正确或净收益。执行顺序见[ROADMAP](../ROADMAP.md)，实际发布/安装见[MAINTAINER](../MAINTAINER.md)。
 
 ## 当前验证入口
 
@@ -9,6 +9,12 @@
 [独立源码复看](evaluations/failure-lifecycle-20261026/independent-review.json)发现3项清理边界并核对修复闭合，评审者没有执行测试。[实际命令探针](evaluations/failure-lifecycle-20261026/cli-probe.json)验证对照不能解除、显式排除不算支持、新旧固定工具双向拒读且不改文件。[双宿主隔离开发安装](evaluations/failure-lifecycle-20261026/isolated-install.json)各13文件匹配。独立Agent演练两次因模型容量不足在执行前失败，记为unavailable，不算通过。真实试点、自然上下文恢复和同质量净成本仍未知。
 
 旧正式0.27.0的228项及实际安装见[旧正式核验](evaluations/release-0270-20261026.json)。不将旧回归冒充新合同验证；[0.28.0正式发布安装核验](evaluations/release-0280-20261026.json)已完成，不迁移业务。
+
+## 2026-10-26：9058自然反馈后的顺序评审
+
+[评审](reviews/2026-10-26-authorization-input-review.md)及[四组合成结果](evaluations/authorization-input-review-20261026/results.json)：源码87fd0b8、正式/CC0.28.0。ask阻止新进程；临时allow恢复ask使原检查/标准过期但事实仍在；外部CSV/脚本已有external_inputs并能检测变化；相对控制路径与绝对外部路径角色边界不一致；仅argv引用未声明的脚本变化仍可复用。全在临时合成项目核对，13运行文件[冻结不变](evaluations/authorization-input-review-20261026/source-inputs.json)，未执行252项套件或业务测试，不算已实现替换或效能证明。
+
+9058情况仅来自用户转回CC复盘，执行指纹前缀与当前源码相符。它是0.28.0自然主链的报告级证据，维护没有独立读取任务/日志/设备；未触发的失败处置、延期、清理和恢复仍未知。候选开发边界在评审中，发布安装保持不变。
 
 ## 历史截点：0.24.0发布前后，A109–A114及173项
 

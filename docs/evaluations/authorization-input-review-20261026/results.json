@@ -1,0 +1,71 @@
+{
+  "source_commit": "87fd0b888150763f102f83f46fd4c5f1da3a67ac",
+  "version": "0.28.0",
+  "source_inputs_unchanged": true,
+  "runtime_files": 13,
+  "probes": [
+    {
+      "id": "P1",
+      "case": "standing ask -> temporary allow -> restore ask",
+      "blocked_before_execution": {
+        "refused": "OPERATION_POLICY_ASK"
+      },
+      "physical_executions": 1,
+      "restore_changes_execution_digest": true,
+      "restore_changes_criterion_stamp": true,
+      "restore_eligible": false,
+      "restore_blockers": [
+        "CHECK:target",
+        "CLAIM:C1"
+      ],
+      "request_reuse_under_ask": {
+        "refused": "OPERATION_POLICY_ASK"
+      },
+      "old_fact_preserved": true,
+      "restore_same_allow_reuses_original": {
+        "check": "target",
+        "status": "passed",
+        "reused": true,
+        "execution": "4dc602d926c2468e922bb63bf20befd6"
+      }
+    },
+    {
+      "id": "P2",
+      "case": "genuine outside-repository CSV and helper declared via existing external_inputs",
+      "first_status": "passed",
+      "helper_change_reexecuted": true,
+      "data_change_result": "failed",
+      "absolute_attachment": {
+        "refused": "UNSAFE_PATH"
+      },
+      "absolute_criterion_source": {
+        "refused": "UNSAFE_PATH"
+      }
+    },
+    {
+      "id": "P3",
+      "case": "task scratch is prescribed temporary location but forbidden as declared causal input/source",
+      "scope": {
+        "refused": "GENERATED_SCOPE_INPUT"
+      },
+      "check_input": {
+        "refused": "GENERATED_SCOPE_INPUT"
+      },
+      "criterion_source": {
+        "refused": "GENERATED_SCOPE_INPUT"
+      },
+      "unbound_argv_helper_change_reused_old_execution": true,
+      "boundary": "No dynamic read-set proof. An undeclared helper is a completeness gap, not permission to bypass input protection."
+    },
+    {
+      "id": "P4",
+      "case": "external_inputs accepts absolute files physically under control area",
+      "accepted": true,
+      "byte_change_detected": true,
+      "boundary": "Inconsistent role boundary; do not recommend this spelling to bypass generated-input rejection. Precise legitimate inputs must be distinguished from mutable control/output data."
+    }
+  ],
+  "business_accessed": false,
+  "full_suite_executed": false,
+  "boundary": "Fixed synthetic causal probes, not independent business confirmation, architecture already implemented, or natural cost evidence."
+}

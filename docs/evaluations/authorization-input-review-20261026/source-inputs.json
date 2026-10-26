@@ -1,0 +1,15 @@
+{
+  "skills/dev/SKILL.md": "0b517a62f8f8c50c1e41a9d6b3846ab8b86fb63dec2b09511584908ad8201771",
+  "skills/dev/core/references/figma-design.md": "8828473c28557e33fbb07ab5416be34e3c13c5b6f35a9eff94f14f1f6e8e12ff",
+  "skills/dev/core/references/project-compatibility.md": "05e0da0988a766acb1068338c0e55deaf6d74eb77799bcc9bdbb8da2621897eb",
+  "skills/dev/core/references/output-privacy.md": "8c1d43834acfb41ee1d125bdc1ec37eb97cedca3d9afbff3b408658f81c8fab3",
+  "skills/dev/core/references/task-workflow.md": "204ee8a83f77ca9237d64cae77067e8b48b8be7f4b8b741bb79bc5bc3c4efa9e",
+  "skills/dev/core/scripts/output_privacy.py": "54be161d474b4bc55ae1a28207de80f4077f0093172114b7079a12ce672fee6e",
+  "skills/dev/core/scripts/task_policy.py": "183cc7c5c146578879fb33b2dd1dd8a60a47e9e073d6823fca122d7cbe78856a",
+  "skills/dev/core/scripts/task_workflow.py": "5d88309f019c99dcb599092c871aaf699c247963b3211215767968b762421f27",
+  "skills/dev/core/scripts/task_execution.py": "c9b5e52cbb2e3724716af7bdd8a328425b6809b68f8e4916c6e14393e35fcf43",
+  "skills/dev/core/scripts/task_failures.py": "3f948382ce6453878f219346689f06f1617a32f908f7459a8f739dc3c04bef09",
+  "skills/dev/core/scripts/task_inputs.py": "9143dc945e478d069b501094b64265d519ad91c4519b0c09e4c825886326d3a8",
+  "skills/dev/agents/openai.yaml": "237666967ab617f4452194694fc91dc1fcbb3b3beda59172c74572525117a009",
+  "skills/dev/profiles/android/PROFILE.md": "b4ef9f54763f9e8c0ef51f910daf14e941a27343f01dde2edd6ea960707305ab"
+}
