@@ -215,3 +215,7 @@ Android文档不新增解析器或强跑门禁，不能证明CC已遵守。安�
 [报告](reviews/2026-10-26-ogfr9060-field-review.md)：业务事实仅来自用户转回CC复盘；维护直接核对固定0.26.1和正式0.27.0的observe/fact_applicability/observation_stamp/validate_plan/执行策略身份源码。确认同标准较晚运行通过自动解除待决失败，未比较复现条件；改expected不恢复失败指针也不可靠排除文件相同对照。A09旧shared+false与计划保存的关系待原categories核实。没有执行新反例、测试、设备或业务流程，没有改任务/安装；本报告不是0.27.0自然效果，也不改228项原结果。
 
 同日补核更新见原报告末节：用户转回A07两事实与判定项结构、原产品决定时间、A09分类/review；维护未读取业务原件。只读源码确认解除不比较旧/新input_digest，不能误写成“digest相同才解除”；validity也不是通用场景字段。A09只声明presentation/state，原guard未触发的原因已明。候选提出失败采集与解除/延期/错误纠正分离，读写者和反例尚未开发或执行；运行/安装不变。
+
+## 合同5候选源码完成（2026-10-26）
+
+B1授权分离、B2选定输入/来源统一、B3条件式影响调查已完成，新增task_authorization/task_assets两个聚焦模块，15运行文件。完整286/286、新增34反例，独立源码评审3项修复并复看，最终双宿主隔离安装/CLI通过；独立Agent合成演练按原冻结包完成，最后一条策略来源拒绝差异已单列。[结果](reviews/2026-10-26-authorization-input-build-result.md)、[证据](evaluations/authorization-input-build-20261026/results.json)。不宣称自然净提效。正式/日常CC仍0.28.0合同4/13文件，本轮仅本地提交；旧任务固定原工具、不自动迁移。阶段二仍缺自然失败处置、上下文恢复和等质量成本。未知范围调查与浏览器重试后置。

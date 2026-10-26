@@ -86,6 +86,28 @@ class ScopedAuthorizationTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'AUTHORIZATION_LIMIT'):self.grant()
         self.assertEqual(w.task_path(f.root,f.ident).read_bytes(),before)
 
+    def test_unreturned_attempt_cannot_leave_previous_pass_current(self):
+        f=self.f;f.plan['checks'][0]['cache']={'mode':'never'};f.refresh();self.grant('task');f.execute();f.support()
+        with patch.object(w.task_execution,'invoke',side_effect=OSError('Synthetic output failure after start')):
+            with self.assertRaises(OSError):f.execute()
+        self.assertEqual(f.execution()['status'],'unavailable')
+        self.assertEqual(f.execution()['reason'],'EXECUTION_RESERVED_OUTCOME_UNKNOWN')
+        self.assertFalse(w.view(f.root,f.ident)['eligible'])
+        self.assertEqual(len(f.doc()['facts']),2)
+
+    def test_used_once_slots_can_roll_forward_without_losing_original_authority(self):
+        f=self.f;f.plan['checks'][0]['cache']={'mode':'never'};f.refresh();first=None
+        for _ in range(w.task_authorization.MAX_GRANTS+1):
+            g=self.grant();result=f.execute();first=first or result['execution']
+        self.assertEqual(len(f.doc()['authorizations']),1)
+        self.assertEqual(f.doc()['facts'][first]['authorization']['grant_proof']['authority'],'Actual synthetic scoped human approval')
+        self.assertEqual((f.root/'run-count').read_text(),str(w.task_authorization.MAX_GRANTS+1))
+
+    def test_contract4_is_refused_without_rewriting_history(self):
+        f=self.f;d=f.doc();d['task_contract']=4;w.save(f.root,d);before=w.task_path(f.root,f.ident).read_bytes()
+        with self.assertRaisesRegex(ValueError,'USE_PINNED_TOOL'):w.load(f.root,f.ident)
+        self.assertEqual(w.task_path(f.root,f.ident).read_bytes(),before)
+
     def test_future_decision_refuses_without_mutation(self):
         f=self.f;before=w.task_path(f.root,f.ident).read_bytes();future=(datetime.now(timezone.utc)+timedelta(hours=1)).isoformat()
         with self.assertRaisesRegex(ValueError,'AUTHORIZATION_TIME_INVALID'):w.authorize(f.root,f.ident,'target','once','Owner',future,future,'Scope')

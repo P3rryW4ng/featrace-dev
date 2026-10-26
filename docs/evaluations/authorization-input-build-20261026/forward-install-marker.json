@@ -1,0 +1,30 @@
+{
+  "package": "featrace-dev",
+  "version": "0.28.0+dev.ced58f93b73d.6779d978b130",
+  "files": {
+    "SKILL.md": "e8ce951ca6202a1acddda416255e63fd0a2a12ed122fd6758eb6edeaa5086120",
+    "agents/openai.yaml": "237666967ab617f4452194694fc91dc1fcbb3b3beda59172c74572525117a009",
+    "core/references/figma-design.md": "8828473c28557e33fbb07ab5416be34e3c13c5b6f35a9eff94f14f1f6e8e12ff",
+    "core/references/output-privacy.md": "8c1d43834acfb41ee1d125bdc1ec37eb97cedca3d9afbff3b408658f81c8fab3",
+    "core/references/project-compatibility.md": "76668c91541d65a92b4e8308d385f8937c8d1f349a3680e323e11f4e09e4ff3a",
+    "core/references/task-workflow.md": "3d667d930404ffbb7a6f99b759f5c4965b12c8a71cac0fd254c3d4989e82bce9",
+    "core/scripts/output_privacy.py": "54be161d474b4bc55ae1a28207de80f4077f0093172114b7079a12ce672fee6e",
+    "core/scripts/task_assets.py": "ed67314ae55fcd3ed1ad82916e0f7dc8a641928b3c52f84b2b6984c4195aed97",
+    "core/scripts/task_authorization.py": "98ad364d9a24db6569d1a4a9e816646e5c2f72014713db0fe7c6534b7e0ae920",
+    "core/scripts/task_execution.py": "551aef76c10acceed2e047059539fc87ba7253e64375fa9203cb29a27b9079ae",
+    "core/scripts/task_failures.py": "3f948382ce6453878f219346689f06f1617a32f908f7459a8f739dc3c04bef09",
+    "core/scripts/task_inputs.py": "12719743c2725bda38fb58f7c79ae9adc7ee66eb7da2ae618f466110189d1fad",
+    "core/scripts/task_policy.py": "38d241d0c498dc7797ae778259ba7114373f9604662b22573f6335e95a3ac194",
+    "core/scripts/task_workflow.py": "7b841fa018eaf8da083aa4855fd2de4384744624dac20b59c9a96f1c75e4b94a",
+    "profiles/android/PROFILE.md": "b4ef9f54763f9e8c0ef51f910daf14e941a27343f01dde2edd6ea960707305ab"
+  },
+  "source": {
+    "version": "0.28.0+dev.ced58f93b73d.6779d978b130",
+    "base_version": "0.28.0",
+    "channel": "development",
+    "source_commit": "ced58f93b73d99746c99c6658a40a8b0e67b3ea7",
+    "installer_sha256": "647869484aae3a2fa8963d4ac10831baf124dce2a75aeb1f7f4a02b1697b4cca",
+    "content_sha256": "6779d978b1307ca87c08154d3c96a827ce90d7c8ed96d0fff7dcd94e7c11a271",
+    "boundary": "Development checkout, not a formal release."
+  }
+}

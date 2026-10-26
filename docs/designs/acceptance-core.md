@@ -1,6 +1,6 @@
-# Current-task contract4: explicit failure lifecycle
+# Current-task contract5 candidate: authorization and selected inputs
 
-2026-10-26. User approved the local failure-lifecycle replacement. Contract3 was released as0.26.0/0.27.0; contract4 is released as0.28.0, with publication/install verified separately; actual publication/install verification is separate and no project migration is implied. This contract supersedes the A109 record-format details and the 0.25.0 predecessor-compatibility route, while retaining current-task ownership and finite lifecycle.
+2026-10-26. User approved the local failure-lifecycle replacement. Contract3 was released as0.26.0/0.27.0; contract4 is released as0.28.0; the approved contract5 candidate adds scoped authorization and selected input roles, not yet released; actual publication/install verification is separate and no project migration is implied. This contract supersedes the A109 record-format details and the 0.25.0 predecessor-compatibility route, while retaining current-task ownership and finite lifecycle.
 
 ## Authority and proof
 
@@ -28,7 +28,7 @@ Log starts with the exact runner ownership line, then input format/digest, attem
 
 ## Readers, correction and limits
 
-Plan, observe, run, assess, status, detail, review-input, correct, close, prune and cleanup all use contract4. Old formats1/2/3 refuse without writes; no fallback writer/importer or fixed0.24 producer bridge remains. Old contract3 tasks use fixed0.27.0 or their applicable original tool; earlier tasks retain their own original tool. A new ID cannot hide old failure. No business data is modified by installation/development.
+Plan, observe, run, assess, status, detail, review-input, correct, close, prune and cleanup candidate readers use contract5. Old formats1/2/3/4 refuse without writes; no fallback writer/importer or fixed0.24 producer bridge remains. Old contract4 tasks use fixed0.28.0; old contract3 tasks use fixed0.27.0 or their applicable original tool; earlier tasks retain their own original tool. A new ID cannot hide old failure. No business data is modified by installation/development.
 
 Bounded correct preserves prior receipts and selected original judgments/fact references, enters correcting and clears only selected assessments. Affected claims cannot disappear. Reclose links the original receipt; at most8 corrections, no correction after source compaction. All failure/permission/privacy/freshness protections remain. New records cannot be downgraded to old readers; rollback means use the fixed tool for its own data, not delete facts/change schema tags.
 
@@ -55,3 +55,9 @@ The initial split changes the recorded old protocol identity. Existing active ta
 failure_actions and claim_deferrals store bounded append-only dispositions separately from canonical facts. Resolve/clarify/reopen never erase original failure. Whole-criterion defer --exclude-from-delivery needs actual authority/time, reason and surviving handoff; delaying a still-required promise does not waive it. Assess cannot call a deferred claim supported. Reopen-claim restores its obligation; new negatives or mismatched criterion/context invalidate prior deferral. Complete scoped receipts declare supported count, exclusions and unresolved IDs.
 
 Handoff preserves the exact compact failure summary exposed by paged detail: original actual/target/time, effective conditions and evidence identities, plus expected promise and real reason/authority. This is concise negative knowledge, not permanent logs. Missing handoff blocks cleanup, retained issue references protect prune, and compacted storage still counts unresolved failures. A criterion cannot disappear while carrying pending failure/disposition. Changing expected/kind/condition text is not a repair. See A122 and validation for current implementation evidence.
+
+## Authorized contract5 additions
+
+Standing policy, current scoped approval and prior lawful execution proof are separate. Material rule/source/decision/scope conditions stay in identity; permission/approver metadata do not re-sign facts. Once grants bind exact inputs; explicit task grants cover only the selected action/paths/environment and correction lifecycle. New invocation needs applicable permission. A reservation and grant consumption persist atomically before launch; unknown outcome stays unavailable. Bound active grants at16; used-once/expired slots retire while command facts retain original proof. This cannot authenticate fabricated approval or override host controls.
+
+Selected immutable inputs reuse attachment ownership with input/evidence roles and origin metadata. Checks input_assets and criteria source_assets bind IDs/bytes. Raw control state is excluded consistently through local and external paths; full dynamic dependency discovery is out of scope. Explicit prune preserves live/negative/correction asset references and removes only unused input copies. Complete retention preserves external originals and issue handoffs. New protocol/modules bind actual behavior; old tasks stay pinned, never migrated.

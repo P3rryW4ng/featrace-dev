@@ -1,0 +1,182 @@
+{
+  "candidate_contract": 5,
+  "formal_version": "0.28.0",
+  "full_suite": {
+    "passed": 286,
+    "failed": 0,
+    "seconds": 112.594,
+    "new_tests": 34,
+    "frozen_input_count": 33,
+    "before_after_and_current_match": true
+  },
+  "first_full_suite": {
+    "passed": 285,
+    "seconds": 109.777,
+    "subsequent_change": "Reject raw project policy as a criterion source as well as execution input; added counterexample, then reran full suite."
+  },
+  "independent_review": {
+    "confirmed_findings": 3,
+    "addressed_in_source": 3,
+    "reviewer_executed_tests": false
+  },
+  "installed_cli_probe": {
+    "passed": true,
+    "events": [
+      {
+        "action": "attach",
+        "returncode": 0,
+        "result": {
+          "attachment": "ea3b15acc3bf4dc8ac679b120fafbde9",
+          "path": ".featrace/artifacts/UI-1/ea3b15acc3bf4dc8ac679b120fafbde9.py",
+          "bytes": 131,
+          "role": "input",
+          "original_preserved": true,
+          "boundary": "Selected snapshot only, not a claim that the external source is still current."
+        }
+      },
+      {
+        "action": "attach",
+        "returncode": 0,
+        "result": {
+          "attachment": "370bbc59d6474ec0b1fb066e4f0d6a08",
+          "path": ".featrace/artifacts/UI-1/370bbc59d6474ec0b1fb066e4f0d6a08.csv",
+          "bytes": 10,
+          "role": "input",
+          "original_preserved": true,
+          "boundary": "Selected snapshot only, not a claim that the external source is still current."
+        }
+      },
+      {
+        "action": "plan",
+        "returncode": 0,
+        "result": {
+          "id": "UI-1",
+          "state": "planned",
+          "unknowns": [],
+          "outside_scope_change_count": 0,
+          "boundary": "Scope is declared task ownership, not all branch changes. Inspect actually related callers; outside changes do not certify no influence."
+        }
+      },
+      {
+        "action": "run",
+        "returncode": 2,
+        "result": {
+          "state": "unavailable",
+          "reason": "OPERATION_POLICY_ASK"
+        }
+      },
+      {
+        "action": "authorize",
+        "returncode": 0,
+        "result": {
+          "authorization": "72b42307a9b94d568ab3cf83c97e528e",
+          "mode": "once",
+          "check": "target",
+          "expires_at": "2026-10-26T11:35:31.364371+00:00",
+          "boundary": "Actual scoped human authority must exist; no standing policy or host permission changed."
+        }
+      },
+      {
+        "action": "run",
+        "returncode": 0,
+        "result": {
+          "check": "target",
+          "status": "passed",
+          "reused": false,
+          "execution": "463b5aaef34a464b913f39911723bf55"
+        }
+      },
+      {
+        "action": "run",
+        "returncode": 0,
+        "result": {
+          "check": "target",
+          "status": "passed",
+          "reused": true,
+          "execution": "463b5aaef34a464b913f39911723bf55"
+        }
+      },
+      {
+        "action": "assess",
+        "returncode": 0,
+        "result": {
+          "criterion": "C1",
+          "verdict": "supported"
+        }
+      },
+      {
+        "action": "close",
+        "returncode": 0,
+        "result": {
+          "id": "UI-1",
+          "state": "complete",
+          "completed_at": "2026-10-26T11:30:31.906095+00:00",
+          "limitation_count": 0,
+          "outcome": "fully_supported",
+          "deferred_count": 0,
+          "details": "detail --section receipt"
+        }
+      },
+      {
+        "action": "status",
+        "returncode": 2,
+        "result": {
+          "state": "unavailable",
+          "reason": "TASK_CONTRACT_UNSUPPORTED_USE_PINNED_TOOL"
+        }
+      }
+    ],
+    "physical_executions": 1,
+    "policy_bytes_unchanged": true,
+    "same_original_fact_reused": true,
+    "snapshot_not_current_external": true,
+    "old_reader_refuses_without_writes": true,
+    "boundary": "Actual installed development CLI on synthetic fixtures, not a natural business trial or production install."
+  },
+  "isolated_installs": {
+    ".claude": {
+      "version": "0.28.0+dev.ced58f93b73d.8d2ccd119206",
+      "files": 15,
+      "source_bytes_match": true,
+      "content_sha256": null
+    },
+    ".agents": {
+      "version": "0.28.0+dev.ced58f93b73d.8d2ccd119206",
+      "files": 15,
+      "source_bytes_match": true,
+      "content_sha256": null
+    }
+  },
+  "daily_install": {
+    "version": "0.28.0",
+    "files": 13,
+    "hashes_match_marker": true,
+    "modified": false
+  },
+  "forward_trial": {
+    "kind": "synthetic fresh-context implementation; not blind or natural CC trial",
+    "passed": true,
+    "physical_checks": 2,
+    "first_check": "failed due to test expectation; retained",
+    "preexecution_refusal_count": 1,
+    "policy_rewritten": false,
+    "local_commit": "8f2acc401f3aeea4546201012012903f71593bda",
+    "installed_version": "0.28.0+dev.ced58f93b73d.6779d978b130",
+    "difference_from_final": [
+      "task_workflow.py adds rejection of raw policy source inputs"
+    ],
+    "interpretation": "Final installed CLI and 286 suite use final bytes; original forward task remains on its frozen precursor, no hot-update or migration."
+  },
+  "unknowns": [
+    "natural CC loading and current scoped approval use",
+    "natural failure disposition and context recovery",
+    "equal-quality net cost comparison",
+    "complete dynamic dependency discovery and authentic human approval cannot be inferred from arbitrary metadata"
+  ],
+  "publication": {
+    "pushed": false,
+    "released": false,
+    "daily_installed": false,
+    "business_migration": false
+  }
+}

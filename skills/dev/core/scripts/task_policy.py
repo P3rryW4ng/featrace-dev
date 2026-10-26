@@ -135,7 +135,7 @@ def execution_names(root,sets):
             include(target)
         elif candidate.is_dir():
             for child in candidate.iterdir():
-                if child.name=='.git' or (candidate==root and child.name in ('.featrace','.agent-workflow')):continue
+                if child.name=='.git' or task_inputs.control(root,child):continue
                 include(child)
     for item in sets:
         if item['kind']=='git_tree':

@@ -19,6 +19,7 @@ import task_policy
 import task_execution
 import task_failures
 import task_authorization
+import task_assets
 from zoneinfo import ZoneInfo
 
 CONTRACT = 5
@@ -119,11 +120,13 @@ def load(root, ident):
             if any(fid not in doc['facts'] for fid in doc[section].values()):fail('FACT_REFERENCE_MISSING')
     task_failures.validate(doc,fail)
     task_authorization.validate(doc,fail)
+    task_assets.validate(doc,fail)
     return doc
 
 def save(root, doc):
     task_failures.validate(doc,fail)
     task_authorization.validate(doc,fail)
+    task_assets.validate(doc,fail)
     path = task_path(root, doc['id'])
     doc['updated_at'] = now()
     doc['checksum'] = digest({k:v for k,v in doc.items() if k != 'checksum'})
@@ -213,7 +216,7 @@ def valid_inputs(root, values):
             or len(set(values))!=len(values)): fail('INVALID_INPUT_LIST')
     for name in values:
         safe(root,name)
-        if name.startswith(('.featrace/', '.agent-workflow/')): fail('GENERATED_SCOPE_INPUT')
+        if name==task_policy.NAME or name.startswith(('.featrace/', '.agent-workflow/')): fail('GENERATED_SCOPE_INPUT')
 
 def validate_plan(root, plan):
     validate_execution_plan(root,plan)
@@ -237,7 +240,7 @@ def validate_execution_plan(root, plan):
     if not isinstance(plan['criteria'],list) or not 1<=len(plan['criteria'])<=64: fail('CRITERIA_REQUIRED')
     seen=set()
     for c in plan['criteria']:
-        if (not isinstance(c,dict) or not {'id','expected','kind','inputs','proof'}<=set(c) or set(c)-{'id','expected','kind','inputs','sources','validity','proof'} or not isinstance(c['id'],str)
+        if (not isinstance(c,dict) or not {'id','expected','kind','inputs','proof'}<=set(c) or set(c)-{'id','expected','kind','inputs','sources','validity','proof','source_assets'} or not isinstance(c['id'],str)
                 or not ID.fullmatch(c['id']) or c['id'] in seen or not text(c['expected'])
                 or c['kind'] not in ('changed','unaffected')): fail('CRITERION_INVALID')
         valid_inputs(root,c['inputs']);valid_inputs(root,c.get('sources',[]))
@@ -252,12 +255,13 @@ def validate_execution_plan(root, plan):
                         or not text(validity['reason']) or type(validity['max_age_seconds']) is not int
                         or validity['max_age_seconds']<=0):fail('CRITERION_VALIDITY_INVALID')
             else:fail('CRITERION_VALIDITY_INVALID')
+        if not isinstance(c.get('source_assets',[]),list) or any(not isinstance(x,str) for x in c.get('source_assets',[])):fail('ASSET_SELECTION_INVALID')
         seen.add(c['id'])
     check_ids=set()
     if not isinstance(plan['checks'],list) or len(plan['checks'])>32: fail('CHECKS_INVALID')
     for c in plan['checks']:
         if (not isinstance(c,dict) or not {'id','argv','inputs','covers','reason','timeout','environment'}<=set(c)
-                or set(c)-{'id','argv','inputs','covers','reason','timeout','environment','input_sets','external_inputs','env_keys','cache','operation'}
+                or set(c)-{'id','argv','inputs','covers','reason','timeout','environment','input_sets','external_inputs','env_keys','cache','operation','input_assets'}
                 or not isinstance(c['id'],str) or not ID.fullmatch(c['id']) or c['id'] in check_ids
                 or not isinstance(c['argv'],list) or not c['argv'] or not all(text(x) for x in c['argv'])
                 or not text(c['reason']) or type(c['timeout']) is not int or not 1<=c['timeout']<=3600
@@ -277,6 +281,7 @@ def validate_execution_plan(root, plan):
         if not isinstance(c['covers'],list) or not c['covers'] or set(c['covers'])-seen: fail('CHECK_COVERAGE_INVALID')
         required={p for criterion in plan['criteria'] if criterion['id'] in c['covers'] for p in criterion['inputs']}
         if any(not task_inputs.covers(name,c['inputs'],c.get('input_sets',[])) for name in required):fail('CHECK_MISSING_CRITERION_INPUTS')
+        if not isinstance(c.get('input_assets',[]),list) or any(not isinstance(x,str) for x in c.get('input_assets',[])):fail('ASSET_SELECTION_INVALID')
         check_ids.add(c['id'])
     for unknown in plan['unknowns']:
         if text(unknown):continue  # Explicit whole-task unknown.
@@ -330,7 +335,8 @@ def analysis(root, doc, plan=None):
     authority={name for c in p['criteria'] for name in c.get('sources',[])}
     unexplained=sorted(set(changed)-set(p['scope'])-set(p['exclusions'])-set(p['constraints'])-authority)
     value={'scope':files(root,p['scope']), 'authority':files(root,authority,True),
-           'constraints':files(root,p['constraints'],True), 'policy':task_authorization.material(task_policy.effective(root,p['scope'],environment='any')),}
+           'constraints':files(root,p['constraints'],True),
+           'source_assets':task_assets.refs(root,doc,sorted({x for c in p['criteria'] for x in c.get('source_assets',[])}),fail), 'policy':task_authorization.material(task_policy.effective(root,p['scope'],environment='any')),}
     return digest(value), unexplained
 
 def begin(root, ident, request):
@@ -359,6 +365,10 @@ def set_plan(root,ident,plan):
         if set(doc.get('claim_deferrals',{}))-criteria:fail('DISPOSITION_CLAIM_REMOVED')
         if any(c not in criteria and doc['facts'][fid].get('status') in ('failed','unavailable') for c,fid in doc['observations'].items()):
             fail('UNRESOLVED_OBSERVATION_REMOVED')
+        for criterion in plan['criteria']:
+            task_assets.refs(root,doc,criterion.get('source_assets',[]),fail)
+        for check in plan['checks']:
+            task_assets.command(root,doc,check,fail)
         stamp,unexplained=analysis(root,doc,plan)
         doc['analysis_inputs']=files(root,set(plan['scope'])|set(plan['constraints']))
         doc['plan']=plan;doc['analysis_digest']=stamp;doc['state']='correcting' if correction else 'planned';save(root,doc)
@@ -408,6 +418,7 @@ def check_policy(root,doc,check,enforce=False):
 
 
 def check_identity_payload(root,doc,check):
+    task_assets.command(root,doc,check,fail)
     command=check['argv'][0]
     if '/' in command:executable=Path(command) if Path(command).is_absolute() else root/command
     else:
@@ -418,6 +429,7 @@ def check_identity_payload(root,doc,check):
     executable=executable.resolve()
     runner=file_identity(executable.parent,executable.name,True)
     return {'argv':check['argv'],'inputs':task_inputs.signature(root,check['inputs'],check.get('input_sets',[]),check.get('external_inputs',[]),check.get('env_keys',[])),
+            'input_assets':task_assets.refs(root,doc,check.get('input_assets',[]),fail),
             'executable':{'path':str(executable),'identity':runner},'environment':check['environment'],
             'constraints':files(root,selected_constraints(doc['plan'],check=check),True),
             'policy':task_authorization.material(check_policy(root,doc,check)),'protocol':task_execution.protocol(__file__)}
@@ -431,7 +443,7 @@ def execution_profile(root,doc,check,record,payload=None):
     return 'current' if record.get('input_digest')==digest(payload) else None
 
 def criterion_stamp(root,doc,c):
-    return digest({'criterion':c,'inputs':files(root,c['inputs']),'authority':files(root,c.get('sources',[]),True),
+    return digest({'criterion':c,'inputs':files(root,c['inputs']),'source_assets':task_assets.refs(root,doc,c.get('source_assets',[]),fail),'authority':files(root,c.get('sources',[]),True),
                    'constraints':files(root,selected_constraints(doc['plan'],criterion=c),True),
                    'review_required':review_required(doc['plan'],c),
                    'policy':task_authorization.material(task_policy.effective(root,c['inputs'],environment='any'))})
@@ -486,6 +498,8 @@ def authorize(root,ident,check_id,mode,authority,decision_at,expires_at,reason):
         execution_ready(root,doc,check=check,investigate=True)
         rules=check_policy(root,doc,check)
         if any(r['permission']=='denied' for r in rules):fail('OPERATION_POLICY_DENIED')
+        doc['authorizations']={gid:g for gid,g in doc['authorizations'].items()
+            if not (instant(g['expires_at'])<=current or (g['mode']=='once' and g['uses']))}
         if len(doc['authorizations'])>=task_authorization.MAX_GRANTS:fail('AUTHORIZATION_LIMIT')
         gid=uuid.uuid4().hex
         doc['authorizations'][gid]={'id':gid,'check':check_id,'definition_digest':authorization_stamp(doc,check),
@@ -519,6 +533,7 @@ def run_check(root,ident,check_id,investigate=False):
         started=now()
         rules=check_policy(root,doc,check)
         authorization=task_authorization.select(doc,check,stamp,digest(task_authorization.material(rules)),authorization_stamp(doc,check),rules,started,fail)
+        if authorization['kind']=='grant':authorization['grant_proof']={k:v for k,v in doc['authorizations'][authorization['grant']].items() if k!='uses'}
         authorization['authority']=(doc['authorizations'][authorization['grant']]['authority'] if authorization['kind']=='grant' else task_policy.load(root)['authority'])
         authorization['rule_sources']=[{'source':rule['source'],'sha256':rule['sha256'],'authority':rule['authority']} for rule in rules]
         revision=git(root,'rev-parse','HEAD').decode().strip()
@@ -526,16 +541,21 @@ def run_check(root,ident,check_id,investigate=False):
         start={'task':ident,'id':aid,'check':check_id,'input_digest':stamp,'input_format':1,
                'started_at':started,'producer':source,'definition_digest':digest(check),'authorization':authorization}
         reservation={'id':aid,'kind':'command','check':check_id,'status':'unavailable',
-                     'purpose':'investigation','authorization':authorization,'input_digest':stamp,'definition_digest':digest(check),
+                     'purpose':'investigation' if investigate else 'verification','authorization':authorization,'input_assets':check.get('input_assets',[]),'input_digest':stamp,'definition_digest':digest(check),
                      'environment':check['environment'],'producer':source,'git_head_at_start':revision,
-                     'started_at':started,'at':started,'exit_code':-999,'reason':'x'*128,
-                     'artifact':{'path':rel,'sha256':'0'*64},'previous_result':aid,'previous_failure':aid}
+                     'started_at':started,'at':started,'exit_code':None,'reason':'EXECUTION_RESERVED_OUTCOME_UNKNOWN',
+                     'artifact':{'path':rel,'sha256':'0'*64}}
+        if previous:
+            reservation['previous_result']=previous['id']
+            if previous['status']!='passed':reservation['previous_failure']=previous['id']
         projected={**doc,'facts':{**doc['facts'],aid:reservation},'executions':{**doc['executions'],check_id:aid}}
-        if len(json.dumps(projected,ensure_ascii=False,indent=2).encode())+512>MAX_RECORD:fail('TASK_SIZE_LIMIT_BEFORE_EXECUTION')
+        if len(json.dumps(projected,ensure_ascii=False,indent=2).encode())+1024>MAX_RECORD:fail('TASK_SIZE_LIMIT_BEFORE_EXECUTION')
         if authorization['kind']=='grant':
             g=doc['authorizations'][authorization['grant']]
             if len(g['uses'])>=128:fail('AUTHORIZATION_LIMIT')
-            g['uses'].append(aid);save(root,doc)  # Consume under the task lock before launching, including failed/interrupted attempts.
+            g['uses'].append(aid)
+        doc['facts'][aid]=reservation;doc['executions'][check_id]=aid
+        save(root,doc)  # The unavailable reservation and grant use are atomic before launching.
         status,code,interrupted,reason=task_execution.invoke(check['argv'],root,path,budget,check['timeout'],start)
         try:
             if check_stamp(root,doc,check)!=stamp:status='unavailable';reason=reason or 'EXECUTION_INPUT_MOVED'
@@ -543,7 +563,7 @@ def run_check(root,ident,check_id,investigate=False):
             status='unavailable';reason=reason or 'EXECUTION_IDENTITY_UNAVAILABLE'
         ended=now()
         record={'id':aid,'kind':'command','check':check_id,'status':status,
-                'purpose':'investigation' if investigate else 'verification','authorization':authorization,'input_digest':stamp,
+                'purpose':'investigation' if investigate else 'verification','authorization':authorization,'input_assets':check.get('input_assets',[]),'input_digest':stamp,
                 'definition_digest':digest(check),'environment':check['environment'],'producer':source,
                 'git_head_at_start':revision,'started_at':started,'at':ended,'exit_code':code}
         if reason:record['reason']=reason
@@ -556,11 +576,11 @@ def run_check(root,ident,check_id,investigate=False):
         if interrupted is not None:raise interrupted
         return {'check':check_id,'status':status,'reused':False,'execution':aid}
 
-def attach(root,ident,source):
+def attach(root,ident,source,role="evidence"):
     """Copy only selected evidence; never claim ownership of or delete its original."""
     with locked(root,ident):
         doc=load(root,ident);mutable(doc)
-        original=safe(root,source)
+        original=task_assets.source(root,ident,source,role,fail)
         if not original.is_file():fail('ATTACHMENT_SOURCE_REQUIRED')
         before=original.stat()
         if before.st_size>MAX_LOG:fail('ATTACHMENT_SIZE_LIMIT')
@@ -581,11 +601,11 @@ def attach(root,ident,source):
                     h.update(block);output.write(block)
             after=original.stat()
             if (before.st_ino,before.st_size,before.st_mtime_ns,before.st_mode)!=(after.st_ino,after.st_size,after.st_mtime_ns,after.st_mode):fail('INPUT_MOVED')
-            attachments[key]={'path':rel,'sha256':h.hexdigest(),'bytes':written,'captured_at':now()}
+            attachments[key]={'path':rel,'sha256':h.hexdigest(),'bytes':written,'captured_at':now(),'role':role,'origin':str(original)}
             save(root,doc)
         except BaseException:
             target.unlink(missing_ok=True);raise
-        return {'attachment':key,'path':rel,'bytes':written,'original_preserved':True}
+        return {'attachment':key,'path':rel,'bytes':written,'role':role,'original_preserved':True,'boundary':'Selected snapshot only, not a claim that the external source is still current.'}
 
 
 def observe(root,ident,criterion,kind,observed_at,actual,evidence,status='passed',target=None,producer=None,conditions=None):
@@ -605,7 +625,7 @@ def observe(root,ident,criterion,kind,observed_at,actual,evidence,status='passed
         rec={'id':uuid.uuid4().hex,'kind':kind,'criterion':criterion,'status':status,'observed_at':observed_at,
              'at':now(),'actual':actual,'input_digest':stamp,
              'git_head_at_registration':git(root,'rev-parse','HEAD').decode().strip(),
-             'observed_target':target if kind=='runtime_observation' else 'local selected sources','evidence':refs}
+             'observed_target':target if kind=='runtime_observation' else 'local selected sources','source_assets':c.get('source_assets',[]),'evidence':refs}
         if kind=='runtime_observation':rec['conditions']=task_failures.conditions({} if conditions is None else conditions,fail)
         elif conditions is not None:fail('CONDITIONS_REQUIRE_RUNTIME')
         if producer:
@@ -770,11 +790,30 @@ def prune(root,ident,apply=False):
                 ref=fact.get(key)
                 if isinstance(ref,str) and ref and ref not in keep:keep.add(ref);pending.append(ref)
         candidates=sorted(set(doc['facts'])-keep)
+        used_assets={x for c in doc['plan']['criteria'] for x in c.get('source_assets',[])}|{x for c in doc['plan']['checks'] for x in c.get('input_assets',[])}
+        retained_paths=set()
+        for fid in keep:
+            fact=doc['facts'][fid];used_assets.update(fact.get('input_assets',[]));used_assets.update(fact.get('source_assets',[]))
+            retained_paths.update(fact.get('evidence',{}))
+        for correction in doc.get('corrections',[]):
+            for claim in correction.get('prior_claims',{}).values():used_assets.update(claim['criterion'].get('source_assets',[]))
+        asset_candidates={key:a for key,a in doc.get('attachments',{}).items()
+                          if a['role']=='input' and key not in used_assets and a['path'] not in retained_paths}
+        for a in asset_candidates.values():
+            path=safe(root,a['path'])
+            if path.exists() and not artifact_ok(root,a):fail('PRUNE_CHANGED_ASSET')
         if apply:
             for fid in candidates:doc['facts'].pop(fid)
+            save(root,doc)  # Retain ownership until each unreferenced copy is removed; absence is safe on retry.
+            for key,a in asset_candidates.items():
+                path=safe(root,a['path'])
+                if path.exists():
+                    if not artifact_ok(root,a):fail('PRUNE_CHANGED_ASSET')
+                    path.unlink()
+                doc['attachments'].pop(key)
             save(root,doc)
-        return {'id':ident,'apply':apply,'removable_fact_count':len(candidates),
-                'boundary':'Only unreferenced passing metadata; evidence files remain until owned retention cleanup.'}
+        return {'id':ident,'apply':apply,'removable_fact_count':len(candidates),'removable_input_assets':len(asset_candidates),
+                'boundary':'Explicitly forget unreferenced passing metadata and intact unused input copies only; preserve negatives, selected/correction sources and external originals.'}
 
 
 def selected_support(root,doc,c,ids,checked=None):
@@ -1065,7 +1104,7 @@ def detail(root,ident,section,criterion=None,offset=0,limit=4000):
     elif section=='fact':
         value=doc.get('facts',{}).get(criterion)
         if value is None:fail('FACT_REFERENCE_MISSING')
-    elif section in ('request','plan','receipt','limitations','corrections','authorizations'):value=doc.get(section)
+    elif section in ('request','plan','receipt','limitations','corrections','authorizations','attachments'):value=doc.get(section)
     else:fail('DETAIL_SECTION_INVALID')
     body=canonical(value).decode() if section=='failure-handoff' else json.dumps(value,ensure_ascii=False,sort_keys=True)
     # UTF-8 bytes are bounded even for four-byte codepoints.
@@ -1142,6 +1181,7 @@ def main():
     parser.add_argument('--conditions-json');parser.add_argument('--decision-at')
     parser.add_argument('--exclude-from-delivery',action='store_true')
     parser.add_argument('--mode',choices=['once','task']);parser.add_argument('--expires-at')
+    parser.add_argument('--role',choices=['input','evidence'],default='evidence')
     a=parser.parse_args();root=project(a.root)
     if a.action=='policy':out=task_policy.prepare(root,read_json(Path(a.json)),git)
     elif a.action=='storage':out=storage(root,a.offset,a.limit)
@@ -1153,7 +1193,7 @@ def main():
     elif a.action=='plan':out=set_plan(root,a.id,read_json(Path(a.json)))
     elif a.action=='authorize':out=authorize(root,a.id,a.check,a.mode,a.authority,a.decision_at,a.expires_at,a.reason)
     elif a.action=='run':out=run_check(root,a.id,a.check,a.investigate)
-    elif a.action=='attach':out=attach(root,a.id,a.file)
+    elif a.action=='attach':out=attach(root,a.id,a.file,a.role)
     elif a.action=='observe':out=observe(root,a.id,a.criterion,a.kind,a.observed_at,a.actual,a.evidence,a.status,a.target,a.producer,read_json(Path(a.conditions_json)) if a.conditions_json else None)
     elif a.action=='failure':out=failure_action(root,a.id,a.failure,a.disposition,a.reason,a.fact,read_json(Path(a.conditions_json)) if a.conditions_json else None)
     elif a.action in ('defer','reopen-claim'):out=defer_claim(root,a.id,a.criterion,a.reason,a.authority,a.decision_at,a.handoff,a.action=='reopen-claim',a.exclude_from_delivery)

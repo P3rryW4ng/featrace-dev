@@ -17,6 +17,12 @@ def reject(code):
     raise ValueError(code)
 
 
+def control(root,path):
+    try:rel=(path.resolve() if path.is_symlink() else path).relative_to(Path(root)).as_posix()
+    except (ValueError,OSError,RuntimeError):return False
+    return rel=='.featrace-policy.json' or rel in ('.featrace','.agent-workflow') or rel.startswith(CONTROL)
+
+
 def relative(name):
     p = Path(name)
     if not isinstance(name,str) or not name or p.is_absolute() or p.as_posix()!=name or any(x in ('.git','..') for x in p.parts):
@@ -27,7 +33,7 @@ def relative(name):
 def git_paths(root):
     r = subprocess.run(['git','--literal-pathspecs','-C',str(root),'ls-files','--cached','--others','--exclude-standard','-z'],capture_output=True)
     if r.returncode:reject('INPUT_GIT_UNAVAILABLE')
-    return sorted({os.fsdecode(p) for p in r.stdout.split(b'\0') if p and not os.fsdecode(p).startswith(CONTROL)})
+    return sorted({os.fsdecode(p) for p in r.stdout.split(b'\0') if p and not os.fsdecode(p).startswith(CONTROL) and os.fsdecode(p)!='.featrace-policy.json'})
 
 
 def within(name, prefix):
@@ -78,6 +84,7 @@ def signature(root, paths, sets, external, env_keys):
         for part in path.relative_to(base).parts[:-1]:
             base/=part
             if base.is_symlink():reject('EXECUTION_ANCESTOR_LINK')
+        if control(root,path):reject('GENERATED_SCOPE_INPUT')
         try:before=path.lstat()
         except FileNotFoundError:
             emit([label,'missing']);return
@@ -109,7 +116,7 @@ def signature(root, paths, sets, external, env_keys):
         if stat.S_ISDIR(before.st_mode):
             emit([label,'directory'])
             for child in sorted(path.iterdir()):
-                if child.name=='.git' or (path==root and child.name in ('.featrace','.agent-workflow')):continue
+                if child.name=='.git' or control(root,child):continue
                 include(child,label+'/'+child.name,ancestors+(str(path),),external_root)
         elif stat.S_ISREG(before.st_mode):
             total+=before.st_size

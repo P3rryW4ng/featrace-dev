@@ -1,0 +1,127 @@
+{
+  "status": "review_needed",
+  "targets": [
+    {
+      "target": 1,
+      "status": "scanned",
+      "scope": "file_text",
+      "findings": 0,
+      "positions_truncated": false
+    },
+    {
+      "target": 2,
+      "status": "scanned",
+      "scope": "file_text",
+      "findings": 5,
+      "positions_truncated": false
+    },
+    {
+      "target": 3,
+      "status": "scanned",
+      "scope": "file_text",
+      "findings": 0,
+      "positions_truncated": false
+    },
+    {
+      "target": 4,
+      "status": "scanned",
+      "scope": "file_text",
+      "findings": 0,
+      "positions_truncated": false
+    },
+    {
+      "target": 5,
+      "status": "scanned",
+      "scope": "file_text",
+      "findings": 0,
+      "positions_truncated": false
+    },
+    {
+      "target": 6,
+      "status": "scanned",
+      "scope": "file_text",
+      "findings": 0,
+      "positions_truncated": false
+    },
+    {
+      "target": 7,
+      "status": "scanned",
+      "scope": "file_text",
+      "findings": 0,
+      "positions_truncated": false
+    },
+    {
+      "target": 8,
+      "status": "scanned",
+      "scope": "file_text",
+      "findings": 0,
+      "positions_truncated": false
+    },
+    {
+      "target": 9,
+      "status": "scanned",
+      "scope": "file_text",
+      "findings": 0,
+      "positions_truncated": false
+    },
+    {
+      "target": 10,
+      "status": "scanned",
+      "scope": "file_text",
+      "findings": 0,
+      "positions_truncated": false
+    },
+    {
+      "target": 11,
+      "status": "scanned",
+      "scope": "file_text",
+      "findings": 0,
+      "positions_truncated": false
+    },
+    {
+      "target": 12,
+      "status": "scanned",
+      "scope": "file_text",
+      "findings": 0,
+      "positions_truncated": false
+    }
+  ],
+  "findings": [
+    {
+      "target": 2,
+      "line": 496,
+      "column": 33,
+      "kind": "credential_candidate",
+      "confidence": "candidate"
+    },
+    {
+      "target": 2,
+      "line": 521,
+      "column": 23,
+      "kind": "credential_candidate",
+      "confidence": "candidate"
+    },
+    {
+      "target": 2,
+      "line": 527,
+      "column": 105,
+      "kind": "credential_candidate",
+      "confidence": "candidate"
+    },
+    {
+      "target": 2,
+      "line": 529,
+      "column": 64,
+      "kind": "credential_candidate",
+      "confidence": "candidate"
+    },
+    {
+      "target": 2,
+      "line": 546,
+      "column": 94,
+      "kind": "credential_candidate",
+      "confidence": "candidate"
+    }
+  ],
+  "note": "Target numbers follow --file order. Positions only; values, paths and context are omitted. No matches is not privacy approval; patterns/known values are bounded. No files were redacted or rewritten."
+}

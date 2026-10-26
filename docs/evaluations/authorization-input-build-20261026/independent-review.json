@@ -1,0 +1,115 @@
+{
+  "review_kind": "independent_read_only_source_review",
+  "repository": "/Users/mac/Entrepôt/featrace-dev",
+  "source_head": "ced58f9",
+  "candidate_task_contract": 5,
+  "formal_version": "0.28.0",
+  "tests_executed": false,
+  "source_modified": false,
+  "limitations": [
+    "Reviewed a developing working tree, not a frozen release. Findings below are static causal traces, not experimentally reproduced results.",
+    "Read AGENTS.md, PRODUCT.md, the requested dated review, six requested runtime modules, the two requested new test files, and relevant fact/cleanup/failure readers. No full-suite result is claimed."
+  ],
+  "findings": [
+    {
+      "id": "R1",
+      "priority": 1,
+      "title": "Interpreter options skip the undeclared script guard and permit stale success reuse",
+      "file": "skills/dev/core/scripts/task_assets.py",
+      "start_line": 54,
+      "end_line": 55,
+      "causal_evidence": "command() validates a Python/Shell script only when argv[1] does not start with '-'. For ordinary argv=[python, '-u', '/external/verify.py'], the entire validation branch is skipped. The earlier argv scan only rejects task control paths, so an ordinary external script is accepted. check_identity_payload() fingerprints argv, the interpreter and explicitly declared inputs; it does not otherwise hash the external script. run_check() returns the previous passed fact when that digest is unchanged.",
+      "minimal_counterexample": [
+        "Use an otherwise valid check with inputs=['app.py'], argv=[sys.executable, '-u', '/external/verify.py'], and no external_inputs/input_assets. Put a passing script at that external path.",
+        "Save the plan and execute once successfully.",
+        "Replace only /external/verify.py with a failing assertion, leaving app.py, argv and environment unchanged.",
+        "run_check follows the unchanged-stamp cache branch and reports reused passed rather than refusing the undeclared script or executing the changed one."
+      ],
+      "impact": "The new B2 guarantee for undeclared execution scripts is bypassed by a standard interpreter option; this is not a dynamic import or shell parsing edge case. bash -e /external/verify.sh has the same branch shape.",
+      "recommendation": "Recognize supported interpreter options before locating the script operand, or refuse unsupported interpreter invocation shapes unless their execution input contract is explicitly supplied. Add negative coverage for common Python and Shell flags.",
+      "status": "addressed_in_source_not_independently_executed",
+      "fix_evidence": [
+        "script_argument() now scans past ordinary options, and test_interpreter_flags_do_not_hide_undeclared_script covers Python -u -X dev.",
+        "However the common option-consumption tuple includes -O without distinguishing interpreter families. Python -O takes no following argument, so [python, -O, /external/verify.py] advances past the real script and returns None. command() then skips declaration validation.",
+        "The original counterexample remains valid with -u replaced by -O. The script is external and not a task-control path, so the generic argv scan does not reject it. Its bytes remain outside the execution digest, permitting stale pass reuse after changes."
+      ],
+      "followup_recommendation": "Separate Python option arity from Shell option arity; cover Python -O and -OO as well as -u/-X. Refuse ambiguous unsupported invocation shapes rather than silently classifying them as having no script.",
+      "final_fix_evidence": [
+        "Final read-only recheck sees interpreter-specific option consumption: Python consumes following values only for -W/-X/--check-hash-based-pycs, while Shell uses its own -o/-O/rcfile/init-file set. Python -O and -OO therefore advance one token and leave the actual script operand to declaration validation.",
+        "test_python_optimization_flag_does_not_consume_script_path now asserts undeclared Python -O script refusal and ordinary bash -e script detection. This review read the final source and test; it did not execute them.",
+        "Earlier partial-fix observation was made before this final change and is retained as history, not the current status."
+      ]
+    },
+    {
+      "id": "R2",
+      "priority": 1,
+      "title": "Consumed authorization is persisted without its pending attempt, so an interruption can erase an actual failed attempt",
+      "file": "skills/dev/core/scripts/task_workflow.py",
+      "start_line": 538,
+      "end_line": 549,
+      "causal_evidence": "reservation/projected only estimate record size. They are never saved. The pre-launch save at line 548 persists only grant.uses, while facts and executions retain the old state. The actual fact is first persisted at line 565, after invoke, post-execution fingerprinting, footer writing and artifact hashing. BaseException is caught inside invoke only; interruption during the post-invoke work, process termination, or an I/O failure before the final save leaves the consumed aid absent from facts and executions. There is no load/status reconciliation of grant uses or orphan log headers into an unavailable attempt.",
+      "minimal_counterexample": [
+        "Create an ask check and a valid once authorization; execute a script that actually exits nonzero.",
+        "Interrupt the parent after invoke returns but before the final save, for example while the post-execution input fingerprint is reading a large declared input. The interruption is outside invoke's BaseException handler.",
+        "Reload the task: the grant contains aid in uses, but facts does not contain aid and executions has no corresponding failed/unavailable attempt.",
+        "Grant another attempt and obtain a pass; the previous actual negative attempt has no failure chain in the task record. If there was an older matching success, restoring its inputs can also expose the old reuse path without acknowledging the interrupted attempt."
+      ],
+      "impact": "Atomic once consumption survives, but the required actual-attempt/failure preservation does not. The existing interruption test returns a KeyboardInterrupt from invoke, so it exercises the handled path and cannot detect this window.",
+      "recommendation": "Atomically persist a recoverable pending/unavailable attempt together with grant consumption before launch, make pending attempts block reuse/closure, and finalize it after execution. Recovery must distinguish pre-launch interruption without falsely claiming a process ran.",
+      "status": "addressed_in_source_not_independently_executed",
+      "fix_evidence": [
+        "run_check assigns reservation into doc.facts and advances doc.executions before invoke. It appends the grant use and saves the complete document in the same atomic save.",
+        "A reservation records unavailable/EXECUTION_RESERVED_OUTCOME_UNKNOWN, input_assets, authorization proof, and previous result/failure references. Exceptions after this save leave an unavailable latest attempt, so status cannot silently retain an older pass as the latest result.",
+        "The added test_unreturned_attempt_cannot_leave_previous_pass_current directly raises OSError from invoke and asserts the latest unavailable fact and blocked status. This review read the test but did not execute it."
+      ]
+    },
+    {
+      "id": "R3",
+      "priority": 2,
+      "title": "Expired or spent grants permanently exhaust the task's authorization capacity",
+      "file": "skills/dev/core/scripts/task_workflow.py",
+      "start_line": 499,
+      "end_line": 505,
+      "causal_evidence": "authorize() refuses whenever authorizations reaches MAX_GRANTS=16, including grants that are expired, spent, never used or no longer match a selected check. No runtime operation removes or retires an authorization. prune() only removes fact metadata; complete-only cleanup cannot help a task that still needs its seventeenth authorized attempt.",
+      "minimal_counterexample": [
+        "Select an ask check with cache.mode='never'. Supply and consume sixteen genuine once approvals for sixteen repair attempts, with at most one active grant at a time.",
+        "The task still needs one more attempt and a genuine new once approval exists.",
+        "authorize() rejects AUTHORIZATION_LIMIT. prune(apply=True) cannot free any authorization slot. Changing to task-wide approval would broaden the human's original approval and therefore is not a valid recovery."
+      ],
+      "impact": "A bounded current-state collection behaves as a permanent per-task approval history and can strand an unfinished/correcting task despite valid authority. The existing bound test confirms overflow refusal but does not establish a safe renewal path.",
+      "recommendation": "Provide bounded retirement/compaction for expired or spent grants while preserving authorization bases already embedded in facts and any live/recovery references. Keep the fixed storage bound without requiring broader approval or a new task to continue.",
+      "status": "addressed_in_source_not_independently_executed",
+      "fix_evidence": [
+        "authorize removes expired grants and spent once grants before checking the active MAX_GRANTS limit.",
+        "run_check embeds grant_proof without mutable uses into each reservation/final command authorization before a grant can be reclaimed. Existing fact readers do not depend on the grant remaining in doc.authorizations.",
+        "test_used_once_slots_can_roll_forward_without_losing_original_authority covers MAX_GRANTS+1 once executions and checks retained first-fact authority. This review read the test but did not execute it."
+      ]
+    }
+  ],
+  "unconfirmed_or_design_questions": [
+    {
+      "topic": "Input snapshot capacity",
+      "evidence": "attach() retains every registered snapshot up to 32 and shares a 64 MiB folder budget with logs. prune() does not remove unreferenced snapshots or their registrations; cleanup requires task completion.",
+      "status": "A task that repeatedly reselects references can exhaust capacity even when only a few snapshots remain active. Whether to classify this as a defect depends on the intended explicit refusal policy for the existing bounded attachment store; no unsafe deletion was found. Review retirement with active plan, observation evidence, corrections and failure references before adding reclamation.",
+      "followup_status": "addressed_in_source_with_deliberate_reference_bounds",
+      "followup_evidence": [
+        "prune derives used asset IDs from current plan criteria/checks, all retained facts input_assets/source_assets, and correction prior criterion source_assets. It also protects retained observation evidence paths. Existing current/negative/assessment/failure/correction fact roots remain in keep.",
+        "Only unreferenced role=input registrations become deletion candidates; changed existing copies refuse PRUNE_CHANGED_ASSET. Originals are never deletion candidates.",
+        "prune saves removed passing-fact metadata while retaining attachment ownership, then unlinks each candidate and removes its registration, finally saves. An interruption leaves old registrations for now-missing unreferenced copies; the next prune tolerates absence and completes retirement.",
+        "Capacity can still be refused when all 32 snapshots are live, negative, correction-owned, or evidence-role attachments. This is a preservation bound, not the previous absence of any unused-input reclamation path. Tests for negative retention and changed-copy refusal were read, not executed."
+      ]
+    },
+    {
+      "topic": "Real human approval provenance",
+      "status": "authorize() accepts caller-supplied authority/reason/time strings. Source review can establish scope binding, not that an actual human decision occurred. No claim that arbitrary metadata itself proves human approval is made here."
+    }
+  ],
+  "followup_review": {
+    "mode": "read_only_static_recheck",
+    "tests_executed": false,
+    "source_modified": false,
+    "summary": "All three original causal paths are now addressed in the final inspected source. R1 was rechecked after the final interpreter-specific -O fix; prior partial-fix observations are historical. Input reclamation has explicit reference protection and retry-safe deletion ordering. No additional confirmed defect was found in this final focused read.",
+    "reported_test_results": "Parent reports targeted tests and a full-suite run in progress; this reviewer did not execute or certify either.",
+    "boundary": "This is a focused static review, not a completeness or correctness guarantee. Inline -c, module -m, dynamic imports and general Shell read-set inference remain the explicit declared-input/investigation boundary; no automatic complete dependency identification is claimed."
+  }
+}

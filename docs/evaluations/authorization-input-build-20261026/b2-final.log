@@ -1,0 +1,22 @@
+test_absolute_external_control_alias_is_rejected (test_task_input_assets.TaskInputAssetTests) ... ok
+test_attachment_budget_and_symlink_refusals_remain (test_task_input_assets.TaskInputAssetTests) ... ok
+test_changed_unused_copy_is_not_deleted_by_prune (test_task_input_assets.TaskInputAssetTests) ... ok
+test_cleanup_deletes_only_owned_copies_not_external_originals (test_task_input_assets.TaskInputAssetTests) ... ok
+test_evidence_role_cannot_be_adopted_as_execution_input (test_task_input_assets.TaskInputAssetTests) ... ok
+test_external_snapshots_are_actual_command_and_source_inputs (test_task_input_assets.TaskInputAssetTests) ... ok
+test_interpreter_flags_do_not_hide_undeclared_script (test_task_input_assets.TaskInputAssetTests) ... ok
+test_new_selected_data_snapshot_invalidates_only_its_check (test_task_input_assets.TaskInputAssetTests) ... ok
+test_original_change_does_not_relabel_fixed_snapshot_as_current (test_task_input_assets.TaskInputAssetTests) ... ok
+test_other_tasks_scratch_cannot_be_imported_as_owned_input (test_task_input_assets.TaskInputAssetTests) ... ok
+test_product_source_reselection_does_not_rerun_unrelated_execution (test_task_input_assets.TaskInputAssetTests) ... ok
+test_prune_does_not_delete_selected_input_snapshots (test_task_input_assets.TaskInputAssetTests) ... ok
+test_snapshot_tampering_is_refused_not_silently_refingerprinted (test_task_input_assets.TaskInputAssetTests) ... ok
+test_task_owned_scratch_helper_can_be_captured_not_used_raw (test_task_input_assets.TaskInputAssetTests) ... ok
+test_task_record_cannot_become_its_own_input_under_any_spelling (test_task_input_assets.TaskInputAssetTests) ... ok
+test_undeclared_external_script_is_not_certifiable_by_argv_alone (test_task_input_assets.TaskInputAssetTests) ... ok
+test_unused_input_slots_are_reclaimed_but_negative_sources_survive (test_task_input_assets.TaskInputAssetTests) ... ok
+
+----------------------------------------------------------------------
+Ran 17 tests in 5.720s
+
+OK
