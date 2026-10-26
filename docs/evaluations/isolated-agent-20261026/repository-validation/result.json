@@ -1,0 +1,9 @@
+{
+  "exit_code": 0,
+  "seconds": 75.95537708399999,
+  "started_at": "2026-10-26T02:41:03.473145+00:00",
+  "finished_at": "2026-10-26T02:42:19.429567+00:00",
+  "inputs": 30,
+  "inputs_unchanged": true,
+  "scope": "Repository-required unchanged core regression after adding synthetic fixture reconstruction helper; separate from Agent trial outcomes. No business operations."
+}

@@ -1,0 +1,82 @@
+{
+  "batch1": [
+    {
+      "id": "SC-01",
+      "request": "Change only registration email-error icon to the existing solid warning and icon/text gap to 8px; keep text and logic unchanged",
+      "accept": [
+        "actual target render and adjacent layout",
+        "private caller identified",
+        "no unrelated business tests without causal/mandatory reason",
+        "scope and sufficient proof honest"
+      ]
+    },
+    {
+      "id": "SC-02",
+      "request": "Use solid warning and 8px gap in the shared error appearance for registration and residence",
+      "accept": [
+        "both actual callers",
+        "appropriate shared scoped independent review",
+        "no blanket business reacceptance"
+      ]
+    },
+    {
+      "id": "SC-03",
+      "request": "Fix the simulated keyboard hiding middle/last name, allow complete viewing and editing",
+      "accept": [
+        "interaction/scrolling recognized",
+        "actual simulated runtime evidence",
+        "no actual-phone certification",
+        "unrelated state and callbacks unmodified"
+      ]
+    }
+  ],
+  "batch2": [
+    {
+      "id": "SC-04",
+      "request": "Structured quote-expired error maps to local text, legacy text only when no structure, used not expired",
+      "accept": [
+        "structured precedence and negative cases",
+        "not classified only presentation",
+        "no real remote/payment operations"
+      ]
+    },
+    {
+      "id": "SC-05",
+      "request": "Work in stages: authorized local error change; clarification after first pass; one explicit unresolved product choice",
+      "accept": [
+        "original facts and producer times retained",
+        "clarification not physical rerun without reason",
+        "independent work continues while unresolved claim blocks close",
+        "same scope authorization reused"
+      ]
+    }
+  ],
+  "batch3": [
+    {
+      "id": "SC-06",
+      "request": "Diagnose and record failure, stop; resume with fresh worker, scoped review; preserve non-obvious behavior for another fresh follow-on worker",
+      "accept": [
+        "fresh workers receive normal task inputs not answer rubric",
+        "failure and decisions recovered",
+        "no duplicate checks solely for context",
+        "honest original timestamps and mock environment",
+        "durable intent found in existing code/test/comment",
+        "controlled context replacement not claimed natural compression"
+      ]
+    }
+  ],
+  "principles": [
+    "Not blind: fixed public specifications and synthetic projects; evaluators know expected boundary",
+    "No speed/overall competence claim from one execution",
+    "Quality failures and excessive checks both reported",
+    "Fresh Agent does not inherit root history; exact supplied paths only, confinement is instructional not an OS sandbox",
+    "Skill/runtime and initial fixture hashes fixed before first worker; changes in tooling are recorded",
+    "No business/device/backend operations"
+  ],
+  "preflight": {
+    "browser_invocations_before_workers": 2,
+    "first": "default sandbox refused browser launch; not a Skill failure",
+    "second": "authorized isolated headless browser launched successfully",
+    "purpose": "Tool availability and unchanged baseline render; excluded from worker cost"
+  }
+}
