@@ -140,3 +140,5 @@ B1授权分离、B2选定输入/来源统一、B3条件式影响调查已完成�
 2026-10-27开发第一项完成：重复compact无任务写盘，maintain只计实际变化，保留中断/交接/未知文件/forget保护；新增4反例、完整293/293，冻结输入与执行协议核对。候选未发布，CC仍0.29.0。见[第一项证据](docs/evaluations/maintenance-diagnostics-build-20261027/step1-result.json)。环境诊断下一项开发。
 
 2026-10-27开发第二项完成：只读check诊断区分旧结果适用性与当前新执行许可，新事实仅存9类摘要、历史不回填、不重复输入字节采集。新增13反例、完整306/306；独立只读评审无确认缺陷，双宿主开发安装15文件匹配及实际CLI探针通过。采集代码改变执行协议，旧活动任务固定原工具；正式CC仍0.29.0，候选未发布。见[第二项证据](docs/evaluations/maintenance-diagnostics-build-20261027/step2-result.json)。第三项进入合同方案，未启用受控环境或retire。
+
+2026-10-27第三项已形成[合同6可开发方案](docs/designs/controlled-environment-retirement.md)：受控环境真实选择子进程变量/固定搜索路径；非交付retire与现有complete/defer分开，保留未解决更正、交接和代码去留边界。状态为待产品所有者确认，尚未实现；306项只覆盖前两项合同5候选，不认证合同6。
