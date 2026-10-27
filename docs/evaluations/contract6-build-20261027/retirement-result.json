@@ -1,0 +1,108 @@
+{
+  "contract": 6,
+  "full_suite": {
+    "tests": 343,
+    "seconds": 134.695,
+    "status": "passed",
+    "log_sha256": "97b98cb13ffbcb02d838dd7e3490b61fa73bf8edc16d95e72ffb8e1f23af9ec3",
+    "frozen_files": {
+      "skills/dev/SKILL.md": "332a6440a3783d7123272df428d0106608dbae802ca9e88ab1e2d7cf925da9f2",
+      "skills/dev/agents/openai.yaml": "237666967ab617f4452194694fc91dc1fcbb3b3beda59172c74572525117a009",
+      "skills/dev/core/references/figma-design.md": "8828473c28557e33fbb07ab5416be34e3c13c5b6f35a9eff94f14f1f6e8e12ff",
+      "skills/dev/core/references/output-privacy.md": "8c1d43834acfb41ee1d125bdc1ec37eb97cedca3d9afbff3b408658f81c8fab3",
+      "skills/dev/core/references/project-compatibility.md": "76668c91541d65a92b4e8308d385f8937c8d1f349a3680e323e11f4e09e4ff3a",
+      "skills/dev/core/references/task-workflow.md": "f4a3cae3742f55a3652ff00bf0b6b97c26cd2037d4a50a5aaa2e9695b6c32d9f",
+      "skills/dev/core/scripts/output_privacy.py": "54be161d474b4bc55ae1a28207de80f4077f0093172114b7079a12ce672fee6e",
+      "skills/dev/core/scripts/task_assets.py": "ed67314ae55fcd3ed1ad82916e0f7dc8a641928b3c52f84b2b6984c4195aed97",
+      "skills/dev/core/scripts/task_authorization.py": "98ad364d9a24db6569d1a4a9e816646e5c2f72014713db0fe7c6534b7e0ae920",
+      "skills/dev/core/scripts/task_execution.py": "fd556dc91b09afc65d46d094993ea3fbf9f49c81975b755bcdff909dd52f6d85",
+      "skills/dev/core/scripts/task_failures.py": "3f948382ce6453878f219346689f06f1617a32f908f7459a8f739dc3c04bef09",
+      "skills/dev/core/scripts/task_inputs.py": "39f997cfdb8e1a6ed59ec94a1e3befe715f8f7944c16aa3a623bb3419cd2453e",
+      "skills/dev/core/scripts/task_policy.py": "38d241d0c498dc7797ae778259ba7114373f9604662b22573f6335e95a3ac194",
+      "skills/dev/core/scripts/task_workflow.py": "d0b11f21682f0223faa9ca9d69fd70b9b6cab64851d3f565fdeda0633a7fc78e",
+      "skills/dev/profiles/android/PROFILE.md": "b4ef9f54763f9e8c0ef51f910daf14e941a27343f01dde2edd6ea960707305ab",
+      "tests/test_controlled_environment.py": "6a561767073e17359f4df8cd8706089c68fd909ce34cecbdfeb0ad8a18bec4ea",
+      "tests/test_evidence_core.py": "4f23e9a0bd14ea07ce54424dff71fbe18f6785a7a197dcd5c73b1b736085d587",
+      "tests/test_execution_diagnostics.py": "d28f50de30add49e43c3c31515d98c0444b8c5cb1271812e764b9068b66dc7e9",
+      "tests/test_failure_lifecycle.py": "d51b804d9f39f3511423f0bbf3a8ac036db804d23d5e415b3d0e6370fb541dc2",
+      "tests/test_hardening.py": "6a071624bcb6f3384250a41752692c943bb734bd710bd983cfb5153d332aaefc",
+      "tests/test_install.py": "4cf58cfbed0022faf1cf95d96c9ff043da3489f3c381fe25bb533319cc7ce383",
+      "tests/test_maintenance_idempotence.py": "7c1c0e3417df11e4a7004a13c93029084ba18c971cbe0c483ad11ffa5487256e",
+      "tests/test_observation_validity.py": "60e345eb5c957f897a90e3cafeed2be031b8d1fb34a3893312f2a7fca41af5b1",
+      "tests/test_output_privacy.py": "cdc145520efefccb9453399c9dc1242a25ad42ac94dcb4eb24408dc1ecb5ddc2",
+      "tests/test_policy_diagnostics.py": "ae40c153a28245b9a7232a43b5aafea5654d5b7cbb1d506b493f66bc6a969f20",
+      "tests/test_query_defaults.py": "11520e87d9f90eda4ddca800a4a5f90502b3e6909a6f3f8e804868aa04395ade",
+      "tests/test_release_identity.py": "7934842b9ac3c50db03351e323f795550a2bfa4ed55b6ab6727647110046928b",
+      "tests/test_review_boundaries.py": "48d7421aa4933325faa5a79578ebd806479d00aec1fcd6ba6e510c7442f1926f",
+      "tests/test_review_selection.py": "a56719f83c4490c60c66e5a6aaf9ea83a9d2c512da0bdd21b533674dd1e13042",
+      "tests/test_scoped_authorization.py": "e2ce412f85bae9083dffa5586b6d556fcfbf45df9bbccbff5918da4a491a5d8f",
+      "tests/test_task_correction.py": "fd6ac493931bedfc8e79081c157bb3549b7c2769e50b49e4e59c63b8157c9c8f",
+      "tests/test_task_extensions.py": "3885cf6cbc43df151db6efdcd7c8fafb4c8573d0479a727775daec3d320af393",
+      "tests/test_task_input_assets.py": "3e3cec4d743af3d920439bbce343738300d23e71ae72d1d9959a85fb998071a3",
+      "tests/test_task_retirement.py": "39c75a6eb89b80bf6c2a6d8901723e276c382777c3bfe3aec60e9e28f2e931be",
+      "tests/test_task_workflow.py": "4d0eb490619b8a7c86cac1d3f22b3c037890ec45a9ed0b6f96c224fee46ee18e"
+    }
+  },
+  "intermediate_full_runs": [
+    {
+      "tests": 317,
+      "seconds": 122.716,
+      "scope": "environment before lifecycle"
+    },
+    {
+      "tests": 335,
+      "seconds": 134.019,
+      "scope": "initial retirement, later review corrections required"
+    },
+    {
+      "tests": 341,
+      "seconds": 136.642,
+      "scope": "first source fixes, SR-2 attribution residue still open"
+    }
+  ],
+  "targeted_retirement_initial": {
+    "tests": 18,
+    "failures": 1,
+    "reason": "Missing handoff safely refused but returned generic INPUT_MISSING; replaced with explicit RETIREMENT_HANDOFF_UNAVAILABLE."
+  },
+  "review": {
+    "initial_findings": 2,
+    "followup_residue": 1,
+    "final_unresolved_in_scoped_source_review": 0,
+    "tests_run_by_reviewer": false
+  },
+  "skill_validator": {
+    "status": "unavailable",
+    "reason": "quick_validate.py needs PyYAML absent in both available Python runtimes; no dependency installation or suppression",
+    "frontmatter": "unchanged; checked selected name/description fields and no standalone TODO placeholders independently"
+  },
+  "daily_installation": {
+    "version": "0.29.0",
+    "files": 15,
+    "hash_mismatches": 0,
+    "modified": false
+  },
+  "forward_agent": "pending; independent source test is not a natural business result",
+  "boundaries": [
+    "No legacy migration",
+    "No push, release or daily installation",
+    "Controlled environment is not an OS sandbox",
+    "No automatic dependency discovery, aggregate cap or revival",
+    "Natural context compression and equal-quality net cost remain unknown"
+  ],
+  "privacy": {
+    "scan_exit_code": 1,
+    "targets": 15,
+    "scan_sha256": "0dc4fcbd48ae35f6313889a3b64c1d131336e974395ec52a29949038a9ff1c90",
+    "findings": [
+      {
+        "target": 1,
+        "line": 716,
+        "column": 99,
+        "kind": "credential_candidate",
+        "confidence": "candidate"
+      }
+    ],
+    "manual_disposition": "Source line716 references authorization variable; it contains no literal credential. Other14 selected staged targets scanned without findings. Bounded scanner is not a privacy certificate."
+  }
+}

@@ -119,12 +119,14 @@ def load(root, ident):
             if fact.get('id')!=fid or fact.get('kind') not in EVIDENCE_KINDS:fail('FACT_INVALID')
         for section in ('executions','observations'):
             if any(fid not in doc['facts'] for fid in doc[section].values()):fail('FACT_REFERENCE_MISSING')
+    validate_retirement(doc)
     task_failures.validate(doc,fail)
     task_authorization.validate(doc,fail)
     task_assets.validate(doc,fail)
     return doc
 
 def save(root, doc):
+    validate_retirement(doc)
     task_failures.validate(doc,fail)
     task_authorization.validate(doc,fail)
     task_assets.validate(doc,fail)
@@ -155,8 +157,112 @@ def locked(root, ident, control=False):
         try: yield
         finally: fcntl.flock(stream.fileno(), fcntl.LOCK_UN)
 
+def validate_retirement(doc):
+    receipt=doc.get('retirement')
+    if doc.get('state')!='retired':
+        if receipt is not None:fail('RETIREMENT_CONTRACT_INVALID')
+        return
+    required={'task','retired_at','decision_at','reason','authority','delivery_certified','context_digest',
+              'unresolved','handoff','retention','evidence_retention'}
+    if (not isinstance(receipt,dict) or set(receipt)!=required or receipt['task']!=doc['id']
+            or receipt['delivery_certified'] is not False
+            or not all(text(receipt.get(k)) for k in ('reason','authority','retired_at','decision_at','context_digest','evidence_retention'))
+            or not re.fullmatch(r'[a-f0-9]{64}',receipt['context_digest'])
+            or not isinstance(receipt['unresolved'],dict)
+            or set(receipt['unresolved'])!={'runtime_failures','checks','observations','assessments','deferrals','unknowns','limitations','corrections','code_paths'}
+            or any(type(v) is not int or v<0 for v in receipt['unresolved'].values())):fail('RETIREMENT_CONTRACT_INVALID')
+    if instant(receipt['decision_at'])>instant(receipt['retired_at']):fail('RETIREMENT_CONTRACT_INVALID')
+    handoff=receipt['handoff']
+    if any(receipt['unresolved'].values()) and handoff is None:fail('RETIREMENT_CONTRACT_INVALID')
+    if handoff is not None and (not isinstance(handoff,dict) or set(handoff)!={'path','sha256'}
+            or not text(handoff.get('path')) or not isinstance(handoff.get('sha256'),str)
+            or not re.fullmatch(r'[a-f0-9]{64}',handoff['sha256'])
+            or handoff['path'].startswith(('.featrace/','.agent-workflow/'))):fail('RETIREMENT_CONTRACT_INVALID')
+    retention=receipt['retention']
+    if (not isinstance(retention,dict) or set(retention)!={'retention_days','timezone','cleanup','handoff'}
+            or type(retention['retention_days']) is not int or retention['retention_days']<0
+            or retention['cleanup'] not in ('manual','compact','forget')):fail('RETIREMENT_CONTRACT_INVALID')
+    ZoneInfo(retention['timezone'])
+
+
+def execution_definition(check):
+    return {k:v for k,v in check.items() if k in ('argv','environment','execution_env','operation',
+            'timeout','inputs','input_sets','external_inputs','env_keys','input_assets')}
+
+
+def retired_check_context(plan,key,fact):
+    check=next(c for c in plan['checks'] if c['id']==key)
+    original=fact.get('execution_definition')
+    if original is None and fact.get('definition_digest')==digest(check):original=execution_definition(check)
+    return {'fact':{k:v for k,v in fact.items() if k in ('id','status','reason','input_digest','definition_digest',
+                'environment','started_at','at','artifact')},
+            'definition':original,'definition_status':'retained' if original is not None else 'not_retained'}
+
+
+def retirement_context(root,doc,handoff=None):
+    """Necessary unresolved knowledge and code boundary; not a delivery assessment."""
+    if doc['state']=='retired':fail('TASK_RETIRED')
+    plan=doc.get('plan') or {}
+    scope=set(plan.get('scope',[]))
+    if handoff in scope:fail('RETIREMENT_HANDOFF_IS_TASK_INPUT')
+    changed=changes(root,doc['baseline'])
+    selected=[name for name in changed if (not plan or name in scope) and name!=handoff]
+    if len(selected)>MAX_INPUTS:fail('RETIREMENT_SCOPE_LIMIT')
+    pending=task_failures.pending(doc)
+    criteria={c['id']:c for c in plan.get('criteria',[])}
+    failed_checks={check:doc['facts'][fid] for check,fid in doc.get('executions',{}).items()
+                   if doc['facts'][fid]['status']!='passed'}
+    correction=open_correction(doc)
+    observations={cid:doc['facts'][fid] for cid,fid in doc.get('observations',{}).items()
+                  if doc['facts'][fid]['status']!='passed' and fid not in pending}
+    return {'task':doc['id'],'request':doc['request'],
+            'runtime_failures':{fid:{'criterion':f['criterion'],'expected':criteria[f['criterion']]['expected'],
+                **failure_handoff(doc,f['criterion'])[fid]} for fid,f in pending.items()},
+            'checks':{key:retired_check_context(plan,key,fact) for key,fact in failed_checks.items()},
+            'observations':observations,
+            'assessments':{cid:a for cid,a in doc.get('assessments',{}).items() if a['verdict']!='supported'},
+            'deferrals':{cid:{'expected':criteria[cid]['expected'],**entries[-1]} for cid,entries in doc.get('claim_deferrals',{}).items() if entries[-1]['action']=='defer'},
+            'unknowns':plan.get('unknowns',[]),'limitations':doc.get('limitations',[]),
+            'correction':({k:correction[k] for k in ('id','affected','reason','authority','prior_receipt_digest')} if correction else None),
+            'code':{'baseline':doc['baseline'],'git_head':git(root,'rev-parse','HEAD').decode().strip(),
+                    'paths':files(root,selected),'boundary':'Selected task scope only when planned; no code rollback, deletion or merge certification.'}}
+
+
+def retire(root,ident,reason,authority,decision_at,handoff=None):
+    if not all(text(x) for x in (reason,authority,decision_at)):fail('RETIREMENT_DECISION_REQUIRED')
+    decision=instant(decision_at)
+    if decision>datetime.now(timezone.utc):fail('FUTURE_DECISION')
+    with locked(root,ident):
+        doc=load(root,ident)
+        if doc['state']=='retired':return doc['retirement']
+        mutable(doc);task_policy.check_local(root,git)
+        context=retirement_context(root,doc,handoff)
+        counts={'runtime_failures':len(context['runtime_failures']),'checks':len(context['checks']),
+                'observations':len(context['observations']),'assessments':len(context['assessments']),'deferrals':len(context['deferrals']),
+                'unknowns':len(context['unknowns']),'limitations':len(context['limitations']),
+                'corrections':int(context['correction'] is not None),'code_paths':len(context['code']['paths'])}
+        identity=None
+        if any(counts.values()) and not handoff:fail('RETIREMENT_HANDOFF_REQUIRED')
+        if handoff:
+            if not text(handoff) or handoff.startswith(('.featrace/','.agent-workflow/')):fail('RETIREMENT_HANDOFF_MUST_SURVIVE')
+            path=safe(root,handoff)
+            if not path.is_file() or path.stat().st_size>MAX_RECORD:fail('RETIREMENT_HANDOFF_UNAVAILABLE')
+            before=file_identity(root,handoff,True);contents=path.read_text()
+            if any(value not in contents for value in (reason,authority,decision_at,canonical(context).decode())):fail('RETIREMENT_HANDOFF_INCOMPLETE')
+            if file_identity(root,handoff,True)!=before:fail('RETIREMENT_HANDOFF_MOVED')
+            identity={'path':handoff,'sha256':before['sha256']}
+        if digest(retirement_context(root,doc,handoff))!=digest(context):fail('RETIREMENT_CONTEXT_MOVED')
+        doc['retirement']={'task':ident,'retired_at':now(),'decision_at':decision_at,'reason':reason,'authority':authority,
+            'delivery_certified':False,'context_digest':digest(context),'unresolved':counts,'handoff':identity,
+            'retention':{k:task_policy.load(root)[k] for k in ('retention_days','timezone','cleanup','handoff')},
+            'evidence_retention':'task-local; non-delivery retirement, unresolved issues remain unresolved'}
+        doc['state']='retired';save(root,doc)
+        return doc['retirement']
+
+
 def mutable(doc):
     if doc['state'] == 'complete': fail('TASK_ALREADY_COMPLETE')
+    if doc['state'] == 'retired': fail('TASK_RETIRED')
 
 
 def open_correction(doc):
@@ -405,7 +511,19 @@ def execution_ready(root,doc,criterion=None,check=None,investigate=False,exclude
         if text(unknown) or criteria.intersection(unknown['criteria']) or checks.intersection(unknown['checks']):fail('SCOPE_UNKNOWN')
 
 
-def check_policy(root,doc,check,enforce=False):
+def execution_executable(root,check,snapshot=None):
+    snapshot=snapshot if snapshot is not None else task_inputs.execution_environment(check)
+    command=check['argv'][0]
+    if '/' in command:executable=Path(command) if Path(command).is_absolute() else root/command
+    else:
+        search=os.pathsep.join(str(Path(x) if Path(x).is_absolute() else root/x) for x in os.get_exec_path(snapshot['env']))
+        found=shutil.which(command,path=search)
+        if not found:fail('EXECUTABLE_UNAVAILABLE')
+        executable=Path(found)
+    return executable,executable.resolve()
+
+
+def check_policy(root,doc,check,enforce=False,environment_snapshot=None):
     paths=relevant_paths(doc,check=check)|set(check['inputs'])
     for arg in check['argv']:
         candidate=Path(arg)
@@ -413,6 +531,9 @@ def check_policy(root,doc,check,enforce=False):
             try:candidate=candidate.relative_to(root)
             except ValueError:continue
         if '..' not in candidate.parts and (root/candidate).is_file():paths.add(candidate.as_posix())
+    for executable in execution_executable(root,check,environment_snapshot):
+        try:paths.add(executable.relative_to(root).as_posix())
+        except ValueError:pass
     environment=check['environment']
     realm=environment.get('policy_environment',environment['kind'])
     return task_policy.effective(root,paths,check.get('operation','test'),realm,enforce,
@@ -422,14 +543,7 @@ def check_policy(root,doc,check,enforce=False):
 def check_identity_payload(root,doc,check,components=None,environment_snapshot=None):
     task_assets.command(root,doc,check,fail)
     snapshot=environment_snapshot if environment_snapshot is not None else task_inputs.execution_environment(check)
-    command=check['argv'][0]
-    if '/' in command:executable=Path(command) if Path(command).is_absolute() else root/command
-    else:
-        search=os.pathsep.join(str(Path(x) if Path(x).is_absolute() else root/x) for x in os.get_exec_path(snapshot['env']))
-        found=shutil.which(command,path=search)
-        if not found:fail('EXECUTABLE_UNAVAILABLE')
-        executable=Path(found)
-    executable=executable.resolve()
+    _,executable=execution_executable(root,check,snapshot)
     snapshot['executable']=str(executable)
     runner=file_identity(executable.parent,executable.name,True)
     input_parts={}
@@ -440,7 +554,7 @@ def check_identity_payload(root,doc,check,components=None,environment_snapshot=N
             'input_assets':task_assets.refs(root,doc,check.get('input_assets',[]),fail),
             'executable':{'path':str(executable),'identity':runner},'environment':check['environment'],
             'constraints':files(root,selected_constraints(doc['plan'],check=check),True),
-            'policy':task_authorization.material(check_policy(root,doc,check)),'protocol':task_execution.protocol(__file__)}
+            'policy':task_authorization.material(check_policy(root,doc,check,environment_snapshot=snapshot)),'protocol':task_execution.protocol(__file__)}
     if components is not None:
         components.update(input_parts)
         components.update({key:digest(payload['environment' if key=='target' else key]) for key in IDENTITY_COMPONENTS if key not in input_parts})
@@ -453,6 +567,7 @@ def check_stamp(root,doc,check,components=None,environment_snapshot=None):
 def check_diagnostic(root,doc,check):
     """Bounded as-of explanation, never an authority or reuse decision input."""
     record=doc.get('facts',{}).get(doc.get('executions',{}).get(check['id']))
+    if doc['state']=='retired':return {'check':check['id'],'new_execution_permission':'task_retired','reuse':{'eligible':False,'reasons':['TASK_RETIRED']},'boundary':'Non-delivery terminal state; no execution or certification.'}
     out={'check':check['id'],'original_execution':record['id'] if record else None,
          'reuse':{'eligible':False,'reasons':[],'changed_components':[],'historical_components':'not_collected'},
          'new_execution_permission':'not_evaluated',
@@ -588,7 +703,7 @@ def run_check(root,ident,check_id,investigate=False):
         budget=min(MAX_LOG,64*1024*1024-used)
         if budget<4096:fail('TASK_ARTIFACT_BUDGET')
         started=now()
-        rules=check_policy(root,doc,check)
+        rules=check_policy(root,doc,check,environment_snapshot=environment_snapshot)
         authorization=task_authorization.select(doc,check,stamp,digest(task_authorization.material(rules)),authorization_stamp(doc,check),rules,started,fail)
         if authorization['kind']=='grant':authorization['grant_proof']={k:v for k,v in doc['authorizations'][authorization['grant']].items() if k!='uses'}
         authorization['authority']=(doc['authorizations'][authorization['grant']]['authority'] if authorization['kind']=='grant' else task_policy.load(root)['authority'])
@@ -598,7 +713,7 @@ def run_check(root,ident,check_id,investigate=False):
         start={'task':ident,'id':aid,'check':check_id,'input_digest':stamp,'input_format':1,
                'started_at':started,'producer':source,'definition_digest':digest(check),'authorization':authorization,'identity_components':identity_components}
         reservation={'id':aid,'kind':'command','check':check_id,'status':'unavailable',
-                     'purpose':'investigation' if investigate else 'verification','authorization':authorization,'input_assets':check.get('input_assets',[]),'identity_components':identity_components,'input_digest':stamp,'definition_digest':digest(check),
+                     'purpose':'investigation' if investigate else 'verification','authorization':authorization,'input_assets':check.get('input_assets',[]),'identity_components':identity_components,'input_digest':stamp,'definition_digest':digest(check),'execution_definition':execution_definition(check),
                      'environment':check['environment'],'producer':source,'git_head_at_start':revision,
                      'started_at':started,'at':started,'exit_code':None,'reason':'EXECUTION_RESERVED_OUTCOME_UNKNOWN',
                      'artifact':{'path':rel,'sha256':'0'*64}}
@@ -622,7 +737,7 @@ def run_check(root,ident,check_id,investigate=False):
         ended=now()
         record={'id':aid,'kind':'command','check':check_id,'status':status,
                 'purpose':'investigation' if investigate else 'verification','authorization':authorization,'input_assets':check.get('input_assets',[]),'identity_components':identity_components,'input_digest':stamp,
-                'definition_digest':digest(check),'environment':check['environment'],'producer':source,
+                'definition_digest':digest(check),'execution_definition':execution_definition(check),'environment':check['environment'],'producer':source,
                 'git_head_at_start':revision,'started_at':started,'at':ended,'exit_code':code}
         if reason:record['reason']=reason
         task_execution.finish(path,budget,{'id':aid,'status':status,'exit_code':code,'ended_at':ended,'reason':reason})
@@ -913,6 +1028,10 @@ def view(root,ident,offset=0,limit=20,blocker_offset=0):
     if (type(offset) is not int or offset<0 or type(limit) is not int or not 1<=limit<=25
             or type(blocker_offset) is not int or blocker_offset<0):fail('PAGE_INVALID')
     doc=load(root,ident)
+    if doc['state']=='retired':
+        return {'id':ident,'state':'retired','eligible':False,'delivery_certified':False,
+                'retired_at':doc['retirement']['retired_at'],'unresolved':doc['retirement']['unresolved'],
+                'details':'detail --section retirement','current_revision_certified':False}
     if doc['state']=='complete':
         return {'id':ident,'state':'complete','as_of':{k:v for k,v in doc['receipt'].items() if k not in ('limitations','deferrals')},
                 'limitation_count':len(doc['receipt']['limitations']),'deferred_count':len(doc['receipt'].get('deferrals',{})),'details':'detail --section receipt',
@@ -972,6 +1091,7 @@ def _close(root,ident,limitations):
     with locked(root,ident):
         doc=load(root,ident)
         if doc['state']=='complete':return doc['receipt']
+        mutable(doc)
         status=view(root,ident)
         if not status['eligible']:fail('DELIVERY_BLOCKED')
         if analysis(root,doc)[0]!=doc['analysis_digest']:fail('INPUT_MOVED')
@@ -1004,13 +1124,19 @@ def close(root,ident,limitations):
 def cleanup(root,ident,apply=False,timezone_name='UTC',forget=False,handoff=None):
     with locked(root,ident):
         doc=load(root,ident)
-        if doc['state']!='complete':fail('CLEANUP_REQUIRES_COMPLETE')
+        if doc['state'] not in ('complete','retired'):fail('CLEANUP_REQUIRES_COMPLETE')
+        terminal_key='retirement' if doc['state']=='retired' else 'receipt'
+        terminal=doc[terminal_key]
+        if doc['state']=='retired' and terminal['handoff']:
+            try:intact=artifact_ok(root,terminal['handoff'])
+            except (ValueError,OSError):intact=False
+            if not intact:fail('RETIREMENT_HANDOFF_UNAVAILABLE')
         zone=ZoneInfo(timezone_name)
-        days=(datetime.now(zone).date()-instant(doc['receipt']['completed_at']).astimezone(zone).date()).days
-        if days<doc['receipt'].get('retention',{}).get('retention_days',7):fail('RETENTION_NOT_ELAPSED')
-        for entry in doc['receipt'].get('deferrals',{}).values():
+        days=(datetime.now(zone).date()-instant(terminal['retired_at'] if doc['state']=='retired' else terminal['completed_at']).astimezone(zone).date()).days
+        if days<terminal.get('retention',{}).get('retention_days',7):fail('RETENTION_NOT_ELAPSED')
+        for entry in (doc.get('receipt') or {}).get('deferrals',{}).values():
             if not artifact_ok(root,entry['handoff']):fail('DEFERRAL_HANDOFF_UNAVAILABLE')
-        if forget and doc['receipt']['limitations']:
+        if forget and doc['state']=='complete' and doc['receipt']['limitations']:
             if not handoff:fail('LIMITATIONS_HANDOFF_REQUIRED')
             source=safe(root,handoff)
             if not source.is_file() or source.stat().st_size>MAX_RECORD:fail('LIMITATIONS_HANDOFF_UNAVAILABLE')
@@ -1032,8 +1158,9 @@ def cleanup(root,ident,apply=False,timezone_name='UTC',forget=False,handoff=None
                 with path.open('rb') as stream:header=stream.readline(256)
                 if header!=('Featrace task '+ident+' attempt '+path.stem+'\n').encode():fail('CLEANUP_UNKNOWN_ARTIFACT')
                 candidates.append(path)
-        receipt=dict(doc['receipt']);receipt['evidence_retention']='local logs expired by explicit cleanup'
-        retained={'task_contract':doc['task_contract'],'id':ident,'state':'complete','receipt':receipt}
+        receipt=dict(terminal);receipt['evidence_retention']='local logs expired by explicit cleanup'
+        retained={'task_contract':doc['task_contract'],'id':ident,'state':doc['state'],terminal_key:receipt}
+        if doc['state']=='retired' and doc.get('receipt'):retained['receipt']=doc['receipt']
         if doc.get('corrections'):
             retained['corrections']=[{k:v for k,v in e.items() if k not in ('prior_claims','prior_checks')} for e in doc['corrections']]
         # Ownership/handoff checks above also apply to interrupted or previously compacted tasks.
@@ -1068,7 +1195,7 @@ def task_list(root,offset=0,limit=20):
     for path in paths[offset:offset+limit]:
         try:
             doc=load(root,path.stem)
-            items.append({'id':doc['id'],'recorded_state':doc['state']})
+            items.append({'id':doc['id'],'recorded_state':doc['state'],**({'delivery_certified':False,'unresolved':doc['retirement']['unresolved']} if doc['state']=='retired' else {})})
         except (ValueError,OSError,TypeError,KeyError):items.append({'id':path.stem,'recorded_state':'unavailable'})
     return {'total':len(paths),'items':items,'next_offset':offset+limit if offset+limit<len(paths) else None,
             'boundary':'Recorded state only; inspect the selected task for current scope/evidence. No tests executed.'}
@@ -1092,19 +1219,20 @@ def storage(root,offset=0,limit=20):
                     elif entry.is_dir(follow_symlinks=False):stack.append(Path(entry.path))
                     elif entry.is_file(follow_symlinks=False):usage['regular_bytes']+=entry.stat(follow_symlinks=False).st_size
     folder=safe(root,'.featrace/tasks');paths=sorted(folder.glob('*.json')) if folder.exists() else []
-    items=[];counts={'complete':0,'incomplete':0,'unavailable':0,'stale_incomplete':0,'pending_runtime_failure':0}
+    items=[];counts={'complete':0,'retired':0,'incomplete':0,'unavailable':0,'stale_incomplete':0,'pending_runtime_failure':0}
     selected=set(paths[offset:offset+limit])
     for path in paths[offset:offset+limit]:
         try:
-            doc=load(root,path.stem);completed=doc['state']=='complete'
-            counts['complete' if completed else 'incomplete']+=1
-            age=max(0,(datetime.now(timezone.utc)-instant(doc.get('updated_at') or doc.get('created_at') or (doc.get('receipt') or {}).get('completed_at'))).days)
-            stale=not completed and age>=policy['retention_days']
-            pending=(len(task_failures.pending(doc)) if 'facts' in doc else
+            doc=load(root,path.stem);completed=doc['state']=='complete';retired=doc['state']=='retired'
+            counts['complete' if completed else 'retired' if retired else 'incomplete']+=1
+            age=max(0,(datetime.now(timezone.utc)-instant(doc.get('updated_at') or doc.get('created_at') or (doc.get('retirement') or {}).get('retired_at') or (doc.get('receipt') or {}).get('completed_at'))).days)
+            stale=not completed and not retired and age>=policy['retention_days']
+            pending=(doc['retirement']['unresolved']['runtime_failures'] if retired else len(task_failures.pending(doc)) if 'facts' in doc else
                      len({fid for e in doc['receipt'].get('deferrals',{}).values() for fid in e['unresolved_failures']}))
             counts['stale_incomplete']+=int(stale);counts['pending_runtime_failure']+=pending
             if path in selected:items.append({'id':path.stem,'state':doc['state'],'record_bytes':path.stat().st_size,
-                'inactive_days':age,'stale_incomplete':stale,'pending_runtime_failures':pending})
+                'inactive_days':age,'stale_incomplete':stale,'pending_runtime_failures':pending,
+                **({'delivery_certified':False,'unresolved':doc['retirement']['unresolved']} if retired else {})})
         except (ValueError,OSError,KeyError,TypeError):
             counts['unavailable']+=1
             if path in selected:items.append({'id':path.stem,'state':'unavailable'})
@@ -1113,7 +1241,7 @@ def storage(root,offset=0,limit=20):
             'warnings':(['STALE_INCOMPLETE_TASKS_RETAINED'] if counts['stale_incomplete'] else [])+
                        (['UNRECOGNIZED_OR_UNREADABLE_DATA'] if counts['unavailable'] or usage['links'] else [])+
                        ([] if usage['complete'] else ['USAGE_SCAN_LIMIT_PARTIAL']),
-            'boundary':'Read-only. Byte count includes owned and unrecognized local data, not external caches/originals. No unfinished task is expired or deleted.'}
+            'boundary':'Read-only. Byte count includes owned and unrecognized local data, not external caches/originals. No active unfinished task is automatically expired or deleted; retired is separate from delivered.'}
 
 
 def maintain(root,automatic=False,limit=25):
@@ -1130,8 +1258,8 @@ def maintain(root,automatic=False,limit=25):
         for path in selected:
             try:
                 doc=load(root,path.stem)
-                if doc['state']!='complete':continue
-                retention=doc['receipt'].get('retention',policy)
+                if doc['state'] not in ('complete','retired'):continue
+                retention=doc['retirement' if doc['state']=='retired' else 'receipt'].get('retention',policy)
                 if retention['cleanup']=='manual':continue
                 result=cleanup(root,path.stem,True,retention['timezone'],retention['cleanup']=='forget',retention['handoff'])
                 done+=int(result['changed'])
@@ -1144,13 +1272,14 @@ def maintain(root,automatic=False,limit=25):
         cursor_path.parent.mkdir(parents=True,exist_ok=True)
         task_policy.write(cursor_path,canonical({'after':selected[-1].stem if selected else ''}))
         return {'processed':len(selected),'cleaned':done,'retained':retained,'retained_items':retained_items,'next_cursor':selected[-1].stem if selected else None,
-                'boundary':'Only complete, expired, runner-owned local data; blocked cleanup retains facts. No scheduler installed.'}
+                'boundary':'Only explicitly complete/retired, expired, runner-owned local data; blocked cleanup retains facts. No scheduler installed.'}
 
 
-def detail(root,ident,section,criterion=None,offset=0,limit=4000):
+def detail(root,ident,section,criterion=None,offset=0,limit=4000,handoff=None):
     if offset<0 or not 1<=limit<=8000:fail('PAGE_INVALID')
     doc=load(root,ident)
-    if section=='check':
+    if section=='retirement-handoff':value=retirement_context(root,doc,handoff)
+    elif section=='check':
         if not doc.get('plan'):fail('CHECK_SOURCE_EXPIRED')
         check=next((c for c in doc['plan']['checks'] if c['id']==criterion),None)
         if check is None:fail('CHECK_NOT_SELECTED')
@@ -1171,9 +1300,10 @@ def detail(root,ident,section,criterion=None,offset=0,limit=4000):
     elif section=='fact':
         value=doc.get('facts',{}).get(criterion)
         if value is None:fail('FACT_REFERENCE_MISSING')
-    elif section in ('request','plan','receipt','limitations','corrections','authorizations','attachments'):value=doc.get(section)
+    elif section=='receipt' and doc['state']=='retired':value={'current_state':'retired','delivery_certified':False,'prior_delivery_receipt':doc.get('receipt')}
+    elif section in ('request','plan','receipt','limitations','corrections','authorizations','attachments','retirement'):value=doc.get(section)
     else:fail('DETAIL_SECTION_INVALID')
-    body=canonical(value).decode() if section=='failure-handoff' else json.dumps(value,ensure_ascii=False,sort_keys=True)
+    body=canonical(value).decode() if section in ('failure-handoff','retirement-handoff') else json.dumps(value,ensure_ascii=False,sort_keys=True)
     # UTF-8 bytes are bounded even for four-byte codepoints.
     chunk=body[offset:offset+min(limit,2000)];end=offset+len(chunk)
     return {'id':ident,'section':section,'total_characters':len(body),'offset':offset,'text':chunk,
@@ -1182,6 +1312,7 @@ def detail(root,ident,section,criterion=None,offset=0,limit=4000):
 
 def review_input(root,ident,criterion):
     doc=load(root,ident)
+    if doc['state']=='retired':fail('TASK_RETIRED')
     c=next((x for x in doc['plan']['criteria'] if x['id']==criterion),None)
     if c is None:fail('CRITERION_UNKNOWN')
     ready(root,doc,criterion=c)
@@ -1231,7 +1362,7 @@ def code_query(root,query,offset=0,limit=20):
 
 def main():
     parser=Parser(description=__doc__)
-    parser.add_argument('action',choices=['begin','plan','run','observe','assess','status','close','correct','prune','cleanup','locate','list','policy','maintain','detail','review-input','code','attach','storage','failure','defer','reopen-claim','authorize'])
+    parser.add_argument('action',choices=['begin','plan','run','observe','assess','status','close','correct','prune','cleanup','locate','list','policy','maintain','detail','review-input','code','attach','storage','failure','defer','reopen-claim','authorize','retire'])
     parser.add_argument('root');parser.add_argument('id',nargs='?')
     parser.add_argument('--json');parser.add_argument('--request');parser.add_argument('--check');parser.add_argument('--criterion')
     parser.add_argument('--kind');parser.add_argument('--observed-at');parser.add_argument('--actual')
@@ -1254,7 +1385,7 @@ def main():
     if a.action=='policy':out=task_policy.prepare(root,read_json(Path(a.json)),git)
     elif a.action=='storage':out=storage(root,a.offset,a.limit)
     elif a.action=='maintain':out=maintain(root,limit=a.limit)
-    elif a.action=='detail':out=detail(root,a.id,a.section,a.check if a.section=='check' else a.criterion,a.offset,min(a.limit,8000))
+    elif a.action=='detail':out=detail(root,a.id,a.section,a.check if a.section=='check' else a.criterion,a.offset,min(a.limit,8000),a.handoff)
     elif a.action=='review-input':out=review_input(root,a.id,a.criterion)
     elif a.action=='code':out=code_query(root,a.id,a.offset,a.limit)
     elif a.action=='begin':out=begin(root,a.id,a.request)
@@ -1266,6 +1397,9 @@ def main():
     elif a.action=='failure':out=failure_action(root,a.id,a.failure,a.disposition,a.reason,a.fact,read_json(Path(a.conditions_json)) if a.conditions_json else None)
     elif a.action in ('defer','reopen-claim'):out=defer_claim(root,a.id,a.criterion,a.reason,a.authority,a.decision_at,a.handoff,a.action=='reopen-claim',a.exclude_from_delivery)
     elif a.action=='assess':out=assess(root,a.id,a.criterion,a.verdict,a.reason,a.independent,a.provenance,a.fact)
+    elif a.action=='retire':
+        receipt=retire(root,a.id,a.reason,a.authority,a.decision_at,a.handoff)
+        out={'id':a.id,'state':'retired','delivery_certified':False,'retired_at':receipt['retired_at'],'unresolved':receipt['unresolved'],'details':'detail --section retirement'}
     elif a.action=='correct':out=correct(root,a.id,a.affected,a.reason,a.authority)
     elif a.action=='prune':out=prune(root,a.id,a.apply)
     elif a.action=='status':out=view(root,a.id,a.offset,a.limit,a.blocker_offset)

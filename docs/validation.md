@@ -244,3 +244,6 @@ B1授权分离、B2选定输入/来源统一、B3条件式影响调查已完成�
 
 
 2026-10-27合同6第一小任务：受控环境实际传参、缺失键、固定PATH/执行器/子工具输入、启动快照与后检漂移反例已实现。首轮定向11项有2项测试前提错误（宿主PATH同时移除Git），修正后完整317/317，122.716秒；[输入与结果](evaluations/contract6-build-20261027/environment-result.json)。候选源码，非日常安装/旧业务验证；不把前序306项冒充新合同结果。
+
+
+2026-10-27合同6最终程序验证：24项非交付终止、13项受控环境反例在内，完整343/343，134.695秒；35份运行/指引/测试选定输入前后相同。[结果与冻结摘要](evaluations/contract6-build-20261027/retirement-result.json)，[独立初审](evaluations/contract6-build-20261027/source-review.json)、[差异复核](evaluations/contract6-build-20261027/source-review-followup.json)、[最终定点复核](evaluations/contract6-build-20261027/source-review-final.json)。初审2项与1项残留已修正，审查者未运行测试，不把源码审查称作实测。中间317/335/341通过不能掩盖后续发现。quick_validate因现有两个Python均缺PyYAML而不可用；未改前置字段已另核对，不声称官方检查通过。隔离Agent结果另记，不修改日常CC0.29.0或旧业务。

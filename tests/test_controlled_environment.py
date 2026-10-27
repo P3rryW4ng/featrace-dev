@@ -75,3 +75,16 @@ class ControlledEnvironmentTests(unittest.TestCase):
             d=copy.deepcopy(original);d['task_contract']=contract;w.save(f.root,d);before=w.task_path(f.root,f.ident).read_bytes()
             with self.assertRaisesRegex(ValueError,'TASK_CONTRACT_UNSUPPORTED_USE_PINNED_TOOL'):w.load(f.root,f.ident)
             self.assertEqual(before,w.task_path(f.root,f.ident).read_bytes())
+
+    def test_actual_path_tool_cannot_escape_denied_or_ask_policy(self):
+        f=self.f;tools=f.root/'tools';tools.mkdir();tool=tools/'policy-tool';tool.write_text('#!'+sys.executable+'\nfrom pathlib import Path\nPath("launched").touch()\n');tool.chmod(0o755)
+        f.plan['checks'][0]['argv']=['policy-tool'];self.configure(paths=[str(tools)])
+        policy=w.task_policy.load(f.root)
+        for permission in ('denied','ask'):
+            policy['rules']=[{'source':'rules.md','sha256':'prepared','paths':['tools/policy-tool'],'operations':['test'],'environment':'local','decision':'Synthetic tool-specific policy','permission':permission,'authority':'Synthetic owner'}]
+            w.task_policy.prepare(f.root,policy,w.git)
+            with self.subTest(permission=permission),self.assertRaisesRegex(ValueError,'OPERATION_POLICY_'+permission.upper()):f.execute()
+            self.assertFalse((f.root/'launched').exists())
+    def test_controlled_remote_freshness_is_not_replaced_by_content_cache(self):
+        f=self.f;plan=copy.deepcopy(f.plan);plan['checks'][0]['environment']={'kind':'remote','target':'synthetic remote','policy_environment':'test'}
+        with self.assertRaisesRegex(ValueError,'MUTABLE_ENVIRONMENT_CACHE_REFUSED'):w.set_plan(f.root,f.ident,plan)
