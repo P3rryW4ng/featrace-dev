@@ -8,11 +8,11 @@ Help Claude Code and Codex investigate impact, implement changes, repair failure
 
 | Object | Current state |
 |---|---|
-| Release version | **0.28.0**, current-task workflow,13 runtime files |
-| Validation scope | 252 current kernel tests; program safeguards and Agent competence evaluated separately, with natural trials still pending |
+| Release version | **0.29.0**, current-task workflow,15 runtime files |
+| Validation scope | 286 current kernel tests; program safeguards and Agent competence evaluated separately, with natural trials still pending |
 | Real-world outcome | Phase two remains open: natural classification, resumption and net cost need new-project evidence |
 
-0.28.0 uses task contract4: observations only record facts; resolve original failures explicitly using targeted runtime evidence under declared reproduction conditions. Later control passes do not erase failures. Product-authorized deferrals are delivery exclusions, never repairs or supported claims; concise unresolved issue context survives cleanup. Scoped checks, original provenance and bounded retention remain. Contract3 tasks stay on pinned0.27.0 or their original tool; earlier records retain their matching version. No business migration or replay. See [maintenance status](MAINTAINER.md) for verified publication and installation.
+0.29.0 uses task contract5: standing policy, current scoped approval and original execution authority are separate. Genuine once/task grants do not rewrite ask or invalidate lawful retained facts merely by being spent. Selected CSV/helper snapshots bind actual check/source bytes while originals remain intact. Explicit failure handling, scoped checks and bounded cleanup remain. Old contract4 tasks stay on pinned0.28.0; earlier tasks retain their original tool. No automatic migration or business replay. See [maintenance status](MAINTAINER.md) for publication and installation verification.
 
 ## Replacement capabilities
 
@@ -23,23 +23,23 @@ Help Claude Code and Codex investigate impact, implement changes, repair failure
 - Clean owned task outputs under the confirmed calendar-day policy; query and page necessary content instead of preserving every feature's complete process forever.
 - Reuse genuine same-scope authorization; ask only for actual conflicts, missing sources/accounts or host restrictions. Use the host's actual native task/plan tools and presentation; otherwise ordinary concise progress prose, without drawn checkbox/status lists or fixed phases.
 
-Explicitly correct selected claims in retained completed tasks while preserving the original receipt. New and corrected contract4 records require supporting readers; compacted sources cannot be reconstructed and business records are not automatically migrated.
+Explicitly correct selected claims in retained completed tasks while preserving the original receipt. New and corrected contract5 records require supporting readers; compacted sources cannot be reconstructed and business records are not automatically migrated.
 
 Commit each completed working subtask locally after necessary checks, before feature closure; actual commit restrictions still apply and push is separate. Current-state claims use the real environment and original observation time; as-of screenshots do not expire uniformly.
 
-These are0.28.0 capability boundaries. Installing old0.22.0 does not enable this workflow. It does not guarantee full dynamic dependencies, objective visual judgment or genuine host independence. Code and structural validity do not establish product correctness.
+These are0.29.0 capability boundaries. Installing old0.22.0 does not enable this workflow. It does not guarantee full dynamic dependencies, objective visual judgment or genuine host independence. Code and structural validity do not establish product correctness.
 
 ## Install and update an official release
 
-Requires Python3.9+,Git and the chosen host; Android also needs the project's JDK/SDK. Install from the pinned0.28.0 release branch:
+Requires Python3.9+,Git and the chosen host; Android also needs the project's JDK/SDK. Install from the pinned0.29.0 release branch:
 
 ```bash
-git clone --branch release/0.28.0 --single-branch https://github.com/P3rryW4ng/featrace-dev.git
+git clone --branch release/0.29.0 --single-branch https://github.com/P3rryW4ng/featrace-dev.git
 cd featrace-dev
 python3 scripts/install.py --agent both
 ```
 
-Preserve existing local changes and verify the official checkout before updating. Pulling an old release branch does not upgrade versions: explicitly fetch and switch to release/0.28.0. Use `--update` only from that release tree; select `--agent claude` or `--agent codex` as needed. Open a new session afterward. The installer refuses unrelated or locally modified copies, backs up updates and moves uninstalled copies to backups with `--uninstall`. The installer requires a matching committed release.json, local release ref and runtime/installer content. Development trials require explicit --development with a separate identity; this is not signed remote-origin authentication.
+Preserve existing local changes and verify the official checkout before updating. Pulling an old release branch does not upgrade versions: explicitly fetch and switch to release/0.29.0. Use `--update` only from that release tree; select `--agent claude` or `--agent codex` as needed. Open a new session afterward. The installer refuses unrelated or locally modified copies, backs up updates and moves uninstalled copies to backups with `--uninstall`. The installer requires a matching committed release.json, local release ref and runtime/installer content. Development trials require explicit --development with a separate identity; this is not signed remote-origin authentication.
 
 Find legacy commands, acceptance contracts and records in the [fixed0.22.0 guide](https://github.com/P3rryW4ng/featrace-dev/blob/54c5260fd6688a0bca9c83f29bad240321a67b52/README.en.md). The replacement does not migrate or delete old application .agent-workflow data; use a pinned old version for explicit old-record continuation.
 

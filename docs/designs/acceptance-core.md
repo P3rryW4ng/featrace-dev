@@ -1,6 +1,6 @@
-# Current-task contract5 candidate: authorization and selected inputs
+# Current-task contract5: authorization and selected inputs
 
-2026-10-26. User approved the local failure-lifecycle replacement. Contract3 was released as0.26.0/0.27.0; contract4 is released as0.28.0; the approved contract5 candidate adds scoped authorization and selected input roles, not yet released; actual publication/install verification is separate and no project migration is implied. This contract supersedes the A109 record-format details and the 0.25.0 predecessor-compatibility route, while retaining current-task ownership and finite lifecycle.
+2026-10-26. User approved the local failure-lifecycle replacement. Contract3 was released as0.26.0/0.27.0; contract4 is released as0.28.0; contract5 adds scoped authorization and selected input roles, prepared as0.29.0; actual publication/install verification is separate and no project migration is implied. This contract supersedes the A109 record-format details and the 0.25.0 predecessor-compatibility route, while retaining current-task ownership and finite lifecycle.
 
 ## Authority and proof
 

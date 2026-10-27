@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.29.0 — 2026-10-27
+
+- Separate standing policy, current scoped approval and retained original execution authority in task contract5. Explicit once/task grants bind the selected operation and expiry without rewriting ask; deny, rule-source changes and host limits still apply. Reserve an unavailable attempt before launching, preserving uncertainty across interruptions.
+- Reuse bounded attachment ownership for selected input snapshots. Checks input_assets and criteria source_assets reference their actual copied bytes; external originals remain untouched. Reject raw task/control inputs across path spellings, validate ordinary interpreter script inputs and preserve active/negative/correction references during explicit unused-input pruning. No universal Shell parser or dynamic dependency guarantee.
+- Investigate search/filter/sort/selection and submitted-code consequences when display values participate in them; retain old behavior or obtain an actual product decision before changing it. No UI-to-full-business reacceptance default.
+- Full286/286 regression,34 new counterexamples; three independent static-review findings fixed and rechecked. Final isolated install/CLI probes passed; the fresh-context synthetic implementation used its frozen precursor (one final policy-source guard difference), explicitly not natural-project or net-cost proof.
+- Minor release for new authorization/input workflow and contract5,15 runtime files. Old contracts1–4 keep their pinned tools; no automatic migration, business replay or phase-two completion.
+
 ## 0.28.0 — 2026-10-26
 
 - Replace automatic latest-pass resolution and the single pending pointer with contract4: observations retain facts; explicit per-failure resolve/clarify/reopen requires declared reproduction conditions and actual targeted current runtime evidence. Multiple failures stay independently pending; equal code digests do not prove equal scenarios.
