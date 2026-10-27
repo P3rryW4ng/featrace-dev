@@ -1,10 +1,12 @@
 # 当前验证与历史查证入口
 
-更新：2026-10-26。只索引当前实现和必要对照；不把过去测试记作本轮新跑，不以数量证明语义正确或净收益。执行顺序见[ROADMAP](../ROADMAP.md)，实际发布/安装见[MAINTAINER](../MAINTAINER.md)。
+更新：2026-10-27。只索引当前实现和必要对照；不把过去测试记作本轮新跑，不以数量证明语义正确或净收益。执行顺序见[ROADMAP](../ROADMAP.md)，实际发布/安装见[MAINTAINER](../MAINTAINER.md)。
 
 ## 当前验证入口
 
-正式0.28.0合同4：完整 **252/252**，90.564秒，冻结输入前后一致。[结果](evaluations/failure-lifecycle-20261026/result.json)、[完整日志](evaluations/failure-lifecycle-20261026/full.log)、[首轮日志](evaluations/failure-lifecycle-20261026/full-first.log)。首轮251通过、1处旧单失败查询测试未移植；修正该测试后完整重跑。新增24个因果反例，旧负面/权限/来源保护保留；开发中错误及失败日志单列，不改写为通过。
+当前正式0.29.0合同5完整286/286，复用冻结结果，实际发布与安装见本页末节及[核验](evaluations/release-0290-20261027.json)。
+
+此前正式0.28.0合同4：完整 **252/252**，90.564秒，冻结输入前后一致。[结果](evaluations/failure-lifecycle-20261026/result.json)、[完整日志](evaluations/failure-lifecycle-20261026/full.log)、[首轮日志](evaluations/failure-lifecycle-20261026/full-first.log)。首轮251通过、1处旧单失败查询测试未移植；修正该测试后完整重跑。新增24个因果反例，旧负面/权限/来源保护保留；开发中错误及失败日志单列，不改写为通过。
 
 [独立源码复看](evaluations/failure-lifecycle-20261026/independent-review.json)发现3项清理边界并核对修复闭合，评审者没有执行测试。[实际命令探针](evaluations/failure-lifecycle-20261026/cli-probe.json)验证对照不能解除、显式排除不算支持、新旧固定工具双向拒读且不改文件。[双宿主隔离开发安装](evaluations/failure-lifecycle-20261026/isolated-install.json)各13文件匹配。独立Agent演练两次因模型容量不足在执行前失败，记为unavailable，不算通过。真实试点、自然上下文恢复和同质量净成本仍未知。
 
@@ -219,3 +221,7 @@ Android文档不新增解析器或强跑门禁，不能证明CC已遵守。安�
 ## 合同5候选源码完成（2026-10-26）
 
 B1授权分离、B2选定输入/来源统一、B3条件式影响调查已完成，新增task_authorization/task_assets两个聚焦模块，15运行文件。完整286/286、新增34反例，独立源码评审3项修复并复看，最终双宿主隔离安装/CLI通过；独立Agent合成演练按原冻结包完成，最后一条策略来源拒绝差异已单列。[结果](reviews/2026-10-26-authorization-input-build-result.md)、[证据](evaluations/authorization-input-build-20261026/results.json)。不宣称自然净提效。正式/日常CC仍0.28.0合同4/13文件，本轮仅本地提交；旧任务固定原工具、不自动迁移。阶段二仍缺自然失败处置、上下文恢复和等质量成本。未知范围调查与浏览器重试后置。
+
+## 0.29.0实际发布与CC安装（2026-10-27）
+
+[核验](evaluations/release-0290-20261027.json)：固定e72e694的发布分支/标签与远端一致，双宿主隔离正式安装及日常CC各15文件精确匹配，旧0.28.0备份完整。复用286项冻结结果，发布只改VERSION/release描述，不重复程序/业务。双语README与本地链接另核对，9个发布文件[全文扫描](evaluations/release-0290-20261027-privacy.json)无匹配。源码独立Agent演练仍属于其冻结前序开发包，最后一条原始策略来源拒绝差异见构建结果，不能冒充最终字节自然试点。阶段二继续开放。

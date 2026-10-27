@@ -1,0 +1,78 @@
+{
+  "version": "0.29.0",
+  "publication": {
+    "source_commit": "e72e6941042881c808599dd2654660f81ec46e31",
+    "branch": "release/0.29.0",
+    "tag": "v0.29.0",
+    "remote_refs_match_at_release_push": true,
+    "viewer_permission_verified": "ADMIN",
+    "github_release_page_created": false
+  },
+  "installation": {
+    "version": "0.29.0",
+    "source": {
+      "version": "0.29.0",
+      "channel": "release",
+      "source_commit": "e72e6941042881c808599dd2654660f81ec46e31",
+      "installer_sha256": "647869484aae3a2fa8963d4ac10831baf124dce2a75aeb1f7f4a02b1697b4cca",
+      "content_sha256": "8d2ccd119206077bf62488fcb50d8b4efa628d195c699969708b39692d482499",
+      "release_ref": "refs/tags/v0.29.0",
+      "boundary": "Matches the local pinned release ref and descriptor; not a signed remote-origin attestation."
+    },
+    "runtime_files": 15,
+    "actual_manifest_source_match": true,
+    "previous_version": "0.28.0",
+    "backup": "/Users/mac/.feature-delivery/backups/20261027T020928-claude-d15ad9fb",
+    "backup_complete": true,
+    "only_daily_claude_updated": true,
+    "business_records_changed": false
+  },
+  "isolated_formal_install": {
+    ".claude": {
+      "version": "0.29.0",
+      "files": 15,
+      "source": {
+        "version": "0.29.0",
+        "channel": "release",
+        "source_commit": "e72e6941042881c808599dd2654660f81ec46e31",
+        "installer_sha256": "647869484aae3a2fa8963d4ac10831baf124dce2a75aeb1f7f4a02b1697b4cca",
+        "content_sha256": "8d2ccd119206077bf62488fcb50d8b4efa628d195c699969708b39692d482499",
+        "release_ref": "refs/tags/v0.29.0",
+        "boundary": "Matches the local pinned release ref and descriptor; not a signed remote-origin attestation."
+      },
+      "exact_match": true
+    },
+    ".agents": {
+      "version": "0.29.0",
+      "files": 15,
+      "source": {
+        "version": "0.29.0",
+        "channel": "release",
+        "source_commit": "e72e6941042881c808599dd2654660f81ec46e31",
+        "installer_sha256": "647869484aae3a2fa8963d4ac10831baf124dce2a75aeb1f7f4a02b1697b4cca",
+        "content_sha256": "8d2ccd119206077bf62488fcb50d8b4efa628d195c699969708b39692d482499",
+        "release_ref": "refs/tags/v0.29.0",
+        "boundary": "Matches the local pinned release ref and descriptor; not a signed remote-origin attestation."
+      },
+      "exact_match": true
+    }
+  },
+  "regression": {
+    "passed": 286,
+    "new_tests": 34,
+    "rerun_for_release": false,
+    "frozen_inputs_changed_only": [
+      "VERSION",
+      "release.json"
+    ],
+    "boundary": "Runtime/test bytes match completed 286-test regression. VERSION and release descriptor intentionally changed; maintenance documents checked separately."
+  },
+  "forward_trial": "Synthetic precursor implementation completed; final policy-source guard delta remains explicitly documented in build evidence, not silently certified as exact-final Agent execution. Final installed CLI passed.",
+  "natural_trial": "pending",
+  "phase_two_complete": false,
+  "release_privacy": {
+    "targets": 9,
+    "scanner_status": "no_matches",
+    "boundary": "Bounded scanner result; earlier source-identifier/synthetic-ID candidates and B1 commit timing incident remain in build privacy-review.json."
+  }
+}
