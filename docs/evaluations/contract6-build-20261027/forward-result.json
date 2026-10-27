@@ -1,0 +1,84 @@
+{
+  "kind": "independent fresh-context synthetic forward trial, not natural business evidence",
+  "contract": 6,
+  "source_channel": "unpublished direct source; no installation",
+  "workflow_sha256": "d0b11f21682f0223faa9ca9d69fd70b9b6cab64851d3f565fdeda0633a7fc78e",
+  "state": "retired",
+  "delivery_certified": false,
+  "created_at": "2026-10-27T06:33:43.981188+00:00",
+  "retired_at": "2026-10-27T06:35:11.637150+00:00",
+  "counts": {
+    "kernel_run_invocations": 3,
+    "physical_checks": 2,
+    "passed_checks": 1,
+    "failed_checks": 1,
+    "reused_checks": 0,
+    "pre_execution_run_refusals": 1,
+    "total_kernel_refusals": 2,
+    "local_commits": 1,
+    "close_attempts": 0,
+    "retire_attempts": 1
+  },
+  "refusals": [
+    {
+      "action": "run",
+      "reason": "SCOPE_REVIEW_REQUIRED",
+      "at": "2026-10-27T06:33:44.329315+00:00"
+    },
+    {
+      "action": "observe",
+      "reason": "OBSERVATION_CONDITIONS_INVALID",
+      "at": "2026-10-27T06:34:42.897678+00:00"
+    }
+  ],
+  "unresolved": {
+    "runtime_failures": 1,
+    "checks": 1,
+    "observations": 0,
+    "assessments": 0,
+    "deferrals": 0,
+    "unknowns": 0,
+    "limitations": 0,
+    "corrections": 0,
+    "code_paths": 2
+  },
+  "facts": [
+    {
+      "id": "adc3da9a972e45db8713ffe4285352b5",
+      "check": "account",
+      "status": "passed",
+      "artifact_sha256": "203a30d7c85728355a9bcd41c5b6550c6225c8d64caa51b8c877fe28fc31a6ae",
+      "input_digest": "4696468e832e52f0bb8975d77f7322f682bc40964b0a66474dbd2a11ce1ef14e",
+      "started_at": "2026-10-27T06:34:06.267808+00:00",
+      "at": "2026-10-27T06:34:06.358248+00:00"
+    },
+    {
+      "id": "260908e7814c4cdc9f6b0a5527d8fb1c",
+      "check": "days",
+      "status": "failed",
+      "artifact_sha256": "c80c164cbcb9f6482d5eaa3dae815980c11fc6db1bafcd360b3bbb6f57d8b599",
+      "input_digest": "9ef89b1463e8a33d80ddcf965b8cf105e8b660cab276149da9e05cfff1cd4b6c",
+      "started_at": "2026-10-27T06:34:06.963797+00:00",
+      "at": "2026-10-27T06:34:07.047649+00:00"
+    }
+  ],
+  "handoff_sha256": "7f9b0a78eaffe7f8c41c1326ea5aabd5903a16c94e243c9031a858b1dbacd911",
+  "local_synthetic_commit": "bfb7953b9129e4d7501c3f930399c675af3515c1",
+  "raw_report_sha256": "17b2adfeeeffdb6b1cb519a85b1c34b70cbf3b3ea6f0b2129c46309579a8586d",
+  "parent_verification": {
+    "source_matches_final_343_suite": true,
+    "command_logs_intact": true,
+    "handoff_intact": true,
+    "days_logic_unchanged": true,
+    "failed_runtime_fact_retained": true,
+    "code_preserved": true
+  },
+  "boundaries": [
+    "Not an installed or natural-project result",
+    "No rendered UI, network, devices, migration, push, publication or personal installation",
+    "Two entry refusals were retained, not physical tests",
+    "Forward harness checked synthetic key absence; no demonstrated parent secret injection in this trial; actual unselected host-key injection/removal is covered by the unit counterexample",
+    "Controlled system Python emitted temporary-directory warning; no OS sandbox or arbitrary toolchain support claim",
+    "No natural compression, seven real days or equal-quality net-efficiency evidence"
+  ]
+}

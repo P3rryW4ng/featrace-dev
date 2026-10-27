@@ -82,7 +82,12 @@
     "hash_mismatches": 0,
     "modified": false
   },
-  "forward_agent": "pending; independent source test is not a natural business result",
+  "forward_agent": {
+    "result": "retired without delivery; scoped outcome verified",
+    "details": "forward-result.json",
+    "physical_checks": 2,
+    "refusals": 2
+  },
   "boundaries": [
     "No legacy migration",
     "No push, release or daily installation",

@@ -247,3 +247,6 @@ B1授权分离、B2选定输入/来源统一、B3条件式影响调查已完成�
 
 
 2026-10-27合同6最终程序验证：24项非交付终止、13项受控环境反例在内，完整343/343，134.695秒；35份运行/指引/测试选定输入前后相同。[结果与冻结摘要](evaluations/contract6-build-20261027/retirement-result.json)，[独立初审](evaluations/contract6-build-20261027/source-review.json)、[差异复核](evaluations/contract6-build-20261027/source-review-followup.json)、[最终定点复核](evaluations/contract6-build-20261027/source-review-final.json)。初审2项与1项残留已修正，审查者未运行测试，不把源码审查称作实测。中间317/335/341通过不能掩盖后续发现。quick_validate因现有两个Python均缺PyYAML而不可用；未改前置字段已另核对，不声称官方检查通过。隔离Agent结果另记，不修改日常CC0.29.0或旧业务。
+
+
+2026-10-27合同6独立前向演练完成：[紧凑结果](evaluations/contract6-build-20261027/forward-result.json)。Agent只收到技能/合成代码及原始任务，2次物理检查（标签通过、单数失败）、2次入口拒绝，真实停止而非close；原失败、代码及现有ISSUES交接保留。主会话核对最终343项源码指纹、日志/交接哈希和任务状态。未复制原始任务/完整日志到维护库。前向环境没有注入父级秘密的额外证明；真正选外宿主键不透传由程序反例验证，不混用证据。候选仍未推送/发布/安装，阶段二仍开放；仅维护记录变化，不重复运行未变程序。
