@@ -22,7 +22,7 @@ import task_authorization
 import task_assets
 from zoneinfo import ZoneInfo
 
-CONTRACT = 5
+CONTRACT = 6
 MAX_CORRECTIONS = 8
 MAX_FACTS = 128
 EVIDENCE_KINDS = {'static_analysis', 'runtime_observation', 'command'}
@@ -262,12 +262,13 @@ def validate_execution_plan(root, plan):
     if not isinstance(plan['checks'],list) or len(plan['checks'])>32: fail('CHECKS_INVALID')
     for c in plan['checks']:
         if (not isinstance(c,dict) or not {'id','argv','inputs','covers','reason','timeout','environment'}<=set(c)
-                or set(c)-{'id','argv','inputs','covers','reason','timeout','environment','input_sets','external_inputs','env_keys','cache','operation','input_assets'}
+                or set(c)-{'id','argv','inputs','covers','reason','timeout','environment','input_sets','external_inputs','env_keys','cache','operation','input_assets','execution_env'}
                 or not isinstance(c['id'],str) or not ID.fullmatch(c['id']) or c['id'] in check_ids
                 or not isinstance(c['argv'],list) or not c['argv'] or not all(text(x) for x in c['argv'])
                 or not text(c['reason']) or type(c['timeout']) is not int or not 1<=c['timeout']<=3600
                 or not isinstance(c['environment'],dict) or not c['environment']
                 or not all(text(k) and text(v) for k,v in c['environment'].items())): fail('CHECK_INVALID')
+        task_inputs.execution_environment(c)
         valid_inputs(root,c['inputs'])
         task_inputs.validate_sets(c.get('input_sets',[]));task_inputs.validate_sets(c.get('external_inputs',[]),True)
         if not c['inputs'] and not c.get('input_sets'):fail('CHECK_SCOPE_INVALID')
@@ -418,19 +419,23 @@ def check_policy(root,doc,check,enforce=False):
                                  check.get('input_sets',[]))
 
 
-def check_identity_payload(root,doc,check,components=None):
+def check_identity_payload(root,doc,check,components=None,environment_snapshot=None):
     task_assets.command(root,doc,check,fail)
+    snapshot=environment_snapshot if environment_snapshot is not None else task_inputs.execution_environment(check)
     command=check['argv'][0]
     if '/' in command:executable=Path(command) if Path(command).is_absolute() else root/command
     else:
-        search=os.pathsep.join(str(Path(x) if Path(x).is_absolute() else root/x) for x in os.get_exec_path())
+        search=os.pathsep.join(str(Path(x) if Path(x).is_absolute() else root/x) for x in os.get_exec_path(snapshot['env']))
         found=shutil.which(command,path=search)
         if not found:fail('EXECUTABLE_UNAVAILABLE')
         executable=Path(found)
     executable=executable.resolve()
+    snapshot['executable']=str(executable)
     runner=file_identity(executable.parent,executable.name,True)
     input_parts={}
-    inputs=task_inputs.signature(root,check['inputs'],check.get('input_sets',[]),check.get('external_inputs',[]),check.get('env_keys',[]),input_parts if components is not None else None)
+    inputs=task_inputs.signature(root,check['inputs'],check.get('input_sets',[]),check.get('external_inputs',[]),check.get('env_keys',[]),input_parts if components is not None else None,snapshot)
+    inputs={**inputs,'execution_env':check.get('execution_env',{'mode':'inherit'})}
+    if components is not None:input_parts['environment']=digest([input_parts['environment'],inputs['execution_env']])
     payload={'argv':check['argv'],'inputs':inputs,
             'input_assets':task_assets.refs(root,doc,check.get('input_assets',[]),fail),
             'executable':{'path':str(executable),'identity':runner},'environment':check['environment'],
@@ -441,8 +446,8 @@ def check_identity_payload(root,doc,check,components=None):
         components.update({key:digest(payload['environment' if key=='target' else key]) for key in IDENTITY_COMPONENTS if key not in input_parts})
     return payload
 
-def check_stamp(root,doc,check,components=None):
-    return digest(check_identity_payload(root,doc,check,components))
+def check_stamp(root,doc,check,components=None,environment_snapshot=None):
+    return digest(check_identity_payload(root,doc,check,components,environment_snapshot))
 
 
 def check_diagnostic(root,doc,check):
@@ -569,7 +574,8 @@ def run_check(root,ident,check_id,investigate=False):
         if check is None:fail('CHECK_NOT_SELECTED')
         execution_ready(root,doc,check=check,investigate=investigate)
         identity_components={}
-        stamp=check_stamp(root,doc,check,identity_components);previous=doc['facts'].get(doc['executions'].get(check_id))
+        environment_snapshot=task_inputs.execution_environment(check)
+        stamp=check_stamp(root,doc,check,identity_components,environment_snapshot);previous=doc['facts'].get(doc['executions'].get(check_id))
         expired=bool(previous and any(fact_applicability(c,previous,check['environment'])=='EXPIRED'
                                       for c in doc['plan']['criteria'] if c['id'] in check['covers']))
         if (previous and not expired and previous['status']=='passed' and previous['input_digest']==stamp
@@ -607,7 +613,8 @@ def run_check(root,ident,check_id,investigate=False):
             g['uses'].append(aid)
         doc['facts'][aid]=reservation;doc['executions'][check_id]=aid
         save(root,doc)  # The unavailable reservation and grant use are atomic before launching.
-        status,code,interrupted,reason=task_execution.invoke(check['argv'],root,path,budget,check['timeout'],start)
+        launch=([environment_snapshot['executable']]+check['argv'][1:] if environment_snapshot['mode']=='controlled' else check['argv'])
+        status,code,interrupted,reason=task_execution.invoke(launch,root,path,budget,check['timeout'],start,environment_snapshot['env'])
         try:
             if check_stamp(root,doc,check)!=stamp:status='unavailable';reason=reason or 'EXECUTION_INPUT_MOVED'
         except (ValueError,OSError):

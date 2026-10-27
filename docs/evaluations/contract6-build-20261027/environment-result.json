@@ -1,0 +1,20 @@
+{
+  "contract": 6,
+  "result": "passed",
+  "tests": 317,
+  "seconds": 122.716,
+  "log_sha256": "50e34d60106a8b3bb3777248f526e91abee3567dc6b6cd6c6fa76126d1c26ded",
+  "inputs": {
+    "skills/dev/core/scripts/task_workflow.py": "14b6bef1f37394ea08e689cebd60cd052e7f2ecfbab1d69408d47c393a646401",
+    "skills/dev/core/scripts/task_inputs.py": "39f997cfdb8e1a6ed59ec94a1e3befe715f8f7944c16aa3a623bb3419cd2453e",
+    "skills/dev/core/scripts/task_execution.py": "fd556dc91b09afc65d46d094993ea3fbf9f49c81975b755bcdff909dd52f6d85",
+    "tests/test_controlled_environment.py": "95cd9cc3417d3c81af215d793187aebd6f071d24162de92e6a15d3022bb91e48",
+    "tests/test_task_correction.py": "fd6ac493931bedfc8e79081c157bb3549b7c2769e50b49e4e59c63b8157c9c8f"
+  },
+  "initial_targeted_result": {
+    "tests": 11,
+    "errors": 2,
+    "reason": "Test replaced host PATH with no Git; corrected test premise to keep host Git while changing PATH."
+  },
+  "boundary": "Source candidate only; no old-task migration, push or daily installation."
+}

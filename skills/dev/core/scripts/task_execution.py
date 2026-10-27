@@ -55,7 +55,7 @@ def stop(process):
     process.wait()
 
 
-def invoke(argv, root, path, budget, timeout, start):
+def invoke(argv, root, path, budget, timeout, start, env=None):
     """Return command outcome, never a claim that nested tests physically executed."""
     status, code, interrupted, reason = 'unavailable', None, None, None
     with path.open('xb') as stream:
@@ -65,7 +65,7 @@ def invoke(argv, root, path, budget, timeout, start):
         process = None
         try:
             process = subprocess.Popen(argv, cwd=root, stdout=subprocess.PIPE,
-                                       stderr=subprocess.STDOUT, start_new_session=True)
+                                       stderr=subprocess.STDOUT, start_new_session=True, env=env)
             deadline = time.monotonic() + timeout
             process.poll()
             with selectors.DefaultSelector() as selector:

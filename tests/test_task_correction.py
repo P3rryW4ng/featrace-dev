@@ -69,7 +69,7 @@ class TaskCorrectionTests(TaskWorkflowTests):
         self.support();w.close(self.root,self.ident,['Original limit'])
         self.age();w.cleanup(self.root,self.ident,True)
         doc=self.doc()
-        self.assertEqual(doc['task_contract'],5)
+        self.assertEqual(doc['task_contract'],6)
         self.assertEqual(doc['corrections'][0]['prior_receipt'],original['receipt'])
         self.assertNotIn('prior_claims',doc['corrections'][0])
 

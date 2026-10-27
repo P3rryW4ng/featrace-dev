@@ -2,6 +2,7 @@
 import hashlib
 import json
 import os
+import re
 from pathlib import Path
 import stat
 import subprocess
@@ -58,7 +59,30 @@ def covers(name, paths, sets):
     return name in paths or any((item['kind'] in ('tree','git_tree') and within(name,item['path'])) or item['path']==name for item in sets)
 
 
-def signature(root, paths, sets, external, env_keys, diagnostics=None):
+def execution_environment(check):
+    """Capture once in memory. Never serialize inherited values into task records."""
+    config=check.get('execution_env',{'mode':'inherit'})
+    if not isinstance(config,dict):reject('EXECUTION_ENV_INVALID')
+    mode=config.get('mode')
+    if mode=='inherit':
+        if set(config)!={'mode'}:reject('EXECUTION_ENV_INVALID')
+        return {'mode':mode,'env':dict(os.environ)}
+    if mode!='controlled' or set(config)!={'mode','inherit_keys','search_path'}:reject('EXECUTION_ENV_INVALID')
+    keys=config['inherit_keys'];paths=config['search_path']
+    if (not isinstance(keys,list) or len(keys)>64
+            or any(not isinstance(k,str) or not re.fullmatch(r'[A-Za-z_][A-Za-z0-9_]*',k) for k in keys)
+            or len(set(keys))!=len(keys) or 'PATH' in keys):reject('EXECUTION_ENV_KEYS_INVALID')
+    if (not isinstance(paths,list) or not 1<=len(paths)<=32
+            or any(not isinstance(p,str) or not p or not Path(p).is_absolute()
+                   or '..' in Path(p).parts or os.pathsep in p or '\x00' in p for p in paths)
+            or len(set(paths))!=len(paths)):reject('EXECUTION_SEARCH_PATH_INVALID')
+    if check.get('env_keys'):reject('EXECUTION_ENV_KEYS_CONFLICT')
+    env={k:os.environ[k] for k in keys if k in os.environ}
+    env['PATH']=os.pathsep.join(paths)
+    return {'mode':mode,'env':env}
+
+
+def signature(root, paths, sets, external, env_keys, diagnostics=None, execution_env=None):
     """Hash selected current bytes and membership, with bounded transient enumeration."""
     validate_sets(sets);validate_sets(external,True)
     if not isinstance(env_keys,list) or len(env_keys)>64 or any(not isinstance(k,str) or not k for k in env_keys):reject('ENV_KEYS_INVALID')
@@ -151,7 +175,9 @@ def signature(root, paths, sets, external, env_keys, diagnostics=None):
         include(resolved,'external:'+str(resolved),external_root=resolved if resolved.is_dir() else resolved.parent)
     if names and git_paths(root)!=names:reject('EXECUTION_MEMBERSHIP_MOVED')
     # Persist the digest only: environment values may contain credentials.
-    environment=['environment',[(k,os.environ.get(k)) for k in sorted(set(DEFAULT_ENV)|set(env_keys))]]
+    snapshot=execution_env or {'mode':'inherit','env':dict(os.environ)}
+    keys=sorted(snapshot['env']) if snapshot['mode']=='controlled' else sorted(set(DEFAULT_ENV)|set(env_keys))
+    environment=['environment',snapshot['mode'],[(k,snapshot['env'].get(k)) for k in keys]]
     if diagnostics is not None:
         diagnostics.update({'selected_inputs':aggregate.hexdigest(),
                             'environment':hashlib.sha256(json.dumps(environment,sort_keys=True,separators=(',',':'),ensure_ascii=True).encode()).hexdigest()})
