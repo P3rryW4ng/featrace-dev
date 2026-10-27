@@ -1,0 +1,338 @@
+{
+  "evaluation_date": "2026-10-27",
+  "source_before": "42109d18b3440dc23e016d94f61f1170278a132a",
+  "formal_and_installed": "0.29.0 / contract5 / 15 files",
+  "formal_skill_hashes": {
+    "SKILL.md": "e8ce951ca6202a1acddda416255e63fd0a2a12ed122fd6758eb6edeaa5086120",
+    "agents/openai.yaml": "237666967ab617f4452194694fc91dc1fcbb3b3beda59172c74572525117a009",
+    "core/references/figma-design.md": "8828473c28557e33fbb07ab5416be34e3c13c5b6f35a9eff94f14f1f6e8e12ff",
+    "core/references/output-privacy.md": "8c1d43834acfb41ee1d125bdc1ec37eb97cedca3d9afbff3b408658f81c8fab3",
+    "core/references/project-compatibility.md": "76668c91541d65a92b4e8308d385f8937c8d1f349a3680e323e11f4e09e4ff3a",
+    "core/references/task-workflow.md": "3d667d930404ffbb7a6f99b759f5c4965b12c8a71cac0fd254c3d4989e82bce9",
+    "core/scripts/output_privacy.py": "54be161d474b4bc55ae1a28207de80f4077f0093172114b7079a12ce672fee6e",
+    "core/scripts/task_assets.py": "ed67314ae55fcd3ed1ad82916e0f7dc8a641928b3c52f84b2b6984c4195aed97",
+    "core/scripts/task_authorization.py": "98ad364d9a24db6569d1a4a9e816646e5c2f72014713db0fe7c6534b7e0ae920",
+    "core/scripts/task_execution.py": "551aef76c10acceed2e047059539fc87ba7253e64375fa9203cb29a27b9079ae",
+    "core/scripts/task_failures.py": "3f948382ce6453878f219346689f06f1617a32f908f7459a8f739dc3c04bef09",
+    "core/scripts/task_inputs.py": "12719743c2725bda38fb58f7c79ae9adc7ee66eb7da2ae618f466110189d1fad",
+    "core/scripts/task_policy.py": "38d241d0c498dc7797ae778259ba7114373f9604662b22573f6335e95a3ac194",
+    "core/scripts/task_workflow.py": "5f32a0246cdaedb7ce870e78a1d06b55e440c11fe4399aee6858780a1ef08cb5",
+    "profiles/android/PROFILE.md": "b4ef9f54763f9e8c0ef51f910daf14e941a27343f01dde2edd6ea960707305ab"
+  },
+  "baseline_cost_tool": {
+    "version": "0.28.0",
+    "fixed_tag": "v0.28.0",
+    "all_13_files_match_git": true,
+    "hashes": {
+      "SKILL.md": "0b517a62f8f8c50c1e41a9d6b3846ab8b86fb63dec2b09511584908ad8201771",
+      "core/references/figma-design.md": "8828473c28557e33fbb07ab5416be34e3c13c5b6f35a9eff94f14f1f6e8e12ff",
+      "core/references/project-compatibility.md": "05e0da0988a766acb1068338c0e55deaf6d74eb77799bcc9bdbb8da2621897eb",
+      "core/references/output-privacy.md": "8c1d43834acfb41ee1d125bdc1ec37eb97cedca3d9afbff3b408658f81c8fab3",
+      "core/references/task-workflow.md": "204ee8a83f77ca9237d64cae77067e8b48b8be7f4b8b741bb79bc5bc3c4efa9e",
+      "core/scripts/output_privacy.py": "54be161d474b4bc55ae1a28207de80f4077f0093172114b7079a12ce672fee6e",
+      "core/scripts/task_policy.py": "183cc7c5c146578879fb33b2dd1dd8a60a47e9e073d6823fca122d7cbe78856a",
+      "core/scripts/task_workflow.py": "5d88309f019c99dcb599092c871aaf699c247963b3211215767968b762421f27",
+      "core/scripts/task_execution.py": "c9b5e52cbb2e3724716af7bdd8a328425b6809b68f8e4916c6e14393e35fcf43",
+      "core/scripts/task_failures.py": "3f948382ce6453878f219346689f06f1617a32f908f7459a8f739dc3c04bef09",
+      "core/scripts/task_inputs.py": "9143dc945e478d069b501094b64265d519ad91c4519b0c09e4c825886326d3a8",
+      "agents/openai.yaml": "237666967ab617f4452194694fc91dc1fcbb3b3beda59172c74572525117a009",
+      "profiles/android/PROFILE.md": "b4ef9f54763f9e8c0ef51f910daf14e941a27343f01dde2edd6ea960707305ab"
+    }
+  },
+  "ordered_stages": [
+    "fresh-context recovery",
+    "interruption and input boundary",
+    "cleanup and population growth",
+    "equal-scope synthetic cost"
+  ],
+  "stages": {
+    "1": {
+      "outcome": "complete fully_supported",
+      "original_facts_all_fields_unchanged": true,
+      "standing_policy_unchanged": true,
+      "original_failure_explicitly_resolved": true,
+      "new_physical_checks": 2,
+      "old_fact_reuses": 0,
+      "task_approval_reuses": 1,
+      "new_label_once_grant": 1,
+      "extra_label_check_reason": "Independent agent environment differs in PATH digest; parent environment still matches original label fact. Conservative environmental invalidation, not mere context-loss rerun.",
+      "environment_keys_differ": [
+        "PATH"
+      ],
+      "original_environment_values_retained": false,
+      "friction": [
+        "detail facts without criterion refused CRITERION_UNKNOWN",
+        "CLI detail default limit is 20 characters while function default is 4000; agent used explicit limit/pagination",
+        "repair before refreshed plan refused SCOPE_REVIEW_REQUIRED"
+      ],
+      "boundary": "Fresh isolated context without prior chat, not a natural compression event. Synthetic task, not business migration."
+    },
+    "2": {
+      "real_process_parent_sigkill": {
+        "parent_returncode": -9,
+        "child_started": true,
+        "physical_attempts": 2,
+        "latest_status": "unavailable",
+        "latest_reason": "EXECUTION_RESERVED_OUTCOME_UNKNOWN",
+        "old_pass_unchanged": true,
+        "close_refused": "DELIVERY_BLOCKED",
+        "boundary": "Parent force-killed after real child start; child allowed to finish after 1.5 seconds. No invented final result. Not orphan-reaping or disk-failure proof."
+      },
+      "lost_log_spent_grant": {
+        "actual_refusal": "INPUT_MISSING",
+        "physical_attempts": 1,
+        "original_fact_retained": true,
+        "eligible": false,
+        "preexecution_requests_refused": 2,
+        "boundary": "Missing original log refuses before a new process; no hidden re-certification."
+      },
+      "evaluation_error": {
+        "first_stage2_run": "failed in the harness, not all-pass",
+        "cause": "Expected OPERATION_POLICY_ASK for missing log, but actual earlier guard returns INPUT_MISSING. Expected invariant is refusal/no execution, which held.",
+        "correction": "Inspected preserved tasks, performed one diagnostic refusal request, and collected existing results; did not rerun the SIGKILL or passing test to erase the first harness failure."
+      }
+    },
+    "3": {
+      "cross_task_cleanup": {
+        "unknown_refusal": "CLEANUP_UNKNOWN_ARTIFACT",
+        "refusal_preserved_all_bytes": true,
+        "eligible_task_forgotten": true,
+        "other_task_external_original_code_preserved": true,
+        "simulated_receipt_age_days": 8,
+        "boundary": "Receipt age is explicitly simulated; not naturally observed eight days."
+      },
+      "deferred_issue_survives": {
+        "lost_handoff_refusal": "DEFERRAL_HANDOFF_UNAVAILABLE",
+        "record_forgotten_after_handoff_restored": true,
+        "original_failure_id_conditions_object_and_evidence_identity_preserved": true,
+        "boundary": "All promises excluded; this fixture certifies no supported delivery and is not a repaired bug. The injected failure fixture only tests preservation/refusal semantics.",
+        "failure_setup": "Seeded synthetic negative-observation metadata for cleanup/handoff reference testing; not a physically reproduced product malfunction."
+      },
+      "task_population": {
+        "samples": [
+          {
+            "task_count": 200,
+            "storage_seconds": 0.002447708999999909,
+            "storage_output_bytes": 2980,
+            "total_record_bytes": 198800,
+            "page_items": 20,
+            "maintenance_processed": 25,
+            "active_deleted": 0
+          },
+          {
+            "task_count": 800,
+            "storage_seconds": 0.006641249999999932,
+            "storage_output_bytes": 2980,
+            "total_record_bytes": 795200,
+            "page_items": 20,
+            "maintenance_processed": 25,
+            "active_deleted": 0
+          }
+        ],
+        "fixture_kind": "Replicated empty draft records for read/scan load only, not 800 actual completed developments",
+        "interpretation": "Active records remain linearly accumulating; no global unfinished-task byte cap. Paged output and bounded maintenance do not make full usage scan constant-time.",
+        "boundary": "Single local warm filesystem, no fifty-person concurrency or long-run throughput proof."
+      }
+    },
+    "4": {
+      "samples": [
+        {
+          "version": "0.29.0",
+          "replicate": 1,
+          "phases_seconds": {
+            "prepare_common_fixture": 0.183018458,
+            "scoped_authorization": 0.05457516700000001,
+            "first_actual_check": 0.11672437500000005,
+            "assessment": 0.018494375000000007,
+            "cached_reuse": 0.057721666999999977,
+            "as_of_close": 0.05873329100000002
+          },
+          "total_seconds": 0.48934433400000005,
+          "physical_executions": 1,
+          "cache_reuses": 1,
+          "checks": 1,
+          "criteria": 1,
+          "outcome": "complete fully_supported as-of receipt",
+          "standing_policy_restored": true,
+          "standing_policy_mutations_excluding_common_setup": 0,
+          "scoped_grant_registrations": 1,
+          "plan_registrations": 1,
+          "task_record_bytes": 7098,
+          "log_bytes": 2176,
+          "boundary": "Same source/assertion/target and one physical test. Old tool closes as-of BEFORE restoring ask, avoiding a deliberately disadvantaged extra execution. Common tiny fixture, no human/Agent/Android workload; no net-efficiency claim."
+        },
+        {
+          "version": "0.28.0",
+          "replicate": 1,
+          "phases_seconds": {
+            "prepare_common_fixture": 0.143318875,
+            "temporary_scoped_policy": 0.04929066600000001,
+            "refresh_material_plan": 0.02300608300000001,
+            "first_actual_check": 0.13157579200000002,
+            "assessment": 0.017140916000000006,
+            "cached_reuse": 0.07208395899999998,
+            "as_of_close": 0.05894254199999999,
+            "restore_standing_policy": 0.04133633300000006
+          },
+          "total_seconds": 0.536924958,
+          "physical_executions": 1,
+          "cache_reuses": 1,
+          "checks": 1,
+          "criteria": 1,
+          "outcome": "complete fully_supported as-of receipt",
+          "standing_policy_restored": true,
+          "standing_policy_mutations_excluding_common_setup": 2,
+          "scoped_grant_registrations": 0,
+          "plan_registrations": 2,
+          "task_record_bytes": 4841,
+          "log_bytes": 1027,
+          "boundary": "Same source/assertion/target and one physical test. Old tool closes as-of BEFORE restoring ask, avoiding a deliberately disadvantaged extra execution. Common tiny fixture, no human/Agent/Android workload; no net-efficiency claim."
+        },
+        {
+          "version": "0.28.0",
+          "replicate": 2,
+          "phases_seconds": {
+            "prepare_common_fixture": 0.163329666,
+            "temporary_scoped_policy": 0.03785149999999998,
+            "refresh_material_plan": 0.022910875000000025,
+            "first_actual_check": 0.17991675000000001,
+            "assessment": 0.02010012499999997,
+            "cached_reuse": 0.06836558399999998,
+            "as_of_close": 0.06925370799999997,
+            "restore_standing_policy": 0.05129725000000007
+          },
+          "total_seconds": 0.6132064580000001,
+          "physical_executions": 1,
+          "cache_reuses": 1,
+          "checks": 1,
+          "criteria": 1,
+          "outcome": "complete fully_supported as-of receipt",
+          "standing_policy_restored": true,
+          "standing_policy_mutations_excluding_common_setup": 2,
+          "scoped_grant_registrations": 0,
+          "plan_registrations": 2,
+          "task_record_bytes": 4841,
+          "log_bytes": 1027,
+          "boundary": "Same source/assertion/target and one physical test. Old tool closes as-of BEFORE restoring ask, avoiding a deliberately disadvantaged extra execution. Common tiny fixture, no human/Agent/Android workload; no net-efficiency claim."
+        },
+        {
+          "version": "0.29.0",
+          "replicate": 2,
+          "phases_seconds": {
+            "prepare_common_fixture": 0.153675375,
+            "scoped_authorization": 0.055659458999999994,
+            "first_actual_check": 0.113766917,
+            "assessment": 0.01813999999999999,
+            "cached_reuse": 0.058754709000000016,
+            "as_of_close": 0.05282929200000003
+          },
+          "total_seconds": 0.45289825,
+          "physical_executions": 1,
+          "cache_reuses": 1,
+          "checks": 1,
+          "criteria": 1,
+          "outcome": "complete fully_supported as-of receipt",
+          "standing_policy_restored": true,
+          "standing_policy_mutations_excluding_common_setup": 0,
+          "scoped_grant_registrations": 1,
+          "plan_registrations": 1,
+          "task_record_bytes": 7098,
+          "log_bytes": 2176,
+          "boundary": "Same source/assertion/target and one physical test. Old tool closes as-of BEFORE restoring ask, avoiding a deliberately disadvantaged extra execution. Common tiny fixture, no human/Agent/Android workload; no net-efficiency claim."
+        },
+        {
+          "version": "0.29.0",
+          "replicate": 3,
+          "phases_seconds": {
+            "prepare_common_fixture": 0.13314066600000002,
+            "scoped_authorization": 0.05304858300000001,
+            "first_actual_check": 0.11808445800000003,
+            "assessment": 0.018503207999999993,
+            "cached_reuse": 0.05771220799999999,
+            "as_of_close": 0.05359154199999999
+          },
+          "total_seconds": 0.434150459,
+          "physical_executions": 1,
+          "cache_reuses": 1,
+          "checks": 1,
+          "criteria": 1,
+          "outcome": "complete fully_supported as-of receipt",
+          "standing_policy_restored": true,
+          "standing_policy_mutations_excluding_common_setup": 0,
+          "scoped_grant_registrations": 1,
+          "plan_registrations": 1,
+          "task_record_bytes": 7098,
+          "log_bytes": 2176,
+          "boundary": "Same source/assertion/target and one physical test. Old tool closes as-of BEFORE restoring ask, avoiding a deliberately disadvantaged extra execution. Common tiny fixture, no human/Agent/Android workload; no net-efficiency claim."
+        },
+        {
+          "version": "0.28.0",
+          "replicate": 3,
+          "phases_seconds": {
+            "prepare_common_fixture": 0.141895458,
+            "temporary_scoped_policy": 0.038287791000000015,
+            "refresh_material_plan": 0.015543541999999994,
+            "first_actual_check": 0.11154879100000001,
+            "assessment": 0.016411291999999966,
+            "cached_reuse": 0.055336499999999955,
+            "as_of_close": 0.05356454200000005,
+            "restore_standing_policy": 0.039231917000000005
+          },
+          "total_seconds": 0.47202474999999994,
+          "physical_executions": 1,
+          "cache_reuses": 1,
+          "checks": 1,
+          "criteria": 1,
+          "outcome": "complete fully_supported as-of receipt",
+          "standing_policy_restored": true,
+          "standing_policy_mutations_excluding_common_setup": 2,
+          "scoped_grant_registrations": 0,
+          "plan_registrations": 2,
+          "task_record_bytes": 4841,
+          "log_bytes": 1027,
+          "boundary": "Same source/assertion/target and one physical test. Old tool closes as-of BEFORE restoring ask, avoiding a deliberately disadvantaged extra execution. Common tiny fixture, no human/Agent/Android workload; no net-efficiency claim."
+        }
+      ],
+      "design": "Alternating order, three independent tiny local tasks per version. Equal assertions/delivery scope, one actual check + one valid reuse. Old closes before restoring ask so no artificial extra execution.",
+      "missing": [
+        "human input/Agent decision time",
+        "Android build/environment workload",
+        "natural workload sample distribution",
+        "net time savings or fees"
+      ]
+    }
+  },
+  "query_fix": {
+    "status": "local candidate, not released or installed",
+    "scope": "CLI detail default uses existing character page; row queries retain20, explicit limits and16KiB output cap unchanged",
+    "execution_protocol_unchanged": true,
+    "contract": 5,
+    "runtime_files": 15,
+    "new_tests": 3,
+    "full_suite": 289,
+    "before_after_frozen_inputs_match": true
+  },
+  "scope_limits": [
+    "Fixed synthetic cases, not blind testing",
+    "New isolated context is not natural host compression",
+    "Receipt ages simulated, not naturally observed retention",
+    "Tiny local tasks do not establish net Android/Agent/human efficiency",
+    "800 generated draft records are load fixtures, not 800 developed requirements or fifty-person concurrency",
+    "No business tasks, personal permissions or daily skill changed; no push/release/install in this evaluation"
+  ],
+  "finding_decisions": [
+    {
+      "finding": "CLI detail inherited20 row limit as20 characters",
+      "decision": "Correct localized query default; no new storage, review or execution branch"
+    },
+    {
+      "finding": "PATH difference invalidated untouched label check",
+      "decision": "Retain conservative protection for now. Investigate caller/environment needs before narrower binding; no raw environment credentials persisted."
+    },
+    {
+      "finding": "Unfinished task count/total bytes can grow without global bound",
+      "decision": "Known deliberate preservation boundary. Current page/rotation bounds do not cap total active data; no automatic deletion or invented per-task limit."
+    }
+  ],
+  "phase_two_complete": false
+}

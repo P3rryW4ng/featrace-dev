@@ -1,0 +1,21 @@
+{
+  "outcome": "complete fully_supported",
+  "original_facts_all_fields_unchanged": true,
+  "standing_policy_unchanged": true,
+  "original_failure_explicitly_resolved": true,
+  "new_physical_checks": 2,
+  "old_fact_reuses": 0,
+  "task_approval_reuses": 1,
+  "new_label_once_grant": 1,
+  "extra_label_check_reason": "Independent agent environment differs in PATH digest; parent environment still matches original label fact. Conservative environmental invalidation, not mere context-loss rerun.",
+  "environment_keys_differ": [
+    "PATH"
+  ],
+  "original_environment_values_retained": false,
+  "friction": [
+    "detail facts without criterion refused CRITERION_UNKNOWN",
+    "CLI detail default limit is 20 characters while function default is 4000; agent used explicit limit/pagination",
+    "repair before refreshed plan refused SCOPE_REVIEW_REQUIRED"
+  ],
+  "boundary": "Fresh isolated context without prior chat, not a natural compression event. Synthetic task, not business migration."
+}

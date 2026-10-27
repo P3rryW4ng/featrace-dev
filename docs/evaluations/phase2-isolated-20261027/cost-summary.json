@@ -1,0 +1,38 @@
+{
+  "0.28.0": {
+    "total_seconds": [
+      0.5369,
+      0.6132,
+      0.472
+    ],
+    "median_seconds": 0.536924958,
+    "task_record_bytes": [
+      4841,
+      4841,
+      4841
+    ],
+    "physical_per_task": 1,
+    "reused_per_task": 1,
+    "plan_registrations": 2,
+    "policy_mutations": 2,
+    "grant_registrations": 0
+  },
+  "0.29.0": {
+    "total_seconds": [
+      0.4893,
+      0.4529,
+      0.4342
+    ],
+    "median_seconds": 0.45289825,
+    "task_record_bytes": [
+      7098,
+      7098,
+      7098
+    ],
+    "physical_per_task": 1,
+    "reused_per_task": 1,
+    "plan_registrations": 1,
+    "policy_mutations": 0,
+    "grant_registrations": 1
+  }
+}

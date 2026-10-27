@@ -1,0 +1,25 @@
+{
+  "real_process_parent_sigkill": {
+    "parent_returncode": -9,
+    "child_started": true,
+    "physical_attempts": 2,
+    "latest_status": "unavailable",
+    "latest_reason": "EXECUTION_RESERVED_OUTCOME_UNKNOWN",
+    "old_pass_unchanged": true,
+    "close_refused": "DELIVERY_BLOCKED",
+    "boundary": "Parent force-killed after real child start; child allowed to finish after 1.5 seconds. No invented final result. Not orphan-reaping or disk-failure proof."
+  },
+  "lost_log_spent_grant": {
+    "actual_refusal": "INPUT_MISSING",
+    "physical_attempts": 1,
+    "original_fact_retained": true,
+    "eligible": false,
+    "preexecution_requests_refused": 2,
+    "boundary": "Missing original log refuses before a new process; no hidden re-certification."
+  },
+  "evaluation_error": {
+    "first_stage2_run": "failed in the harness, not all-pass",
+    "cause": "Expected OPERATION_POLICY_ASK for missing log, but actual earlier guard returns INPUT_MISSING. Expected invariant is refusal/no execution, which held.",
+    "correction": "Inspected preserved tasks, performed one diagnostic refusal request, and collected existing results; did not rerun the SIGKILL or passing test to erase the first harness failure."
+  }
+}

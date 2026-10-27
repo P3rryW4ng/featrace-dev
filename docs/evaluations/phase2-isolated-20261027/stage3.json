@@ -1,0 +1,42 @@
+{
+  "cross_task_cleanup": {
+    "unknown_refusal": "CLEANUP_UNKNOWN_ARTIFACT",
+    "refusal_preserved_all_bytes": true,
+    "eligible_task_forgotten": true,
+    "other_task_external_original_code_preserved": true,
+    "simulated_receipt_age_days": 8,
+    "boundary": "Receipt age is explicitly simulated; not naturally observed eight days."
+  },
+  "deferred_issue_survives": {
+    "lost_handoff_refusal": "DEFERRAL_HANDOFF_UNAVAILABLE",
+    "record_forgotten_after_handoff_restored": true,
+    "original_failure_id_conditions_object_and_evidence_identity_preserved": true,
+    "boundary": "All promises excluded; this fixture certifies no supported delivery and is not a repaired bug. The injected failure fixture only tests preservation/refusal semantics.",
+    "failure_setup": "Seeded synthetic negative-observation metadata for cleanup/handoff reference testing; not a physically reproduced product malfunction."
+  },
+  "task_population": {
+    "samples": [
+      {
+        "task_count": 200,
+        "storage_seconds": 0.002447708999999909,
+        "storage_output_bytes": 2980,
+        "total_record_bytes": 198800,
+        "page_items": 20,
+        "maintenance_processed": 25,
+        "active_deleted": 0
+      },
+      {
+        "task_count": 800,
+        "storage_seconds": 0.006641249999999932,
+        "storage_output_bytes": 2980,
+        "total_record_bytes": 795200,
+        "page_items": 20,
+        "maintenance_processed": 25,
+        "active_deleted": 0
+      }
+    ],
+    "fixture_kind": "Replicated empty draft records for read/scan load only, not 800 actual completed developments",
+    "interpretation": "Active records remain linearly accumulating; no global unfinished-task byte cap. Paged output and bounded maintenance do not make full usage scan constant-time.",
+    "boundary": "Single local warm filesystem, no fifty-person concurrency or long-run throughput proof."
+  }
+}

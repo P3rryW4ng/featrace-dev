@@ -1,0 +1,100 @@
+{
+  "status": "manual_review_completed",
+  "scanner_status": "review_needed",
+  "files": [
+    "docs/evaluations/phase2-isolated-20261027/cost-summary.json",
+    "docs/evaluations/phase2-isolated-20261027/full.log",
+    "docs/evaluations/phase2-isolated-20261027/query-cli-probe.json",
+    "docs/evaluations/phase2-isolated-20261027/query-protocol.json",
+    "docs/evaluations/phase2-isolated-20261027/results.json",
+    "docs/evaluations/phase2-isolated-20261027/resume-report.md",
+    "docs/evaluations/phase2-isolated-20261027/resume-rubric.json",
+    "docs/evaluations/phase2-isolated-20261027/stage1.json",
+    "docs/evaluations/phase2-isolated-20261027/stage2.json",
+    "docs/evaluations/phase2-isolated-20261027/stage3.json",
+    "docs/evaluations/phase2-isolated-20261027/stage4.json",
+    "docs/evaluations/phase2-isolated-20261027/suite-inputs-after.json",
+    "docs/evaluations/phase2-isolated-20261027/suite-inputs-before.json",
+    "docs/reviews/2026-10-27-phase2-isolated-result.md",
+    "tests/test_query_defaults.py",
+    "MAINTAINER.md",
+    "ROADMAP.md",
+    "docs/capabilities.md",
+    "docs/decisions/architecture.md",
+    "docs/usage.md",
+    "docs/validation.md",
+    "skills/dev/core/scripts/task_workflow.py"
+  ],
+  "sha256": {
+    "docs/evaluations/phase2-isolated-20261027/cost-summary.json": "3a175dfa85a28766d9f37d58e43ba2ea11b4e51477881d6060375e8ce2705547",
+    "docs/evaluations/phase2-isolated-20261027/full.log": "221b8532629a38cf13590f50e4386b63ce82020c96c4e5a8f5a40b01975816da",
+    "docs/evaluations/phase2-isolated-20261027/query-cli-probe.json": "e66c4d84483e4e5ed531e7463876956a27ab0636e23072b5f94d90e2a9669adc",
+    "docs/evaluations/phase2-isolated-20261027/query-protocol.json": "c507fea6d0ee0ebcb177f1139ae02ec993b63f7e307cfdfef5e632ee34b99882",
+    "docs/evaluations/phase2-isolated-20261027/results.json": "c9a07571a0355963597072e56291ee3cd66d10ff22dc2903dc52b9c4c48f0ca9",
+    "docs/evaluations/phase2-isolated-20261027/resume-report.md": "8dc07907df0f13a9b5b14f75840f7b0f7aac92e95b23d649dba2c0c4a7d056ed",
+    "docs/evaluations/phase2-isolated-20261027/resume-rubric.json": "5f68978f02c285ecc817ba494e5189c49cf12bd1b6aee7451c808e6d60a43fae",
+    "docs/evaluations/phase2-isolated-20261027/stage1.json": "1ad44a087f84f980a31ab7de251e0d31f2dfa4c015f462989fe0953168950492",
+    "docs/evaluations/phase2-isolated-20261027/stage2.json": "28719e9c0a2ef19aca19626001fec3efa5f074455944c1989412daf26917a01b",
+    "docs/evaluations/phase2-isolated-20261027/stage3.json": "31969743b4befaaf712692b293e928f216e8dce0f78ae54e5c3e76e7471bffc2",
+    "docs/evaluations/phase2-isolated-20261027/stage4.json": "871a2fe357923badd1392bafdc18b782bf1ca1158f143c0d6e2884de2ea05865",
+    "docs/evaluations/phase2-isolated-20261027/suite-inputs-after.json": "985d6bdb0b5319d55c085b51511467555dc5ef6da3c3f963bce3c72d4e4b51bb",
+    "docs/evaluations/phase2-isolated-20261027/suite-inputs-before.json": "985d6bdb0b5319d55c085b51511467555dc5ef6da3c3f963bce3c72d4e4b51bb",
+    "docs/reviews/2026-10-27-phase2-isolated-result.md": "dac421077835baa298e56f4308de748e387daa82485316ac1510ca3a7e771acb",
+    "tests/test_query_defaults.py": "11520e87d9f90eda4ddca800a4a5f90502b3e6909a6f3f8e804868aa04395ade",
+    "MAINTAINER.md": "bce2f70fca1f1e45574adeb0cbe3dafc003804cb8602c5fad244a183c906cd74",
+    "ROADMAP.md": "3b86e5b5ba7a0ced7ffb1576274fdfac052393cbbc753ae35b54812a89371e52",
+    "docs/capabilities.md": "616491b79a138a40c40bace6f1b53655ce12c0df033205d94aa119743689f752",
+    "docs/decisions/architecture.md": "294741b101797fd875b8ed64d8cdb13614415e100dcac982cf992abb962d52d2",
+    "docs/usage.md": "433a22eaa89f6841113d15db1f238dfeddff22713a093b921fa60c3d394e6af3",
+    "docs/validation.md": "389f929dc979a7661583783ec782354aca50ec611bec65b36b0646afc97bc4da",
+    "skills/dev/core/scripts/task_workflow.py": "67fcf5e6a4512e4985886c8de263dd8113659a9d935bd533291b0ff1a8f7e1f5"
+  },
+  "dispositions": [
+    {
+      "target": 22,
+      "line": 510,
+      "column": 33,
+      "kind": "credential_candidate",
+      "confidence": "candidate",
+      "file": "skills/dev/core/scripts/task_workflow.py",
+      "disposition": "Inspected source dictionary key or local variable reference, not a credential value. Existing unchanged authorization implementation; no scanner suppression."
+    },
+    {
+      "target": 22,
+      "line": 535,
+      "column": 23,
+      "kind": "credential_candidate",
+      "confidence": "candidate",
+      "file": "skills/dev/core/scripts/task_workflow.py",
+      "disposition": "Inspected source dictionary key or local variable reference, not a credential value. Existing unchanged authorization implementation; no scanner suppression."
+    },
+    {
+      "target": 22,
+      "line": 542,
+      "column": 105,
+      "kind": "credential_candidate",
+      "confidence": "candidate",
+      "file": "skills/dev/core/scripts/task_workflow.py",
+      "disposition": "Inspected source dictionary key or local variable reference, not a credential value. Existing unchanged authorization implementation; no scanner suppression."
+    },
+    {
+      "target": 22,
+      "line": 544,
+      "column": 99,
+      "kind": "credential_candidate",
+      "confidence": "candidate",
+      "file": "skills/dev/core/scripts/task_workflow.py",
+      "disposition": "Inspected source dictionary key or local variable reference, not a credential value. Existing unchanged authorization implementation; no scanner suppression."
+    },
+    {
+      "target": 22,
+      "line": 566,
+      "column": 94,
+      "kind": "credential_candidate",
+      "confidence": "candidate",
+      "file": "skills/dev/core/scripts/task_workflow.py",
+      "disposition": "Inspected source dictionary key or local variable reference, not a credential value. Existing unchanged authorization implementation; no scanner suppression."
+    }
+  ],
+  "boundary": "Selected synthetic evidence and source/doc changes only. No raw tasks, business project data, actual environment values, device or personal credentials archived. Bounded scan is not general privacy certification."
+}

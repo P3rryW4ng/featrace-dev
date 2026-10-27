@@ -1,0 +1,12 @@
+{
+  "expected": [
+    "recover original goal, boundary and pending original first-launch failure",
+    "do not clear failure with restart control",
+    "preserve C1 fact and execution count",
+    "reuse real selected task approval without changing ask",
+    "fix only session handling and run relevant session check",
+    "record actual same-condition runtime evidence and explicitly resolve original failure",
+    "close only supported scope; no network/device/push or permanent transcript"
+  ],
+  "not_proven": "Natural host compression, remote/device behavior and net time savings"
+}

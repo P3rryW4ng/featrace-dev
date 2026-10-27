@@ -1172,7 +1172,7 @@ def main():
     parser.add_argument('--status',choices=['passed','failed','unavailable'],default='passed')
     parser.add_argument('--evidence',action='append',default=[]);parser.add_argument('--verdict');parser.add_argument('--reason')
     parser.add_argument('--independent',action='store_true');parser.add_argument('--provenance')
-    parser.add_argument('--limitation',action='append',default=[]);parser.add_argument('--offset',type=int,default=0);parser.add_argument('--limit',type=int,default=20)
+    parser.add_argument('--limitation',action='append',default=[]);parser.add_argument('--offset',type=int,default=0);parser.add_argument('--limit',type=int)
     parser.add_argument('--blocker-offset',type=int,default=0);parser.add_argument('--apply',action='store_true');parser.add_argument('--timezone',default='UTC')
     parser.add_argument('--forget',action='store_true');parser.add_argument('--handoff')
     parser.add_argument('--fact',action='append',default=[]);parser.add_argument('--producer')
@@ -1183,6 +1183,7 @@ def main():
     parser.add_argument('--mode',choices=['once','task']);parser.add_argument('--expires-at')
     parser.add_argument('--role',choices=['input','evidence'],default='evidence')
     a=parser.parse_args();root=project(a.root)
+    if a.limit is None:a.limit=4000 if a.action=='detail' else 20
     if a.action=='policy':out=task_policy.prepare(root,read_json(Path(a.json)),git)
     elif a.action=='storage':out=storage(root,a.offset,a.limit)
     elif a.action=='maintain':out=maintain(root,limit=a.limit)

@@ -1,0 +1,16 @@
+{
+  "formal0290": {
+    "text_characters": 20,
+    "total_characters": 120,
+    "next_offset": 20,
+    "complete": false
+  },
+  "candidate": {
+    "text_characters": 120,
+    "total_characters": 120,
+    "next_offset": null,
+    "complete": true
+  },
+  "task_bytes_unchanged": true,
+  "business_tests_rerun": 0
+}
