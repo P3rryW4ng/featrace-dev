@@ -1,0 +1,11 @@
+{
+  "scope": "Compaction idempotence and actual changed count",
+  "passed": 293,
+  "seconds": 108.904,
+  "new_tests": 4,
+  "frozen_inputs_match": true,
+  "execution_protocol_unchanged": true,
+  "negative_guards": "Interrupted output cleanup and unknown files still checked; explicit forget remains",
+  "published": false,
+  "daily_install": "unchanged 0.29.0 / 15 files"
+}

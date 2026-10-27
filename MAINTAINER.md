@@ -136,3 +136,5 @@ B1授权分离、B2选定输入/来源统一、B3条件式影响调查已完成�
 [评审](docs/reviews/2026-10-27-environment-lifecycle-review.md)、[因果结果](docs/evaluations/environment-lifecycle-review-20261027/results.json)：确认纯检查的环境保守失效，也确认绝对解释器仍可通过PATH调用真实子工具；不支持全局忽略环境。建议严格默认、有限差异诊断，只有真正隔离环境的检查才缩小绑定。动态工具字节用已有external_inputs声明，PATH摘要不等于工具链身份。
 
 治理确认compact重复维护会再次写盘并重复计cleaned；建议独立幂等性小修。完成项已有显式forget，但未完成任务没有“不交付的明确终止”生命周期；拟设计retire与交接保护，经批准后才改合同。manual/compact/forget不同，不宣传7天全清。新运行/测试/CC未改，未重跑289项；源码冻结一致。
+
+2026-10-27开发第一项完成：重复compact无任务写盘，maintain只计实际变化，保留中断/交接/未知文件/forget保护；新增4反例、完整293/293，冻结输入与执行协议核对。候选未发布，CC仍0.29.0。见[第一项证据](docs/evaluations/maintenance-diagnostics-build-20261027/step1-result.json)。环境诊断下一项开发。

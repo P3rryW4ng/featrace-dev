@@ -974,14 +974,18 @@ def cleanup(root,ident,apply=False,timezone_name='UTC',forget=False,handoff=None
                 with path.open('rb') as stream:header=stream.readline(256)
                 if header!=('Featrace task '+ident+' attempt '+path.stem+'\n').encode():fail('CLEANUP_UNKNOWN_ARTIFACT')
                 candidates.append(path)
+        receipt=dict(doc['receipt']);receipt['evidence_retention']='local logs expired by explicit cleanup'
+        retained={'task_contract':doc['task_contract'],'id':ident,'state':'complete','receipt':receipt}
+        if doc.get('corrections'):
+            retained['corrections']=[{k:v for k,v in e.items() if k not in ('prior_claims','prior_checks')} for e in doc['corrections']]
+        # Ownership/handoff checks above also apply to interrupted or previously compacted tasks.
+        same={k:v for k,v in doc.items() if k not in ('updated_at','checksum')}==retained
+        changes_required=bool(forget or not same or folder.exists())
         result={'id':ident,'eligible':True,'apply':apply,'forget':forget,'owned_logs':sum(p.suffix=='.log' for p in candidates),'owned_attachments':sum(p.suffix!='.log' for p in candidates),
+                'changes_required':changes_required,'changed':bool(apply and changes_required),
                 'boundary':'Only runner-owned logs and registered copies; originals and external evidence are not removed.'}
-        if apply:
+        if apply and changes_required:
             # Keep a valid completed task if cleanup is interrupted; update receipt BEFORE deleting logs.
-            receipt=dict(doc['receipt']);receipt['evidence_retention']='local logs expired by explicit cleanup'
-            retained={'task_contract':doc['task_contract'],'id':ident,'state':'complete','receipt':receipt}
-            if doc.get('corrections'):
-                retained['corrections']=[{k:v for k,v in e.items() if k not in ('prior_claims','prior_checks')} for e in doc['corrections']]
             save(root,{**retained,'attachments':doc.get('attachments',{})})
             for path in candidates:path.unlink()
             if folder.exists():folder.rmdir()
@@ -1071,8 +1075,8 @@ def maintain(root,automatic=False,limit=25):
                 if doc['state']!='complete':continue
                 retention=doc['receipt'].get('retention',policy)
                 if retention['cleanup']=='manual':continue
-                cleanup(root,path.stem,True,retention['timezone'],retention['cleanup']=='forget',retention['handoff'])
-                done+=1
+                result=cleanup(root,path.stem,True,retention['timezone'],retention['cleanup']=='forget',retention['handoff'])
+                done+=int(result['changed'])
             except (ValueError,OSError,KeyError) as exc:
                 code=str(exc) if isinstance(exc,TaskError) else 'CLEANUP_UNAVAILABLE'
                 if code!='RETENTION_NOT_ELAPSED':
