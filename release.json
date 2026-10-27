@@ -1,21 +1,21 @@
 {
   "channel": "release",
-  "version": "0.29.0",
+  "version": "0.30.0",
   "files": {
-    "SKILL.md": "e8ce951ca6202a1acddda416255e63fd0a2a12ed122fd6758eb6edeaa5086120",
+    "SKILL.md": "332a6440a3783d7123272df428d0106608dbae802ca9e88ab1e2d7cf925da9f2",
     "agents/openai.yaml": "237666967ab617f4452194694fc91dc1fcbb3b3beda59172c74572525117a009",
     "core/references/figma-design.md": "8828473c28557e33fbb07ab5416be34e3c13c5b6f35a9eff94f14f1f6e8e12ff",
     "core/references/output-privacy.md": "8c1d43834acfb41ee1d125bdc1ec37eb97cedca3d9afbff3b408658f81c8fab3",
     "core/references/project-compatibility.md": "76668c91541d65a92b4e8308d385f8937c8d1f349a3680e323e11f4e09e4ff3a",
-    "core/references/task-workflow.md": "3d667d930404ffbb7a6f99b759f5c4965b12c8a71cac0fd254c3d4989e82bce9",
+    "core/references/task-workflow.md": "f4a3cae3742f55a3652ff00bf0b6b97c26cd2037d4a50a5aaa2e9695b6c32d9f",
     "core/scripts/output_privacy.py": "54be161d474b4bc55ae1a28207de80f4077f0093172114b7079a12ce672fee6e",
     "core/scripts/task_assets.py": "ed67314ae55fcd3ed1ad82916e0f7dc8a641928b3c52f84b2b6984c4195aed97",
     "core/scripts/task_authorization.py": "98ad364d9a24db6569d1a4a9e816646e5c2f72014713db0fe7c6534b7e0ae920",
-    "core/scripts/task_execution.py": "551aef76c10acceed2e047059539fc87ba7253e64375fa9203cb29a27b9079ae",
+    "core/scripts/task_execution.py": "fd556dc91b09afc65d46d094993ea3fbf9f49c81975b755bcdff909dd52f6d85",
     "core/scripts/task_failures.py": "3f948382ce6453878f219346689f06f1617a32f908f7459a8f739dc3c04bef09",
-    "core/scripts/task_inputs.py": "12719743c2725bda38fb58f7c79ae9adc7ee66eb7da2ae618f466110189d1fad",
+    "core/scripts/task_inputs.py": "39f997cfdb8e1a6ed59ec94a1e3befe715f8f7944c16aa3a623bb3419cd2453e",
     "core/scripts/task_policy.py": "38d241d0c498dc7797ae778259ba7114373f9604662b22573f6335e95a3ac194",
-    "core/scripts/task_workflow.py": "5f32a0246cdaedb7ce870e78a1d06b55e440c11fe4399aee6858780a1ef08cb5",
+    "core/scripts/task_workflow.py": "d0b11f21682f0223faa9ca9d69fd70b9b6cab64851d3f565fdeda0633a7fc78e",
     "profiles/android/PROFILE.md": "b4ef9f54763f9e8c0ef51f910daf14e941a27343f01dde2edd6ea960707305ab"
   },
   "installer_sha256": "647869484aae3a2fa8963d4ac10831baf124dce2a75aeb1f7f4a02b1697b4cca"

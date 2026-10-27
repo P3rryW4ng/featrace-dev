@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.30.0 — 2026-10-27
+
+- Introduce task contract6. Optional controlled execution passes only selected present host keys and a fixed absolute PATH; the same starting snapshot binds identity and child launch. Resolve and bind the actual executable, apply project policy to selected/resolved tool paths, and preserve post-check drift, deny and freshness. Inherit remains default; this is not an OS sandbox or dynamic dependency discovery.
+- Add explicit non-delivery retire for unfinished/correcting work. Preserve failures, prior receipt/open correction, necessary issue handoff and code disposition; block ordinary writers and count retired separately. Retention starts at actual retirement, with existing ownership/handoff/idempotence protections. No automatic cancellation, rollback, revival or migration.
+- Persist minimal starting command/target definitions so a later same-ID plan cannot relabel an old failed attempt. Missing original definitions remain unknown.
+- Add read-only finite identity diagnostics separating old-result applicability from new permission. Correct detail pagination defaults; avoid repeated compaction writes and count actual cleanup changes.
+- Full343/343 regression with frozen source/test inputs; independent source findings and one follow-up attribution residue fixed and rechecked. A fresh-context synthetic trial physically ran two checks, preserved the failure and retired without delivery; two real entry refusals retained. Not natural compression or equal-quality net-efficiency evidence.
+- Minor release for changed execution/lifecycle contract;15 runtime files. Contracts1–5 stay on pinned tools. No old business replay or phase-two completion.
+
 ## 0.29.0 — 2026-10-27
 
 - Separate standing policy, current scoped approval and retained original execution authority in task contract5. Explicit once/task grants bind the selected operation and expiry without rewriting ask; deny, rule-source changes and host limits still apply. Reserve an unavailable attempt before launching, preserving uncertainty across interruptions.
