@@ -1,0 +1,17 @@
+{
+  "scope": "Finite read-only execution reuse diagnosis",
+  "passed": 306,
+  "seconds": 112.393,
+  "new_tests": 13,
+  "frozen_inputs_match": true,
+  "collector_primary_result_shape_unchanged": true,
+  "initial_execution_protocol_changed": true,
+  "diagnostic_hash_count_per_fact": 9,
+  "historical_backfill": false,
+  "raw_environment_values_persisted": false,
+  "input_scan_count_per_selected_diagnostic": 1,
+  "independent_source_review": "No confirmed findings; reviewer did not execute tests.",
+  "actual_installed_cli": "one physical execution, two read-only queries; original task unchanged by queries",
+  "formal_daily_install": "0.29.0 / 15 files unchanged",
+  "published": false
+}

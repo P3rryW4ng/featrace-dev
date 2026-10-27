@@ -1,0 +1,26 @@
+{
+  "initial_protocol_changed": true,
+  "old": {
+    "version": 2,
+    "implementation": {
+      "task_execution.py": "551aef76c10acceed2e047059539fc87ba7253e64375fa9203cb29a27b9079ae",
+      "task_inputs.py": "12719743c2725bda38fb58f7c79ae9adc7ee66eb7da2ae618f466110189d1fad",
+      "task_policy.py": "38d241d0c498dc7797ae778259ba7114373f9604662b22573f6335e95a3ac194",
+      "task_authorization.py": "98ad364d9a24db6569d1a4a9e816646e5c2f72014713db0fe7c6534b7e0ae920",
+      "task_assets.py": "ed67314ae55fcd3ed1ad82916e0f7dc8a641928b3c52f84b2b6984c4195aed97"
+    },
+    "workflow_execution": "625745f8cabc89b7bde51c89e96dac3fa699bee3582bf0070464cb7eb3e2c048"
+  },
+  "current": {
+    "version": 2,
+    "implementation": {
+      "task_execution.py": "551aef76c10acceed2e047059539fc87ba7253e64375fa9203cb29a27b9079ae",
+      "task_inputs.py": "4af96b11cde79d9d0182c0bc7471206d54856a39a19e58bca1f337d98912771d",
+      "task_policy.py": "38d241d0c498dc7797ae778259ba7114373f9604662b22573f6335e95a3ac194",
+      "task_authorization.py": "98ad364d9a24db6569d1a4a9e816646e5c2f72014713db0fe7c6534b7e0ae920",
+      "task_assets.py": "ed67314ae55fcd3ed1ad82916e0f7dc8a641928b3c52f84b2b6984c4195aed97"
+    },
+    "workflow_execution": "3364b06a285383c73194e42c24578e176a0a60ccff7bd637090d4b473927d057"
+  },
+  "boundary": "New actual input collection/provenance code, no predecessor exemption. Old active tasks stay pinned."
+}

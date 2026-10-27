@@ -58,7 +58,7 @@ def covers(name, paths, sets):
     return name in paths or any((item['kind'] in ('tree','git_tree') and within(name,item['path'])) or item['path']==name for item in sets)
 
 
-def signature(root, paths, sets, external, env_keys):
+def signature(root, paths, sets, external, env_keys, diagnostics=None):
     """Hash selected current bytes and membership, with bounded transient enumeration."""
     validate_sets(sets);validate_sets(external,True)
     if not isinstance(env_keys,list) or len(env_keys)>64 or any(not isinstance(k,str) or not k for k in env_keys):reject('ENV_KEYS_INVALID')
@@ -151,5 +151,9 @@ def signature(root, paths, sets, external, env_keys):
         include(resolved,'external:'+str(resolved),external_root=resolved if resolved.is_dir() else resolved.parent)
     if names and git_paths(root)!=names:reject('EXECUTION_MEMBERSHIP_MOVED')
     # Persist the digest only: environment values may contain credentials.
-    emit(['environment',[(k,os.environ.get(k)) for k in sorted(set(DEFAULT_ENV)|set(env_keys))]])
+    environment=['environment',[(k,os.environ.get(k)) for k in sorted(set(DEFAULT_ENV)|set(env_keys))]]
+    if diagnostics is not None:
+        diagnostics.update({'selected_inputs':aggregate.hexdigest(),
+                            'environment':hashlib.sha256(json.dumps(environment,sort_keys=True,separators=(',',':'),ensure_ascii=True).encode()).hexdigest()})
+    emit(environment)
     return {'sha256':aggregate.hexdigest(),'entries':count,'bytes':total}

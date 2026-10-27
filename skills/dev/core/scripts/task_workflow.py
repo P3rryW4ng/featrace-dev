@@ -32,6 +32,7 @@ MAX_OUTPUT = 16384
 MAX_INPUTS = 512
 ID = re.compile(r'[A-Za-z0-9][A-Za-z0-9_.-]{0,79}\Z')
 CATEGORIES = {'presentation', 'interaction', 'state', 'interface', 'shared', 'device', 'configuration'}
+IDENTITY_COMPONENTS = ('selected_inputs','environment','input_assets','executable','argv','target','constraints','policy','protocol')
 
 class TaskError(ValueError):
     pass
@@ -417,7 +418,7 @@ def check_policy(root,doc,check,enforce=False):
                                  check.get('input_sets',[]))
 
 
-def check_identity_payload(root,doc,check):
+def check_identity_payload(root,doc,check,components=None):
     task_assets.command(root,doc,check,fail)
     command=check['argv'][0]
     if '/' in command:executable=Path(command) if Path(command).is_absolute() else root/command
@@ -428,14 +429,63 @@ def check_identity_payload(root,doc,check):
         executable=Path(found)
     executable=executable.resolve()
     runner=file_identity(executable.parent,executable.name,True)
-    return {'argv':check['argv'],'inputs':task_inputs.signature(root,check['inputs'],check.get('input_sets',[]),check.get('external_inputs',[]),check.get('env_keys',[])),
+    input_parts={}
+    inputs=task_inputs.signature(root,check['inputs'],check.get('input_sets',[]),check.get('external_inputs',[]),check.get('env_keys',[]),input_parts if components is not None else None)
+    payload={'argv':check['argv'],'inputs':inputs,
             'input_assets':task_assets.refs(root,doc,check.get('input_assets',[]),fail),
             'executable':{'path':str(executable),'identity':runner},'environment':check['environment'],
             'constraints':files(root,selected_constraints(doc['plan'],check=check),True),
             'policy':task_authorization.material(check_policy(root,doc,check)),'protocol':task_execution.protocol(__file__)}
+    if components is not None:
+        components.update(input_parts)
+        components.update({key:digest(payload['environment' if key=='target' else key]) for key in IDENTITY_COMPONENTS if key not in input_parts})
+    return payload
 
-def check_stamp(root,doc,check):
-    return digest(check_identity_payload(root,doc,check))
+def check_stamp(root,doc,check,components=None):
+    return digest(check_identity_payload(root,doc,check,components))
+
+
+def check_diagnostic(root,doc,check):
+    """Bounded as-of explanation, never an authority or reuse decision input."""
+    record=doc.get('facts',{}).get(doc.get('executions',{}).get(check['id']))
+    out={'check':check['id'],'original_execution':record['id'] if record else None,
+         'reuse':{'eligible':False,'reasons':[],'changed_components':[],'historical_components':'not_collected'},
+         'new_execution_permission':'not_evaluated',
+         'boundary':'Read-only as-of diagnostic; no execution, grant consumption, historical backfill or delivery certification. Actual runner/host restrictions still apply.'}
+    known={'PLAN_REQUIRED','SCOPE_REVIEW_REQUIRED','SCOPE_UNKNOWN','PROJECT_POLICY_REQUIRED','APPLICABLE_RULE_CHANGED',
+           'EXECUTION_INPUT_MISSING','EXECUTION_SET_MISSING','EXTERNAL_INPUT_MISSING','INPUT_ASSET_CHANGED'}
+    try:
+        task_policy.check_local(root,git);execution_ready(root,doc,check=check)
+        components={};stamp=check_stamp(root,doc,check,components)
+    except (ValueError,OSError) as exc:
+        out['reuse']['reasons']=[str(exc) if str(exc) in known else 'IDENTITY_UNAVAILABLE']
+        return out
+    reasons=out['reuse']['reasons']
+    if not record:reasons.append('NO_PRIOR_RESULT')
+    else:
+        prior=record.get('identity_components')
+        valid=(isinstance(prior,dict) and set(prior)==set(IDENTITY_COMPONENTS)
+               and all(isinstance(value,str) and re.fullmatch(r'[a-f0-9]{64}',value) for value in prior.values()))
+        if valid:out['reuse']['historical_components']='available'
+        if record['status']!='passed':reasons.append('PRIOR_RESULT_NOT_PASSED')
+        if record['input_digest']!=stamp:
+            reasons.append('IDENTITY_CHANGED')
+            if valid:out['reuse']['changed_components']=[key for key in IDENTITY_COMPONENTS if prior[key]!=components[key]]
+        try:intact=artifact_ok(root,record['artifact'])
+        except (ValueError,OSError):intact=False
+        if not intact:reasons.append('ARTIFACT_UNAVAILABLE')
+        if not timely(check,record) or any(fact_applicability(c,record,check['environment'])=='EXPIRED' for c in doc['plan']['criteria'] if c['id'] in check['covers']):reasons.append('EXPIRED')
+    if check.get('cache',{}).get('mode','content')=='never':reasons.append('CACHE_DISABLED')
+    out['reuse']['eligible']=not reasons
+    if doc['state']=='complete':out['new_execution_permission']='task_complete'
+    else:
+        try:
+            rules=check_policy(root,doc,check)
+            task_authorization.select(doc,check,stamp,digest(task_authorization.material(rules)),authorization_stamp(doc,check),rules,now(),fail)
+            out['new_execution_permission']='available'
+        except (ValueError,OSError) as exc:
+            out['new_execution_permission']={'OPERATION_POLICY_ASK':'approval_required','OPERATION_POLICY_DENIED':'denied'}.get(str(exc),'unavailable')
+    return out
 
 
 def execution_profile(root,doc,check,record,payload=None):
@@ -518,7 +568,8 @@ def run_check(root,ident,check_id,investigate=False):
         check=next((c for c in doc['plan']['checks'] if c['id']==check_id),None)
         if check is None:fail('CHECK_NOT_SELECTED')
         execution_ready(root,doc,check=check,investigate=investigate)
-        stamp=check_stamp(root,doc,check);previous=doc['facts'].get(doc['executions'].get(check_id))
+        identity_components={}
+        stamp=check_stamp(root,doc,check,identity_components);previous=doc['facts'].get(doc['executions'].get(check_id))
         expired=bool(previous and any(fact_applicability(c,previous,check['environment'])=='EXPIRED'
                                       for c in doc['plan']['criteria'] if c['id'] in check['covers']))
         if (previous and not expired and previous['status']=='passed' and previous['input_digest']==stamp
@@ -539,9 +590,9 @@ def run_check(root,ident,check_id,investigate=False):
         revision=git(root,'rev-parse','HEAD').decode().strip()
         source=task_execution.producer(__file__)
         start={'task':ident,'id':aid,'check':check_id,'input_digest':stamp,'input_format':1,
-               'started_at':started,'producer':source,'definition_digest':digest(check),'authorization':authorization}
+               'started_at':started,'producer':source,'definition_digest':digest(check),'authorization':authorization,'identity_components':identity_components}
         reservation={'id':aid,'kind':'command','check':check_id,'status':'unavailable',
-                     'purpose':'investigation' if investigate else 'verification','authorization':authorization,'input_assets':check.get('input_assets',[]),'input_digest':stamp,'definition_digest':digest(check),
+                     'purpose':'investigation' if investigate else 'verification','authorization':authorization,'input_assets':check.get('input_assets',[]),'identity_components':identity_components,'input_digest':stamp,'definition_digest':digest(check),
                      'environment':check['environment'],'producer':source,'git_head_at_start':revision,
                      'started_at':started,'at':started,'exit_code':None,'reason':'EXECUTION_RESERVED_OUTCOME_UNKNOWN',
                      'artifact':{'path':rel,'sha256':'0'*64}}
@@ -563,7 +614,7 @@ def run_check(root,ident,check_id,investigate=False):
             status='unavailable';reason=reason or 'EXECUTION_IDENTITY_UNAVAILABLE'
         ended=now()
         record={'id':aid,'kind':'command','check':check_id,'status':status,
-                'purpose':'investigation' if investigate else 'verification','authorization':authorization,'input_assets':check.get('input_assets',[]),'input_digest':stamp,
+                'purpose':'investigation' if investigate else 'verification','authorization':authorization,'input_assets':check.get('input_assets',[]),'identity_components':identity_components,'input_digest':stamp,
                 'definition_digest':digest(check),'environment':check['environment'],'producer':source,
                 'git_head_at_start':revision,'started_at':started,'at':ended,'exit_code':code}
         if reason:record['reason']=reason
@@ -899,7 +950,7 @@ def view(root,ident,offset=0,limit=20,blocker_offset=0):
     outside=changes(root,doc['baseline']) if doc.get('plan') else []
     owned=set(doc['plan']['scope'])|set(doc['plan']['constraints']) if doc.get('plan') else set()
     return {'outside_scope_change_count':len(set(outside)-owned),'id':ident,'state':'ready' if not blockers else 'blocked' if doc['plan'] else 'draft',
-            'scope_readiness':scope_readiness,
+            'scope_readiness':scope_readiness,'check_details':'detail --section check --check CHECK_ID',
             'total':len(rows),'items':rows[offset:offset+limit], 'next_offset':offset+limit if offset+limit<len(rows) else None,
             'blocker_count':len(blockers),'blockers':blockers[blocker_offset:blocker_offset+25],
             'next_blocker_offset':blocker_offset+25 if blocker_offset+25<len(blockers) else None,
@@ -1092,7 +1143,12 @@ def maintain(root,automatic=False,limit=25):
 def detail(root,ident,section,criterion=None,offset=0,limit=4000):
     if offset<0 or not 1<=limit<=8000:fail('PAGE_INVALID')
     doc=load(root,ident)
-    if section in ('criterion','facts'):
+    if section=='check':
+        if not doc.get('plan'):fail('CHECK_SOURCE_EXPIRED')
+        check=next((c for c in doc['plan']['checks'] if c['id']==criterion),None)
+        if check is None:fail('CHECK_NOT_SELECTED')
+        value=check_diagnostic(root,doc,check)
+    elif section in ('criterion','facts'):
         if not doc.get('plan'):fail('PLAN_REQUIRED')
         c=next((c for c in doc['plan']['criteria'] if c['id']==criterion),None)
         if c is None:fail('CRITERION_UNKNOWN')
@@ -1191,7 +1247,7 @@ def main():
     if a.action=='policy':out=task_policy.prepare(root,read_json(Path(a.json)),git)
     elif a.action=='storage':out=storage(root,a.offset,a.limit)
     elif a.action=='maintain':out=maintain(root,limit=a.limit)
-    elif a.action=='detail':out=detail(root,a.id,a.section,a.criterion,a.offset,min(a.limit,8000))
+    elif a.action=='detail':out=detail(root,a.id,a.section,a.check if a.section=='check' else a.criterion,a.offset,min(a.limit,8000))
     elif a.action=='review-input':out=review_input(root,a.id,a.criterion)
     elif a.action=='code':out=code_query(root,a.id,a.offset,a.limit)
     elif a.action=='begin':out=begin(root,a.id,a.request)
