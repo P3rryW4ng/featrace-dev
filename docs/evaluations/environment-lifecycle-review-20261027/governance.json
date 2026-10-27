@@ -1,0 +1,21 @@
+{
+  "repeated_compaction": {
+    "first_cleaned_count": 1,
+    "second_cleaned_count": 1,
+    "second_changed_record": true,
+    "same_original_completed_at": true,
+    "record_count_after_two": 1,
+    "second_owned_logs": 0,
+    "interpretation": "Already compacted record is rewritten and counted cleaned again. This is repeated bookkeeping, not evidence of repeated deletion or corruption."
+  },
+  "explicit_forget_of_compacted_completion": {
+    "supported": true,
+    "code_preserved": true
+  },
+  "unfinished_task_lifecycle": {
+    "cleanup_refusal": "CLEANUP_REQUIRES_COMPLETE",
+    "record_unchanged": true,
+    "known_public_actions_have_explicit_retire_or_cancel": false,
+    "interpretation": "Retaining an unfinished task is correct; there is no distinct authorized not-delivered terminal lifecycle. Do not fake complete/defer or delete failure to save space."
+  }
+}

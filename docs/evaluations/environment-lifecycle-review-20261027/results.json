@@ -1,0 +1,78 @@
+{
+  "review_date": "2026-10-27",
+  "source_commit": "88c83d3",
+  "runtime_source_changed": false,
+  "tests_changed": false,
+  "full_289_suite_rerun": false,
+  "prior_289_result": "Previous query-default candidate validation; not this review execution",
+  "new_evidence": {
+    "environment": {
+      "pure_absolute_python_path_difference": {
+        "input_digest_changes": true,
+        "actual_result_changes": false,
+        "first_level_interpreter_same": true,
+        "all_declared_file_bytes_same": true,
+        "interpretation": "Conservative environment invalidation is observed for this pure check; not proof arbitrary scripts can omit PATH."
+      },
+      "unused_java_home_for_python": {
+        "input_digest_changes": true,
+        "actual_result_changes": false,
+        "interpretation": "Default environment set spans unrelated toolchains; env_keys only adds keys, cannot narrow."
+      },
+      "same_absolute_python_dynamic_child": {
+        "input_digest_changes": true,
+        "actual_outputs": [
+          "A",
+          "B"
+        ],
+        "first_level_interpreter_same": true,
+        "interpretation": "Dropping PATH globally would remove a real causal input even with an absolute top-level interpreter."
+      },
+      "unchanged_path_changed_child_bytes": {
+        "without_declared_child_input_digest_changes": false,
+        "actual_result_changes": true,
+        "existing_external_inputs_detect_change": true,
+        "interpretation": "PATH value hashing is not nested-toolchain identity. Existing selected external inputs can bind the real child bytes; dynamic read-set completeness is not guaranteed."
+      }
+    },
+    "governance": {
+      "repeated_compaction": {
+        "first_cleaned_count": 1,
+        "second_cleaned_count": 1,
+        "second_changed_record": true,
+        "same_original_completed_at": true,
+        "record_count_after_two": 1,
+        "second_owned_logs": 0,
+        "interpretation": "Already compacted record is rewritten and counted cleaned again. This is repeated bookkeeping, not evidence of repeated deletion or corruption."
+      },
+      "explicit_forget_of_compacted_completion": {
+        "supported": true,
+        "code_preserved": true
+      },
+      "unfinished_task_lifecycle": {
+        "cleanup_refusal": "CLEANUP_REQUIRES_COMPLETE",
+        "record_unchanged": true,
+        "known_public_actions_have_explicit_retire_or_cancel": false,
+        "interpretation": "Retaining an unfinished task is correct; there is no distinct authorized not-delivered terminal lifecycle. Do not fake complete/defer or delete failure to save space."
+      }
+    }
+  },
+  "decisions": {
+    "environment_binding": "Keep conservative inherited environment as default. Explain current mismatch without reconstructing history. Narrow only with an explicitly controlled actually passed environment and selected toolchain inputs; never omit PATH just because argv[0] is absolute.",
+    "repeated_compaction": "Confirmed local idempotence/reporting defect: fix actual repeat writes and cleaned count, preserve ownership/handoff/forget guards. Not implemented in this review.",
+    "unfinished_tasks": "No explicit non-delivery terminal lifecycle exists. Design a deliberate retire operation with real authority and surviving unresolved knowledge before implementing; never mark complete or delete pending facts to satisfy a quota.",
+    "global_size": "Existing total usage and paged stale inspection remain useful; per-task bounds do not cap cumulative storage. No supported need for a new database, permanent index or guessed team-wide quota."
+  },
+  "implementation_order": [
+    "already-tested CLI query fix plus compaction idempotence small fix",
+    "environment identity explanation with no relaxed reuse",
+    "controlled-environment and explicit retire lifecycle design/approval, then counterexamples before rollout"
+  ],
+  "not_authorized_or_done": [
+    "no runtime implementation",
+    "no contract migration",
+    "no business record operations",
+    "no push/release/CC update"
+  ],
+  "phase_two_complete": false
+}

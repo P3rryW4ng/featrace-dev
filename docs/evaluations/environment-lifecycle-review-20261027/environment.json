@@ -1,0 +1,29 @@
+{
+  "pure_absolute_python_path_difference": {
+    "input_digest_changes": true,
+    "actual_result_changes": false,
+    "first_level_interpreter_same": true,
+    "all_declared_file_bytes_same": true,
+    "interpretation": "Conservative environment invalidation is observed for this pure check; not proof arbitrary scripts can omit PATH."
+  },
+  "unused_java_home_for_python": {
+    "input_digest_changes": true,
+    "actual_result_changes": false,
+    "interpretation": "Default environment set spans unrelated toolchains; env_keys only adds keys, cannot narrow."
+  },
+  "same_absolute_python_dynamic_child": {
+    "input_digest_changes": true,
+    "actual_outputs": [
+      "A",
+      "B"
+    ],
+    "first_level_interpreter_same": true,
+    "interpretation": "Dropping PATH globally would remove a real causal input even with an absolute top-level interpreter."
+  },
+  "unchanged_path_changed_child_bytes": {
+    "without_declared_child_input_digest_changes": false,
+    "actual_result_changes": true,
+    "existing_external_inputs_detect_change": true,
+    "interpretation": "PATH value hashing is not nested-toolchain identity. Existing selected external inputs can bind the real child bytes; dynamic read-set completeness is not guaranteed."
+  }
+}
