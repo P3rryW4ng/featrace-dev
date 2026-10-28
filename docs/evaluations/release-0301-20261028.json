@@ -1,0 +1,17 @@
+{
+  "version": "0.30.1",
+  "contract": 6,
+  "release_commit": "32843c2ad3c1a04cf2cecf42eca02cb7d8584aef",
+  "checked_at_utc": "2026-10-28T09:09:02.833232+00:00",
+  "remote_refs_match": true,
+  "daily_claude_files_match": 15,
+  "isolated_claude_files_match": 15,
+  "backup_version": "0.30.0",
+  "backup_files_match": 15,
+  "only_runtime_change": "SKILL.md",
+  "scripts_tests_unchanged_from": "v0.30.0",
+  "new_full_suite_run": false,
+  "native_ui_observed": false,
+  "personal_codex_updated": false,
+  "phase_two_complete": false
+}
