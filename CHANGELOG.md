@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.30.1 — 2026-10-28
+
+- Clarify native progress initialization before implementation/long checks, actual lifecycle updates and recovery of existing host lists. Distinguish user-visible tools from private plans/task JSON, tool absence from failed calls, and successful acknowledgment from observed rendering. No simulated checklist, new registry or host-setting changes.
+- Patch release for existing guidance; task contract6,15 runtime files and all executable/test bytes unchanged from0.30.0. Reuse its frozen343-test evidence, not a new test run. Rule walkthrough/selected-output checks completed; actual CC rendering remains to be confirmed after loading this version. No business replay or phase-two completion.
+
 ## 0.30.0 — 2026-10-27
 
 - Introduce task contract6. Optional controlled execution passes only selected present host keys and a fixed absolute PATH; the same starting snapshot binds identity and child launch. Resolve and bind the actual executable, apply project policy to selected/resolved tool paths, and preserve post-check drift, deny and freshness. Inherit remains default; this is not an OS sandbox or dynamic dependency discovery.
