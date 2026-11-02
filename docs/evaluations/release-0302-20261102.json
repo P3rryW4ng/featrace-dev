@@ -1,0 +1,32 @@
+{
+  "version": "0.30.2",
+  "task_contract": 6,
+  "release_commit": "4bfbb95b9aa9133cbaa91097788c708523948a0e",
+  "checked_at_utc": "2026-11-02T05:47:27.648051+00:00",
+  "remote_refs_at_publication": {
+    "refs/heads/main": "4bfbb95b9aa9133cbaa91097788c708523948a0e",
+    "refs/heads/release/0.30.2": "4bfbb95b9aa9133cbaa91097788c708523948a0e",
+    "refs/tags/v0.30.2": "4bfbb95b9aa9133cbaa91097788c708523948a0e"
+  },
+  "runtime_files_match": 15,
+  "isolated_claude_install_match": 15,
+  "backup": {
+    "version": "0.30.1",
+    "directory_name": "20261102T054640-claude-3535a788",
+    "files_match": 15
+  },
+  "changed_runtime_files": [
+    "SKILL.md",
+    "core/references/task-workflow.md"
+  ],
+  "scripts_tests_unchanged_from": "v0.30.1",
+  "targeted_validation": "stability-guidance-20261102.json",
+  "full_suite_rerun": false,
+  "boundary": "Guidance patch; prior343-test evidence is retained, not rerun. Natural context recovery reliability remains unproven.",
+  "scope": {
+    "business_records_changed": false,
+    "business_tests_run": false,
+    "personal_codex_updated": false,
+    "phase_two_acceptance_changed": false
+  }
+}
