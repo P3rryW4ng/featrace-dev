@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.30.2 — 2026-11-02
+
+- Clarify task routing before implementation/check execution and after context loss: continue active work, correct an erroneous original judgment, or begin a later authorized change to an outcome that was valid at delivery. Host progress and compressed next-step summaries do not replace the task workflow. Read-only queries/activation do not create tasks.
+- Preserve transient independent-review returns with existing bounded evidence attachments when needed; reuse an intact retained location, keep genuine provenance and task expiry, and do not relocate frozen completed records. Correct the stale contract4 introductory text to contract6.
+- Patch release for guidance only:15 runtime files, contract6/CLI/execution implementation and test sources unchanged. Three existing targeted tests and seven synthetic attachment/retention assertions passed; retain the prior343-test evidence without rerunning unchanged code. Natural compression reliability and net savings remain unproven. Phase two was accepted separately for the bounded delivery chain; no business replay or migration.
+
 ## 0.30.1 — 2026-10-28
 
 - Clarify native progress initialization before implementation/long checks, actual lifecycle updates and recovery of existing host lists. Distinguish user-visible tools from private plans/task JSON, tool absence from failed calls, and successful acknowledgment from observed rendering. No simulated checklist, new registry or host-setting changes.
