@@ -9,8 +9,8 @@ Help Claude Code and Codex investigate impact, implement changes, repair failure
 | Object | Current state |
 |---|---|
 | Release version | **0.30.1**, current-task workflow,15 runtime files |
-| Validation scope | 343 current kernel tests; program safeguards and Agent competence evaluated separately, with natural trials still pending |
-| Real-world outcome | Phase two remains open: natural classification, resumption and net cost need new-project evidence |
+| Validation scope | 343 existing kernel tests; two real contract6 task chains checked, with program safeguards and Agent competence evaluated separately |
+| Real-world outcome | Phase two accepted on 2026-11-02 for the current delivery chain; long-term reliability, natural recovery and net savings remain unproven |
 
 0.30.1 clarifies native progress initialization, updates and recovery; actual rendering still needs host confirmation. It uses task contract6: checks can opt into an actual controlled child environment with selected inherited keys and a fixed PATH; inherited mode stays the default. Explicit retire stops unfinished work without certifying delivery, preserving code, failures and necessary surviving issue handoff. Read-only diagnostics distinguish reuse from permission; repeated compaction avoids rewriting unchanged tasks. Scoped authorization, selected inputs and causal test selection remain. Contracts1–5 keep their pinned tools without migration or business replay. See [maintenance](MAINTAINER.md) for verified publication and installation.
 
