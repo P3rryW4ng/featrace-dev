@@ -1,0 +1,50 @@
+{
+  "date": "2026-11-02",
+  "kind": "guidance_candidate_validation",
+  "base_release": "0.30.1",
+  "task_contract": 6,
+  "runtime_scripts_changed": false,
+  "tests_source_changed": false,
+  "existing_tests": {
+    "run": 3,
+    "passed": 3,
+    "names": [
+      "TaskCorrectionTests.test_correction_keeps_receipt_and_only_requires_selected_reassessment",
+      "TaskWorkflowTests.test_closed_result_is_as_of_not_recertification_of_future_code",
+      "TaskWorkflowTests.test_status_does_not_execute_or_write"
+    ]
+  },
+  "synthetic_assertions": {
+    "passed": [
+      "registered_copy_preserves_bytes_and_original",
+      "scratch_removed_copy_still_supports_structural_review",
+      "prune_retains_evidence_copy",
+      "changed_copy_blocks_eligibility",
+      "before_retention_cleanup_refuses",
+      "elapsed_synthetic_retention_releases_copy_not_permanent_archive",
+      "missing_copy_blocks_eligibility"
+    ],
+    "retention_method": "Only a synthetic fixture receipt was aged by8 days; no real waiting or business record edit"
+  },
+  "standard_skill_validator": {
+    "status": "unavailable",
+    "reason": "PyYAML not installed"
+  },
+  "scope": {
+    "business_tests_run": false,
+    "business_records_changed": false,
+    "natural_context_recovery_tested": false,
+    "independent_agent_forward_tested": false,
+    "full_343_suite_rerun": false,
+    "published": false,
+    "installed": false
+  },
+  "source_hashes": {
+    "skills/dev/SKILL.md": "ebf146834b505e8a34b773351f4918414720fac3a40bde45adbfa850130a79f8",
+    "skills/dev/core/references/task-workflow.md": "e9d460117129fe699e1cc88d70bc41a76fbdf35f48204d36bc11229e77f49697",
+    "skills/dev/core/scripts/task_workflow.py": "d0b11f21682f0223faa9ca9d69fd70b9b6cab64851d3f565fdeda0633a7fc78e",
+    "skills/dev/core/scripts/task_assets.py": "ed67314ae55fcd3ed1ad82916e0f7dc8a641928b3c52f84b2b6984c4195aed97",
+    "tests/test_task_workflow.py": "4d0eb490619b8a7c86cac1d3f22b3c037890ec45a9ed0b6f96c224fee46ee18e",
+    "tests/test_task_correction.py": "fd6ac493931bedfc8e79081c157bb3549b7c2769e50b49e4e59c63b8157c9c8f"
+  }
+}
