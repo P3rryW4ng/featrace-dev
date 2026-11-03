@@ -1,6 +1,6 @@
 # 当前验证与历史查证入口
 
-核对：2026-11-03。当前正式及CC为0.30.2合同6。这里只索引仍需使用的证据；不把旧执行记作本轮新跑，不从测试数量推算成熟度或收益。身份见[MAINTAINER](../MAINTAINER.md)，阶段出口见[ROADMAP](../ROADMAP.md)。
+核对：2026-11-03。当前正式及CC为0.30.3合同6。这里只索引仍需使用的证据；不把旧执行记作本轮新跑，不从测试数量推算成熟度或收益。身份见[MAINTAINER](../MAINTAINER.md)，阶段出口见[ROADMAP](../ROADMAP.md)。
 
 <a id="phase2-exit-20261102"></a>
 
@@ -85,3 +85,7 @@
 本轮实际定向执行3项既有测试并通过：ReleaseIdentityTests.test_installed_marker_preserves_channel_and_commit、TaskWorkflowTests.test_vertical_closure_has_no_legacy_files、TaskWorkflowTests.test_missing_independent_review_blocks_close；用时1.345秒。仅临时合成工作区，不是业务测试、实际宿主展示或自然结项通知验证；不重跑未改343项。
 
 维护者按首次进入/再次进入、无marker、开发版本后缀、成功/失败close、子项/整体完成静态走查指引，非独立Agent前向演练。程序/测试源码、合同与版本号未变；必要字段、本地链接、差异格式、选定新增内容另核对。候选尚未发布安装；第二阶段已通过，不因此重开。
+
+## 2026-11-03的0.30.3发布安装
+
+[实际核验](evaluations/release-0303-20261103.json)：固定发布ddf3fd3，远端main/发布分支/tag在发布时匹配，隔离及日常CC各15文件匹配，旧0.30.2备份15文件匹配。仅两份运行指引改变，脚本/测试与0.30.2一致；沿用上一节本轮实际3项定向测试，不重跑未变343项。上文候选为开发截点，现已发布安装；用户先前在0.30.2按明确提示显示版本不作本版验证。实际进入/结项通知待重新加载后自然观察，无旧需求补测。

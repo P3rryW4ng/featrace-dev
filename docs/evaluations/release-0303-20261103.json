@@ -1,0 +1,29 @@
+{
+  "version": "0.30.3",
+  "contract": 6,
+  "release_commit": "ddf3fd3d7c18d3c74994809c53dbef92926e0cb4",
+  "checked_at_utc": "2026-11-03T13:17:47.959073+00:00",
+  "remote_refs_at_publication": {
+    "refs/heads/main": "ddf3fd3d7c18d3c74994809c53dbef92926e0cb4",
+    "refs/heads/release/0.30.3": "ddf3fd3d7c18d3c74994809c53dbef92926e0cb4",
+    "refs/tags/v0.30.3": "ddf3fd3d7c18d3c74994809c53dbef92926e0cb4"
+  },
+  "daily_claude_files_match": 15,
+  "isolated_claude_files_match": 15,
+  "backup": {
+    "version": "0.30.2",
+    "directory_name": "20261103T131717-claude-d0ba8c2a",
+    "files_match": 15
+  },
+  "only_runtime_changes": [
+    "SKILL.md",
+    "core/references/task-workflow.md"
+  ],
+  "scripts_tests_unchanged_from": "v0.30.2",
+  "targeted_tests_previously_run": 3,
+  "full_suite_rerun": false,
+  "agent_activation_and_closure_presentation_verified": false,
+  "business_records_modified": false,
+  "personal_codex_updated": false,
+  "boundary": "Installed bytes verified; cached session loading and actual user-visible notices are not certified by installation."
+}
