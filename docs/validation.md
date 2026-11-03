@@ -1,6 +1,6 @@
 # 当前验证与历史查证入口
 
-核对：2026-11-02。当前正式及CC为0.30.2合同6。这里只索引仍需使用的证据；不把旧执行记作本轮新跑，不从测试数量推算成熟度或收益。身份见[MAINTAINER](../MAINTAINER.md)，阶段出口见[ROADMAP](../ROADMAP.md)。
+核对：2026-11-03。当前正式及CC为0.30.2合同6。这里只索引仍需使用的证据；不把旧执行记作本轮新跑，不从测试数量推算成熟度或收益。身份见[MAINTAINER](../MAINTAINER.md)，阶段出口见[ROADMAP](../ROADMAP.md)。
 
 <a id="phase2-exit-20261102"></a>
 
@@ -77,3 +77,11 @@
 ## 2026-11-02的0.30.2发布安装
 
 [核验记录](evaluations/release-0302-20261102.json)：固定发布4bfbb95，远端main/分支/tag在发布时匹配；隔离及日常CC各15文件匹配，旧0.30.1备份15文件匹配。只改SKILL与task-workflow指引，程序/测试与0.30.1字节一致，沿用前述3项定向测试/7项隔离断言，不冒充新跑全部343项。之前候选验证是其当时截点，现在已正式安装；自然恢复可靠性不由安装证明。
+
+## 2026-11-03进入版本与结项提示候选
+
+底层选择：复用安装标记和现有close回执，不新增版本字段、结项状态、通知服务或测试门禁。SKILL明确每次显式/dev或$dev读真实marker；重复进入重读，开发后缀保留，缺标记说未核实，安装版本不冒充宿主缓存正文已更新。成功close明确任务范围/验证/限制；整体中的子项只简短通知并继续，关闭受阻不得报成功。
+
+本轮实际定向执行3项既有测试并通过：ReleaseIdentityTests.test_installed_marker_preserves_channel_and_commit、TaskWorkflowTests.test_vertical_closure_has_no_legacy_files、TaskWorkflowTests.test_missing_independent_review_blocks_close；用时1.345秒。仅临时合成工作区，不是业务测试、实际宿主展示或自然结项通知验证；不重跑未改343项。
+
+维护者按首次进入/再次进入、无marker、开发版本后缀、成功/失败close、子项/整体完成静态走查指引，非独立Agent前向演练。程序/测试源码、合同与版本号未变；必要字段、本地链接、差异格式、选定新增内容另核对。候选尚未发布安装；第二阶段已通过，不因此重开。

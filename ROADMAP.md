@@ -1,6 +1,6 @@
 # 当前队列与问题追踪
 
-更新：2026-11-02。身份见[MAINTAINER](MAINTAINER.md)，方向见[PRODUCT](PRODUCT.md)。本页不保留历次已完成工作的接续指令；[清理前固定队列](https://github.com/P3rryW4ng/featrace-dev/blob/0fcf9a4a47268f2ded65a48e80dd5f15fcd5a3f0/ROADMAP.md)供历史查证。
+更新：2026-11-03。身份见[MAINTAINER](MAINTAINER.md)，方向见[PRODUCT](PRODUCT.md)。本页不保留历次已完成工作的接续指令；[清理前固定队列](https://github.com/P3rryW4ng/featrace-dev/blob/0fcf9a4a47268f2ded65a48e80dd5f15fcd5a3f0/ROADMAP.md)供历史查证。
 
 <a id="delivery-mainline"></a>
 
@@ -25,6 +25,7 @@
 | 已完成 | 当前任务替代、失败/证据/授权/资料边界、受控环境与非交付终止 | 已随0.30.0发布，见[核验](docs/evaluations/release-0300-20261027.json)；不迁移旧任务 |
 | 本轮已完成 | 三项评审、小修与0.30.2发布安装 | [实施结果](docs/reviews/2026-11-02-stability-entry-review.md)：3项定向测试、7项合成断言通过；内核不改；[发布安装已核验](docs/evaluations/release-0302-20261102.json) |
 | 本轮已修正 | 连续推进反馈中的授权记忆失真 | 已核原话并定向纠正一条CC记忆，未扩大测试许可；不加运行规则，实际接续效果后续观察 |
+| 本轮源码完成 | 进入版本与结项提示 | 每次dev读实际标记；成功close明确告知、子任务继续；3项定向程序测试通过，未发布/安装，Agent展示待观察 |
 | 后续改进 | 压缩后恢复任务入口 | 0.30.2指引已补明确恢复/继续/更正/新建入口；不加新状态/hook，实际压缩后的遵从仍待自然观察 |
 | 后续改进 | correct/新任务选择与复核凭证保留 | 0.30.2指引已补选择顺序、复用attach与原保留期；合同文字已纠正，无旧任务迁移；未改程序 |
 | 非阻塞体验 | 原生进度展示 | 0.30.1已推送/安装；真实界面确认后续处理，不阻挡第二阶段 |
