@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.30.3 — 2026-11-03
+
+- Show the actual installed version on every explicit dev invocation, including re-entry and calls with a request. Read the installation marker, preserve development suffixes and report unknown when unavailable; installed identity does not prove cached host instructions refreshed.
+- Explicitly announce successful task closure with scope, actual validation, limitations and known delivery state. Subtask closure is a brief notice followed by authorized continuation, not whole-project completion or another approval gate. Never announce a blocked close as successful.
+- Patch release for guidance only:15 runtime files, contract6/CLI/execution code and test sources unchanged from0.30.2. Three existing targeted tests passed for marker identity and closure boundaries; prior343-test evidence is retained, not rerun. Actual Agent presentation remains to be observed after loading this version; no business replay or record migration.
+
 ## 0.30.2 — 2026-11-02
 
 - Clarify task routing before implementation/check execution and after context loss: continue active work, correct an erroneous original judgment, or begin a later authorized change to an outcome that was valid at delivery. Host progress and compressed next-step summaries do not replace the task workflow. Read-only queries/activation do not create tasks.

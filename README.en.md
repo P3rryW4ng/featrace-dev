@@ -6,10 +6,10 @@ A development Skill for **Claude Code and Codex**: understand impact, implement 
 
 ## Install
 
-Current release: **0.30.2**. Requires Python 3.9+, Git and the chosen Agent; use your project's existing build environment.
+Current release: **0.30.3**. Requires Python 3.9+, Git and the chosen Agent; use your project's existing build environment.
 
 ```bash
-git clone --branch release/0.30.2 --single-branch https://github.com/P3rryW4ng/featrace-dev.git
+git clone --branch release/0.30.3 --single-branch https://github.com/P3rryW4ng/featrace-dev.git
 cd featrace-dev
 python3 scripts/install.py --agent claude
 ```
@@ -22,13 +22,13 @@ Enter `/dev` in Claude Code or `$dev` in Codex, then describe the work. For exam
 
 > Fix the login error message. Investigate the impact, implement the change, and verify the affected behavior.
 
-Provide the original request and relevant design or bug details. No internal workflow commands are required. An empty invocation only activates the mode; `dev off` exits.
+Provide the original request and relevant design or bug details. No internal workflow commands are required. An empty invocation only activates the mode; `dev off` exits. Entry shows the installed version; successful closure explicitly reports the completed scope.
 
 The Skill selects checks by actual impact, reuses applicable results, retains necessary evidence and commits completed subtasks within actual authorization. It does not replace product decisions, project gates or publication approval.
 
 ## Update and docs
 
-Preserve local changes, fetch and switch to the pinned `release/0.30.2` ref, then run `python3 scripts/install.py --agent claude --update`. Pulling an older release branch does not upgrade versions. The installer backs up the previous copy and refuses to overwrite modified installations.
+Preserve local changes, fetch and switch to the pinned `release/0.30.3` ref, then run `python3 scripts/install.py --agent claude --update`. Pulling an older release branch does not upgrade versions. The installer backs up the previous copy and refuses to overwrite modified installations.
 
 - [Usage and recovery](docs/usage.md) · [Modules and workflow](docs/module-guide.md)
 - [Changelog](CHANGELOG.md) · [Maintenance status](MAINTAINER.md)
