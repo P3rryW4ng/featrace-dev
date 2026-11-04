@@ -6,10 +6,10 @@
 
 ## 安装
 
-当前正式版 **0.30.4**。需要 Python 3.9+、Git 和对应 Agent；项目构建环境沿用项目要求。
+当前正式版 **0.30.5**。需要 Python 3.9+、Git 和对应 Agent；项目构建环境沿用项目要求。
 
 ```bash
-git clone --branch release/0.30.4 --single-branch https://github.com/P3rryW4ng/featrace-dev.git
+git clone --branch release/0.30.5 --single-branch https://github.com/P3rryW4ng/featrace-dev.git
 cd featrace-dev
 python3 scripts/install.py --agent claude
 ```
@@ -28,7 +28,7 @@ Skill 按实际影响选择检查，复用仍有效的结果，保存必要证�
 
 ## 更新与文档
 
-更新前保留本地改动，获取并切换到固定发布引用 `release/0.30.4`，再运行 `python3 scripts/install.py --agent claude --update`。旧发布分支上直接 `git pull` 不会升级版本。安装器保留旧版备份，拒绝覆盖被修改的副本。
+更新前保留本地改动，获取并切换到固定发布引用 `release/0.30.5`，再运行 `python3 scripts/install.py --agent claude --update`。旧发布分支上直接 `git pull` 不会升级版本。安装器保留旧版备份，拒绝覆盖被修改的副本。
 
 - [使用与接续](docs/usage.md) · [模块与流程](docs/module-guide.md)
 - [版本记录](CHANGELOG.md) · [当前维护状态](MAINTAINER.md)

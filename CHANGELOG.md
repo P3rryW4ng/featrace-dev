@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.30.5 — 2026-11-04
+
+- Retain selected Android test artifacts before later runs overwrite them, bind the real producer/time, and verify only causally affected walkthrough scenarios after repairs. Preserve necessary target/patch evidence before restoration; restoration alone is not a reason to repeat every scenario.
+- Reconcile changed inputs before the next guarded action, without mechanical per-file/layer replanning. Mock exposure does not automatically waive necessary review of implemented funds logic.
+- Preserve decision-time precision and actual later authority, finalize necessary handoffs before binding deferrals, and judge findings from triggers/consequences/evidence rather than priority labels. No repeated approvals solely to fill metadata.
+- Patch release for two existing guidance files;15 runtime files, contract6/CLI/scripts/tests unchanged from0.30.4. Six existing targeted evidence/correction/attachment tests passed during implementation; later wording checks reused those results without rerunning unchanged tests. No business replay, automatic migration, capacity expansion or natural Agent reliability claim.
+
 ## 0.30.4 — 2026-11-04
 
 - Make recovery actionable using existing read-only queries: known task ID goes directly to status/request and necessary plan details; unknown ID uses paged list and request comparison. Do not choose by newest or unfinished state alone; resolve only genuine ambiguity. Inspect selected check reuse/permission and actual authority only when needed.
