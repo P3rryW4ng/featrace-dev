@@ -1,0 +1,46 @@
+{
+  "checked_at_utc": "2026-11-04T08:39:26.718781+00:00",
+  "skill_source_base": "275e4bf",
+  "business_revision": "6edee22c6405e6d11f05a966ac986cd585b135f0",
+  "business_code_modified": false,
+  "business_tests_rerun": false,
+  "main_task": "wallet-f05-withdraw",
+  "state": "correcting",
+  "correction_id": "94eecfdf8005451ab3d74c37b7c5ffea",
+  "affected": [
+    "confirm-page",
+    "data",
+    "domain",
+    "withdraw-page"
+  ],
+  "original_receipt_preserved": true,
+  "other_two_tasks_byte_unchanged": true,
+  "review_context": "/root/f05_funds_review",
+  "review_artifact": "88ee4a4e19364b56b6d27d0a74e900fd",
+  "review_is_summary_not_acceptance_provenance": true,
+  "confirmed_findings": [
+    {
+      "severity": "P2",
+      "issue": "withdrawal CREATED maps inconsistently on submit vs order lookup",
+      "runtime_failure_newly_observed": false,
+      "code_fixed": false
+    }
+  ],
+  "external_updates": {
+    "mr267_two_descriptions_corrected": true,
+    "cloud_comment_posted": false,
+    "cloud_reason": "Login expired; user chose local preservation and later CC sync"
+  },
+  "skill_targeted_tests": {
+    "executed": 6,
+    "passed": 6,
+    "runs_seconds": [
+      1.419,
+      1.39
+    ],
+    "scripts_changed": false,
+    "full_suite_rerun": false
+  },
+  "release_install": "source candidate only; installed CC remains0.30.4",
+  "natural_agent_delta_walkthrough_verified": false
+}
