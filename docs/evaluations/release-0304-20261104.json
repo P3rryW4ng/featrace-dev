@@ -1,0 +1,28 @@
+{
+  "version": "0.30.4",
+  "contract": 6,
+  "release_commit": "299ad73b7ef2c5546137ede651840336387f1f79",
+  "checked_at_utc": "2026-11-04T05:44:16.200018+00:00",
+  "remote_refs_at_publication": {
+    "refs/heads/main": "299ad73b7ef2c5546137ede651840336387f1f79",
+    "refs/heads/release/0.30.4": "299ad73b7ef2c5546137ede651840336387f1f79",
+    "refs/tags/v0.30.4": "299ad73b7ef2c5546137ede651840336387f1f79"
+  },
+  "daily_claude_files_match": 15,
+  "isolated_claude_files_match": 15,
+  "backup": {
+    "version": "0.30.3",
+    "directory_name": "20261104T054334-claude-a88d55dc",
+    "files_match": 15
+  },
+  "only_runtime_changes": [
+    "core/references/task-workflow.md"
+  ],
+  "scripts_tests_unchanged_from": "v0.30.3",
+  "targeted_tests_previously_run": 6,
+  "full_suite_rerun": false,
+  "natural_agent_recovery_verified": false,
+  "business_records_modified": false,
+  "personal_codex_updated": false,
+  "boundary": "Installed bytes and backup verified; actual loaded instructions and reliable Agent recovery are not established by installation."
+}
