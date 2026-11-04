@@ -42,5 +42,31 @@
     "full_suite_rerun": false
   },
   "release_install": "source candidate only; installed CC remains0.30.4",
-  "natural_agent_delta_walkthrough_verified": false
+  "natural_agent_delta_walkthrough_verified": false,
+  "follow_up": {
+    "checked_at_utc": "2026-11-04T09:34:18.391841+00:00",
+    "source": "direct local task/commit/evidence/provenance reads; CC report for cloud/context execution",
+    "business_revision": "a0d86e12eefd3542d7a994f5d3424fce19907771",
+    "task_record_sha256": "b2756a10e64831a9dcc69555f8d9f77d65bcc7bb5e29ba97fef9d2486491e546",
+    "state": "complete",
+    "outcome": "scoped_delivery_with_deferrals",
+    "supported_criteria": 6,
+    "deferred_criteria": 2,
+    "original_correction_completed": true,
+    "prior_receipt_linked": true,
+    "other_two_tasks_byte_unchanged": true,
+    "review_provenance_files_hash_matched": 3,
+    "real_fresh_context_execution_independently_rechecked": false,
+    "new_command_facts_passed": 6,
+    "retained_producer_linked_xml_hash_and_timestamp_window_verified": 12,
+    "xml_total_declared_tests": 130,
+    "xml_failures_and_errors": 0,
+    "cc_reported_xml_count": 11,
+    "count_difference_requires_retest": false,
+    "business_tests_rerun_by_maintainer": false,
+    "business_records_modified_by_maintainer_in_follow_up": false,
+    "cloud_comment": "posted per CC report; not independently reread online",
+    "decision_time_precision": "upper bound explicitly qualified in authority; not exact original approval timestamp",
+    "remaining_risks": "three pre-live P3 findings per CC; severity not established by label"
+  }
 }
