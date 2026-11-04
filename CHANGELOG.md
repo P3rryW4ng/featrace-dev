@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.30.4 — 2026-11-04
+
+- Make recovery actionable using existing read-only queries: known task ID goes directly to status/request and necessary plan details; unknown ID uses paged list and request comparison. Do not choose by newest or unfinished state alone; resolve only genuine ambiguity. Inspect selected check reuse/permission and actual authority only when needed.
+- Patch release for one existing reference guide;15 runtime files and contract6 retained. No new command, state, storage or execution protocol. Six existing targeted query/permission tests passed; two initial test-loader errors were corrected and documented. Scripts/tests unchanged from0.30.3; no full-suite rerun or natural Agent recovery claim.
+- Align current phase descriptions: phase two accepted, phase three focuses on stable use and efficiency. Architecture review retains the existing kernel; splitting and capacity expansion require concrete evidence.
+
 ## 0.30.3 — 2026-11-03
 
 - Show the actual installed version on every explicit dev invocation, including re-entry and calls with a request. Read the installation marker, preserve development suffixes and report unknown when unavailable; installed identity does not prove cached host instructions refreshed.

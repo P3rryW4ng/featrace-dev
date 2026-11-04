@@ -1,13 +1,13 @@
 {
   "channel": "release",
-  "version": "0.30.3",
+  "version": "0.30.4",
   "files": {
     "SKILL.md": "18d817ea59b7a180ed08e57e3971a5851a2d34f36454db2dda5b7a6583be45f5",
     "agents/openai.yaml": "237666967ab617f4452194694fc91dc1fcbb3b3beda59172c74572525117a009",
     "core/references/figma-design.md": "8828473c28557e33fbb07ab5416be34e3c13c5b6f35a9eff94f14f1f6e8e12ff",
     "core/references/output-privacy.md": "8c1d43834acfb41ee1d125bdc1ec37eb97cedca3d9afbff3b408658f81c8fab3",
     "core/references/project-compatibility.md": "76668c91541d65a92b4e8308d385f8937c8d1f349a3680e323e11f4e09e4ff3a",
-    "core/references/task-workflow.md": "af17f5ac9ccf3b9b6ee2bd7203de3491f3e54bd74b87e57c38834006b2ea30c9",
+    "core/references/task-workflow.md": "5580f3e2b0a2dc3a325d181a397845c2396970261cf17fe7738fcd80f006b77d",
     "core/scripts/output_privacy.py": "54be161d474b4bc55ae1a28207de80f4077f0093172114b7079a12ce672fee6e",
     "core/scripts/task_assets.py": "ed67314ae55fcd3ed1ad82916e0f7dc8a641928b3c52f84b2b6984c4195aed97",
     "core/scripts/task_authorization.py": "98ad364d9a24db6569d1a4a9e816646e5c2f72014713db0fe7c6534b7e0ae920",
