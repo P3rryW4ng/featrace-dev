@@ -1,0 +1,31 @@
+{
+  "version": "0.30.5",
+  "contract": 6,
+  "release_commit": "2a89663808bffe58c18d1b190fe531391ebb3871",
+  "checked_at_utc": "2026-11-04T09:37:18.317347+00:00",
+  "remote_refs_at_publication": {
+    "refs/heads/main": "2a89663808bffe58c18d1b190fe531391ebb3871",
+    "refs/heads/release/0.30.5": "2a89663808bffe58c18d1b190fe531391ebb3871",
+    "refs/tags/v0.30.5": "2a89663808bffe58c18d1b190fe531391ebb3871"
+  },
+  "daily_claude_files_match": 15,
+  "isolated_claude_files_match": 15,
+  "backup": {
+    "version": "0.30.4",
+    "directory_name": "20261104T093631-claude-6f2551d8",
+    "files_match": 15
+  },
+  "only_runtime_changes": [
+    "core/references/task-workflow.md",
+    "profiles/android/PROFILE.md"
+  ],
+  "scripts_tests_unchanged_from": "v0.30.4",
+  "targeted_tests_previously_run": 6,
+  "full_suite_rerun": false,
+  "natural_agent_guidance_compliance_verified": false,
+  "publication_push_attempts": 2,
+  "first_push": "remote commit_refs server failure; no partial publication; identical atomic retry succeeded",
+  "business_records_modified_during_publication": false,
+  "personal_codex_updated": false,
+  "boundary": "Installed bytes and backup verified; not proof of cached-session refresh, natural Agent reliability or business certification."
+}
