@@ -1,6 +1,6 @@
 # 当前队列与问题追踪
 
-更新：2026-11-03。身份见[MAINTAINER](MAINTAINER.md)，方向见[PRODUCT](PRODUCT.md)。本页不保留历次已完成工作的接续指令；[清理前固定队列](https://github.com/P3rryW4ng/featrace-dev/blob/0fcf9a4a47268f2ded65a48e80dd5f15fcd5a3f0/ROADMAP.md)供历史查证。
+更新：2026-11-04。身份见[MAINTAINER](MAINTAINER.md)，方向见[PRODUCT](PRODUCT.md)。本页不保留历次已完成工作的接续指令；[清理前固定队列](https://github.com/P3rryW4ng/featrace-dev/blob/0fcf9a4a47268f2ded65a48e80dd5f15fcd5a3f0/ROADMAP.md)供历史查证。
 
 <a id="delivery-mainline"></a>
 
@@ -19,6 +19,8 @@
 <a id="current-authorized-work"></a>
 
 ## 当前执行顺序
+
+当前第三阶段：稳定使用与持续提效。2026-11-04[架构评审](docs/reviews/2026-11-04-architecture-resume-review.md)已完成；接续小修为未发布候选，复用现有查询，6项定向程序验证通过。下一步随自然工作观察是否正确选任务、恢复授权和连续推进；没有新需求时不重开旧任务。不新增resume命令、独立恢复账本或无依据整套重构。
 
 | 顺序 | 工作 | 当前处理 |
 |---|---|---|
