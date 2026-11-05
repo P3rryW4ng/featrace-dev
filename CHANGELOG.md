@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.30.6 — 2026-11-05
+
+- Organize guidance by relevant action: load the Android profile before planning checks/editing Android code; keep producer binding next to observation and result retention before walkthrough restoration. Preserve contextual reading and existing approval boundaries without a reading ledger.
+- Patch release for three guidance files;15 runtime files and contract6/CLI/scripts/tests unchanged. Reference/format/privacy checks completed; quick_validate unavailable because PyYAML is missing. No new program test run or natural Agent adherence claim.
+- Review retains current evidence collection and kernel: automatic report scanning or a combined command needs demonstrated benefit before development.
+
 ## 0.30.5 — 2026-11-04
 
 - Retain selected Android test artifacts before later runs overwrite them, bind the real producer/time, and verify only causally affected walkthrough scenarios after repairs. Preserve necessary target/patch evidence before restoration; restoration alone is not a reason to repeat every scenario.
