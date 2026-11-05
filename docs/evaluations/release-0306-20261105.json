@@ -1,0 +1,19 @@
+{
+  "version": "0.30.6",
+  "contract": 6,
+  "release_commit": "d6c169f630fc486136af5c28e5a18f89f536d5ff",
+  "checked_at_utc": "2026-11-05T02:36:48.995418+00:00",
+  "remote_release_branch_and_tag_match": true,
+  "daily_claude_files_match": 15,
+  "isolated_claude_files_match": 15,
+  "backup": {
+    "version": "0.30.5",
+    "directory_name": "20261105T023605-claude-f89cca97",
+    "files_match": 15
+  },
+  "scripts_tests_unchanged_from": "v0.30.5",
+  "full_suite_rerun": false,
+  "quick_validate": "unavailable: missing PyYAML",
+  "natural_agent_guidance_compliance_verified": false,
+  "personal_codex_updated": false
+}
