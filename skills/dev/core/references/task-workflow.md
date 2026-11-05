@@ -2,6 +2,10 @@
 
 Read this for authorized development. One bounded current task; no feature ledger, permanent replay, project schema preparation or automatic old-record migration. Contract6 is for new tasks. Formats1/2/3/4/5 and `.agent-workflow` work use their fixed old tool; do not change IDs or formats to hide failures.
 
+## Find the relevant operation
+
+Read Project and intent / Plan causal scope and proof for initial work; Checks and execution identity before execution; Preserve facts before outputs change before another run can overwrite evidence; Assess selected facts for judgment. Query, correct and retain covers recovery, correction and closure. Scoped execution authorization applies when a real ask rule needs a grant; Selected input snapshots and external sources applies when importing an input. Failure/defer and retire instructions apply only when those conditions occur. These are reference routes, not additional mandatory phases, records or permission requests.
+
 ## Project and intent
 
 Inspect actual project rules/hooks and current same-scope grants. Read project-compatibility before the first affected operation. `policy ROOT --json FILE` prepares one `.featrace-policy.json` and a narrow ignore block for local `.featrace`. It is an authorized edit, not a permission-granting flag. Existing tracked data, unowned policy or custom ignore conflicts refuse. Source changes require reconciliation; higher-priority host permissions and hooks still apply.
@@ -53,7 +57,7 @@ Environment needs `{kind:local|test|remote|device|production,target:"actual iden
 
 The log has bounded start/result metadata with original attempt/input/protocol/producer/time and command status. It excludes raw environment values/argv from the header; actual command output still needs privacy handling. Caught interruptions, identity drift, timeouts, output limits or unavailable results do not leave the earlier success as the latest result. A capacity reservation occurs before execution. Disk failures/SIGKILL are not guaranteed recoverable transactions.
 
-## Preserve and select facts
+## Preserve facts before outputs change
 
 The task has one fact map keyed by immutable IDs. Latest observation/check maps are pointers, not the only surviving fact. Retained old successes can be selected when still applicable; newer failed/unavailable checks and unresolved runtime failures remain blocking. Reuse never rewrites an original time, target or input digest.
 
@@ -63,6 +67,8 @@ The task has one fact map keyed by immutable IDs. Latest observation/check maps 
 observe ROOT ID --criterion C --kind static_analysis --observed-at ISO --actual "inspected causal proof and assumptions" --evidence PATH
 observe ROOT ID --criterion C --kind runtime_observation --target "actual artifact/device/environment" --observed-at ISO --actual "actual result and scope" --evidence PATH
 ```
+
+Optional `--producer ATTEMPT_ID` ties an observed result artifact to a retained successful current command: check mapping/inputs/output must match and actual observed result-production time must fall in that attempt's window. For reused Gradle XML, cite its original producer and original time. A later UP-TO-DATE invocation cannot become the old result's producer. This check cannot establish an XML's truth or manufacture missing metadata; inspect actual artifacts. Device observations without a command producer still require their real artifact/target basis.
 
 Use `--status failed|unavailable` honestly. No pre-task/future observation time or missing runtime target. Registration HEAD is not installed-build identity. Observing only stores a fact: even a later runtime pass does not resolve a failure. A control case may pass while the original case still fails. `kind:unaffected` is not proof the baseline is correct.
 
@@ -80,7 +86,7 @@ Deferred criteria remain in the task and receipt as `deferred`, with zero claim 
 
 Status/receipt distinguish supported criteria and explicit deferrals; report the excluded promises and unresolved issues, never say all original requirements passed. If every promise is deferred, the receipt certifies no supported delivery. Cleanup requires surviving unchanged deferral handoffs; user limitations retain their existing handoff requirements. No new disposition step is needed on normal tasks without failures or exclusions. Prepare the necessary surviving handoff and actual source wording before binding a deferral and final assessment; avoid appending routine completion narration to those sources afterwards. A later meaningful source/handoff change still needs scoped reconciliation, not a whole-task test replay. This ordering is not permission to freeze incorrect information or weaken hash checks.
 
-Optional `--producer ATTEMPT_ID` ties an observed result artifact to a retained successful current command: check mapping/inputs/output must match and actual observed result-production time must fall in that attempt's window. For reused Gradle XML, cite its original producer and original time. A later UP-TO-DATE invocation cannot become the old result's producer. This check cannot establish an XML's truth or manufacture missing metadata; inspect actual artifacts. Device observations without a command producer still require their real artifact/target basis.
+## Assess selected facts
 
 `review-input ROOT ID --criterion C` gives candidates, current selected IDs, proof requirements, digest, failure and detail routes. Candidates are not automatically adopted. Use `detail --section fact --criterion FACT_ID` for one exact original source and follow pagination.
 
