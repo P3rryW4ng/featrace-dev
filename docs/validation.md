@@ -1,6 +1,6 @@
 # 当前验证与历史查证入口
 
-核对：2026-11-04。当前正式及CC为0.30.7合同6。这里只索引仍需使用的证据；不把旧执行记作本轮新跑，不从测试数量推算成熟度或收益。身份见[MAINTAINER](../MAINTAINER.md)，阶段出口见[ROADMAP](../ROADMAP.md)。
+核对：2026-11-06。当前正式及CC为0.31.0合同7。这里只索引仍需使用的证据；不把旧执行记作本轮新跑，不从测试数量推算成熟度或收益。身份见[MAINTAINER](../MAINTAINER.md)，阶段出口见[ROADMAP](../ROADMAP.md)。
 
 <a id="phase2-exit-20261102"></a>
 
@@ -27,6 +27,7 @@
 
 | 要核对什么 | 原始依据 | 准确边界 |
 |---|---|---|
+| 合同7完整378项回归与独立评审/演练 | [本轮原始摘要](evaluations/contract7-release-review-20261106.json)、[发布核验](evaluations/release-0310-20261106.json) | 378项168.234秒；4项独审发现修正后复核。3项合成任务不等于自然CC/设备或净收益证明 |
 | 完整343项程序回归 | [最终结果及输入摘要](evaluations/contract6-build-20261027/retirement-result.json) | 134.695秒；运行/测试输入冻结。中间317/335/341不能掩盖随后发现的问题；发布只改元数据和文档，未重复不变套件 |
 | 受控环境纵切 | [环境结果](evaluations/contract6-build-20261027/environment-result.json) | 真正传入选定变量、固定PATH/工具字节及后检；不保证发现动态依赖或构成OS沙箱 |
 | 独立源码纠错 | [初审](evaluations/contract6-build-20261027/source-review.json)、[差异复核](evaluations/contract6-build-20261027/source-review-followup.json)、[定点最终复核](evaluations/contract6-build-20261027/source-review-final.json) | 两项发现及一项归属残留已修正；审查者未运行测试，不冒充实测 |
@@ -127,3 +128,7 @@
 ## 2026-11-06合同7候选
 
 [实施](reviews/2026-11-06-contract7-build.md)及[冻结结果](evaluations/contract7-build-20261106.json)：最终374项153.271秒通过，含原件/失败保护、采用、走查轮次、中断清理及本地接入反例；早期371项的夹具错误与373项通过保留。隔离开发包17文件、实际CLI两条主链通过；正式CC未动，未做业务/自然Agent/独立源码评审，不推导净节省或第三阶段通过。
+
+## 2026-11-06正式0.31.0
+
+[发布与CC](evaluations/release-0310-20261106.json)匹配固定f5901ce，隔离/日常17文件、旧0.30.7合同6备份15文件完整。前述候选未发布描述均是开发截点。独立评审修正的378项完整结果为当前程序证据，原374项、3项合成任务及SC3时间/入口限制各保留实际范围；没有业务迁移或重验，第三阶段未通过。
