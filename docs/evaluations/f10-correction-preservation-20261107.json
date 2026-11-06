@@ -1,0 +1,50 @@
+{
+  "date": "2026-11-07",
+  "kind": "read_only_business_audit_and_private_preservation",
+  "source_revision": "91fb323",
+  "business_task_modified": false,
+  "business_tests_run": 0,
+  "device_operations": 0,
+  "new_reviews": 0,
+  "task": {
+    "state": "complete",
+    "criteria": 9,
+    "facts": 26,
+    "attachments": 32,
+    "completed_corrections": 2,
+    "bytes": 259104,
+    "remaining_bytes": 3040,
+    "backup_matches_previously_audited_original": true,
+    "original_failure_and_actions_preserved": true
+  },
+  "provenance": {
+    "pairs_checked": 4,
+    "all_old_and_new_hashes_match": true,
+    "changed_fields": [
+      "context_id",
+      "correction"
+    ],
+    "other_fields_equal": true,
+    "issuer": "coordinator correction; no reviewer re-signature"
+  },
+  "preservation": {
+    "files": 11,
+    "bytes": 531591,
+    "byte_equal": true,
+    "outside_business_and_maintenance_repositories": true,
+    "task_references_rewritten": false,
+    "private_manifest_not_committed": true
+  },
+  "representation_probe": {
+    "read_only": true,
+    "compact_bytes": 219027,
+    "pooled_bytes": 206927,
+    "pooled_blocks": 4,
+    "round_trip_equal": true,
+    "not_production_format": true
+  },
+  "limitations": [
+    "Current provenance references still point into scratch; backup is not managed task evidence.",
+    "No complete UI proof, business correctness certification or phase exit inferred."
+  ]
+}
