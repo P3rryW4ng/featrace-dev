@@ -32,6 +32,8 @@ A109当前任务架构替代旧.agent-workflow台账、全量延续/终审绑定
 
 ## 当前接续
 
+已确认使用者隔离原则：运行规则随Skill、本机策略/任务默认本地、必要业务事实共享。方案新增Git本地排除替换边界；当前prepare仍写共享.gitignore，尚未实施，不宣称已解决。详见[方案第6节](docs/designs/scoped-observation-adoption.md)。
+
 [F09核对与合同7候选方案](docs/designs/scoped-observation-adoption.md)完成：确认装配输入遗漏、首轮失败目录被覆盖、跨任务延期授权不足。本轮用户已后来批准首页相关延期，不回填历史；业务定向correct交由CC接续，维护未改业务。方案待批准实施，未改运行/安装。
 
 [F06复用评审](docs/reviews/2026-11-06-f06-reuse-review.md)已完成，四例隔离演练确认文件粒度的保守失效；两份指引补清该边界及检查组合/cache never。已按0.30.7推送安装，语义适用性采用机制仍需设计评审。
