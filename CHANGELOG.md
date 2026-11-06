@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.30.7 — 2026-11-06
+
+- Clarify file-granularity observation reuse: unrelated changes inside a declared input file still invalidate the old observation. Never remove real dependencies or re-sign old observations to bypass this boundary.
+- Group Gradle checks by actual dependency and rerun needs; distinguish cache-never process invocation from build-tool reuse. A missing direct call does not remove a compiled module dependency.
+- Patch release for two guidance files;15 runtime files, contract6/CLI/scripts/tests unchanged. Four isolated applicability probes passed; no business tests or full-suite rerun. Branch-level semantic adoption remains a design question, not an implemented capability.
+
 ## 0.30.6 — 2026-11-05
 
 - Organize guidance by relevant action: load the Android profile before planning checks/editing Android code; keep producer binding next to observation and result retention before walkthrough restoration. Preserve contextual reading and existing approval boundaries without a reading ledger.
