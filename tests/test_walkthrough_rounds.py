@@ -1,4 +1,9 @@
 import json
+import fcntl
+import signal
+import subprocess
+import sys
+from pathlib import Path
 import unittest
 from datetime import datetime,timezone,timedelta
 from unittest.mock import patch
@@ -69,9 +74,11 @@ class WalkthroughTests(unittest.TestCase):
         self.assertNotEqual(self.f.doc()['walkthroughs'][a['attempt']]['state'],'sealed')
 
     def test_symlink_and_concurrent_seal_refuse(self):
-        a,p=self.start();folder=self.r/a['output_directory'];(folder/'.seal-lock').write_text('other writer')
-        with self.assertRaisesRegex(ValueError,'SEAL_BUSY'):self.seal(a,p)
-        (folder/'.seal-lock').unlink();(folder/'escape').symlink_to(self.r/'rules.md')
+        a,p=self.start();folder=self.r/a['output_directory'];lock=w.task_walkthrough.seal_lock(w,self.r,a['attempt'])
+        with lock.open('a+b') as stream:
+            fcntl.flock(stream.fileno(),fcntl.LOCK_EX|fcntl.LOCK_NB)
+            with self.assertRaisesRegex(ValueError,'SEAL_BUSY'):self.seal(a,p)
+        (folder/'escape').symlink_to(self.r/'rules.md')
         with self.assertRaisesRegex(ValueError,'SYMLINK'):self.seal(a,p)
 
     def test_retirement_hands_off_unsealed_round_before_cleanup(self):
@@ -99,3 +106,27 @@ class WalkthroughTests(unittest.TestCase):
             with self.assertRaises(OSError):w.cleanup(self.r,self.f.ident,True)
         w.cleanup(self.r,self.f.ident,True)
         self.assertFalse((self.r/p).exists())
+
+    def test_sigkill_during_copy_releases_seal_lock_and_retry_works(self):
+        a,p=self.start();core=str(Path(w.__file__).parent)
+        script="import sys,os,signal;sys.path.insert(0,sys.argv[1]);import task_workflow as w;from pathlib import Path;r=Path(sys.argv[2]);w.attach=lambda *a,**k:os.kill(os.getpid(),signal.SIGKILL);w.task_walkthrough.seal(w,r,sys.argv[3],sys.argv[4],w.now(),'actual fixture rendering',[sys.argv[5]],'passed',{'case':'original'})"
+        run=subprocess.run([sys.executable,'-c',script,core,str(self.r),self.f.ident,a['attempt'],p],capture_output=True)
+        self.assertEqual(run.returncode,-signal.SIGKILL)
+        intent=self.f.doc()['walkthroughs'][a['attempt']]['seal_intent']
+        result=w.task_walkthrough.seal(w,self.r,self.f.ident,a['attempt'],intent['observed_at'],intent['actual'],[p],'passed',intent['conditions'])
+        self.assertIn(result['fact'],self.f.doc()['facts'])
+
+    def test_unknown_empty_directory_is_not_deleted(self):
+        a,p=self.start();result=self.seal(a,p)
+        w.assess(self.r,self.f.ident,'C1','supported','Fixture',fact_ids=[result['fact']]);w.close(self.r,self.f.ident,[])
+        d=self.f.doc();d['receipt']['completed_at']=(datetime.now(timezone.utc)-timedelta(days=8)).isoformat();w.save(self.r,d)
+        extra=self.r/a['output_directory']/'unknown';extra.mkdir()
+        with self.assertRaisesRegex(ValueError,'WALK_OUTPUT_CHANGED'):w.cleanup(self.r,self.f.ident,True)
+        self.assertTrue(extra.is_dir());self.assertTrue((self.r/p).exists())
+
+    def test_sealed_retry_rejects_changed_conditions_or_evidence(self):
+        a,p=self.start();self.seal(a,p)
+        intent=self.f.doc()['walkthroughs'][a['attempt']]['seal_intent']
+        for evidence,conditions in [([p],{'case':'other'}),(['other.txt'],intent['conditions'])]:
+            with self.assertRaisesRegex(ValueError,'WALK_ALREADY_SEALED'):
+                w.task_walkthrough.seal(w,self.r,self.f.ident,a['attempt'],intent['observed_at'],intent['actual'],evidence,'passed',conditions)

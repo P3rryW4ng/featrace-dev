@@ -1,4 +1,7 @@
 import json
+import fcntl
+import signal
+import sys
 import subprocess
 import unittest
 from pathlib import Path
@@ -42,8 +45,10 @@ class LocalSetupTests(unittest.TestCase):
 
     def test_lock_and_symlink_refuse(self):
         lock=self.root/'.git/info/featrace-setup.lock';lock.write_text('other writer')
-        with self.assertRaisesRegex(ValueError,'SETUP_BUSY'):self.prepare()
-        lock.unlink();exclude=self.root/'.git/info/exclude';exclude.unlink();exclude.symlink_to(self.root/'rules.md')
+        with lock.open('a+b') as stream:
+            fcntl.flock(stream.fileno(),fcntl.LOCK_EX|fcntl.LOCK_NB)
+            with self.assertRaisesRegex(ValueError,'SETUP_BUSY'):self.prepare()
+        exclude=self.root/'.git/info/exclude';exclude.unlink();exclude.symlink_to(self.root/'rules.md')
         with self.assertRaisesRegex(ValueError,'LINK_REFUSED'):self.prepare()
 
     def test_failed_policy_write_restores_exclusion(self):
@@ -55,3 +60,11 @@ class LocalSetupTests(unittest.TestCase):
         with patch.object(w.task_policy,'write',side_effect=fail_dest):
             with self.assertRaises(OSError):self.prepare()
         self.assertEqual(exclude.read_bytes(),before)
+
+    def test_sigkill_during_policy_setup_does_not_leave_busy_lock(self):
+        core=str(Path(w.__file__).parent)
+        script="import sys,os,signal,json;sys.path.insert(0,sys.argv[1]);import task_workflow as w;from pathlib import Path;r=Path(sys.argv[2]);config=w.task_policy.load(r);old=w.task_policy.write;w.task_policy.write=lambda p,data: os.kill(os.getpid(),signal.SIGKILL) if p.name==w.task_policy.NAME else old(p,data);w.task_policy.prepare(r,config,w.git)"
+        run=subprocess.run([sys.executable,'-c',script,core,str(self.root)],capture_output=True)
+        self.assertEqual(run.returncode,-signal.SIGKILL)
+        self.prepare()
+        self.assertEqual(w.task_policy.load(self.root),self.config)

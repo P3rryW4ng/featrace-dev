@@ -226,7 +226,7 @@ def retirement_context(root,doc,handoff=None):
             'observations':observations,
             'assessments':{cid:a for cid,a in doc.get('assessments',{}).items() if a['verdict']!='supported'},
             'deferrals':{cid:{'expected':criteria[cid]['expected'],**entries[-1]} for cid,entries in doc.get('claim_deferrals',{}).items() if entries[-1]['action']=='defer'},
-            'walkthroughs':{key:{**r,'outputs':task_walkthrough.inventory(sys.modules[__name__],root,r['path'])} for key,r in doc.get('walkthroughs',{}).items() if r['state']!='sealed'},
+            'walkthroughs':{key:{**r,'outputs':task_walkthrough.inventory(sys.modules[__name__],root,r['path']),'output_dirs':task_walkthrough.directories(sys.modules[__name__],root,r['path'])} for key,r in doc.get('walkthroughs',{}).items() if r['state']!='sealed'},
             'unknowns':plan.get('unknowns',[]),'limitations':doc.get('limitations',[]),
             'correction':({k:correction[k] for k in ('id','affected','reason','authority','prior_receipt_digest')} if correction else None),
             'code':{'baseline':doc['baseline'],'git_head':git(root,'rev-parse','HEAD').decode().strip(),

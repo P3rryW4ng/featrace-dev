@@ -1,5 +1,6 @@
 """One scoped project policy; no feature contracts, migrations or history ledger."""
 import fnmatch
+import fcntl
 import hashlib
 import json
 import os
@@ -100,10 +101,10 @@ def prepare(root,config,git):
         if part.is_symlink():fail('LOCAL_EXCLUDE_LINK_REFUSED')
     info=common/'info';info.mkdir(exist_ok=True)
     ignore=info/'exclude';lock=info/'featrace-setup.lock'
-    try:fd=os.open(lock,os.O_WRONLY|os.O_CREAT|os.O_EXCL,0o600)
-    except FileExistsError:fail('LOCAL_SETUP_BUSY')
-    os.close(fd)
+    fd=os.open(lock,os.O_RDWR|os.O_CREAT|os.O_NOFOLLOW,0o600)
     try:
+        try:fcntl.flock(fd,fcntl.LOCK_EX|fcntl.LOCK_NB)
+        except BlockingIOError:fail('LOCAL_SETUP_BUSY')
         previous=ignore.read_bytes() if ignore.exists() else None
         if previous is not None and len(previous)>MAX:fail('POLICY_SIZE_LIMIT')
         original=(previous or b'').decode()
@@ -126,7 +127,7 @@ def prepare(root,config,git):
                 if previous is None:ignore.unlink(missing_ok=True)
                 else:write(ignore,previous)
             raise
-    finally:lock.unlink()
+    finally:os.close(fd)
     return {'policy_contract':1,'local_data_ignored':True,'cleanup':p['cleanup'],'retention_days':p['retention_days'],
             'boundary':'Local Git exclusion only; shared worktrees may share it. No shared rules, hooks or host permissions changed.'}
 
