@@ -1,0 +1,38 @@
+{
+  "late_capture": {
+    "refusals": {
+      "failed": "WALK_INPUT_CHANGED",
+      "unavailable": "WALK_INPUT_CHANGED",
+      "passed": "WALK_INPUT_CHANGED"
+    },
+    "output_preserved": true,
+    "original_round_unchanged": true,
+    "stored_failure_facts": 0,
+    "round_has_original_file_map": false,
+    "round_has_original_criterion_text": false
+  },
+  "encoding_protocol": {
+    "save_and_preflight_only_changed": true,
+    "protocol_equal": false,
+    "second_reused": false,
+    "synthetic_process_count_before": 1,
+    "synthetic_process_count_after": 2
+  },
+  "encoding_record": {
+    "old_encoding_refusal": "TASK_SIZE_LIMIT",
+    "new_record_bytes": 261658,
+    "limit_unchanged": 262144,
+    "old_reader_loaded": true,
+    "negative_and_facts_preserved": true,
+    "preflight_refusal": "TASK_SIZE_LIMIT_BEFORE_EXECUTION",
+    "no_process_after_capacity_refusal": true
+  },
+  "date": "2026-11-07",
+  "source_revision": "03cf149",
+  "kind": "ad_hoc_isolated_probe",
+  "production_modified": false,
+  "business_modified": false,
+  "limitations": [
+    "Temporary prototype; no full regression, interruption recovery or natural efficiency proof."
+  ]
+}
