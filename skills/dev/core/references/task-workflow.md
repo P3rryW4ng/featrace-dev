@@ -59,6 +59,8 @@ The log has bounded start/result metadata with original attempt/input/protocol/p
 
 ## Preserve facts before outputs change
 
+Observation applicability uses the criterion's declared file identities. A change within any declared file can make an old observation unavailable even when investigation finds a particular scenario unchanged; current code does not certify branch-level equivalence. Inspect the actual fact/criterion before promising reuse. Never remove real dependencies, rewrite the original time or register an old observation as newly performed to bypass this boundary. Separate composite promises during planning only where dependencies, proof or verdicts are genuinely independent. If applicability remains insufficient, address the affected claim; this does not by itself require replaying the whole parent requirement.
+
 The task has one fact map keyed by immutable IDs. Latest observation/check maps are pointers, not the only surviving fact. Retained old successes can be selected when still applicable; newer failed/unavailable checks and unresolved runtime failures remain blocking. Reuse never rewrites an original time, target or input digest.
 
 `attach ROOT ID --file SOURCE` registers an owned evidence copy, at most32 files,16MiB each within64MiB/task. Originals are never deleted. Use returned paths in observations; do not leave scratch as a substitute for managed retention.
