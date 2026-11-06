@@ -20,9 +20,11 @@ import task_execution
 import task_failures
 import task_authorization
 import task_assets
+import task_adoption
+import task_walkthrough
 from zoneinfo import ZoneInfo
 
-CONTRACT = 6
+CONTRACT = 7
 MAX_CORRECTIONS = 8
 MAX_FACTS = 128
 EVIDENCE_KINDS = {'static_analysis', 'runtime_observation', 'command'}
@@ -116,9 +118,10 @@ def load(root, ident):
     if 'facts' in doc:
         if not isinstance(doc['facts'],dict) or len(doc['facts'])>MAX_FACTS:fail('FACT_LIMIT')
         for fid,fact in doc['facts'].items():
-            if fact.get('id')!=fid or fact.get('kind') not in EVIDENCE_KINDS:fail('FACT_INVALID')
+            if fact.get('id')!=fid or fact.get('kind') not in EVIDENCE_KINDS|{'application'}:fail('FACT_INVALID')
         for section in ('executions','observations'):
             if any(fid not in doc['facts'] for fid in doc[section].values()):fail('FACT_REFERENCE_MISSING')
+    task_walkthrough.validate(doc,fail)
     validate_retirement(doc)
     task_failures.validate(doc,fail)
     task_authorization.validate(doc,fail)
@@ -126,6 +129,7 @@ def load(root, ident):
     return doc
 
 def save(root, doc):
+    task_walkthrough.validate(doc,fail)
     validate_retirement(doc)
     task_failures.validate(doc,fail)
     task_authorization.validate(doc,fail)
@@ -169,7 +173,7 @@ def validate_retirement(doc):
             or not all(text(receipt.get(k)) for k in ('reason','authority','retired_at','decision_at','context_digest','evidence_retention'))
             or not re.fullmatch(r'[a-f0-9]{64}',receipt['context_digest'])
             or not isinstance(receipt['unresolved'],dict)
-            or set(receipt['unresolved'])!={'runtime_failures','checks','observations','assessments','deferrals','unknowns','limitations','corrections','code_paths'}
+            or set(receipt['unresolved'])!={'runtime_failures','checks','observations','assessments','deferrals','unknowns','limitations','corrections','code_paths','walkthroughs'}
             or any(type(v) is not int or v<0 for v in receipt['unresolved'].values())):fail('RETIREMENT_CONTRACT_INVALID')
     if instant(receipt['decision_at'])>instant(receipt['retired_at']):fail('RETIREMENT_CONTRACT_INVALID')
     handoff=receipt['handoff']
@@ -222,6 +226,7 @@ def retirement_context(root,doc,handoff=None):
             'observations':observations,
             'assessments':{cid:a for cid,a in doc.get('assessments',{}).items() if a['verdict']!='supported'},
             'deferrals':{cid:{'expected':criteria[cid]['expected'],**entries[-1]} for cid,entries in doc.get('claim_deferrals',{}).items() if entries[-1]['action']=='defer'},
+            'walkthroughs':{key:{**r,'outputs':task_walkthrough.inventory(sys.modules[__name__],root,r['path'])} for key,r in doc.get('walkthroughs',{}).items() if r['state']!='sealed'},
             'unknowns':plan.get('unknowns',[]),'limitations':doc.get('limitations',[]),
             'correction':({k:correction[k] for k in ('id','affected','reason','authority','prior_receipt_digest')} if correction else None),
             'code':{'baseline':doc['baseline'],'git_head':git(root,'rev-parse','HEAD').decode().strip(),
@@ -240,7 +245,7 @@ def retire(root,ident,reason,authority,decision_at,handoff=None):
         counts={'runtime_failures':len(context['runtime_failures']),'checks':len(context['checks']),
                 'observations':len(context['observations']),'assessments':len(context['assessments']),'deferrals':len(context['deferrals']),
                 'unknowns':len(context['unknowns']),'limitations':len(context['limitations']),
-                'corrections':int(context['correction'] is not None),'code_paths':len(context['code']['paths'])}
+                'corrections':int(context['correction'] is not None),'code_paths':len(context['code']['paths']),'walkthroughs':len(context['walkthroughs'])}
         identity=None
         if any(counts.values()) and not handoff:fail('RETIREMENT_HANDOFF_REQUIRED')
         if handoff:
@@ -256,6 +261,7 @@ def retire(root,ident,reason,authority,decision_at,handoff=None):
             'delivery_certified':False,'context_digest':digest(context),'unresolved':counts,'handoff':identity,
             'retention':{k:task_policy.load(root)[k] for k in ('retention_days','timezone','cleanup','handoff')},
             'evidence_retention':'task-local; non-delivery retirement, unresolved issues remain unresolved'}
+        for key,r in context['walkthroughs'].items():doc['walkthroughs'][key]={**r,'state':'abandoned'}
         doc['state']='retired';save(root,doc)
         return doc['retirement']
 
@@ -763,7 +769,7 @@ def attach(root,ident,source,role="evidence"):
         if not re.fullmatch(r'\.[A-Za-z0-9]{1,10}',suffix) or suffix=='.log':suffix='.asset'
         key=uuid.uuid4().hex;rel='.featrace/artifacts/'+ident+'/'+key+suffix;target=safe(root,rel)
         target.parent.mkdir(parents=True,exist_ok=True)
-        used=sum(p.stat().st_size for p in target.parent.iterdir() if p.is_file())
+        used=sum(p.stat().st_size for p in target.parent.rglob('*') if p.is_file())
         if used+before.st_size>64*1024*1024:fail('TASK_ARTIFACT_BUDGET')
         try:
             h=hashlib.sha256();written=0
@@ -781,7 +787,7 @@ def attach(root,ident,source,role="evidence"):
         return {'attachment':key,'path':rel,'bytes':written,'role':role,'original_preserved':True,'boundary':'Selected snapshot only, not a claim that the external source is still current.'}
 
 
-def observe(root,ident,criterion,kind,observed_at,actual,evidence,status='passed',target=None,producer=None,conditions=None):
+def observe(root,ident,criterion,kind,observed_at,actual,evidence,status='passed',target=None,producer=None,conditions=None,walkthrough=None):
     if (kind not in ('static_analysis','runtime_observation') or not text(actual) or not evidence
             or status not in ('passed','failed','unavailable')):fail('OBSERVATION_REQUIRED')
     if instant(observed_at)>datetime.now(timezone.utc):fail('FUTURE_OBSERVATION')
@@ -793,6 +799,7 @@ def observe(root,ident,criterion,kind,observed_at,actual,evidence,status='passed
         c=next((c for c in doc['plan']['criteria'] if c['id']==criterion),None)
         if c is None:fail('CRITERION_UNKNOWN')
         ready(root,doc,criterion=c)
+        if walkthrough:task_walkthrough.check(sys.modules[__name__],root,doc,walkthrough,c)
         stamp=observation_stamp(root,c);refs=files(root,evidence,True)
         if observation_stamp(root,c)!=stamp:fail('INPUT_MOVED')
         rec={'id':uuid.uuid4().hex,'kind':kind,'criterion':criterion,'status':status,'observed_at':observed_at,
@@ -800,7 +807,9 @@ def observe(root,ident,criterion,kind,observed_at,actual,evidence,status='passed
              'git_head_at_registration':git(root,'rev-parse','HEAD').decode().strip(),
              'observed_target':target if kind=='runtime_observation' else 'local selected sources','source_assets':c.get('source_assets',[]),'evidence':refs}
         if kind=='runtime_observation':rec['conditions']=task_failures.conditions({} if conditions is None else conditions,fail)
+        if kind=='runtime_observation':rec.update(source_inputs=files(root,c['inputs']),adoption_basis=task_adoption.basis(sys.modules[__name__],root,doc,c))
         elif conditions is not None:fail('CONDITIONS_REQUIRE_RUNTIME')
+        if walkthrough:rec['walkthrough']=walkthrough
         if producer:
             run=doc['facts'].get(producer)
             check=next((x for x in doc['plan']['checks'] if run and x['id']==run.get('check')),None)
@@ -808,6 +817,7 @@ def observe(root,ident,criterion,kind,observed_at,actual,evidence,status='passed
                     or not execution_profile(root,doc,check,run) or not artifact_ok(root,run['artifact'])
                     or not instant(run['started_at'])<=instant(observed_at)<=instant(run['at'])):fail('PRODUCER_NOT_APPLICABLE')
             rec['producer']=producer
+        if observation_stamp(root,c)!=stamp or (kind=='runtime_observation' and digest(rec['source_inputs'])!=stamp):fail('INPUT_MOVED')
         applicability=fact_applicability(c,rec)
         if status=='passed' and applicability in ('CURRENT_TARGET_MISMATCH','CURRENT_STATE_NEEDS_RUNTIME'):fail(applicability)
         old=doc['facts'].get(doc['observations'].get(criterion))
@@ -915,6 +925,7 @@ def fact_available(root,doc,c,fact,checked=None):
 
 def _fact_available(root,doc,c,fact,checked=None):
     if fact['status']!='passed':return False
+    if fact['kind']=='application':return task_adoption.available(sys.modules[__name__],root,doc,c,fact)
     if fact['kind']=='command':
         check=next((x for x in doc['plan']['checks'] if x['id']==fact['check']),None)
         if not check or c['id'] not in check['covers']:return False
@@ -955,13 +966,16 @@ def prune(root,ident,apply=False):
             for claim in entry.get('prior_claims',{}).values():
                 if claim.get('observation'):keep.add(claim['observation'])
                 keep.update((claim.get('assessment') or {}).get('facts',[]))
+        keep.update(r['fact'] for r in doc.get('walkthroughs',{}).values() if r.get('fact'))
         pending=list(keep)
         while pending:
             fact=doc['facts'].get(pending.pop())
             if not fact:fail('FACT_REFERENCE_MISSING')
-            for key in ('producer','previous_failure','previous_result'):
+            for key in ('producer','previous_failure','previous_result','original'):
                 ref=fact.get(key)
                 if isinstance(ref,str) and ref and ref not in keep:keep.add(ref);pending.append(ref)
+            for ref in fact.get('analyses',[]):
+                if ref not in keep:keep.add(ref);pending.append(ref)
         candidates=sorted(set(doc['facts'])-keep)
         used_assets={x for c in doc['plan']['criteria'] for x in c.get('source_assets',[])}|{x for c in doc['plan']['checks'] for x in c.get('input_assets',[])}
         retained_paths=set()
@@ -991,10 +1005,13 @@ def prune(root,ident,apply=False):
 
 def selected_support(root,doc,c,ids,checked=None):
     if not isinstance(ids,list) or not ids or any(not isinstance(x,str) for x in ids) or len(ids)!=len(set(ids)):fail('SUPPORT_SELECTION_REQUIRED')
+    applications=[doc['facts'][fid] for fid in ids if fid in doc['facts'] and doc['facts'][fid].get('kind')=='application']
+    adopted={f['original'] for f in applications if fact_available(root,doc,c,f)}
+    if any(f['original'] not in ids for f in applications):fail('ADOPTION_ORIGINAL_SELECTION_REQUIRED')
     chosen=[]
     for fid in ids:
         fact=doc['facts'].get(fid)
-        if not fact or not fact_available(root,doc,c,fact,checked):fail('CURRENT_FACT_REQUIRED')
+        if not fact or (fid not in adopted and not fact_available(root,doc,c,fact,checked)):fail('CURRENT_FACT_REQUIRED')
         chosen.append(fact)
     kinds={f['kind'] for f in chosen}
     if not any(set(group)<=kinds for group in c['proof']['any_of']):fail('PROOF_REQUIREMENTS_UNMET')
@@ -1036,7 +1053,7 @@ def view(root,ident,offset=0,limit=20,blocker_offset=0):
         return {'id':ident,'state':'complete','as_of':{k:v for k,v in doc['receipt'].items() if k not in ('limitations','deferrals')},
                 'limitation_count':len(doc['receipt']['limitations']),'deferred_count':len(doc['receipt'].get('deferrals',{})),'details':'detail --section receipt',
                 'correction_count':len(doc.get('corrections',[])), 'current_revision_certified':False}
-    blockers=[];rows=[];checked={};scope_readiness={'ready':True}
+    blockers=['WALK_UNSEALED:'+key for key,r in doc.get('walkthroughs',{}).items() if r['state']!='sealed'];rows=[];checked={};scope_readiness={'ready':True}
     deferred=active_deferrals(root,doc) if doc['plan'] else {}
     try:ready(root,doc,excluded=deferred)
     except (ValueError,OSError) as exc:
@@ -1144,10 +1161,12 @@ def cleanup(root,ident,apply=False,timezone_name='UTC',forget=False,handoff=None
             contents=source.read_text()
             if any(item not in contents for item in doc['receipt']['limitations']):fail('LIMITATIONS_HANDOFF_INCOMPLETE')
         folder=safe(root,'.featrace/artifacts/'+ident)
-        candidates=[]
+        walk_files,walk_dirs=task_walkthrough.cleanup_files(sys.modules[__name__],root,doc)
+        candidates=list(walk_files)
         assets={a['path']:a for a in doc.get('attachments',{}).values()}
         if folder.exists():
             for path in folder.iterdir():
+                if path in walk_dirs:continue
                 safe(root,path.relative_to(root).as_posix())
                 if not path.is_file():fail('CLEANUP_UNKNOWN_ARTIFACT')
                 rel=path.relative_to(root).as_posix()
@@ -1171,8 +1190,9 @@ def cleanup(root,ident,apply=False,timezone_name='UTC',forget=False,handoff=None
                 'boundary':'Only runner-owned logs and registered copies; originals and external evidence are not removed.'}
         if apply and changes_required:
             # Keep a valid completed task if cleanup is interrupted; update receipt BEFORE deleting logs.
-            save(root,{**retained,'attachments':doc.get('attachments',{})})
+            save(root,{**retained,'attachments':doc.get('attachments',{}),'walkthroughs':doc.get('walkthroughs',{})})
             for path in candidates:path.unlink()
+            for directory in walk_dirs:directory.rmdir()
             if folder.exists():folder.rmdir()
             if forget:task_path(root,ident).unlink()
             else:save(root,retained)
@@ -1301,7 +1321,7 @@ def detail(root,ident,section,criterion=None,offset=0,limit=4000,handoff=None):
         value=doc.get('facts',{}).get(criterion)
         if value is None:fail('FACT_REFERENCE_MISSING')
     elif section=='receipt' and doc['state']=='retired':value={'current_state':'retired','delivery_certified':False,'prior_delivery_receipt':doc.get('receipt')}
-    elif section in ('request','plan','receipt','limitations','corrections','authorizations','attachments','retirement'):value=doc.get(section)
+    elif section in ('request','plan','receipt','limitations','corrections','authorizations','attachments','retirement','walkthroughs'):value=doc.get(section)
     else:fail('DETAIL_SECTION_INVALID')
     body=canonical(value).decode() if section in ('failure-handoff','retirement-handoff') else json.dumps(value,ensure_ascii=False,sort_keys=True)
     # UTF-8 bytes are bounded even for four-byte codepoints.
@@ -1362,7 +1382,7 @@ def code_query(root,query,offset=0,limit=20):
 
 def main():
     parser=Parser(description=__doc__)
-    parser.add_argument('action',choices=['begin','plan','run','observe','assess','status','close','correct','prune','cleanup','locate','list','policy','maintain','detail','review-input','code','attach','storage','failure','defer','reopen-claim','authorize','retire'])
+    parser.add_argument('action',choices=['begin','plan','run','observe','assess','status','close','correct','prune','cleanup','locate','list','policy','maintain','detail','review-input','code','attach','storage','failure','defer','reopen-claim','authorize','retire','adopt','walk-start','walk-seal'])
     parser.add_argument('root');parser.add_argument('id',nargs='?')
     parser.add_argument('--json');parser.add_argument('--request');parser.add_argument('--check');parser.add_argument('--criterion')
     parser.add_argument('--kind');parser.add_argument('--observed-at');parser.add_argument('--actual')
@@ -1379,6 +1399,8 @@ def main():
     parser.add_argument('--conditions-json');parser.add_argument('--decision-at')
     parser.add_argument('--exclude-from-delivery',action='store_true')
     parser.add_argument('--mode',choices=['once','task']);parser.add_argument('--expires-at')
+    parser.add_argument('--attempt')
+    parser.add_argument('--original');parser.add_argument('--baseline-revision')
     parser.add_argument('--role',choices=['input','evidence'],default='evidence')
     a=parser.parse_args();root=project(a.root)
     if a.limit is None:a.limit=4000 if a.action=='detail' else 20
@@ -1393,6 +1415,9 @@ def main():
     elif a.action=='authorize':out=authorize(root,a.id,a.check,a.mode,a.authority,a.decision_at,a.expires_at,a.reason)
     elif a.action=='run':out=run_check(root,a.id,a.check,a.investigate)
     elif a.action=='attach':out=attach(root,a.id,a.file,a.role)
+    elif a.action=='walk-start':out=task_walkthrough.start(sys.modules[__name__],root,a.id,a.criterion,a.target)
+    elif a.action=='walk-seal':out=task_walkthrough.seal(sys.modules[__name__],root,a.id,a.attempt,a.observed_at,a.actual,a.evidence,a.status,read_json(Path(a.conditions_json)) if a.conditions_json else None)
+    elif a.action=='adopt':out=task_adoption.adopt(sys.modules[__name__],root,a.id,a.criterion,a.original,a.baseline_revision,a.fact,a.reason)
     elif a.action=='observe':out=observe(root,a.id,a.criterion,a.kind,a.observed_at,a.actual,a.evidence,a.status,a.target,a.producer,read_json(Path(a.conditions_json)) if a.conditions_json else None)
     elif a.action=='failure':out=failure_action(root,a.id,a.failure,a.disposition,a.reason,a.fact,read_json(Path(a.conditions_json)) if a.conditions_json else None)
     elif a.action in ('defer','reopen-claim'):out=defer_claim(root,a.id,a.criterion,a.reason,a.authority,a.decision_at,a.handoff,a.action=='reopen-claim',a.exclude_from_delivery)

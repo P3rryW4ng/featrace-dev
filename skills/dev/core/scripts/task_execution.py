@@ -12,6 +12,7 @@ import task_inputs
 import task_policy
 import task_authorization
 import task_assets
+import task_walkthrough
 
 VERSION = 2
 
@@ -36,7 +37,7 @@ def protocol(workflow):
                        and (n.id in definitions or n.id in constants) and n.id not in selected)
     return {'version': VERSION, 'implementation': {
         p.name: hashlib.sha256(p.read_bytes()).hexdigest()
-        for p in (Path(__file__), Path(task_inputs.__file__), Path(task_policy.__file__), Path(task_authorization.__file__), Path(task_assets.__file__))},
+        for p in (Path(__file__), Path(task_inputs.__file__), Path(task_policy.__file__), Path(task_authorization.__file__), Path(task_assets.__file__), Path(task_walkthrough.__file__))},
         'workflow_execution':hashlib.sha256(json.dumps(selected,sort_keys=True).encode()).hexdigest()}
 
 

@@ -1,6 +1,6 @@
 # Current tasks: claims, facts and scoped execution
 
-Read this for authorized development. One bounded current task; no feature ledger, permanent replay, project schema preparation or automatic old-record migration. Contract6 is for new tasks. Formats1/2/3/4/5 and `.agent-workflow` work use their fixed old tool; do not change IDs or formats to hide failures.
+Read this for authorized development. One bounded current task; no feature ledger, permanent replay, project schema preparation or automatic old-record migration. Contract7 is for new tasks. Formats1/2/3/4/5/6 and `.agent-workflow` work use their fixed old tool; do not change IDs or formats to hide failures.
 
 ## Find the relevant operation
 
@@ -8,7 +8,7 @@ Read Project and intent / Plan causal scope and proof for initial work; Checks a
 
 ## Project and intent
 
-Inspect actual project rules/hooks and current same-scope grants. Read project-compatibility before the first affected operation. `policy ROOT --json FILE` prepares one `.featrace-policy.json` and a narrow ignore block for local `.featrace`. It is an authorized edit, not a permission-granting flag. Existing tracked data, unowned policy or custom ignore conflicts refuse. Source changes require reconciliation; higher-priority host permissions and hooks still apply.
+Inspect actual project rules/hooks and current same-scope grants. Read project-compatibility before the first affected operation. `policy ROOT --json FILE` prepares one `.featrace-policy.json` and local Git exclusions for `.featrace` and the policy file. It is an authorized edit, not a permission-granting flag. Existing tracked data, unowned policy or local ignore conflicts refuse. Source changes require reconciliation; higher-priority host permissions and hooks still apply.
 
 Policy shape remains `{policy_contract:1,authority,timezone,retention_days,cleanup:manual|compact|forget,handoff:null|path,rules:[]}`. Each rule has source/sha256, paths, operations, environment, decision, permission and real authority. See project-compatibility for actual conflict resolution. An empty rules list records reviewed absence, not proof no injected rules exist.
 
@@ -59,7 +59,7 @@ The log has bounded start/result metadata with original attempt/input/protocol/p
 
 ## Preserve facts before outputs change
 
-Observation applicability uses the criterion's declared file identities. A change within any declared file can make an old observation unavailable even when investigation finds a particular scenario unchanged; current code does not certify branch-level equivalence. Inspect the actual fact/criterion before promising reuse. Never remove real dependencies, rewrite the original time or register an old observation as newly performed to bypass this boundary. Separate composite promises during planning only where dependencies, proof or verdicts are genuinely independent. If applicability remains insufficient, address the affected claim; this does not by itself require replaying the whole parent requirement.
+Direct observation applicability uses the criterion's declared file identities. A change within any declared file can make an old observation unavailable even when investigation finds a particular scenario unchanged; direct matching does not certify branch-level equivalence; the explicit contract7 adoption route below can record a scoped current judgment. Inspect the actual fact/criterion before promising reuse. Never remove real dependencies, rewrite the original time or register an old observation as newly performed to bypass this boundary. Separate composite promises during planning only where dependencies, proof or verdicts are genuinely independent. If applicability remains insufficient, address the affected claim; this does not by itself require replaying the whole parent requirement.
 
 The task has one fact map keyed by immutable IDs. Latest observation/check maps are pointers, not the only surviving fact. Retained old successes can be selected when still applicable; newer failed/unavailable checks and unresolved runtime failures remain blocking. Reuse never rewrites an original time, target or input digest.
 
@@ -80,7 +80,7 @@ Runtime observations may include `--conditions-json FILE`, a bounded object of n
 
 `failure ROOT ID --failure FAILED_FACT --disposition resolve --fact NEW_RUNTIME_FACT --reason "why the targeted actual result proves this reproduction repaired"` requires a current applicable passing runtime fact for the same criterion, not older than the failure, with matching nonempty declared conditions. Command/static/unavailable/control results cannot substitute. Multiple failures remain separately pending; resolve only those proved repaired. It clears only the related assessment, not command facts. Conditions and sufficiency still need actual investigation; do not invent matching labels to satisfy the tool.
 
-If necessary conditions were absent, `failure ... --disposition clarify --conditions-json FILE --reason "what original retained evidence establishes"` appends a clarification without changing the original observation/time. Original evidence must remain intact. If they cannot be established, keep the failure unresolved. `failure ... --disposition reopen --reason "specific earlier resolution judgment error"` restores pending status while retaining prior actions; it needs no new test solely to restore the old failure. On a complete retained contract6 task, first use the authorized scoped `correct` path. No old-format repair/import is provided.
+If necessary conditions were absent, `failure ... --disposition clarify --conditions-json FILE --reason "what original retained evidence establishes"` appends a clarification without changing the original observation/time. Original evidence must remain intact. If they cannot be established, keep the failure unresolved. `failure ... --disposition reopen --reason "specific earlier resolution judgment error"` restores pending status while retaining prior actions; it needs no new test solely to restore the old failure. On a complete retained contract7 task, first use the authorized scoped `correct` path. No old-format repair/import is provided.
 
 `defer ROOT ID --criterion C --exclude-from-delivery --reason "unfulfilled promise outside this delivery" --authority "actual product decision reference" --decision-at ISO --handoff EXISTING_PROJECT_ISSUE` is a whole-criterion delivery exclusion, not a pass or repair. Reuse the actual prior decision without asking again when it clearly covers this scope. The surviving non-generated handoff must contain the reason and authority; current inputs/authority and the set of known failures/negative checks are bound. If only one part is excluded, first reconcile the real promise boundaries; do not waive a composite criterion containing still-required promises. A delay that remains promised in this delivery must stay blocking. Do not interpret "later" or a defect's existence as blanket product approval. Preserve the precision of decision evidence: a known time bound is not an exact original approval timestamp. State bounds/unknown precision in authority and user-facing reports; do not derive a precise decision from a later external write. If a genuine later reaffirmation is already available, identify it as such with its actual time rather than backdating the first approval; do not request a duplicate decision merely to fill metadata. Do not rewrite a completed record solely to replace an honestly qualified time bound.
 
@@ -112,7 +112,7 @@ The current plan/assessments already carry decisions and support. When an import
 
 Verify pending work against actual state before acting, especially installed artifacts, mutable targets, applicable permissions and other people's changes. Continue independent authorized work while a scoped blocker remains. Do not rerun checks, reconstruct every past receipt, or ask the user to restate available decisions solely because the context changed. A missing supported source/permission is a concrete blocker; investigate or ask only for that piece. This is a recovery procedure, not automatic context compression or a guarantee of host memory.
 
-`correct ROOT ID --affected C --reason "specific error" --authority "real scoped approval"` works only on a retained complete contract6 task. It preserves original receipts, selected old judgments and fact references; clears only affected assessments; cannot remove affected criteria/failures or clean an open correction. Reclose links the original receipt. At most8 corrections; compacted/forgotten sources refuse. Old formats1/2/3/4/5 need its pinned old tool, without new-package migration or compatibility bridges.
+`correct ROOT ID --affected C --reason "specific error" --authority "real scoped approval"` works only on a retained complete contract7 task. It preserves original receipts, selected old judgments and fact references; clears only affected assessments; cannot remove affected criteria/failures or clean an open correction. Reclose links the original receipt. At most8 corrections; compacted/forgotten sources refuse. Old formats1/2/3/4/5/6 need its pinned old tool, without new-package migration or compatibility bridges.
 
 prune ROOT ID previews removable unreferenced passing facts and unused input snapshots. Apply removes only those passing facts and intact unused owned input copies. Latest/negative/selected/producer/correction sources and ordinary evidence attachments remain. Changed unused copies refuse; external originals are never deleted.
 
@@ -155,16 +155,16 @@ At most32 copies share16MiB/file and64MiB/task budgets. Explicit prune reclaims 
 When an old check cannot be reused, inspect `detail ROOT ID --section check --check K` as needed. It separates reuse reasons (identity/artifact/age/cache/scope) from current permission for a new execution. New facts retain only finite component hashes, never raw environment values; old facts without them say not_collected, not a reconstructed cause. Queries do not execute or consume grants. The explanation does not relax actual inputs, PATH, deny, freshness, failure or host controls.
 
 
-### Controlled execution environment (contract6)
+### Controlled execution environment
 
 Checks may omit `execution_env` or use `{"mode":"inherit"}`: preserve inherited host environment and the conservative DEFAULT_ENV plus env_keys identity. This is the default, not a claim to discover every dynamic dependency.
 
 For a justified controlled check use `{"mode":"controlled","inherit_keys":["LANG"],"search_path":["/usr/bin","/bin"]}`. Only selected present keys and this PATH reach the child. Keys must be unique legal environment names (max64, no PATH); search_path contains1–32 unique absolute nonempty directory paths without parent traversal or path-list separators. Do not put secrets into plans. Controlled mode rejects env_keys; use inherit_keys instead. Missing selected keys remain absent. Python/shell runtimes can inject their own values; this is not an OS sandbox.
 
-The same in-memory environment snapshot is fingerprinted and passed to execution. The top-level executable is resolved using that PATH, bound by bytes and launched at that resolved path. Post-execution drift remains unavailable. Declare actual SDK/subtool inputs using exact paths/input_sets/external_inputs; search_path alone does not hash a directory or discover nested tools. Device/remote freshness and no-cache, permission/deny and failure protections remain unchanged. Contract1–5 records require pinned tools, without migration.
+The same in-memory environment snapshot is fingerprinted and passed to execution. The top-level executable is resolved using that PATH, bound by bytes and launched at that resolved path. Post-execution drift remains unavailable. Declare actual SDK/subtool inputs using exact paths/input_sets/external_inputs; search_path alone does not hash a directory or discover nested tools. Device/remote freshness and no-cache, permission/deny and failure protections remain unchanged. Contract1–6 records require pinned tools, without migration.
 
 
-### Stop without delivery (contract6)
+### Stop without delivery
 
 Use `retire ROOT ID --reason "actual stop/disposition" --authority "real scoped decision" --decision-at OFFSET_TIME [--handoff EXISTING_ISSUE]` only for an explicit decision to stop this unfinished task. Reuse actual existing authorization; age, quota or cleanup errors are not authority. Busy refuses without killing a process. Complete deliveries use correct/cleanup, not retire. Repeat retirement is read-only and keeps its original time.
 
@@ -173,3 +173,29 @@ Retired is terminal and **not delivered**. It retains failures, unresolved corre
 Before retirement, inspect every page of `detail ROOT ID --section retirement-handoff --handoff EXISTING_ISSUE`. When there are code changes, pending runtime/check outcomes, unknowns, limitations or an open correction, keep its exact compact JSON with the actual reason, authority, decision time and necessary code disposition in the project's existing concise issue location. Not a new per-feature dossier. The handoff cannot be a task business input or an expiring control file; `--handoff` excludes the issue itself from an unplanned draft's change boundary. For planned work the boundary uses declared task scope, not unrelated branch changes. Confirm omitted related changes during actual investigation; this is not automatic attribution or proof the scope is complete. An empty risk-free draft needs no permanent issue.
 
 Retire validates the selected issue bytes and captures their hash. Cleanup refuses missing/changed required handoff and unknown/modified owned artifacts. Calendar retention starts at actual retired_at, never an older decision_at. Recorded manual/compact/forget policy and bounded opportunistic maintenance apply, preserving code, originals and other tasks. Compaction leaves non-delivery counts and open correction identity; forgetting only removes eligible task-local data. Retirement does not make all cumulative storage automatically bounded. Old1–5 tasks remain on their pinned tools with no migration.
+
+## Explicit current applicability (contract7)
+
+For undeclared temporal validity or as_of observations, when only declared source bytes changed, first inspect the actual causal effect. Current/live claims retain their actual runtime requirements; do not use this first implementation to adopt them. A still-applicable original observation may be selected through an explicit application; this is optional, and a cheaper targeted rerun remains valid. Do not invoke it for damaged evidence, changed promises, unknown conditions, changed/expired current targets or unresolved runtime failures.
+
+A runtime observation now retains selected source identities and a claim/authority basis. It must have actual nonempty conditions for adoption. Preserve a fixed source commit whose selected files match those original identities; if no such original source can be verified, do not fabricate one. Inspect the complete relevant difference and callers/conditions. Record a new current static_analysis fact for that same criterion, with actual analysis evidence and assumptions. Then:
+
+```
+adopt ROOT ID --criterion C --original OLD_RUNTIME_FACT --baseline-revision FULL_COMMIT --fact CURRENT_ANALYSIS --reason "why all selected promises remain applicable"
+assess ROOT ID --criterion C --verdict supported --fact OLD_RUNTIME_FACT --fact APPLICATION_FACT --reason "original observation plus current applicability; no new runtime claimed"
+```
+
+The application directly references one original observation and current analyses, never another application or a different task. Original artifacts/producer/time remain unchanged. It cannot refresh a device age or make an old command a current run. The selected combination must cover the whole promise; split genuinely independent dependencies rather than one row per pixel. Actual independent-review requirements still apply to the final selected combination and real provenance. Another source/basis/analysis change stales the application. Static inspection remains a semantic judgment; the kernel cannot prove it correct. Existing failure resolution still requires targeted new runtime facts.
+
+## Owned walkthrough rounds (contract7)
+
+For a walkthrough using local output files, allocate a round before collecting them:
+
+```
+walk-start ROOT ID --criterion C --target "actual build/device/environment"
+walk-seal ROOT ID --attempt ROUND --observed-at ISO --actual "actual result and scope" --status passed|failed|unavailable --conditions-json FILE --evidence RETURNED_OUTPUT_DIRECTORY/SELECTED_FILE
+```
+
+Each round returns a unique directory under task artifacts; use it for that round's outputs. This metadata operation does not operate a device or grant device permission. Capture necessary failed/unavailable findings before editing the relevant source. Seal checks unchanged declared inputs/criterion, round time and selected files; selected evidence is copied to existing attachments before the observation is saved. All files in a round have a bounded identity inventory for later owned cleanup; do not collect an entire device dump. Sealing can be retried with identical intent after interruption, preserving existing copies; it never overwrites a sealed round's verdict.
+
+Unsealed rounds block delivery. Use the existing explicit retire decision and exact surviving retirement handoff to stop without delivery; abandoned round metadata remains non-success and cleanup verifies its files. Changes in evidence/outputs refuse cleanup. Do not delete/reuse a previous round directory. Raw outputs plus copies share the existing task budget; at most32 rounds, bounded output inventory, existing fact/attachment limits. The tool cannot intercept arbitrary shell deletion or discover a failure an Agent never records; own the actual operation scope rather than claim universal enforcement.

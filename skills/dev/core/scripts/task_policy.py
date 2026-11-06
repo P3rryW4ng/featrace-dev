@@ -117,11 +117,12 @@ def prepare(root,config,git):
                 if original.count(BLOCK)!=1 or original.count(START)!=1 or original.count(END)!=1:fail('CUSTOM_IGNORE_BLOCK_CONFLICT')
             else:changed=original+('' if not original or original.endswith('\n') else '\n')+BLOCK
         try:
+            if (ignore.read_bytes() if ignore.exists() else None)!=previous:fail('LOCAL_EXCLUDE_MOVED')
             if changed!=original:write(ignore,changed.encode())
             if not ignored():fail('LOCAL_IGNORE_CONFLICT')
             write(dest,(json.dumps(p,ensure_ascii=False,indent=2)+'\n').encode())
         except BaseException:
-            if changed!=original:
+            if changed!=original and (ignore.read_bytes() if ignore.exists() else None)==changed.encode():
                 if previous is None:ignore.unlink(missing_ok=True)
                 else:write(ignore,previous)
             raise
@@ -182,8 +183,8 @@ def effective(root,scope,operation='all',environment='local',enforce=False,input
 
 
 def check_local(root,git):
-    if git(root,'ls-files','-z','--','.featrace').strip(b'\0'):fail('LOCAL_TASK_DATA_TRACKED')
+    if git(root,'ls-files','-z','--','.featrace',NAME).strip(b'\0'):fail('LOCAL_TASK_DATA_TRACKED')
     import subprocess
-    for name in ('.featrace/tasks/probe.json','.featrace/artifacts/probe.log','.featrace/locks/0','.featrace/maintenance.json','.featrace/scratch/probe'):
+    for name in ('.featrace/tasks/probe.json','.featrace/artifacts/probe.log','.featrace/locks/0','.featrace/maintenance.json','.featrace/scratch/probe',NAME):
         r=subprocess.run(['git','-C',str(root),'check-ignore','--no-index','-q',name],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
         if r.returncode:fail('LOCAL_IGNORE_CONFLICT')
