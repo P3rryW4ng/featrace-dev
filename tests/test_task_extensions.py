@@ -112,7 +112,7 @@ class FullReplacementTests(TaskWorkflowTests):
     def test_policy_setup_preserves_user_ignore_and_refuses_owned_block_conflict(self):
         original=(self.root/'.gitignore').read_text();self.configure(self.policy())
         self.assertEqual((self.root/'.gitignore').read_text(),original)
-        with (self.root/'.gitignore').open('a') as f:f.write(w.task_policy.START+'\ncustom\n')
+        (self.root/'.git/info/exclude').write_text(w.task_policy.START+'\ncustom\n')
         before=(self.root/'.gitignore').read_bytes()
         with self.assertRaisesRegex(ValueError,'CONFLICT'):self.configure(self.policy())
         self.assertEqual((self.root/'.gitignore').read_bytes(),before)
@@ -224,6 +224,7 @@ class FullReplacementTests(TaskWorkflowTests):
         self.assertEqual(path.read_text(),'{"foreign":"keep"}')
 
     def test_removing_local_ignore_protection_blocks_next_execution(self):
+        (self.root/'.git/info/exclude').write_text('')
         (self.root/'.gitignore').write_text('run-count\nother-count\n__pycache__/\n')
         self.plan['constraints']['.gitignore']='Synthetic intentionally changed ignore, but local outputs still need protection';self.refresh()
         with self.assertRaisesRegex(ValueError,'IGNORE_CONFLICT'):self.execute()

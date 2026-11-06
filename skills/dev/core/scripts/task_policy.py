@@ -10,7 +10,7 @@ from zoneinfo import ZoneInfo
 NAME='.featrace-policy.json'
 START='# Featrace local working data (managed)'
 END='# End Featrace local working data'
-BLOCK=START+'\n/.featrace/\n'+END+'\n'
+BLOCK=START+'\n/.featrace/\n/.featrace-policy.json\n'+END+'\n'
 MAX=256*1024
 
 
@@ -89,29 +89,45 @@ def prepare(root,config,git):
         if not source.is_file() or source.stat().st_size>MAX:fail('POLICY_SOURCE_UNAVAILABLE')
         r['sha256']=sha(source)
     validate(root,p)
-    if git(root,'ls-files','-z','--','.featrace').strip(b'\0'):fail('LOCAL_TASK_DATA_TRACKED')
-    dest=path(root,NAME);ignore=path(root,'.gitignore')
+    if git(root,'ls-files','-z','--','.featrace',NAME).strip(b'\0'):fail('LOCAL_TASK_DATA_TRACKED')
+    dest=path(root,NAME)
     if dest.exists():validate(root,read(dest))
-    original=ignore.read_text() if ignore.exists() else ''
-    if START in original or END in original:
-        if original.count(BLOCK)!=1 or original.count(START)!=1 or original.count(END)!=1:fail('CUSTOM_IGNORE_BLOCK_CONFLICT')
-        changed=original
-    else:changed=original+('' if not original or original.endswith('\n') else '\n')+BLOCK
-    # Test effective ignore rules including later negations BEFORE publishing policy.
-    previous=ignore.read_bytes() if ignore.exists() else None
+    common=Path(os.fsdecode(git(root,'rev-parse','--git-common-dir')).strip())
+    if not common.is_absolute():common=Path(root)/common
+    common=common.absolute()
+    # Git supplies the metadata location; never accept an arbitrary caller path.
+    for part in [common,common/'info',common/'info/exclude']:
+        if part.is_symlink():fail('LOCAL_EXCLUDE_LINK_REFUSED')
+    info=common/'info';info.mkdir(exist_ok=True)
+    ignore=info/'exclude';lock=info/'featrace-setup.lock'
+    try:fd=os.open(lock,os.O_WRONLY|os.O_CREAT|os.O_EXCL,0o600)
+    except FileExistsError:fail('LOCAL_SETUP_BUSY')
+    os.close(fd)
     try:
-        write(ignore,changed.encode())
+        previous=ignore.read_bytes() if ignore.exists() else None
+        if previous is not None and len(previous)>MAX:fail('POLICY_SIZE_LIMIT')
+        original=(previous or b'').decode()
         import subprocess
-        for name in ('.featrace/tasks/probe.json','.featrace/artifacts/probe.log','.featrace/locks/0','.featrace/maintenance.json','.featrace/scratch/probe'):
-            probe=subprocess.run(['git','-C',str(root),'check-ignore','--no-index','-q',name])
-            if probe.returncode:fail('LOCAL_IGNORE_CONFLICT')
-        write(dest,(json.dumps(p,ensure_ascii=False,indent=2)+'\n').encode())
-    except BaseException:
-        if previous is None:ignore.unlink(missing_ok=True)
-        else:write(ignore,previous)
-        raise
+        probes=('.featrace/tasks/probe.json','.featrace/artifacts/probe.log','.featrace/locks/0','.featrace/maintenance.json','.featrace/scratch/probe',NAME)
+        def ignored():
+            return all(subprocess.run(['git','-C',str(root),'check-ignore','--no-index','-q',name]).returncode==0 for name in probes)
+        changed=original
+        if not ignored():
+            if START in original or END in original:
+                if original.count(BLOCK)!=1 or original.count(START)!=1 or original.count(END)!=1:fail('CUSTOM_IGNORE_BLOCK_CONFLICT')
+            else:changed=original+('' if not original or original.endswith('\n') else '\n')+BLOCK
+        try:
+            if changed!=original:write(ignore,changed.encode())
+            if not ignored():fail('LOCAL_IGNORE_CONFLICT')
+            write(dest,(json.dumps(p,ensure_ascii=False,indent=2)+'\n').encode())
+        except BaseException:
+            if changed!=original:
+                if previous is None:ignore.unlink(missing_ok=True)
+                else:write(ignore,previous)
+            raise
+    finally:lock.unlink()
     return {'policy_contract':1,'local_data_ignored':True,'cleanup':p['cleanup'],'retention_days':p['retention_days'],
-            'boundary':'Actual scope/authority supplied by caller; no host permissions or hooks changed.'}
+            'boundary':'Local Git exclusion only; shared worktrees may share it. No shared rules, hooks or host permissions changed.'}
 
 
 def execution_names(root,sets):
