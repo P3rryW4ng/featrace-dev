@@ -1,0 +1,93 @@
+{
+  "contract": 7,
+  "status": "source_candidate",
+  "official_installed_version": "0.30.7",
+  "official_installed_contract": 6,
+  "runtime_files": 17,
+  "checked_at_utc": "2026-11-06T07:58:21.903229+00:00",
+  "full_regression": {
+    "tests": 374,
+    "seconds": 153.271,
+    "passed": true,
+    "log_sha256": "f2409427bd4f3d7794433000ccf15d853119fa1b3baefbb6ef5660111f994675"
+  },
+  "prior_runs": [
+    {
+      "tests": 371,
+      "seconds": 165.233,
+      "errors": 1,
+      "reason": "retirement handoff test omitted required authority/time; fixture corrected"
+    },
+    {
+      "tests": 373,
+      "seconds": 154.628,
+      "passed": true,
+      "followup": "source review added source-snapshot consistency refusal and counterexample"
+    }
+  ],
+  "isolated_package": {
+    "channel": "development",
+    "files_match": 17,
+    "personal_install_modified": false
+  },
+  "cli_smoke": {
+    "walkthrough_mutations": 4,
+    "adoption_mutations": 2,
+    "eligible_or_closed": true,
+    "original_observation_unchanged": true
+  },
+  "business_operations": 0,
+  "natural_agent_test": false,
+  "independent_source_review": false,
+  "input_sha256": {
+    "skills/dev/SKILL.md": "83d3d38b65ce3b6c63c439c326c4eae9c60c699552ab2e70fe5fcbe2e7575974",
+    "skills/dev/agents/openai.yaml": "237666967ab617f4452194694fc91dc1fcbb3b3beda59172c74572525117a009",
+    "skills/dev/core/references/figma-design.md": "8828473c28557e33fbb07ab5416be34e3c13c5b6f35a9eff94f14f1f6e8e12ff",
+    "skills/dev/core/references/output-privacy.md": "8c1d43834acfb41ee1d125bdc1ec37eb97cedca3d9afbff3b408658f81c8fab3",
+    "skills/dev/core/references/project-compatibility.md": "3f77052683d008213b244572a24717fe57be4bb57da1c194bc60db70561bdd64",
+    "skills/dev/core/references/task-workflow.md": "32451896c90a819ccb9c15e3b87316692dc9ce834d59006c99cd37fa948e71de",
+    "skills/dev/core/scripts/output_privacy.py": "54be161d474b4bc55ae1a28207de80f4077f0093172114b7079a12ce672fee6e",
+    "skills/dev/core/scripts/task_adoption.py": "9a328811f09709540f7946ec5edd92f55ee1f77da14e2e34a5af2b69f0e39d23",
+    "skills/dev/core/scripts/task_assets.py": "ed67314ae55fcd3ed1ad82916e0f7dc8a641928b3c52f84b2b6984c4195aed97",
+    "skills/dev/core/scripts/task_authorization.py": "98ad364d9a24db6569d1a4a9e816646e5c2f72014713db0fe7c6534b7e0ae920",
+    "skills/dev/core/scripts/task_execution.py": "2f122d89b384138b40331361e13eb6b261035d2b68e536c2e85daddf6c35ce69",
+    "skills/dev/core/scripts/task_failures.py": "3f948382ce6453878f219346689f06f1617a32f908f7459a8f739dc3c04bef09",
+    "skills/dev/core/scripts/task_inputs.py": "39f997cfdb8e1a6ed59ec94a1e3befe715f8f7944c16aa3a623bb3419cd2453e",
+    "skills/dev/core/scripts/task_policy.py": "36cb8c2e044ce9cfb16d2fab6d458b1cb234fe188e0df0b4fae1524117d3d949",
+    "skills/dev/core/scripts/task_walkthrough.py": "0c00f31ba86ec4bef7a8b99feec69573b6228c1495d17fc2970faecac388f219",
+    "skills/dev/core/scripts/task_workflow.py": "51f1f07712127d5749665f5d48deee52c9af1b7200e474184c36f239e862f6f6",
+    "skills/dev/profiles/android/PROFILE.md": "635814e05c9ed3b2ef594a29cf0d76c76b6fd8d0966ccc7abb9940d45893c984",
+    "tests/capability-cases.json": "f0a7bf46dc5a9acf33f8b4c4d6de09b7c1e048d556484184a81f8054e00a6559",
+    "tests/test_controlled_environment.py": "6a561767073e17359f4df8cd8706089c68fd909ce34cecbdfeb0ad8a18bec4ea",
+    "tests/test_evidence_core.py": "4f23e9a0bd14ea07ce54424dff71fbe18f6785a7a197dcd5c73b1b736085d587",
+    "tests/test_execution_diagnostics.py": "d28f50de30add49e43c3c31515d98c0444b8c5cb1271812e764b9068b66dc7e9",
+    "tests/test_failure_lifecycle.py": "d51b804d9f39f3511423f0bbf3a8ac036db804d23d5e415b3d0e6370fb541dc2",
+    "tests/test_hardening.py": "6a071624bcb6f3384250a41752692c943bb734bd710bd983cfb5153d332aaefc",
+    "tests/test_install.py": "4cf58cfbed0022faf1cf95d96c9ff043da3489f3c381fe25bb533319cc7ce383",
+    "tests/test_local_setup.py": "b8c5d785ddbb17eeffea5ac2ff874a37478b92f1f3c455030b2aa9c15d9481e2",
+    "tests/test_maintenance_idempotence.py": "7c1c0e3417df11e4a7004a13c93029084ba18c971cbe0c483ad11ffa5487256e",
+    "tests/test_observation_adoption.py": "adc12e412e6fbeef6d60f12038d4178c6c6827667ac5c82740f65cc1764a2d89",
+    "tests/test_observation_validity.py": "60e345eb5c957f897a90e3cafeed2be031b8d1fb34a3893312f2a7fca41af5b1",
+    "tests/test_output_privacy.py": "cdc145520efefccb9453399c9dc1242a25ad42ac94dcb4eb24408dc1ecb5ddc2",
+    "tests/test_policy_diagnostics.py": "ae40c153a28245b9a7232a43b5aafea5654d5b7cbb1d506b493f66bc6a969f20",
+    "tests/test_query_defaults.py": "11520e87d9f90eda4ddca800a4a5f90502b3e6909a6f3f8e804868aa04395ade",
+    "tests/test_release_identity.py": "7934842b9ac3c50db03351e323f795550a2bfa4ed55b6ab6727647110046928b",
+    "tests/test_review_boundaries.py": "48d7421aa4933325faa5a79578ebd806479d00aec1fcd6ba6e510c7442f1926f",
+    "tests/test_review_selection.py": "a56719f83c4490c60c66e5a6aaf9ea83a9d2c512da0bdd21b533674dd1e13042",
+    "tests/test_scoped_authorization.py": "e2ce412f85bae9083dffa5586b6d556fcfbf45df9bbccbff5918da4a491a5d8f",
+    "tests/test_task_correction.py": "3e43813de5a74581579c31304ff790dfc8ded957762c453fc556d10a92bc53c1",
+    "tests/test_task_extensions.py": "02e4864f336f0e5ed982ae08bc76da0d177142dbac5e18feacce3d92c73a4555",
+    "tests/test_task_input_assets.py": "3e3cec4d743af3d920439bbce343738300d23e71ae72d1d9959a85fb998071a3",
+    "tests/test_task_retirement.py": "39c75a6eb89b80bf6c2a6d8901723e276c382777c3bfe3aec60e9e28f2e931be",
+    "tests/test_task_workflow.py": "4d0eb490619b8a7c86cac1d3f22b3c037890ec45a9ed0b6f96c224fee46ee18e",
+    "tests/test_walkthrough_rounds.py": "9311e22ef8905995a2c8e508e16a880b2f12707987fdfdb527798cf0e3bbd985"
+  },
+  "boundary": "Finite synthetic evidence; no automatic dependency discovery, natural reliability or net savings claim.",
+  "privacy_review": {
+    "whole_file_candidates": 5,
+    "disposition": "Existing authorization fields/variable references, individually reviewed; no actual credential values",
+    "staged_check": "performed separately before commit"
+  },
+  "source_commit": "135fc75",
+  "local_setup_commit": "de274a9"
+}
