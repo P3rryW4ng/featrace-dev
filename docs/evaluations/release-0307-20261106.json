@@ -1,0 +1,20 @@
+{
+  "version": "0.30.7",
+  "contract": 6,
+  "release_commit": "650318a0240538050a40c020bd9b7400c420bd52",
+  "checked_at_utc": "2026-11-06T03:04:05.745104+00:00",
+  "daily_claude_files_match": 15,
+  "isolated_claude_files_match": 15,
+  "backup": {
+    "version": "0.30.6",
+    "directory_name": "20261106T030341-claude-6fa2bfb3",
+    "files_match": 15
+  },
+  "remote_release_branch_and_tag_match": true,
+  "scripts_tests_unchanged_from": "v0.30.6",
+  "isolated_applicability_probes_passed": 4,
+  "full_suite_rerun": false,
+  "business_tests_run": false,
+  "semantic_branch_adoption_implemented": false,
+  "personal_codex_updated": false
+}
