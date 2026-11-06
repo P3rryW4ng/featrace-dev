@@ -1,0 +1,61 @@
+{
+  "source_review": {
+    "task": "/root/contract7_release_review",
+    "baseline": "72bb599",
+    "read_only": true,
+    "initial_confirmed_findings": 4,
+    "followup_confirmed_corrected": 4,
+    "additional_root_fix": "close fd on other lock-acquisition errors"
+  },
+  "forward": {
+    "task": "/root/contract7_forward_trial",
+    "fresh_context_without_parent_history": true,
+    "raw_report_sha256": "7e79d8a22e1d2f8adcaa2eebe698a9d4284375c203fe742b4897b87e973e67bd",
+    "runtime_unchanged": true,
+    "cases": [
+      {
+        "task": "SC1",
+        "checksum": "14bbbf14c9032d074b8bf97d7656e3519588a6aa7d3022cd45453c9593211f12",
+        "supported": 2,
+        "commands": 0,
+        "applications": 1,
+        "original_failures": 0,
+        "resolutions": 0,
+        "actual_program_processes_reported": 0
+      },
+      {
+        "task": "SC2",
+        "checksum": "db9f4a4940ba8b0db5fdc9090c24bb7e70636a2213b89f4dbb1a8615c2ed5771",
+        "supported": 1,
+        "commands": 0,
+        "applications": 0,
+        "original_failures": 1,
+        "resolutions": 1,
+        "actual_program_processes_reported": 1
+      },
+      {
+        "task": "SC3",
+        "checksum": "7d9ec07556f1f0654bc07927a13bce2c50e9e53171b215957cd0c8ec39c68550",
+        "supported": 1,
+        "commands": 0,
+        "applications": 0,
+        "original_failures": 1,
+        "resolutions": 1,
+        "actual_program_processes_reported": 2
+      }
+    ],
+    "program_processes_reported": 3,
+    "kernel_run_processes": 0,
+    "adoptions": 1,
+    "first_sc3_absolute_path_refused": true,
+    "sc3_original_exact_process_time": "not retained; observation capture time only",
+    "business_or_device_operations": 0
+  },
+  "full_regression": {
+    "tests": 378,
+    "seconds": 168.234,
+    "passed": true,
+    "log_sha256": "04380acfdef78a51875e0b694fa16127258f2f9743258dd1b2d2667bbf34e2f8"
+  },
+  "boundary": "Controlled synthetic Agent exercise, not natural Claude Code use, device validation, signed provenance or net efficiency proof."
+}

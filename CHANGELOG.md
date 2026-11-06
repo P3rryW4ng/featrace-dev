@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.31.0 — 2026-11-06
+
+- Introduce contract7 for new tasks: explicitly combine an intact original observation with a bounded current applicability judgment and verified source baseline. Preserve original identity/time, necessary review and real failure/unknown blockers. Initial adoption supports historical/as-of observations, not current/live-state renewal.
+- Add owned walkthrough rounds and selected-evidence sealing before later runs. Open rounds block delivery; explicit retirement preserves unresolved output/handoff. Use process-released locks, reject changed retry intent, and preserve unknown files and directories during cleanup.
+- Project setup uses clone-local Git exclusions for tasks and policy, preserving shared project rules, hooks and CI. Tracked data/conflicting exclusions refuse; linked worktrees may share local metadata.
+- Minor release because evidence adoption and walkthrough lifecycle change the user workflow and task contract. 17 runtime files; no migration of formats1–6. Keep pinned0.30.7 for existing contract6 work.
+- Independent source review found four issues, all corrected and rechecked. Final full regression:378 passed. Fresh-context isolated Agent completed three synthetic tasks with one adoption and three direct walkthrough subprocesses; zero kernel-run checks in that exercise. One path refusal and missing exact pre-fix process timing remain disclosed. Not natural CC/device validation, net savings proof or phase-three acceptance.
+
+
 ## 0.30.7 — 2026-11-06
 
 - Clarify file-granularity observation reuse: unrelated changes inside a declared input file still invalidate the old observation. Never remove real dependencies or re-sign old observations to bypass this boundary.
