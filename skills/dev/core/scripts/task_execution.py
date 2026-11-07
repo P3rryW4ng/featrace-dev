@@ -13,8 +13,9 @@ import task_policy
 import task_authorization
 import task_assets
 import task_walkthrough
+import task_storage
 
-VERSION = 2
+VERSION = 3
 
 
 def protocol(workflow):
@@ -43,6 +44,7 @@ def protocol(workflow):
 
 def producer(workflow):
     return {'workflow_sha256': hashlib.sha256(Path(workflow).read_bytes()).hexdigest(),
+            'storage_sha256': hashlib.sha256(Path(task_storage.__file__).read_bytes()).hexdigest(),
             'protocol': protocol(workflow)}
 
 

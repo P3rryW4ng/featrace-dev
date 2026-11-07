@@ -12,7 +12,6 @@ import re
 import shutil
 import subprocess
 import sys
-import tempfile
 import uuid
 import task_inputs
 import task_policy
@@ -22,9 +21,10 @@ import task_authorization
 import task_assets
 import task_adoption
 import task_walkthrough
+import task_storage
 from zoneinfo import ZoneInfo
 
-CONTRACT = 7
+CONTRACT = 8
 MAX_CORRECTIONS = 8
 MAX_FACTS = 128
 EVIDENCE_KINDS = {'static_analysis', 'runtime_observation', 'command'}
@@ -103,8 +103,10 @@ def read_json(path):
                       parse_constant=lambda _:fail('INVALID_JSON_CONSTANT'))
 
 def load(root, ident):
-    doc=read_json(task_path(root,ident))
-    if doc.get('task_contract')!=CONTRACT or doc.get('id')!=ident:fail('TASK_CONTRACT_UNSUPPORTED_USE_PINNED_TOOL')
+    envelope=read_json(task_path(root,ident))
+    if not isinstance(envelope,dict) or envelope.get('task_contract')!=CONTRACT:fail('TASK_CONTRACT_UNSUPPORTED_USE_PINNED_TOOL')
+    doc=task_storage.decode(envelope,fail)
+    if doc.get('task_contract')!=CONTRACT or doc.get('id')!=ident:fail('TASK_CHANGED')
     if doc.get('checksum')!=digest({k:v for k,v in doc.items() if k!='checksum'}):fail('TASK_CHANGED')
     entries=doc.get('corrections',[])
     if not isinstance(entries,list) or len(entries)>MAX_CORRECTIONS:fail('CORRECTION_CONTRACT_INVALID')
@@ -134,20 +136,18 @@ def save(root, doc):
     task_failures.validate(doc,fail)
     task_authorization.validate(doc,fail)
     task_assets.validate(doc,fail)
-    path = task_path(root, doc['id'])
-    doc['updated_at'] = now()
-    doc['checksum'] = digest({k:v for k,v in doc.items() if k != 'checksum'})
-    data = json.dumps(doc, ensure_ascii=False, indent=2, allow_nan=False).encode() + b'\n'
     if len(doc.get('facts',{}))>MAX_FACTS:fail('FACT_LIMIT')
-    if len(data) > MAX_RECORD: fail('TASK_SIZE_LIMIT')
-    path.parent.mkdir(parents=True, exist_ok=True)
-    fd, name = tempfile.mkstemp(prefix='.write-', dir=path.parent)
-    try:
-        with os.fdopen(fd, 'wb') as stream:
-            stream.write(data);stream.flush();os.fsync(stream.fileno())
-        os.replace(name, path)
-    finally:
-        if os.path.exists(name): os.unlink(name)
+    stamped,data=record_encoding(doc)
+    if len(data)>MAX_RECORD:fail('TASK_SIZE_LIMIT')
+    task_storage.write(task_path(root,doc['id']),data)
+    doc.update(updated_at=stamped['updated_at'],checksum=stamped['checksum'])
+
+
+def record_encoding(doc):
+    stamped={**doc,'updated_at':now()}
+    stamped['checksum']=digest({k:v for k,v in stamped.items() if k!='checksum'})
+    return stamped,task_storage.encode(stamped,fail)
+
 
 @contextmanager
 def locked(root, ident, control=False):
@@ -297,6 +297,7 @@ def correct(root,ident,affected,reason,authority):
         entries.append(entry)
         for c in affected:doc['assessments'].pop(c,None)
         doc['state']='correcting'
+        if len(record_encoding(doc)[1])+4096>MAX_RECORD:fail('TASK_SIZE_LIMIT_BEFORE_CORRECTION')
         save(root,doc)
     return {'id':ident,'state':'correcting','correction':entry['id'],'affected':entry['affected'],
             'boundary':'Original receipt/facts retained; only explicitly selected claims are reassessed. No old-contract conversion.'}
@@ -704,8 +705,7 @@ def run_check(root,ident,check_id,investigate=False):
             return {'check':check_id,'status':'passed','reused':True,'execution':previous['id']}
         if len(doc['facts'])>=MAX_FACTS:fail('FACT_LIMIT_USE_PRUNE')
         aid=uuid.uuid4().hex;rel='.featrace/artifacts/'+ident+'/'+aid+'.log';path=safe(root,rel)
-        path.parent.mkdir(parents=True,exist_ok=True)
-        used=sum(p.stat().st_size for p in path.parent.iterdir() if p.is_file())
+        used=sum(p.stat().st_size for p in path.parent.rglob('*') if p.is_file()) if path.parent.exists() else 0
         budget=min(MAX_LOG,64*1024*1024-used)
         if budget<4096:fail('TASK_ARTIFACT_BUDGET')
         started=now()
@@ -727,11 +727,13 @@ def run_check(root,ident,check_id,investigate=False):
             reservation['previous_result']=previous['id']
             if previous['status']!='passed':reservation['previous_failure']=previous['id']
         projected={**doc,'facts':{**doc['facts'],aid:reservation},'executions':{**doc['executions'],check_id:aid}}
-        if len(json.dumps(projected,ensure_ascii=False,indent=2).encode())+1024>MAX_RECORD:fail('TASK_SIZE_LIMIT_BEFORE_EXECUTION')
         if authorization['kind']=='grant':
             g=doc['authorizations'][authorization['grant']]
             if len(g['uses'])>=128:fail('AUTHORIZATION_LIMIT')
             g['uses'].append(aid)
+        # The final status/reason/timestamps are bounded runner fields; keep headroom.
+        if len(record_encoding(projected)[1])+1024>MAX_RECORD:fail('TASK_SIZE_LIMIT_BEFORE_EXECUTION')
+        path.parent.mkdir(parents=True,exist_ok=True)
         doc['facts'][aid]=reservation;doc['executions'][check_id]=aid
         save(root,doc)  # The unavailable reservation and grant use are atomic before launching.
         launch=([environment_snapshot['executable']]+check['argv'][1:] if environment_snapshot['mode']=='controlled' else check['argv'])
@@ -755,36 +757,53 @@ def run_check(root,ident,check_id,investigate=False):
         if interrupted is not None:raise interrupted
         return {'check':check_id,'status':status,'reused':False,'execution':aid}
 
+@contextmanager
+def staged_attachment(root,doc,source,role):
+    """The caller owns the task lock and publishes the metadata in one save."""
+    ident=doc['id']
+    original=task_assets.source(root,ident,source,role,fail)
+    if not original.is_file():fail('ATTACHMENT_SOURCE_REQUIRED')
+    before=original.stat()
+    if before.st_size>MAX_LOG:fail('ATTACHMENT_SIZE_LIMIT')
+    attachments=doc.setdefault('attachments',{})
+    if len(attachments)>=32:fail('ATTACHMENT_COUNT_LIMIT')
+    suffix=original.suffix
+    if not re.fullmatch(r'\.[A-Za-z0-9]{1,10}',suffix) or suffix=='.log':suffix='.asset'
+    key=uuid.uuid4().hex;rel='.featrace/artifacts/'+ident+'/'+key+suffix;target=safe(root,rel)
+    target.parent.mkdir(parents=True,exist_ok=True)
+    used=sum(p.stat().st_size for p in target.parent.rglob('*') if p.is_file())
+    if used+before.st_size>64*1024*1024:fail('TASK_ARTIFACT_BUDGET')
+    created=False
+    try:
+        h=hashlib.sha256();written=0
+        with original.open('rb') as reader,target.open('xb') as output:
+            created=True
+            for block in iter(lambda:reader.read(65536),b''):
+                written+=len(block)
+                if written>MAX_LOG or used+written>64*1024*1024:fail('ATTACHMENT_SIZE_LIMIT')
+                h.update(block);output.write(block)
+            output.flush();os.fsync(output.fileno())
+        after=original.stat()
+        if (before.st_ino,before.st_size,before.st_mtime_ns,before.st_mode)!=(after.st_ino,after.st_size,after.st_mtime_ns,after.st_mode):fail('INPUT_MOVED')
+        attachments[key]={'path':rel,'sha256':h.hexdigest(),'bytes':written,'captured_at':now(),'role':role,'origin':str(original)}
+        yield {'attachment':key,**attachments[key]}
+    except Exception:
+        # If publication may already have succeeded, preserve the owned copy.
+        if created:
+            try:published=key in load(root,ident).get('attachments',{})
+            except (ValueError,OSError):published=True
+            if not published:target.unlink(missing_ok=True)
+        raise
+
+
 def attach(root,ident,source,role="evidence"):
     """Copy only selected evidence; never claim ownership of or delete its original."""
     with locked(root,ident):
         doc=load(root,ident);mutable(doc)
-        original=task_assets.source(root,ident,source,role,fail)
-        if not original.is_file():fail('ATTACHMENT_SOURCE_REQUIRED')
-        before=original.stat()
-        if before.st_size>MAX_LOG:fail('ATTACHMENT_SIZE_LIMIT')
-        attachments=doc.setdefault('attachments',{})
-        if len(attachments)>=32:fail('ATTACHMENT_COUNT_LIMIT')
-        suffix=original.suffix
-        if not re.fullmatch(r'\.[A-Za-z0-9]{1,10}',suffix) or suffix=='.log':suffix='.asset'
-        key=uuid.uuid4().hex;rel='.featrace/artifacts/'+ident+'/'+key+suffix;target=safe(root,rel)
-        target.parent.mkdir(parents=True,exist_ok=True)
-        used=sum(p.stat().st_size for p in target.parent.rglob('*') if p.is_file())
-        if used+before.st_size>64*1024*1024:fail('TASK_ARTIFACT_BUDGET')
-        try:
-            h=hashlib.sha256();written=0
-            with original.open('rb') as reader,target.open('xb') as output:
-                for block in iter(lambda:reader.read(65536),b''):
-                    written+=len(block)
-                    if written>MAX_LOG or used+written>64*1024*1024:fail('ATTACHMENT_SIZE_LIMIT')
-                    h.update(block);output.write(block)
-            after=original.stat()
-            if (before.st_ino,before.st_size,before.st_mtime_ns,before.st_mode)!=(after.st_ino,after.st_size,after.st_mtime_ns,after.st_mode):fail('INPUT_MOVED')
-            attachments[key]={'path':rel,'sha256':h.hexdigest(),'bytes':written,'captured_at':now(),'role':role,'origin':str(original)}
+        with staged_attachment(root,doc,source,role) as asset:
             save(root,doc)
-        except BaseException:
-            target.unlink(missing_ok=True);raise
-        return {'attachment':key,'path':rel,'bytes':written,'role':role,'original_preserved':True,'boundary':'Selected snapshot only, not a claim that the external source is still current.'}
+        return {k:asset[k] for k in ('attachment','path','bytes','role')} | {
+            'original_preserved':True,'boundary':'Selected snapshot only, not a claim that the external source is still current.'}
 
 
 def observe(root,ident,criterion,kind,observed_at,actual,evidence,status='passed',target=None,producer=None,conditions=None,walkthrough=None):
@@ -948,44 +967,65 @@ def facts(root,doc,c,checked=None):
     return sorted(fid for fid,fact in doc.get('facts',{}).items() if fact_available(root,doc,c,fact,checked))
 
 
+def retention_candidates(root,doc):
+    """Shared reachability for facts and owned copies."""
+    keep=set(doc['observations'].values())|set(doc['executions'].values())|set(task_failures.failure_facts(doc))
+    for entries in doc['failure_actions'].values():
+        for action in entries:keep.update(action.get('evidence',[]))
+    for entries in doc['claim_deferrals'].values():
+        for action in entries:
+            keep.update(action.get('checks',[]));keep.update(action.get('failures',[]))
+    for finding in doc['assessments'].values():keep.update(finding['facts'])
+    for fid,fact in doc['facts'].items():
+        if fact['status']!='passed' or fact.get('previous_failure'):keep.add(fid)
+    for entry in doc.get('corrections',[]):
+        keep.update(fid for fid in entry.get('prior_checks',{}).values() if fid)
+        for claim in entry.get('prior_claims',{}).values():
+            if claim.get('observation'):keep.add(claim['observation'])
+            keep.update((claim.get('assessment') or {}).get('facts',[]))
+    keep.update(r['fact'] for r in doc.get('walkthroughs',{}).values() if r.get('fact'))
+    pending=list(keep)
+    while pending:
+        fact=doc['facts'].get(pending.pop())
+        if not fact:fail('FACT_REFERENCE_MISSING')
+        for key in ('producer','previous_failure','previous_result','original'):
+            ref=fact.get(key)
+            if isinstance(ref,str) and ref and ref not in keep:keep.add(ref);pending.append(ref)
+        for ref in fact.get('analyses',[]):
+            if ref not in keep:keep.add(ref);pending.append(ref)
+    candidates=sorted(set(doc['facts'])-keep)
+    plan=doc.get('plan') or {}
+    used_assets={x for c in plan.get('criteria',[]) for x in c.get('source_assets',[])}|{x for c in plan.get('checks',[]) for x in c.get('input_assets',[])}
+    retained_paths=set()
+    for fid in keep:
+        fact=doc['facts'][fid];used_assets.update(fact.get('input_assets',[]));used_assets.update(fact.get('source_assets',[]))
+        retained_paths.update(fact.get('evidence',{}))
+    for correction in doc.get('corrections',[]):
+        for claim in correction.get('prior_claims',{}).values():used_assets.update(claim['criterion'].get('source_assets',[]))
+    assessments=list(doc['assessments'].values())
+    for correction in doc.get('corrections',[]):
+        assessments.extend(claim['assessment'] for claim in correction.get('prior_claims',{}).values() if claim.get('assessment'))
+    for finding in assessments:
+        proof=finding.get('provenance')
+        if proof:
+            retained_paths.add(proof['path'])
+            if proof.get('original'):retained_paths.add(proof['original']['path'])
+    for entries in doc['claim_deferrals'].values():
+        for entry in entries:
+            if entry.get('handoff'):retained_paths.add(entry['handoff']['path'])
+    # A partially sealed round has selected copies before its fact exists.
+    pending_origins={str(root/path) for r in doc.get('walkthroughs',{}).values()
+                     if r['state']=='sealing' for path in r.get('seal_intent',{}).get('evidence',[])}
+    assets={key:a for key,a in doc.get('attachments',{}).items()
+            if key not in used_assets and a['path'] not in retained_paths and a['origin'] not in pending_origins}
+    return candidates,assets
+
+
 def prune(root,ident,apply=False):
     """Explicitly forget only unreferenced passing facts, never current/negative/correction roots."""
     with locked(root,ident):
         doc=load(root,ident);mutable(doc)
-        keep=set(doc['observations'].values())|set(doc['executions'].values())|set(task_failures.failure_facts(doc))
-        for entries in doc['failure_actions'].values():
-            for action in entries:keep.update(action.get('evidence',[]))
-        for entries in doc['claim_deferrals'].values():
-            for action in entries:
-                keep.update(action.get('checks',[]));keep.update(action.get('failures',[]))
-        for finding in doc['assessments'].values():keep.update(finding['facts'])
-        for fid,fact in doc['facts'].items():
-            if fact['status']!='passed' or fact.get('previous_failure'):keep.add(fid)
-        for entry in doc.get('corrections',[]):
-            keep.update(fid for fid in entry.get('prior_checks',{}).values() if fid)
-            for claim in entry.get('prior_claims',{}).values():
-                if claim.get('observation'):keep.add(claim['observation'])
-                keep.update((claim.get('assessment') or {}).get('facts',[]))
-        keep.update(r['fact'] for r in doc.get('walkthroughs',{}).values() if r.get('fact'))
-        pending=list(keep)
-        while pending:
-            fact=doc['facts'].get(pending.pop())
-            if not fact:fail('FACT_REFERENCE_MISSING')
-            for key in ('producer','previous_failure','previous_result','original'):
-                ref=fact.get(key)
-                if isinstance(ref,str) and ref and ref not in keep:keep.add(ref);pending.append(ref)
-            for ref in fact.get('analyses',[]):
-                if ref not in keep:keep.add(ref);pending.append(ref)
-        candidates=sorted(set(doc['facts'])-keep)
-        used_assets={x for c in doc['plan']['criteria'] for x in c.get('source_assets',[])}|{x for c in doc['plan']['checks'] for x in c.get('input_assets',[])}
-        retained_paths=set()
-        for fid in keep:
-            fact=doc['facts'][fid];used_assets.update(fact.get('input_assets',[]));used_assets.update(fact.get('source_assets',[]))
-            retained_paths.update(fact.get('evidence',{}))
-        for correction in doc.get('corrections',[]):
-            for claim in correction.get('prior_claims',{}).values():used_assets.update(claim['criterion'].get('source_assets',[]))
-        asset_candidates={key:a for key,a in doc.get('attachments',{}).items()
-                          if a['role']=='input' and key not in used_assets and a['path'] not in retained_paths}
+        candidates,asset_candidates=retention_candidates(root,doc)
         for a in asset_candidates.values():
             path=safe(root,a['path'])
             if path.exists() and not artifact_ok(root,a):fail('PRUNE_CHANGED_ASSET')
@@ -999,8 +1039,9 @@ def prune(root,ident,apply=False):
                     path.unlink()
                 doc['attachments'].pop(key)
             save(root,doc)
-        return {'id':ident,'apply':apply,'removable_fact_count':len(candidates),'removable_input_assets':len(asset_candidates),
-                'boundary':'Explicitly forget unreferenced passing metadata and intact unused input copies only; preserve negatives, selected/correction sources and external originals.'}
+        return {'id':ident,'apply':apply,'removable_fact_count':len(candidates),'removable_input_assets':sum(a['role']=='input' for a in asset_candidates.values()),
+                'removable_evidence_assets':sum(a['role']=='evidence' for a in asset_candidates.values()),
+                'boundary':'Explicitly forget unreferenced passing metadata and intact unused owned copies only; preserve negatives, selected/correction sources and external originals.'}
 
 
 def selected_support(root,doc,c,ids,checked=None):
@@ -1027,19 +1068,44 @@ def assess(root,ident,criterion,verdict,reason,independent=False,provenance=None
         if criterion in active_deferrals(root,doc):fail('CLAIM_DEFERRED_NOT_SUPPORTED')
         refs=selected_support(root,doc,c,fact_ids) if verdict=='supported' else sorted(fact_ids or [])
         if any(fid not in doc['facts'] for fid in refs):fail('FACT_REFERENCE_MISSING')
-        proof=None
+        stamp=criterion_stamp(root,doc,c)
+        finding={'verdict':verdict,'reason':reason,'facts':refs,
+                 'criterion_digest':stamp,'at':now(),'independent':independent,'provenance':None}
+        doc['assessments'][criterion]=finding
         if independent:
             if not provenance:fail('REVIEW_PROVENANCE_REQUIRED')
-            p=read_json(safe(root,provenance))
-            if (not isinstance(p,dict) or p.get('task')!=ident or p.get('criterion')!=criterion
-                    or p.get('criterion_digest')!=criterion_stamp(root,doc,c) or p.get('facts')!=refs
-                    or p.get('verdict')!=verdict or p.get('fresh_context') is not True
-                    or not all(text(p.get(k)) for k in ('host','context_id','reviewer','reason'))):fail('REVIEW_PROVENANCE_INVALID')
-            proof={'path':provenance,'sha256':file_identity(root,provenance,True)['sha256']}
-        doc['assessments'][criterion]={'verdict':verdict,'reason':reason,'facts':refs,
-            'criterion_digest':criterion_stamp(root,doc,c),'at':now(),'independent':independent,'provenance':proof}
-        save(root,doc)
+            safe(root,provenance)
+            with staged_attachment(root,doc,provenance,'evidence') as asset:
+                p=read_json(safe(root,asset['path']))
+                if (not isinstance(p,dict) or p.get('task')!=ident or p.get('criterion')!=criterion
+                        or p.get('criterion_digest')!=stamp or p.get('facts')!=refs
+                        or p.get('verdict')!=verdict or p.get('fresh_context') is not True
+                        or not all(text(p.get(k)) for k in ('host','context_id','reviewer','reason'))):fail('REVIEW_PROVENANCE_INVALID')
+                proof={'path':asset['path'],'sha256':asset['sha256']}
+                if 'correction' in p:
+                    correction=p['correction']
+                    original=correction.get('original') if isinstance(correction,dict) else None
+                    if (not isinstance(original,dict) or set(original)!={'path','sha256'}
+                            or not text(correction.get('authority')) or not text(correction.get('host_basis'))
+                            or not any(a['path']==original['path'] and a['sha256']==original['sha256']
+                                       for a in doc['attachments'].values()) or not artifact_ok(root,original)):
+                        fail('REVIEW_CORRECTION_ORIGINAL_REQUIRED')
+                    old=read_json(safe(root,original['path']))
+                    if ({k:v for k,v in p.items() if k not in ('context_id','correction')}!=
+                            {k:v for k,v in old.items() if k not in ('context_id','correction')} or 'correction' in old):
+                        fail('REVIEW_CORRECTION_CHANGED_VERDICT')
+                    proof.update(original=original,issuer='coordinator_correction')
+                finding['provenance']=proof
+                save(root,doc)
+        else:save(root,doc)
         return {'criterion':criterion,'verdict':verdict}
+
+
+def provenance_ok(root,doc,proof):
+    if not proof:return False
+    refs=[proof]+([proof['original']] if proof.get('original') else [])
+    return all(any(a['path']==ref['path'] and a['sha256']==ref['sha256']
+                   for a in doc.get('attachments',{}).values()) and artifact_ok(root,ref) for ref in refs)
 
 def view(root,ident,offset=0,limit=20,blocker_offset=0):
     if (type(offset) is not int or offset<0 or type(limit) is not int or not 1<=limit<=25
@@ -1085,7 +1151,7 @@ def view(root,ident,offset=0,limit=20,blocker_offset=0):
                 valid=bool(finding and finding['verdict']=='supported' and finding['criterion_digest']==criterion_stamp(root,doc,c)
                            and selected_support(root,doc,c,finding['facts'],checked)==finding['facts'])
                 if valid and review_required(doc['plan'],c):
-                    valid=bool(finding['independent'] and finding['provenance'] and artifact_ok(root,finding['provenance']))
+                    valid=bool(finding['independent'] and provenance_ok(root,doc,finding['provenance']))
             except (ValueError,OSError):valid=False
             rows.append({'id':c['id'],'status':'supported' if valid else 'needs_review',
                          'observation_applicability':fact_applicability(c,observation) if observation else None})
@@ -1160,6 +1226,7 @@ def cleanup(root,ident,apply=False,timezone_name='UTC',forget=False,handoff=None
             if handoff.startswith('.featrace/'):fail('LIMITATIONS_HANDOFF_MUST_SURVIVE')
             contents=source.read_text()
             if any(item not in contents for item in doc['receipt']['limitations']):fail('LIMITATIONS_HANDOFF_INCOMPLETE')
+        if 'facts' in doc:retention_candidates(root,doc)
         folder=safe(root,'.featrace/artifacts/'+ident)
         walk_files,walk_dirs=task_walkthrough.cleanup_files(sys.modules[__name__],root,doc)
         candidates=list(walk_files)
@@ -1221,6 +1288,15 @@ def task_list(root,offset=0,limit=20):
             'boundary':'Recorded state only; inspect the selected task for current scope/evidence. No tests executed.'}
 
 
+def record_capacity(root,doc,used):
+    removable,assets=retention_candidates(root,doc) if 'facts' in doc else ([],{})
+    sections={k:len(canonical(doc[k])) for k in ('facts','plan','corrections','attachments','walkthroughs') if k in doc}
+    return {'record_bytes':used,'remaining_record_bytes':max(0,MAX_RECORD-used),
+            'attachment_slots_remaining':max(0,32-len(doc.get('attachments',{}))),
+            'expanded_section_bytes':sections,'removable_fact_count':len(removable),
+            'removable_attachment_count':len(assets)}
+
+
 def storage(root,offset=0,limit=20):
     """Read-only accounting, including abandoned tasks; never delete to meet a quota."""
     if offset<0 or not 1<=limit<=25:fail('PAGE_INVALID')
@@ -1250,7 +1326,8 @@ def storage(root,offset=0,limit=20):
             pending=(doc['retirement']['unresolved']['runtime_failures'] if retired else len(task_failures.pending(doc)) if 'facts' in doc else
                      len({fid for e in doc['receipt'].get('deferrals',{}).values() for fid in e['unresolved_failures']}))
             counts['stale_incomplete']+=int(stale);counts['pending_runtime_failure']+=pending
-            if path in selected:items.append({'id':path.stem,'state':doc['state'],'record_bytes':path.stat().st_size,
+            capacity=record_capacity(root,doc,path.stat().st_size)
+            if path in selected:items.append({'id':path.stem,'state':doc['state'],**capacity,
                 'inactive_days':age,'stale_incomplete':stale,'pending_runtime_failures':pending,
                 **({'delivery_certified':False,'unresolved':doc['retirement']['unresolved']} if retired else {})})
         except (ValueError,OSError,KeyError,TypeError):

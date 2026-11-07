@@ -146,7 +146,7 @@ class EvidenceCoreTests(TaskWorkflowTests):
     def test_record_budget_refuses_before_command_not_after_losing_new_result(self):
         self.execute();d=self.doc()
         self.plan['checks'][0]['cache']={'mode':'never','max_age_seconds':300};self.refresh();d=self.doc()
-        d['request']='x'*(w.MAX_RECORD-len(json.dumps(d,ensure_ascii=False,indent=2).encode())-300)
+        d['request']='x'*(w.MAX_RECORD-len(w.record_encoding(d)[1])-300)
         w.save(self.root,d);before=w.task_path(self.root,self.ident).read_bytes()
         with self.assertRaisesRegex(ValueError,'TASK_SIZE_LIMIT_BEFORE_EXECUTION'):self.execute()
         self.assertEqual((self.root/'run-count').read_text(),'1');self.assertEqual(before,w.task_path(self.root,self.ident).read_bytes())

@@ -77,7 +77,7 @@ class HardeningTests(TaskWorkflowTests):
         d=self.doc();d['created_at']=(datetime.now(timezone.utc)-timedelta(days=30)).isoformat();w.save(self.root,d)
         # Simulate a genuinely inactive task, without mutating sources or clearing its state.
         d=w.load(self.root,self.ident);d['updated_at']=d['created_at'];d['checksum']=w.digest({k:v for k,v in d.items() if k!='checksum'})
-        w.task_path(self.root,self.ident).write_text(json.dumps(d))
+        w.task_path(self.root,self.ident).write_bytes(w.task_storage.encode(d,w.fail))
         extra=self.root/'.featrace/unknown.bin';extra.write_bytes(b'unknown')
         before={str(p):p.read_bytes() for p in (self.root/'.featrace').rglob('*') if p.is_file()}
         summary=w.storage(self.root)
