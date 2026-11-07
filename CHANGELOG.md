@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased — contract 8
+
+- Bound task storage with compact, validated in-file identity sharing and capacity diagnostics. Separate representation from execution identity; preserve explicit budgets and avoid automatic pruning.
+- Preserve independent review originals in managed evidence, including coordinator-only provenance correction and transitive retention.
+- Freeze walkthrough origins and allow late historical negative sealing without rolling back source. Unknown capture basis remains an open discovery; old passes and different-condition failure resolution still refuse.
+- New tasks only. Fixed 0.31.0 remains the contract7 tool; no migration, publication or installed-version change.
+
 ## 0.31.0 — 2026-11-06
 
 - Introduce contract7 for new tasks: explicitly combine an intact original observation with a bounded current applicability judgment and verified source baseline. Preserve original identity/time, necessary review and real failure/unknown blockers. Initial adoption supports historical/as-of observations, not current/live-state renewal.

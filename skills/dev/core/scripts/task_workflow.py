@@ -99,13 +99,16 @@ def read_json(path):
             if k in out: fail('DUPLICATE_KEY')
             out[k] = v
         return out
-    return json.loads(path.read_bytes(), object_pairs_hook=pairs,
-                      parse_constant=lambda _:fail('INVALID_JSON_CONSTANT'))
+    with path.open('rb') as stream:data=stream.read(MAX_RECORD+1)
+    if len(data)>MAX_RECORD:fail('RECORD_UNAVAILABLE')
+    try:return json.loads(data,object_pairs_hook=pairs,parse_constant=lambda _:fail('INVALID_JSON_CONSTANT'))
+    except RecursionError:fail('RECORD_UNAVAILABLE')
 
 def load(root, ident):
     envelope=read_json(task_path(root,ident))
     if not isinstance(envelope,dict) or envelope.get('task_contract')!=CONTRACT:fail('TASK_CONTRACT_UNSUPPORTED_USE_PINNED_TOOL')
-    doc=task_storage.decode(envelope,fail)
+    try:doc=task_storage.decode(envelope,fail)
+    except RecursionError:fail('TASK_STORAGE_INVALID')
     if doc.get('task_contract')!=CONTRACT or doc.get('id')!=ident:fail('TASK_CHANGED')
     if doc.get('checksum')!=digest({k:v for k,v in doc.items() if k!='checksum'}):fail('TASK_CHANGED')
     entries=doc.get('corrections',[])
@@ -1000,16 +1003,21 @@ def retention_candidates(root,doc):
     for fid in keep:
         fact=doc['facts'][fid];used_assets.update(fact.get('input_assets',[]));used_assets.update(fact.get('source_assets',[]))
         retained_paths.update(fact.get('evidence',{}))
+    for round_ in doc.get('walkthroughs',{}).values():
+        used_assets.update(round_['origin']['criterion'].get('source_assets',[]))
     for correction in doc.get('corrections',[]):
         for claim in correction.get('prior_claims',{}).values():used_assets.update(claim['criterion'].get('source_assets',[]))
     assessments=list(doc['assessments'].values())
     for correction in doc.get('corrections',[]):
         assessments.extend(claim['assessment'] for claim in correction.get('prior_claims',{}).values() if claim.get('assessment'))
+    owned={a['path']:a['sha256'] for a in doc.get('attachments',{}).values()}
+    if used_assets-set(doc.get('attachments',{})):fail('ATTACHMENT_REFERENCE_MISSING')
     for finding in assessments:
         proof=finding.get('provenance')
         if proof:
-            retained_paths.add(proof['path'])
-            if proof.get('original'):retained_paths.add(proof['original']['path'])
+            for ref in [proof]+([proof['original']] if proof.get('original') else []):
+                if owned.get(ref['path'])!=ref['sha256']:fail('REVIEW_PROVENANCE_UNOWNED')
+                retained_paths.add(ref['path'])
     for entries in doc['claim_deferrals'].values():
         for entry in entries:
             if entry.get('handoff'):retained_paths.add(entry['handoff']['path'])
@@ -1058,6 +1066,17 @@ def selected_support(root,doc,c,ids,checked=None):
     if not any(set(group)<=kinds for group in c['proof']['any_of']):fail('PROOF_REQUIREMENTS_UNMET')
     return sorted(ids)
 
+@contextmanager
+def managed_review_asset(root,doc,source):
+    safe(root,source)
+    existing=next((a for a in doc.get('attachments',{}).values() if a['path']==source),None)
+    if existing:
+        if not artifact_ok(root,existing):fail('REVIEW_PROVENANCE_INVALID')
+        yield existing
+    else:
+        with staged_attachment(root,doc,source,'evidence') as asset:yield asset
+
+
 def assess(root,ident,criterion,verdict,reason,independent=False,provenance=None,fact_ids=None):
     if verdict not in ('supported','partial','unknown') or not text(reason):fail('ASSESSMENT_REQUIRED')
     with locked(root,ident):
@@ -1074,8 +1093,7 @@ def assess(root,ident,criterion,verdict,reason,independent=False,provenance=None
         doc['assessments'][criterion]=finding
         if independent:
             if not provenance:fail('REVIEW_PROVENANCE_REQUIRED')
-            safe(root,provenance)
-            with staged_attachment(root,doc,provenance,'evidence') as asset:
+            with managed_review_asset(root,doc,provenance) as asset:
                 p=read_json(safe(root,asset['path']))
                 if (not isinstance(p,dict) or p.get('task')!=ident or p.get('criterion')!=criterion
                         or p.get('criterion_digest')!=stamp or p.get('facts')!=refs
@@ -1091,7 +1109,7 @@ def assess(root,ident,criterion,verdict,reason,independent=False,provenance=None
                                        for a in doc['attachments'].values()) or not artifact_ok(root,original)):
                         fail('REVIEW_CORRECTION_ORIGINAL_REQUIRED')
                     old=read_json(safe(root,original['path']))
-                    if ({k:v for k,v in p.items() if k not in ('context_id','correction')}!=
+                    if (not isinstance(old,dict) or {k:v for k,v in p.items() if k not in ('context_id','correction')}!=
                             {k:v for k,v in old.items() if k not in ('context_id','correction')} or 'correction' in old):
                         fail('REVIEW_CORRECTION_CHANGED_VERDICT')
                     proof.update(original=original,issuer='coordinator_correction')
@@ -1477,6 +1495,7 @@ def main():
     parser.add_argument('--exclude-from-delivery',action='store_true')
     parser.add_argument('--mode',choices=['once','task']);parser.add_argument('--expires-at')
     parser.add_argument('--attempt')
+    parser.add_argument('--historical-negative',action='store_true');parser.add_argument('--capture-basis')
     parser.add_argument('--original');parser.add_argument('--baseline-revision')
     parser.add_argument('--role',choices=['input','evidence'],default='evidence')
     a=parser.parse_args();root=project(a.root)
@@ -1493,7 +1512,7 @@ def main():
     elif a.action=='run':out=run_check(root,a.id,a.check,a.investigate)
     elif a.action=='attach':out=attach(root,a.id,a.file,a.role)
     elif a.action=='walk-start':out=task_walkthrough.start(sys.modules[__name__],root,a.id,a.criterion,a.target)
-    elif a.action=='walk-seal':out=task_walkthrough.seal(sys.modules[__name__],root,a.id,a.attempt,a.observed_at,a.actual,a.evidence,a.status,read_json(Path(a.conditions_json)) if a.conditions_json else None)
+    elif a.action=='walk-seal':out=task_walkthrough.seal(sys.modules[__name__],root,a.id,a.attempt,a.observed_at,a.actual,a.evidence,a.status,read_json(Path(a.conditions_json)) if a.conditions_json else None,a.historical_negative,a.capture_basis)
     elif a.action=='adopt':out=task_adoption.adopt(sys.modules[__name__],root,a.id,a.criterion,a.original,a.baseline_revision,a.fact,a.reason)
     elif a.action=='observe':out=observe(root,a.id,a.criterion,a.kind,a.observed_at,a.actual,a.evidence,a.status,a.target,a.producer,read_json(Path(a.conditions_json)) if a.conditions_json else None)
     elif a.action=='failure':out=failure_action(root,a.id,a.failure,a.disposition,a.reason,a.fact,read_json(Path(a.conditions_json)) if a.conditions_json else None)

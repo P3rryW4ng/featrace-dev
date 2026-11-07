@@ -50,7 +50,7 @@ def encode(doc, fail):
     blocks={}
     def pack(value,path):
         if slot(path) and isinstance(value,dict):
-            if set(value)=={KEY}:fail('TASK_STORAGE_INVALID')
+            if set(value)=={KEY} and isinstance(value[KEY],str):fail('TASK_STORAGE_INVALID')
             key=digest(value)
             if key in chosen:
                 blocks[key]=value
@@ -69,7 +69,7 @@ def decode(envelope,fail):
     if not isinstance(blocks,dict) or len(blocks)>MAX_BLOCKS or not isinstance(packed,dict):fail('TASK_STORAGE_INVALID')
     sizes={}
     def no_refs(value,path):
-        if isinstance(value,dict) and KEY in value:fail('TASK_STORAGE_INVALID')
+        if isinstance(value,dict) and set(value)=={KEY} and isinstance(value[KEY],str):fail('TASK_STORAGE_INVALID')
         transform(value,no_refs,path)
     for key,value in blocks.items():
         if not re.fullmatch('[a-f0-9]{64}',key) or not isinstance(value,dict) or digest(value)!=key:fail('TASK_STORAGE_INVALID')
@@ -78,7 +78,7 @@ def decode(envelope,fail):
     used=Counter();size=len(canonical(packed))
     def unpack(value,path):
         nonlocal size
-        if isinstance(value,dict) and set(value)=={KEY}:
+        if isinstance(value,dict) and set(value)=={KEY} and isinstance(value[KEY],str):
             key=value[KEY]
             if not slot(path) or not isinstance(key,str) or key not in blocks:fail('TASK_STORAGE_INVALID')
             used[key]+=1

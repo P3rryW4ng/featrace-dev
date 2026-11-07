@@ -32,7 +32,7 @@ A109当前任务架构替代旧.agent-workflow台账、全量延续/终审绑定
 
 ## 当前接续
 
-[F10原件与机制评审](docs/reviews/2026-11-06-f10-evidence-mechanism-review.md)及11-07更正后核对已完成：两次correct完成，原失败/原凭据保留；出处和估计时间已更正披露，W19仍有限。11文件已做本机私有保全，未改业务引用；当前记录259104字节/32附件，scratch仍非受管。隔离探查确认历史负面保存及编码/执行身份耦合。[具体替换方案](docs/designs/bounded-storage-historical-findings.md)待批准后开发，不扩容、不迁移旧任务、不发布。
+[F10原件与机制评审](docs/reviews/2026-11-06-f10-evidence-mechanism-review.md)及更正后核对已完成，11文件本机私有保全，业务引用未改。F10仍为合同7。[合同8替换方案](docs/designs/bounded-storage-historical-findings.md)经批准后已完成开发，389项完整回归和隔离CLI闭环通过，见[开发证据](docs/evaluations/contract8-build-20261107.json)。当前源码18运行文件；未推送、发布或安装，正式0.31.0/合同7不变。
 
 0.31.0/合同7已正式推送安装：固定f5901ce；隔离/日常17文件匹配，原0.30.7合同6的15文件备份完整。备份位于本机.feature-delivery/backups/20261106T082247-claude-ae3bd3a0，旧固定发布v0.30.7仍保留。不要用合同7重签或转换旧业务。
 

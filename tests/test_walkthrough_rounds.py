@@ -130,3 +130,61 @@ class WalkthroughTests(unittest.TestCase):
         for evidence,conditions in [([p],{'case':'other'}),(['other.txt'],intent['conditions'])]:
             with self.assertRaisesRegex(ValueError,'WALK_ALREADY_SEALED'):
                 w.task_walkthrough.seal(w,self.r,self.f.ident,a['attempt'],intent['observed_at'],intent['actual'],evidence,'passed',conditions)
+
+    def historical(self,a,p,at,status='failed',basis='Fixture original capture log',conditions=None):
+        return w.task_walkthrough.seal(w,self.r,self.f.ident,a['attempt'],at,'Original observed result',
+                                      [p],status,conditions or {'case':'original'},True,basis)
+
+    def test_historical_failure_survives_code_drift_and_a_different_control(self):
+        a,p=self.start();at=w.now()
+        original=self.f.doc()['walkthroughs'][a['attempt']]
+        (self.r/'app.py').write_text('repair');self.f.refresh()
+        with self.assertRaisesRegex(ValueError,'HISTORICAL_PASS_REFUSED'):self.historical(a,p,at,'passed')
+        failed=self.historical(a,p,at)['fact']
+        fact=self.f.doc()['facts'][failed]
+        self.assertEqual(fact['input_digest'],original['input_digest'])
+        self.assertEqual(fact['observed_at'],at)
+        self.assertNotIn('C1',self.f.doc()['observations'])
+        b,q=self.start()
+        control=w.task_walkthrough.seal(w,self.r,self.f.ident,b['attempt'],w.now(),'control',[q],'passed',{'case':'different'})['fact']
+        self.assertIn('RUNTIME_FAILURE:'+failed,w.view(self.r,self.f.ident)['blockers'])
+        with self.assertRaisesRegex(ValueError,'FAILURE_CONDITIONS_MISMATCH'):
+            w.failure_action(self.r,self.f.ident,failed,'resolve','fixture',[control])
+        c,r=self.start();fixed=self.seal(c,r)['fact']
+        w.failure_action(self.r,self.f.ident,failed,'resolve','Targeted runtime fixture',[fixed])
+        self.assertNotIn(failed,w.task_failures.pending(self.f.doc()))
+
+    def test_missing_capture_basis_keeps_discovery_and_original_output(self):
+        a,p=self.start();at=w.now()
+        (self.r/'app.py').write_text('repair');self.f.refresh()
+        out=self.historical(a,p,None,basis=None)
+        self.assertEqual(out['state'],'discovery')
+        self.assertIsNone(out['fact'])
+        self.assertFalse(self.f.doc()['facts'])
+        self.assertIn('WALK_UNSEALED:'+a['attempt'],w.view(self.r,self.f.ident)['blockers'])
+        self.assertEqual((self.r/p).read_text(),'observed output')
+        with self.assertRaisesRegex(ValueError,'WALK_NEGATIVE_PENDING'):self.seal(a,p)
+        with self.assertRaisesRegex(ValueError,'WALK_DISCOVERY_INTENT_CHANGED'):self.historical(a,p,at,'unavailable')
+        sealed=self.historical(a,p,at)
+        self.assertTrue(sealed['historical_negative'])
+        self.assertTrue(self.historical(a,p,at)['reused'])
+
+    def test_removed_criterion_does_not_discard_its_historical_failure(self):
+        a,p=self.start();at=w.now()
+        self.f.plan['criteria'][0]['id']='C2';self.f.refresh()
+        failed=self.historical(a,p,at)['fact']
+        self.assertEqual(self.f.doc()['facts'][failed]['criterion'],'C1')
+        self.assertIn('RUNTIME_FAILURE:'+failed,w.view(self.r,self.f.ident)['blockers'])
+
+    def test_historical_unavailable_retry_preserves_copies_and_original(self):
+        a,p=self.start();at=w.now()
+        (self.r/'app.py').write_text('repair');self.f.refresh()
+        with patch.object(w,'MAX_FACTS',0):
+            with self.assertRaisesRegex(ValueError,'FACT_LIMIT'):self.historical(a,p,at,'unavailable')
+        self.assertEqual(len(self.f.doc()['attachments']),1)
+        w.prune(self.r,self.f.ident,True)
+        self.assertEqual(len(self.f.doc()['attachments']),1)
+        fact=self.historical(a,p,at,'unavailable')['fact']
+        self.assertEqual(self.f.doc()['facts'][fact]['status'],'unavailable')
+        self.assertEqual(len(self.f.doc()['attachments']),1)
+        self.assertTrue((self.r/p).exists())

@@ -20,7 +20,7 @@
 
 ## 当前执行顺序
 
-最新F10更正已直接核对并完成原件私有保全，见[报告§7](docs/reviews/2026-11-06-f10-evidence-mechanism-review.md)。下一顺序按[合同8具体方案](docs/designs/bounded-storage-historical-findings.md)：批准后先实现有界存储/受管证据/执行身份解耦，再实现历史负面封存，隔离及完整回归后另评发布。未实施，不自动迁移旧任务、不默认扩容。
+F10更正已核对并保全。[合同8候选](docs/designs/bounded-storage-historical-findings.md)已完成有界存储、受管证据、执行身份解耦及历史负面封存；[389项回归和隔离CLI](docs/evaluations/contract8-build-20261107.json)通过。下一步按实际授权评审并发布安装，再观察新自然任务；现有合同7任务仍用固定0.31.0，不迁移。
 
 **第三阶段：稳定使用与持续提效。** 正式及CC为0.31.0合同7，17文件；[实际发布核验](docs/evaluations/release-0310-20261106.json)。合同7实施、四项独审发现修复、完整378项回归及三个隔离前向场景均已完成，见[发布前评审与演练](docs/evaluations/contract7-release-review-20261106.json)。这些不是自然CC任务或净收益证明，不因此关闭阶段。
 
