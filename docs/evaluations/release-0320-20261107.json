@@ -1,0 +1,34 @@
+{
+  "version": "0.32.0",
+  "contract": 8,
+  "release_commit": "083f91ab1dec4935f22e86c8aed9544ec278ed49",
+  "remote_release_branch_and_tag_match": true,
+  "formal_isolated_claude_files_match": 18,
+  "daily_claude_files_match": 18,
+  "backup": {
+    "version": "0.31.0",
+    "contract": 7,
+    "files_match": 17,
+    "fixed_source_commit": "f5901ce3932321b80e16f925d43cd8486067110e"
+  },
+  "candidate_full_regression_tests": 389,
+  "release_review_focused_tests": 32,
+  "f10_pinned_read_ok": true,
+  "f10_contract8_refused": true,
+  "f10_record_unchanged": true,
+  "installed_trial": {
+    "installed_cli_new_task": "complete",
+    "runtime_contract": 8,
+    "check_processes": 1,
+    "check_reuse": true,
+    "walkthrough_processes": 2,
+    "late_failure_seal": true,
+    "identical_retry": true,
+    "failure_blocks_close": true,
+    "same_condition_resolution": true,
+    "managed_proof_survives_original_removal_and_prune": true,
+    "review_evidence": "synthetic fixture",
+    "live_claude_session_observed": false
+  },
+  "phase_three_exit": false
+}
