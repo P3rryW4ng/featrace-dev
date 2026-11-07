@@ -1,6 +1,8 @@
 # Changelog
 
-## Unreleased — contract 8
+## 0.32.0 — 2026-11-07
+
+Minor release for the new task record contract and the historical failure sealing workflow. Release review verified pinned contract 7 access, retention and failure handling with 32 focused tests.
 
 - Bound task storage with compact, validated in-file identity sharing and capacity diagnostics. Separate representation from execution identity; preserve explicit budgets and avoid automatic pruning.
 - Preserve independent review originals in managed evidence, including coordinator-only provenance correction and transitive retention.
