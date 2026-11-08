@@ -1,6 +1,6 @@
 # Current tasks: claims, facts and scoped execution
 
-Read this for authorized development. One bounded current task; no feature ledger, permanent replay, project schema preparation or automatic old-record migration. Contract8 is for new tasks. Formats1/2/3/4/5/6/7 and `.agent-workflow` work use their fixed old tool; do not change IDs or formats to hide failures.
+Read this for authorized development. One bounded current task; no feature ledger, permanent replay, project schema preparation or automatic old-record migration. Contract9 is for new tasks. Formats1/2/3/4/5/6/7/8 and `.agent-workflow` work use their fixed old tool; do not change IDs or formats to hide failures.
 
 ## Find the relevant operation
 
@@ -195,6 +195,8 @@ For a walkthrough using local output files, allocate a round before collecting t
 walk-start ROOT ID --criterion C --target "actual build/device/environment"
 walk-seal ROOT ID --attempt ROUND --observed-at ISO --actual "actual result and scope" --status passed|failed|unavailable --conditions-json FILE --evidence RETURNED_OUTPUT_DIRECTORY/SELECTED_FILE
 ```
+
+Pass each `--evidence` as a project-root-relative path inside the output directory returned for that round. Each selected file must fit the 16 MiB limit. Record the actual observation time, at or after the round start and no later than the current time. For command-produced observations, use the actual result-production time inside the producer execution window.
 
 Each round returns a unique directory under task artifacts; use it for that round's outputs. This metadata operation does not operate a device or grant device permission. Capture necessary failed/unavailable findings before editing the relevant source. Normal seal checks unchanged declared inputs/criterion, round time and selected files; selected evidence is copied to owned attachments before the observation is saved. Start freezes declared identities and the criterion. After source or criterion drift, add `--historical-negative --status failed|unavailable --capture-basis BASIS` to seal the original negative evidence with the real observation time. BASIS explains how the selected original output binds the observed target and time; it is a caller claim, not automatic device attestation. Do not use file timestamps as proof of device time. If observation time or its basis is unavailable, omit it: the result is a retained discovery, not a runtime fact, and the round stays open. Add verified basis later without changing the retained finding, or explicitly retire with handoff. A historical pass is refused. A sealed historical failed fact remains pending until normal targeted resolution or explicit handoff; it does not overwrite the current observation. All files in a round have a bounded identity inventory for later owned cleanup; do not collect an entire device dump. Sealing can be retried with identical intent after interruption, preserving existing copies; it never overwrites a sealed round's verdict.
 
