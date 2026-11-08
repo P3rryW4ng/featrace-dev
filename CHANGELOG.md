@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.33.1 — 2026-11-09
+
+- Request approval at the operation that requires it and continue independent authorized work.
+- Correct the contract9 guidance and clarify walkthrough evidence paths, file limits and observation times. This patch updates Skill guidance and retains the contract9 runtime.
+
 ## 0.33.0 — 2026-11-08
 
 - Replace the single-file metadata ceiling with a bounded task index and immutable task-local content objects, including atomic index publication, validated references, explicit disk/expansion caps and ownership-aware collection. No contract8 migration.
