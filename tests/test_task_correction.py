@@ -69,7 +69,7 @@ class TaskCorrectionTests(TaskWorkflowTests):
         self.support();w.close(self.root,self.ident,['Original limit'])
         self.age();w.cleanup(self.root,self.ident,True)
         doc=self.doc()
-        self.assertEqual(doc['task_contract'],8)
+        self.assertEqual(doc['task_contract'],9)
         self.assertEqual(doc['corrections'][0]['prior_receipt'],original['receipt'])
         self.assertNotIn('prior_claims',doc['corrections'][0])
 
@@ -85,12 +85,13 @@ class TaskCorrectionTests(TaskWorkflowTests):
 
 
 
-    def test_correction_record_overflow_refuses_atomically(self):
+    def test_large_prior_claim_no_longer_overflows_active_index(self):
         self.completed_two_claims()
         doc=self.doc();doc['plan']['criteria'][1]['expected']='x'*(w.MAX_RECORD//2)
         w.save(self.root,doc);before=w.task_path(self.root,self.ident).read_bytes()
-        with self.assertRaisesRegex(ValueError,'TASK_SIZE_LIMIT'):self.correct(['C2'])
-        self.assertEqual(before,w.task_path(self.root,self.ident).read_bytes())
+        self.correct(['C2'])
+        self.assertEqual(self.doc()['corrections'][0]['prior_claims']['C2']['criterion']['expected'],'x'*(w.MAX_RECORD//2))
+        self.assertLess(w.task_path(self.root,self.ident).stat().st_size,w.MAX_RECORD//4)
 
 
 

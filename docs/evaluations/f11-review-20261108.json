@@ -1,0 +1,93 @@
+{
+  "record_bytes": 259683,
+  "backup_files": 188,
+  "backup_bytes": 52136774,
+  "source_unchanged": true,
+  "packed_sections": {
+    "analysis_digest": 66,
+    "analysis_inputs": 10610,
+    "assessments": 7555,
+    "attachments": 7732,
+    "authorizations": 6185,
+    "baseline": 42,
+    "checksum": 66,
+    "claim_deferrals": 2,
+    "created_at": 34,
+    "executions": 334,
+    "facts": 116292,
+    "failure_actions": 640,
+    "id": 26,
+    "limitations": 1193,
+    "observations": 371,
+    "plan": 41035,
+    "receipt": 1756,
+    "request": 928,
+    "state": 10,
+    "task_contract": 1,
+    "updated_at": 34,
+    "walkthroughs": 43501
+  },
+  "blocks_bytes": 20817,
+  "correction_encoding_probes": [
+    {
+      "criterion": "domain",
+      "encoded": 264652,
+      "with_reserve": 268748,
+      "blocked": true
+    },
+    {
+      "criterion": "data",
+      "encoded": 264239,
+      "with_reserve": 268335,
+      "blocked": true
+    },
+    {
+      "criterion": "check",
+      "encoded": 263757,
+      "with_reserve": 267853,
+      "blocked": true
+    },
+    {
+      "criterion": "verify",
+      "encoded": 263817,
+      "with_reserve": 267913,
+      "blocked": true
+    },
+    {
+      "criterion": "intro-entry",
+      "encoded": 263546,
+      "with_reserve": 267642,
+      "blocked": true
+    },
+    {
+      "criterion": "assembly",
+      "encoded": 263572,
+      "with_reserve": 267668,
+      "blocked": true
+    },
+    {
+      "criterion": "gates",
+      "encoded": 266647,
+      "with_reserve": 270743,
+      "blocked": true
+    },
+    {
+      "criterion": "shared-unaffected",
+      "encoded": 262808,
+      "with_reserve": 266904,
+      "blocked": true
+    },
+    {
+      "criterion": "ui-render",
+      "encoded": 264761,
+      "with_reserve": 268857,
+      "blocked": true
+    }
+  ],
+  "method": "Read-only original inspection and in-memory encoding using installed-contract source; no task command or business execution",
+  "referenced_file_identity_checks": 181,
+  "walk_output_mismatches": 2,
+  "failed_fact_zip_matches": true,
+  "mismatched_outputs_originals_match_inside_zip": true,
+  "phase_three_exit": false
+}

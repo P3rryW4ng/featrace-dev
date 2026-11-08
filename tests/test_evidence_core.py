@@ -64,7 +64,8 @@ class EvidenceCoreTests(TaskWorkflowTests):
         self.proof([['runtime_observation']]);(self.root/'unused.txt').write_text('unused')
         a=self.observe('C1','runtime_observation',w.now(),'Selected',['app.py'])
         b=self.observe('C1','runtime_observation',w.now(),'Unused',['unused.txt']);self.explicit([a['fact']])
-        (self.root/'unused.txt').unlink()
+        managed=next(iter(self.doc()['facts'][b['fact']]['evidence']))
+        (self.root/managed).unlink()
         self.assertEqual(w.review_input(self.root,self.ident,'C1')['facts'],[a['fact']])
         self.assertTrue(w.view(self.root,self.ident)['eligible'])
 
@@ -77,7 +78,8 @@ class EvidenceCoreTests(TaskWorkflowTests):
         self.proof([['runtime_observation']]);(self.root/'old.txt').write_text('old')
         a=self.observe('C1','runtime_observation',w.now(),'Original',['old.txt']);self.explicit([a['fact']])
         self.observe('C1','runtime_observation',w.now(),'New alternative',['app.py'])
-        (self.root/'old.txt').write_text('damaged')
+        managed=next(iter(self.doc()['facts'][a['fact']]['evidence']))
+        (self.root/managed).write_text('damaged')
         self.assertFalse(w.view(self.root,self.ident)['eligible'])
 
     def test_original_result_survives_later_command_attempt(self):

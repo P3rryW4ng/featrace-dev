@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Current-task delivery kernel. No legacy records, snapshots or history replay."""
 import argparse
-from contextlib import contextmanager
+from contextlib import contextmanager, ExitStack
 from datetime import datetime, timezone
 import fcntl
 import hashlib
@@ -24,7 +24,7 @@ import task_walkthrough
 import task_storage
 from zoneinfo import ZoneInfo
 
-CONTRACT = 8
+CONTRACT = 9
 MAX_CORRECTIONS = 8
 MAX_FACTS = 128
 EVIDENCE_KINDS = {'static_analysis', 'runtime_observation', 'command'}
@@ -107,7 +107,7 @@ def read_json(path):
 def load(root, ident):
     envelope=read_json(task_path(root,ident))
     if not isinstance(envelope,dict) or envelope.get('task_contract')!=CONTRACT:fail('TASK_CONTRACT_UNSUPPORTED_USE_PINNED_TOOL')
-    try:doc=task_storage.decode(envelope,fail)
+    try:doc=task_storage.read(task_path(root,ident),envelope,fail)
     except RecursionError:fail('TASK_STORAGE_INVALID')
     if doc.get('task_contract')!=CONTRACT or doc.get('id')!=ident:fail('TASK_CHANGED')
     if doc.get('checksum')!=digest({k:v for k,v in doc.items() if k!='checksum'}):fail('TASK_CHANGED')
@@ -142,7 +142,7 @@ def save(root, doc):
     if len(doc.get('facts',{}))>MAX_FACTS:fail('FACT_LIMIT')
     stamped,data=record_encoding(doc)
     if len(data)>MAX_RECORD:fail('TASK_SIZE_LIMIT')
-    task_storage.write(task_path(root,doc['id']),data)
+    task_storage.publish(task_path(root,doc['id']),data,task_storage.prepare(stamped,fail)[1],fail)
     doc.update(updated_at=stamped['updated_at'],checksum=stamped['checksum'])
 
 
@@ -736,6 +736,8 @@ def run_check(root,ident,check_id,investigate=False):
             g['uses'].append(aid)
         # The final status/reason/timestamps are bounded runner fields; keep headroom.
         if len(record_encoding(projected)[1])+1024>MAX_RECORD:fail('TASK_SIZE_LIMIT_BEFORE_EXECUTION')
+        if len(canonical(projected))+4096>task_storage.MAX_EXPANDED:fail('TASK_SIZE_LIMIT_BEFORE_EXECUTION')
+        task_storage.preflight(task_path(root,ident),task_storage.prepare(projected,fail)[1],fail,65536,16)
         path.parent.mkdir(parents=True,exist_ok=True)
         doc['facts'][aid]=reservation;doc['executions'][check_id]=aid
         save(root,doc)  # The unavailable reservation and grant use are atomic before launching.
@@ -822,30 +824,52 @@ def observe(root,ident,criterion,kind,observed_at,actual,evidence,status='passed
         if c is None:fail('CRITERION_UNKNOWN')
         ready(root,doc,criterion=c)
         if walkthrough:task_walkthrough.check(sys.modules[__name__],root,doc,walkthrough,c)
-        stamp=observation_stamp(root,c);refs=files(root,evidence,True)
-        if observation_stamp(root,c)!=stamp:fail('INPUT_MOVED')
-        rec={'id':uuid.uuid4().hex,'kind':kind,'criterion':criterion,'status':status,'observed_at':observed_at,
-             'at':now(),'actual':actual,'input_digest':stamp,
-             'git_head_at_registration':git(root,'rev-parse','HEAD').decode().strip(),
-             'observed_target':target if kind=='runtime_observation' else 'local selected sources','source_assets':c.get('source_assets',[]),'evidence':refs}
-        if kind=='runtime_observation':rec['conditions']=task_failures.conditions({} if conditions is None else conditions,fail)
-        if kind=='runtime_observation':rec.update(source_inputs=files(root,c['inputs']),adoption_basis=task_adoption.basis(sys.modules[__name__],root,doc,c))
-        elif conditions is not None:fail('CONDITIONS_REQUIRE_RUNTIME')
-        if walkthrough:rec['walkthrough']=walkthrough
-        if producer:
-            run=doc['facts'].get(producer)
-            check=next((x for x in doc['plan']['checks'] if run and x['id']==run.get('check')),None)
-            if (not run or run['kind']!='command' or run['status']!='passed' or not check or criterion not in check['covers']
-                    or not execution_profile(root,doc,check,run) or not artifact_ok(root,run['artifact'])
-                    or not instant(run['started_at'])<=instant(observed_at)<=instant(run['at'])):fail('PRODUCER_NOT_APPLICABLE')
-            rec['producer']=producer
-        if observation_stamp(root,c)!=stamp or (kind=='runtime_observation' and digest(rec['source_inputs'])!=stamp):fail('INPUT_MOVED')
-        applicability=fact_applicability(c,rec)
-        if status=='passed' and applicability in ('CURRENT_TARGET_MISMATCH','CURRENT_STATE_NEEDS_RUNTIME'):fail(applicability)
-        old=doc['facts'].get(doc['observations'].get(criterion))
-        if old and old['status']!='passed':rec['previous_failure']=old['id']
-        doc['facts'][rec['id']]=rec;doc['observations'][criterion]=rec['id'];save(root,doc)
-        return {'criterion':criterion,'fact':rec['id'],'kind':kind}
+        stamp=observation_stamp(root,c)
+        with ExitStack() as pending:
+            retained_evidence=[]
+            owned={a['path'] for a in doc.get('attachments',{}).values()}
+            source_paths=set(c['inputs'])|set(c.get('sources',[]))
+            for path in evidence:
+                if path in owned or path in source_paths:
+                    retained_evidence.append(path)
+                else:
+                    source=task_assets.source(root,ident,path,'evidence',fail)
+                    source_digest=hashlib.sha256();source_bytes=0
+                    with source.open('rb') as stream:
+                        for block in iter(lambda:stream.read(65536),b''):
+                            source_bytes+=len(block)
+                            if source_bytes>MAX_LOG:fail('ATTACHMENT_SIZE_LIMIT')
+                            source_digest.update(block)
+                    source_hash=source_digest.hexdigest()
+                    existing=next((a for a in doc.get('attachments',{}).values()
+                                   if a['origin']==str(source) and a['sha256']==source_hash and artifact_ok(root,a)),None)
+                    asset=existing or pending.enter_context(staged_attachment(root,doc,path,'evidence'))
+                    if asset['sha256']!=source_hash:fail('INPUT_MOVED')
+                    retained_evidence.append(asset['path'])
+            refs=files(root,retained_evidence,True)
+            if observation_stamp(root,c)!=stamp:fail('INPUT_MOVED')
+            rec={'id':uuid.uuid4().hex,'kind':kind,'criterion':criterion,'status':status,'observed_at':observed_at,
+                 'at':now(),'actual':actual,'input_digest':stamp,
+                 'git_head_at_registration':git(root,'rev-parse','HEAD').decode().strip(),
+                 'observed_target':target if kind=='runtime_observation' else 'local selected sources','source_assets':c.get('source_assets',[]),'evidence':refs}
+            if kind=='runtime_observation':rec['conditions']=task_failures.conditions({} if conditions is None else conditions,fail)
+            if kind=='runtime_observation':rec.update(source_inputs=files(root,c['inputs']),adoption_basis=task_adoption.basis(sys.modules[__name__],root,doc,c))
+            elif conditions is not None:fail('CONDITIONS_REQUIRE_RUNTIME')
+            if walkthrough:rec['walkthrough']=walkthrough
+            if producer:
+                run=doc['facts'].get(producer)
+                check=next((x for x in doc['plan']['checks'] if run and x['id']==run.get('check')),None)
+                if (not run or run['kind']!='command' or run['status']!='passed' or not check or criterion not in check['covers']
+                        or not execution_profile(root,doc,check,run) or not artifact_ok(root,run['artifact'])
+                        or not instant(run['started_at'])<=instant(observed_at)<=instant(run['at'])):fail('PRODUCER_NOT_APPLICABLE')
+                rec['producer']=producer
+            if observation_stamp(root,c)!=stamp or (kind=='runtime_observation' and digest(rec['source_inputs'])!=stamp):fail('INPUT_MOVED')
+            applicability=fact_applicability(c,rec)
+            if status=='passed' and applicability in ('CURRENT_TARGET_MISMATCH','CURRENT_STATE_NEEDS_RUNTIME'):fail(applicability)
+            old=doc['facts'].get(doc['observations'].get(criterion))
+            if old and old['status']!='passed':rec['previous_failure']=old['id']
+            doc['facts'][rec['id']]=rec;doc['observations'][criterion]=rec['id'];save(root,doc)
+            return {'criterion':criterion,'fact':rec['id'],'kind':kind}
 
 def active_deferrals(root,doc):
     result={}
@@ -1279,7 +1303,7 @@ def cleanup(root,ident,apply=False,timezone_name='UTC',forget=False,handoff=None
             for path in candidates:path.unlink()
             for directory in walk_dirs:directory.rmdir()
             if folder.exists():folder.rmdir()
-            if forget:task_path(root,ident).unlink()
+            if forget:task_storage.forget(task_path(root,ident),fail)
             else:save(root,retained)
         return result
 
@@ -1309,7 +1333,12 @@ def task_list(root,offset=0,limit=20):
 def record_capacity(root,doc,used):
     removable,assets=retention_candidates(root,doc) if 'facts' in doc else ([],{})
     sections={k:len(canonical(doc[k])) for k in ('facts','plan','corrections','attachments','walkthroughs') if k in doc}
+    encoded,objects=task_storage.prepare(doc,fail)
+    object_count,object_bytes=task_storage.inventory(task_storage.directory(task_path(root,doc['id']),fail),fail)
     return {'record_bytes':used,'remaining_record_bytes':max(0,MAX_RECORD-used),
+            'metadata_object_count':len(objects),'metadata_object_bytes':sum(map(len,objects.values())),
+            'stored_object_count':object_count,'stored_object_bytes':object_bytes,
+            'expanded_metadata_bytes':len(canonical(doc)),'expanded_metadata_limit':task_storage.MAX_EXPANDED,
             'attachment_slots_remaining':max(0,32-len(doc.get('attachments',{}))),
             'expanded_section_bytes':sections,'removable_fact_count':len(removable),
             'removable_attachment_count':len(assets)}

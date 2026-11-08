@@ -1,4 +1,4 @@
-"""Contract 8 encoding and ownership counterexamples on synthetic tasks."""
+"""Contract 9 encoding and ownership counterexamples on synthetic tasks."""
 import copy
 import json
 from pathlib import Path
@@ -13,38 +13,35 @@ storage = w.task_storage
 class EncodingTests(unittest.TestCase):
     def envelope(self):
         definition={'argv':['x'*1600]}
-        doc={'task_contract':8,'facts':{'a':{'execution_definition':definition},
+        doc={'task_contract':9,'facts':{'a':{'execution_definition':definition},
                                        'b':{'execution_definition':definition}}}
-        return doc,json.loads(storage.encode(doc,w.fail))
+        data,objects=storage.prepare(doc,w.fail)
+        return doc,json.loads(data),objects
 
-    def rehash(self,envelope):
-        envelope['storage_checksum']=storage.digest({k:v for k,v in envelope.items() if k!='storage_checksum'})
-
-    def test_shared_blocks_are_lossless_and_do_not_alias(self):
-        doc,envelope=self.envelope()
-        self.assertEqual(len(envelope['blocks']),1)
-        restored=storage.decode(envelope,w.fail)
+    def test_objects_are_lossless_and_do_not_alias(self):
+        doc,envelope,objects=self.envelope()
+        restored=storage.decode(envelope,w.fail,lambda k,n:objects[k])
         self.assertEqual(restored,doc)
         restored['facts']['a']['execution_definition']['argv'].append('new')
         self.assertEqual(restored['facts']['b'],doc['facts']['b'])
+        self.assertLess(sum(map(len,objects.values())),len(storage.canonical(doc)))
 
-    def test_missing_corrupted_or_misplaced_reference_refuses(self):
-        _,envelope=self.envelope()
-        for kind in ('missing','corrupt','misplaced','unused'):
-            with self.subTest(kind=kind):
-                invalid=copy.deepcopy(envelope)
-                key=next(iter(invalid['blocks']))
-                if kind=='missing':invalid['blocks'].clear()
-                elif kind=='corrupt':invalid['blocks'][key]['argv']=['wrong']
-                elif kind=='misplaced':invalid['task']['request']={'$block':key}
-                else:invalid['task']['facts']['b']={}
-                self.rehash(invalid)
-                with self.assertRaisesRegex(ValueError,'TASK_STORAGE_INVALID'):storage.decode(invalid,w.fail)
+    def test_missing_or_corrupt_object_refuses(self):
+        _,envelope,objects=self.envelope()
+        with self.assertRaisesRegex(ValueError,'TASK_STORAGE_INVALID'):
+            storage.decode(envelope,w.fail)
+        with self.assertRaisesRegex(ValueError,'TASK_STORAGE_OBJECT_CHANGED'):
+            storage.decode(envelope,w.fail,lambda k,n:b'{}')
 
-    def test_expansion_limit_before_materializing_many_references(self):
-        _,envelope=self.envelope()
-        with patch.object(storage,'MAX_EXPANDED',3000):
-            with self.assertRaisesRegex(ValueError,'TASK_SIZE_LIMIT_EXPANDED'):storage.decode(envelope,w.fail)
+    def test_expansion_limit_refuses(self):
+        _,envelope,objects=self.envelope()
+        with patch.object(storage,'MAX_EXPANDED',2000):
+            with self.assertRaisesRegex(ValueError,'TASK_SIZE_LIMIT_EXPANDED'):
+                storage.decode(envelope,w.fail,lambda k,n:objects[k])
+
+    def test_reserved_reference_cannot_be_injected(self):
+        with self.assertRaisesRegex(ValueError,'RESERVED_KEY'):
+            storage.prepare({'task_contract':9,'request':{'$object':'a'*64}},w.fail)
 
 
 class OwnershipTests(unittest.TestCase):

@@ -1,0 +1,110 @@
+{
+  "contract": 9,
+  "status": "development candidate; not released or installed to daily CC",
+  "full_regression": {
+    "tests": 404,
+    "seconds": 170.098,
+    "passed": true,
+    "inputs_unchanged": true,
+    "log": "full.log"
+  },
+  "first_complete_run": {
+    "tests": 398,
+    "failures": 4,
+    "errors": 1,
+    "log": "featrace-contract9-full1.log",
+    "cause": "Managed copy semantics required tests to damage retained copies rather than originals; closed-state assertion and malformed-envelope error expectation corrected."
+  },
+  "intermediate_run": {
+    "tests": 403,
+    "passed": true,
+    "seconds": 166.835,
+    "superseded_by": "Added input-change-during-copy protection and regression, then froze final inputs and reran full suite."
+  },
+  "targeted_lifecycle_tests": 14,
+  "isolated_trial": {
+    "fixture": "isolated development CLI; not natural CC",
+    "installed_channel": "development",
+    "installed_files": 18,
+    "contract": 9,
+    "actual_check_processes": 1,
+    "reuse_asserted": true,
+    "source_note_removed_before_assessment": true,
+    "initial_and_corrected_close": "complete",
+    "object_tamper_rejected_and_original_restored": true,
+    "capacity": {
+      "id": "trial",
+      "state": "complete",
+      "record_bytes": 4078,
+      "remaining_record_bytes": 258066,
+      "metadata_object_count": 4,
+      "metadata_object_bytes": 7530,
+      "stored_object_count": 4,
+      "stored_object_bytes": 7530,
+      "expanded_metadata_bytes": 10862,
+      "expanded_metadata_limit": 2097152,
+      "attachment_slots_remaining": 30,
+      "expanded_section_bytes": {
+        "facts": 4039,
+        "plan": 646,
+        "corrections": 3416,
+        "attachments": 812
+      },
+      "removable_fact_count": 0,
+      "removable_attachment_count": 0,
+      "inactive_days": 0,
+      "stale_incomplete": false,
+      "pending_runtime_failures": 0
+    },
+    "reporting_issue": "Harness completed behavioral assertions, then failed reading channel at wrong nesting; report recovered read-only without replay.",
+    "final_candidate_files_match": 18,
+    "second_correction": "complete",
+    "final_candidate_reused_check": true,
+    "final_candidate_managed_note": true
+  },
+  "synthetic_encoding_scale": [
+    {
+      "facts": 48,
+      "expanded_bytes": 132906,
+      "index_bytes": 3811,
+      "object_count": 49,
+      "object_bytes": 136591,
+      "roundtrip_equal": true
+    },
+    {
+      "facts": 128,
+      "expanded_bytes": 358470,
+      "index_bytes": 9572,
+      "object_count": 129,
+      "object_bytes": 368395,
+      "roundtrip_equal": true
+    }
+  ],
+  "budgets": {
+    "index_bytes": 262144,
+    "expanded_metadata_bytes": 2097152,
+    "active_objects": 512,
+    "object_file_bytes": 262144,
+    "stored_object_files": 1024,
+    "stored_object_bytes": 4194304,
+    "attachments": 32,
+    "evidence_file_bytes": 16777216,
+    "task_artifact_bytes": 67108864
+  },
+  "skill_quick_validate": {
+    "status": "unavailable",
+    "reason": "PyYAML missing; no dependency installed or success claimed"
+  },
+  "f11_record_unchanged": true,
+  "daily_cc": {
+    "version": "0.32.0",
+    "matching_files": 18,
+    "changed": false
+  },
+  "limitations": [
+    "Selected task metadata is bounded and decoded for validation, not fully lazy loaded.",
+    "Interrupted unpublished objects remain and count toward the budget; unknown files are not automatically removed.",
+    "No old-task migration, natural CC trial, net savings claim, or phase-three acceptance.",
+    "No independent agent review in this development turn."
+  ]
+}

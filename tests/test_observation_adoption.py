@@ -45,7 +45,8 @@ class AdoptionTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'SCOPE_UNKNOWN'):self.adopt()
 
     def test_evidence_damage_refuses(self):
-        (self.r/'evidence.txt').write_text('changed')
+        managed=next(iter(self.f.doc()['facts'][self.old]['evidence']))
+        (self.r/managed).write_text('changed')
         with self.assertRaisesRegex(ValueError,'ORIGINAL_UNAVAILABLE'):self.adopt()
 
     def test_wrong_baseline_refuses(self):
@@ -57,7 +58,8 @@ class AdoptionTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'ORIGINAL_UNAVAILABLE'):self.adopt()
 
     def test_analysis_damage_refuses(self):
-        (self.r/'analysis.txt').write_text('modified')
+        managed=next(iter(self.f.doc()['facts'][self.analysis]['evidence']))
+        (self.r/managed).write_text('modified')
         with self.assertRaisesRegex(ValueError,'ANALYSIS_UNAVAILABLE'):self.adopt()
 
     def test_prune_retains_adopted_sources(self):
