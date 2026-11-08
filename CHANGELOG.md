@@ -1,10 +1,10 @@
 # Changelog
 
-## Unreleased — contract9 candidate
+## 0.33.0 — 2026-11-08
 
 - Replace the single-file metadata ceiling with a bounded task index and immutable task-local content objects, including atomic index publication, validated references, explicit disk/expansion caps and ownership-aware collection. No contract8 migration.
 - Preserve selected observation notes in managed evidence on registration; reuse intact copies while keeping declared code/source identities live.
-- Keep original failures, corrections, review provenance and scoped execution reuse. Formal release and daily CC remain0.32.0 pending release authorization.
+- Keep original failures, corrections, review provenance and scoped execution reuse. Minor release for the incompatible storage contract. Keep fixed 0.32.0 for contract8 tasks.
 
 ## 0.32.0 — 2026-11-07
 

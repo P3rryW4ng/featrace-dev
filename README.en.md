@@ -6,10 +6,10 @@ A development Skill for **Claude Code and Codex**: understand impact, implement 
 
 ## Install
 
-Current release: **0.32.0**. Requires Python 3.9+, Git and the chosen Agent; use your project's existing build environment.
+Current release: **0.33.0**. Requires Python 3.9+, Git and the chosen Agent; use your project's existing build environment.
 
 ```bash
-git clone --branch release/0.32.0 --single-branch https://github.com/P3rryW4ng/featrace-dev.git
+git clone --branch release/0.33.0 --single-branch https://github.com/P3rryW4ng/featrace-dev.git
 cd featrace-dev
 python3 scripts/install.py --agent claude
 ```
@@ -28,12 +28,12 @@ The Skill selects checks by actual impact, reuses applicable results, retains ne
 
 ## Update and docs
 
-Preserve local changes, fetch and switch to the pinned `release/0.32.0` ref, then run `python3 scripts/install.py --agent claude --update`. Pulling an older release branch does not upgrade versions. The installer backs up the previous copy and refuses to overwrite modified installations.
+Preserve local changes, fetch and switch to the pinned `release/0.33.0` ref, then run `python3 scripts/install.py --agent claude --update`. Pulling an older release branch does not upgrade versions. The installer backs up the previous copy and refuses to overwrite modified installations.
 
 - [Usage and recovery](docs/usage.md) · [Modules and workflow](docs/module-guide.md)
 - [Changelog](CHANGELOG.md) · [Maintenance status](MAINTAINER.md)
 - [Validation and limits](docs/validation.md) · [Product direction](PRODUCT.md)
 
-New tasks use contract 8. Use pinned 0.31.0 for contract 7 tasks and pinned 0.30.7 for contract 6 tasks; business records are not automatically migrated or deleted. Long-term reliability and net savings still need real-world evidence.
+New tasks use contract 9. Use pinned 0.32.0 for contract 8 tasks. Use pinned 0.31.0 for contract 7 tasks and pinned 0.30.7 for contract 6 tasks; business records are not automatically migrated or deleted. Long-term reliability and net savings still need real-world evidence.
 
 **Feature · Trace · Delivery** · Created by [Perry Wang](https://github.com/P3rryW4ng). No open-source license has been selected.

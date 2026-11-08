@@ -6,10 +6,10 @@
 
 ## 安装
 
-当前正式版 **0.32.0**。需要 Python 3.9+、Git 和对应 Agent；项目构建环境沿用项目要求。
+当前正式版 **0.33.0**。需要 Python 3.9+、Git 和对应 Agent；项目构建环境沿用项目要求。
 
 ```bash
-git clone --branch release/0.32.0 --single-branch https://github.com/P3rryW4ng/featrace-dev.git
+git clone --branch release/0.33.0 --single-branch https://github.com/P3rryW4ng/featrace-dev.git
 cd featrace-dev
 python3 scripts/install.py --agent claude
 ```
@@ -28,12 +28,12 @@ Skill 按实际影响选择检查，复用仍有效的结果，保存必要证�
 
 ## 更新与文档
 
-更新前保留本地改动，获取并切换到固定发布引用 `release/0.32.0`，再运行 `python3 scripts/install.py --agent claude --update`。旧发布分支上直接 `git pull` 不会升级版本。安装器保留旧版备份，拒绝覆盖被修改的副本。
+更新前保留本地改动，获取并切换到固定发布引用 `release/0.33.0`，再运行 `python3 scripts/install.py --agent claude --update`。旧发布分支上直接 `git pull` 不会升级版本。安装器保留旧版备份，拒绝覆盖被修改的副本。
 
 - [使用与接续](docs/usage.md) · [模块与流程](docs/module-guide.md)
 - [版本记录](CHANGELOG.md) · [当前维护状态](MAINTAINER.md)
 - [验证与限制](docs/validation.md) · [产品方向](PRODUCT.md)
 
-新任务使用合同8。合同7任务使用固定0.31.0，合同6任务使用固定0.30.7，不自动迁移或删除业务资料。长期可靠性与净收益仍需真实使用验证。
+新任务使用合同9。合同8任务使用固定0.32.0。合同7任务使用固定0.31.0，合同6任务使用固定0.30.7，不自动迁移或删除业务资料。长期可靠性与净收益仍需真实使用验证。
 
 **Feature · Trace · Delivery** · Created by [Perry Wang](https://github.com/P3rryW4ng). 尚未指定开源许可证。
