@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.33.3 — 2026-11-09
+
+- Verify task state, rules and authorization before resuming after context compaction.
+- Recheck the current plan for independent authorized work before blocking the session for a decision. This guidance patch retains contract9.
+
 ## 0.33.2 — 2026-11-09
 
 - Finish independent authorized work before sending a blocking approval prompt.
