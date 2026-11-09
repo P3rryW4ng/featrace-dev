@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.33.2 — 2026-11-09
+
+- Finish independent authorized work before sending a blocking approval prompt.
+- Check the original scope of approvals before reusing them across tasks. This guidance patch retains contract9.
+
 ## 0.33.1 — 2026-11-09
 
 - Request approval at the operation that requires it and continue independent authorized work.
