@@ -2,7 +2,9 @@
 
 [简体中文](README.md) | **English**
 
-A development Skill for **Claude Code and Codex**: understand impact, implement changes, and verify relevant behavior without unnecessary full-feature reacceptance.
+A development skill for **Claude Code and Codex**. Implement features and fixes in existing projects, trace their impact through the code, and retain the evidence needed to verify or resume the work.
+
+[Install](#install) · [Examples](#examples) · [Updates and docs](#updates-and-docs)
 
 ## Install
 
@@ -16,17 +18,25 @@ python3 scripts/install.py --agent claude
 
 For Codex, replace `claude` with `codex`; use `both` to install for both hosts. Open a new session in your target project afterward.
 
-## Use
+## Examples
 
-Enter `/dev` in Claude Code or `$dev` in Codex, then describe the work. For example:
+Open a new session in your target project. Enter `/dev` in Claude Code or `$dev` in Codex, then describe the work in plain language.
 
-> Fix the login error message. Investigate the impact, implement the change, and verify the affected behavior.
+**Fix a bug**
 
-Provide the original request and relevant design or bug details. No internal workflow commands are required. An empty invocation only activates the mode; `dev off` exits. Entry shows the installed version; successful closure explicitly reports the completed scope.
+> A failed sign-in leaves the page blank. Find the cause, fix the message, and verify successful sign-in and the failure message.
 
-The Skill selects checks by actual impact, reuses applicable results, retains necessary evidence and commits completed subtasks within actual authorization. It does not replace product decisions, project gates or publication approval.
+**Add a small feature**
 
-## Update and docs
+> Add an “Open orders only” filter to the order list. Keep all orders visible by default. Check filtering and pagination, and report what you verified.
+
+**Resume a task**
+
+> Resume the order filter task. Read the current plan and existing evidence first, then run the checks that are still needed.
+
+Share the original request, design, or reproduction steps as needed. An empty invocation activates the mode and displays the installed version. Use `dev off` to exit. On completion, the skill reports what changed, what was verified, and any remaining limits.
+
+## Updates and docs
 
 Preserve local changes, fetch and switch to the pinned `release/0.34.2` ref, then run `python3 scripts/install.py --agent claude --update`. Pulling an older release branch does not upgrade versions. The installer backs up the previous copy and refuses to overwrite modified installations.
 
@@ -34,6 +44,6 @@ Preserve local changes, fetch and switch to the pinned `release/0.34.2` ref, the
 - [Changelog](CHANGELOG.md) · [Maintenance status](MAINTAINER.md)
 - [Validation and limits](docs/validation.md) · [Product direction](PRODUCT.md)
 
-New tasks use contract 9. Use pinned 0.32.0 for contract 8 tasks. Use pinned 0.31.0 for contract 7 tasks and pinned 0.30.7 for contract 6 tasks; business records are not automatically migrated or deleted. Long-term reliability and net savings still need real-world evidence.
+Version 0.34.2 uses contract 10. Resume contract 9 tasks with pinned version 0.33.3. See the [usage guide](docs/usage.md) for older contracts.
 
 **Feature · Trace · Delivery** · Created by [Perry Wang](https://github.com/P3rryW4ng). No open-source license has been selected.
