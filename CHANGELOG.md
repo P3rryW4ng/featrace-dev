@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.34.1 — 2026-11-10
+
+- Locate modules using existing navigation and retain only durable rationale and unresolved handoffs at delivery.
+- Keep guidance for corrections aligned with contract 10 and separate historical evidence from current usage.
+
 ## 0.34.0 — 2026-11-10
 
 - New tasks use contract 10. Explicitly adopt eligible prior check results after current applicability analysis.
