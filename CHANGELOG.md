@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.34.2 — 2026-11-10
+
+- Include necessary handoff changes in scope before collecting final evidence. Reconcile only affected inputs and judgments when discovered later.
+- Consolidate durable documentation rules in the architecture decisions.
+
 ## 0.34.1 — 2026-11-10
 
 - Locate modules using existing navigation and retain only durable rationale and unresolved handoffs at delivery.
