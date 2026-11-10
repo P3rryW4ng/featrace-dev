@@ -22,17 +22,49 @@ For Codex, replace `claude` with `codex`; use `both` to install for both hosts. 
 
 Open a new session in your target project. Enter `/dev` in Claude Code or `$dev` in Codex, then describe the work in plain language.
 
+These simulated Claude Code excerpts show the session flow. In Codex, use `$dev` in place of `/dev`.
+
 **Fix a bug**
 
-> A failed sign-in leaves the page blank. Find the cause, fix the message, and verify successful sign-in and the failure message.
+```text
+❯ /dev
+FeatraceDev ON · 项目：store-web · 版本：0.34.2
+
+❯ A failed sign-in leaves the page blank. Fix the message and verify both sign-in outcomes.
+FeatraceDev ON · 项目：store-web
+Found the error state in the sign-in page. I’ll update the message and run the sign-in tests.
+
+FeatraceDev ON · 项目：store-web
+Fixed the failure message. Two sign-in tests passed. Browser behavior was not checked.
+```
 
 **Add a small feature**
 
-> Add an “Open orders only” filter to the order list. Keep all orders visible by default. Check filtering and pagination, and report what you verified.
+```text
+❯ /dev
+FeatraceDev ON · 项目：store-web · 版本：0.34.2
+
+❯ Add an “Open orders only” filter. Show all orders by default.
+FeatraceDev ON · 项目：store-web
+The list uses a shared pagination query. Changing the filter will return to page one.
+
+FeatraceDev ON · 项目：store-web
+Added the filter. Tests passed for the default view, filter changes, and pagination.
+```
 
 **Resume a task**
 
-> Resume the order filter task. Read the current plan and existing evidence first, then run the checks that are still needed.
+```text
+❯ /dev
+FeatraceDev ON · 项目：store-web · 版本：0.34.2
+
+❯ Resume the order filter task. Review existing evidence and run only the missing checks.
+FeatraceDev ON · 项目：store-web
+Resumed the order filter task. The filter evidence still applies. Pagination is the only remaining check.
+
+FeatraceDev ON · 项目：store-web
+The pagination check passed. The previous filter evidence was reused, and the task is closed.
+```
 
 Share the original request, design, or reproduction steps as needed. An empty invocation activates the mode and displays the installed version. Use `dev off` to exit. On completion, the skill reports what changed, what was verified, and any remaining limits.
 
