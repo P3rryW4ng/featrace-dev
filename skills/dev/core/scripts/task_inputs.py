@@ -92,10 +92,15 @@ def signature(root, paths, sets, external, env_keys, diagnostics=None, execution
         result=subprocess.run(['git','-C',str(root),'ls-files','--cached','-z'],capture_output=True)
         if result.returncode:reject('INPUT_GIT_UNAVAILABLE')
         tracked={os.fsdecode(n) for n in result.stdout.split(b'\0') if n}
-    aggregate=hashlib.sha256(); count=0; total=0; visited=set()
+    aggregate=hashlib.sha256();structure=hashlib.sha256();external_content=hashlib.sha256(); count=0; total=0; visited=set()
 
     def emit(value):
-        aggregate.update(json.dumps(value,sort_keys=True,separators=(',',':'),ensure_ascii=True).encode()+b'\n')
+        data=json.dumps(value,sort_keys=True,separators=(',',':'),ensure_ascii=True).encode()+b'\n'
+        aggregate.update(data)
+        if value[0]=='environment':return
+        shape=value[:2]+value[3:] if len(value)==4 and value[1]=='file' else value
+        structure.update(json.dumps(shape,sort_keys=True,separators=(',',':'),ensure_ascii=True).encode()+b'\n')
+        if str(value[0]).startswith('external'):external_content.update(data)
 
     def include(path, label, ancestors=(), external_root=None):
         nonlocal count,total
@@ -179,7 +184,8 @@ def signature(root, paths, sets, external, env_keys, diagnostics=None, execution
     keys=sorted(snapshot['env']) if snapshot['mode']=='controlled' else sorted(set(DEFAULT_ENV)|set(env_keys))
     environment=['environment',snapshot['mode'],[(k,snapshot['env'].get(k)) for k in keys]]
     if diagnostics is not None:
-        diagnostics.update({'selected_inputs':aggregate.hexdigest(),
+        diagnostics.update({'selected_inputs':aggregate.hexdigest(),'input_structure':structure.hexdigest(),
+                            'external_content':external_content.hexdigest(),
                             'environment':hashlib.sha256(json.dumps(environment,sort_keys=True,separators=(',',':'),ensure_ascii=True).encode()).hexdigest()})
     emit(environment)
     return {'sha256':aggregate.hexdigest(),'entries':count,'bytes':total}

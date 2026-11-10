@@ -24,7 +24,7 @@ import task_walkthrough
 import task_storage
 from zoneinfo import ZoneInfo
 
-CONTRACT = 9
+CONTRACT = 10
 MAX_CORRECTIONS = 8
 MAX_FACTS = 128
 EVIDENCE_KINDS = {'static_analysis', 'runtime_observation', 'command'}
@@ -34,7 +34,7 @@ MAX_OUTPUT = 16384
 MAX_INPUTS = 512
 ID = re.compile(r'[A-Za-z0-9][A-Za-z0-9_.-]{0,79}\Z')
 CATEGORIES = {'presentation', 'interaction', 'state', 'interface', 'shared', 'device', 'configuration'}
-IDENTITY_COMPONENTS = ('selected_inputs','environment','input_assets','executable','argv','target','constraints','policy','protocol')
+IDENTITY_COMPONENTS = ('selected_inputs','input_structure','external_content','environment','input_assets','executable','argv','target','constraints','policy','protocol')
 
 class TaskError(ValueError):
     pass
@@ -123,12 +123,13 @@ def load(root, ident):
     if 'facts' in doc:
         if not isinstance(doc['facts'],dict) or len(doc['facts'])>MAX_FACTS:fail('FACT_LIMIT')
         for fid,fact in doc['facts'].items():
-            if fact.get('id')!=fid or fact.get('kind') not in EVIDENCE_KINDS|{'application'}:fail('FACT_INVALID')
+            if fact.get('id')!=fid or fact.get('kind') not in EVIDENCE_KINDS|{'application','applicable_command'}:fail('FACT_INVALID')
         for section in ('executions','observations'):
             if any(fid not in doc['facts'] for fid in doc[section].values()):fail('FACT_REFERENCE_MISSING')
     task_walkthrough.validate(doc,fail)
     validate_retirement(doc)
     task_failures.validate(doc,fail)
+    task_failures.validate_reviews(doc,fail)
     task_authorization.validate(doc,fail)
     task_assets.validate(doc,fail)
     return doc
@@ -137,6 +138,7 @@ def save(root, doc):
     task_walkthrough.validate(doc,fail)
     validate_retirement(doc)
     task_failures.validate(doc,fail)
+    task_failures.validate_reviews(doc,fail)
     task_authorization.validate(doc,fail)
     task_assets.validate(doc,fail)
     if len(doc.get('facts',{}))>MAX_FACTS:fail('FACT_LIMIT')
@@ -176,7 +178,7 @@ def validate_retirement(doc):
             or not all(text(receipt.get(k)) for k in ('reason','authority','retired_at','decision_at','context_digest','evidence_retention'))
             or not re.fullmatch(r'[a-f0-9]{64}',receipt['context_digest'])
             or not isinstance(receipt['unresolved'],dict)
-            or set(receipt['unresolved'])!={'runtime_failures','checks','observations','assessments','deferrals','unknowns','limitations','corrections','code_paths','walkthroughs'}
+            or set(receipt['unresolved'])!={'runtime_failures','checks','observations','assessments','deferrals','unknowns','limitations','corrections','code_paths','walkthroughs','review_findings'}
             or any(type(v) is not int or v<0 for v in receipt['unresolved'].values())):fail('RETIREMENT_CONTRACT_INVALID')
     if instant(receipt['decision_at'])>instant(receipt['retired_at']):fail('RETIREMENT_CONTRACT_INVALID')
     handoff=receipt['handoff']
@@ -228,6 +230,7 @@ def retirement_context(root,doc,handoff=None):
             'checks':{key:retired_check_context(plan,key,fact) for key,fact in failed_checks.items()},
             'observations':observations,
             'assessments':{cid:a for cid,a in doc.get('assessments',{}).items() if a['verdict']!='supported'},
+            'review_findings':task_failures.review_pending(sys.modules[__name__],root,doc),
             'deferrals':{cid:{'expected':criteria[cid]['expected'],**entries[-1]} for cid,entries in doc.get('claim_deferrals',{}).items() if entries[-1]['action']=='defer'},
             'walkthroughs':{key:{**r,'outputs':task_walkthrough.inventory(sys.modules[__name__],root,r['path']),'output_dirs':task_walkthrough.directories(sys.modules[__name__],root,r['path'])} for key,r in doc.get('walkthroughs',{}).items() if r['state']!='sealed'},
             'unknowns':plan.get('unknowns',[]),'limitations':doc.get('limitations',[]),
@@ -245,7 +248,7 @@ def retire(root,ident,reason,authority,decision_at,handoff=None):
         if doc['state']=='retired':return doc['retirement']
         mutable(doc);task_policy.check_local(root,git)
         context=retirement_context(root,doc,handoff)
-        counts={'runtime_failures':len(context['runtime_failures']),'checks':len(context['checks']),
+        counts={'review_findings':len(context['review_findings']),'runtime_failures':len(context['runtime_failures']),'checks':len(context['checks']),
                 'observations':len(context['observations']),'assessments':len(context['assessments']),'deferrals':len(context['deferrals']),
                 'unknowns':len(context['unknowns']),'limitations':len(context['limitations']),
                 'corrections':int(context['correction'] is not None),'code_paths':len(context['code']['paths']),'walkthroughs':len(context['walkthroughs'])}
@@ -378,12 +381,18 @@ def validate_execution_plan(root, plan):
     if not isinstance(plan['checks'],list) or len(plan['checks'])>32: fail('CHECKS_INVALID')
     for c in plan['checks']:
         if (not isinstance(c,dict) or not {'id','argv','inputs','covers','reason','timeout','environment'}<=set(c)
-                or set(c)-{'id','argv','inputs','covers','reason','timeout','environment','input_sets','external_inputs','env_keys','cache','operation','input_assets','execution_env'}
+                or set(c)-{'id','argv','inputs','covers','reason','timeout','environment','input_sets','external_inputs','env_keys','cache','operation','input_assets','execution_env','acceptance'}
                 or not isinstance(c['id'],str) or not ID.fullmatch(c['id']) or c['id'] in check_ids
                 or not isinstance(c['argv'],list) or not c['argv'] or not all(text(x) for x in c['argv'])
                 or not text(c['reason']) or type(c['timeout']) is not int or not 1<=c['timeout']<=3600
                 or not isinstance(c['environment'],dict) or not c['environment']
                 or not all(text(k) and text(v) for k,v in c['environment'].items())): fail('CHECK_INVALID')
+        acceptance=c.get('acceptance',{'mode':'current_run'})
+        if (not isinstance(acceptance,dict) or acceptance.get('mode') not in ('current_run','applicable_result')
+                or set(acceptance)!=({'mode'} if acceptance['mode']=='current_run' else {'mode','reason'})
+                or (acceptance['mode']=='applicable_result' and not text(acceptance['reason']))):fail('CHECK_ACCEPTANCE_INVALID')
+        if acceptance['mode']=='applicable_result' and (c['environment'].get('kind') not in ('local','test')
+                or c.get('operation')=='device' or any(x.get('validity',{}).get('mode')=='current' for x in plan['criteria'] if x['id'] in c['covers'])):fail('CHECK_ADOPTION_CURRENT_REFUSED')
         task_inputs.execution_environment(c)
         valid_inputs(root,c['inputs'])
         task_inputs.validate_sets(c.get('input_sets',[]));task_inputs.validate_sets(c.get('external_inputs',[]),True)
@@ -425,7 +434,7 @@ def validate_acceptance_plan(root, plan):
         if (not isinstance(proof,dict) or set(proof)!={'any_of','reason'} or not text(proof['reason'])
                 or not isinstance(proof['any_of'],list) or not 1<=len(proof['any_of'])<=8
                 or any(not isinstance(group,list) or not group or len(set(group))!=len(group)
-                       or any(not isinstance(k,str) or k not in EVIDENCE_KINDS for k in group) for group in proof['any_of'])):
+                       or any(not isinstance(k,str) or k not in EVIDENCE_KINDS|{'applicable_command'} for k in group) for group in proof['any_of'])):
             fail('PROOF_REQUIREMENTS_INVALID')
     review=plan['review']
     if (not isinstance(review,dict) or not {'independent','reason'}<=set(review) or set(review)-{'independent','reason','criteria'} or type(review['independent']) is not bool
@@ -466,7 +475,7 @@ def begin(root, ident, request):
         if task_path(root,ident).exists(): fail('TASK_EXISTS')
         doc={'task_contract':CONTRACT,'id':ident,'request':request,'baseline':git(root,'rev-parse','HEAD').decode().strip(),
              'created_at':now(),'state':'draft','plan':None,'analysis_digest':None,'executions':{},
-             'observations':{},'facts':{},'authorizations':{},'failure_actions':{},'claim_deferrals':{},'assessments':{},'limitations':[],'receipt':None}
+             'observations':{},'facts':{},'authorizations':{},'failure_actions':{},'claim_deferrals':{},'review_findings':{},'assessments':{},'limitations':[],'receipt':None}
         save(root,doc)
     return {'id':ident,'state':'draft','maintenance':maintenance}
 
@@ -480,6 +489,7 @@ def set_plan(root,ident,plan):
         if any(c not in selected and doc['facts'][fid]['status']!='passed' for c,fid in doc['executions'].items()):
             fail('UNRESOLVED_CHECK_REMOVED')
         if {f['criterion'] for f in task_failures.pending(doc).values()}-criteria:fail('UNRESOLVED_OBSERVATION_REMOVED')
+        if {f['criterion'] for f in doc['review_findings'].values()}-criteria:fail('REVIEW_FINDING_CLAIM_REMOVED')
         if set(doc.get('claim_deferrals',{}))-criteria:fail('DISPOSITION_CLAIM_REMOVED')
         if any(c not in criteria and doc['facts'][fid].get('status') in ('failed','unavailable') for c,fid in doc['observations'].items()):
             fail('UNRESOLVED_OBSERVATION_REMOVED')
@@ -615,6 +625,12 @@ def check_diagnostic(root,doc,check):
             out['new_execution_permission']='available'
         except (ValueError,OSError) as exc:
             out['new_execution_permission']={'OPERATION_POLICY_ASK':'approval_required','OPERATION_POLICY_DENIED':'denied'}.get(str(exc),'unavailable')
+    if record and record['status']=='passed' and record['input_digest']==stamp and intact and timely(check,record):
+        out['delivery_result']={'mode':'exact_result','fact':record['id']}
+    else:
+        try:adopted=task_adoption.selected_check_application(sys.modules[__name__],root,doc,check)
+        except (ValueError,OSError):adopted=[]
+        out['delivery_result']={'mode':'adopted','applications':adopted} if adopted else {'mode':'unavailable'}
     return out
 
 
@@ -719,9 +735,10 @@ def run_check(root,ident,check_id,investigate=False):
         authorization['rule_sources']=[{'source':rule['source'],'sha256':rule['sha256'],'authority':rule['authority']} for rule in rules]
         revision=git(root,'rev-parse','HEAD').decode().strip()
         source=task_execution.producer(__file__)
+        adoption_basis=task_adoption.check_basis(sys.modules[__name__],root,doc,check) if check.get('acceptance',{}).get('mode')=='applicable_result' else None
         start={'task':ident,'id':aid,'check':check_id,'input_digest':stamp,'input_format':1,
                'started_at':started,'producer':source,'definition_digest':digest(check),'authorization':authorization,'identity_components':identity_components}
-        reservation={'id':aid,'kind':'command','check':check_id,'status':'unavailable',
+        reservation={'id':aid,'kind':'command','adoption_basis':adoption_basis,'check':check_id,'status':'unavailable',
                      'purpose':'investigation' if investigate else 'verification','authorization':authorization,'input_assets':check.get('input_assets',[]),'identity_components':identity_components,'input_digest':stamp,'definition_digest':digest(check),'execution_definition':execution_definition(check),
                      'environment':check['environment'],'producer':source,'git_head_at_start':revision,
                      'started_at':started,'at':started,'exit_code':None,'reason':'EXECUTION_RESERVED_OUTCOME_UNKNOWN',
@@ -748,7 +765,7 @@ def run_check(root,ident,check_id,investigate=False):
         except (ValueError,OSError):
             status='unavailable';reason=reason or 'EXECUTION_IDENTITY_UNAVAILABLE'
         ended=now()
-        record={'id':aid,'kind':'command','check':check_id,'status':status,
+        record={'id':aid,'kind':'command','adoption_basis':adoption_basis,'check':check_id,'status':status,
                 'purpose':'investigation' if investigate else 'verification','authorization':authorization,'input_assets':check.get('input_assets',[]),'identity_components':identity_components,'input_digest':stamp,
                 'definition_digest':digest(check),'execution_definition':execution_definition(check),'environment':check['environment'],'producer':source,
                 'git_head_at_start':revision,'started_at':started,'at':ended,'exit_code':code}
@@ -931,9 +948,10 @@ def failure_action(root,ident,failure_id,action,reason,evidence=None,conditions=
 
 def failure_handoff(doc,criterion):
     """Small durable issue context, not an everlasting copy of logs/attachments."""
-    return {fid:{'actual':f['actual'],'target':f['observed_target'],'observed_at':f['observed_at'],
+    runtime={fid:{'actual':f['actual'],'target':f['observed_target'],'observed_at':f['observed_at'],
                  'conditions':task_failures.reproduction(doc,fid),'evidence':f['evidence']}
             for fid,f in task_failures.pending(doc,criterion).items()}
+    return {**runtime,**{key:{'review_finding':item['assessment'],'criterion':criterion} for key,item in doc.get('review_findings',{}).items() if item['criterion']==criterion}}
 
 
 def defer_claim(root,ident,criterion,reason,authority,decision_at,handoff=None,reopen=False,exclude=False):
@@ -971,6 +989,9 @@ def fact_available(root,doc,c,fact,checked=None):
 
 def _fact_available(root,doc,c,fact,checked=None):
     if fact['status']!='passed':return False
+    if fact['kind']=='applicable_command':
+        check=next((x for x in doc['plan']['checks'] if x['id']==fact.get('check')),None)
+        return bool(check and c['id'] in check['covers'] and task_adoption.check_available(sys.modules[__name__],root,doc,check,fact))
     if fact['kind']=='application':return task_adoption.available(sys.modules[__name__],root,doc,c,fact)
     if fact['kind']=='command':
         check=next((x for x in doc['plan']['checks'] if x['id']==fact['check']),None)
@@ -1002,7 +1023,7 @@ def retention_candidates(root,doc):
     for entries in doc['claim_deferrals'].values():
         for action in entries:
             keep.update(action.get('checks',[]));keep.update(action.get('failures',[]))
-    for finding in doc['assessments'].values():keep.update(finding['facts'])
+    for finding in list(doc['assessments'].values())+list(task_failures.review_entries(doc)):keep.update(finding['facts'])
     for fid,fact in doc['facts'].items():
         if fact['status']!='passed' or fact.get('previous_failure'):keep.add(fid)
     for entry in doc.get('corrections',[]):
@@ -1031,7 +1052,7 @@ def retention_candidates(root,doc):
         used_assets.update(round_['origin']['criterion'].get('source_assets',[]))
     for correction in doc.get('corrections',[]):
         for claim in correction.get('prior_claims',{}).values():used_assets.update(claim['criterion'].get('source_assets',[]))
-    assessments=list(doc['assessments'].values())
+    assessments=list(doc['assessments'].values())+list(task_failures.review_entries(doc))
     for correction in doc.get('corrections',[]):
         assessments.extend(claim['assessment'] for claim in correction.get('prior_claims',{}).values() if claim.get('assessment'))
     owned={a['path']:a['sha256'] for a in doc.get('attachments',{}).values()}
@@ -1093,12 +1114,37 @@ def selected_support(root,doc,c,ids,checked=None):
 @contextmanager
 def managed_review_asset(root,doc,source):
     safe(root,source)
-    existing=next((a for a in doc.get('attachments',{}).values() if a['path']==source),None)
+    identity=file_identity(root,source,True)
+    existing=next((a for a in doc.get('attachments',{}).values() if a['role']=='evidence' and a['sha256']==identity['sha256']),None)
     if existing:
         if not artifact_ok(root,existing):fail('REVIEW_PROVENANCE_INVALID')
         yield existing
     else:
         with staged_attachment(root,doc,source,'evidence') as asset:yield asset
+
+
+@contextmanager
+def review_proof(root,doc,c,stamp,refs,verdict,provenance,extra=None):
+    with managed_review_asset(root,doc,provenance) as asset:
+        p=read_json(safe(root,asset['path']))
+        if (not isinstance(p,dict) or p.get('task')!=doc['id'] or p.get('criterion')!=c['id']
+                or p.get('criterion_digest')!=stamp or p.get('facts')!=refs or p.get('verdict')!=verdict
+                or p.get('fresh_context') is not True
+                or not all(text(p.get(k)) for k in ('host','context_id','reviewer','reason'))
+                or any(p.get(k)!=v for k,v in (extra or {}).items())):fail('REVIEW_PROVENANCE_INVALID')
+        proof={'path':asset['path'],'sha256':asset['sha256']}
+        if 'correction' in p:
+            correction=p['correction'];original=correction.get('original') if isinstance(correction,dict) else None
+            if (not isinstance(original,dict) or set(original)!={'path','sha256'}
+                    or not text(correction.get('authority')) or not text(correction.get('host_basis'))
+                    or not any(a['path']==original['path'] and a['sha256']==original['sha256'] for a in doc['attachments'].values())
+                    or not artifact_ok(root,original)):fail('REVIEW_CORRECTION_ORIGINAL_REQUIRED')
+            old=read_json(safe(root,original['path']))
+            if (not isinstance(old,dict) or {k:v for k,v in p.items() if k not in ('context_id','correction')}!=
+                    {k:v for k,v in old.items() if k not in ('context_id','correction')} or 'correction' in old):
+                fail('REVIEW_CORRECTION_CHANGED_VERDICT')
+            proof.update(original=original,issuer='coordinator_correction')
+        yield proof
 
 
 def assess(root,ident,criterion,verdict,reason,independent=False,provenance=None,fact_ids=None):
@@ -1109,38 +1155,19 @@ def assess(root,ident,criterion,verdict,reason,independent=False,provenance=None
         if c is None:fail('CRITERION_UNKNOWN')
         ready(root,doc,criterion=c)
         if criterion in active_deferrals(root,doc):fail('CLAIM_DEFERRED_NOT_SUPPORTED')
+        if verdict=='supported' and task_failures.review_pending(sys.modules[__name__],root,doc,criterion):fail('REVIEW_FINDING_UNRESOLVED')
         refs=selected_support(root,doc,c,fact_ids) if verdict=='supported' else sorted(fact_ids or [])
         if any(fid not in doc['facts'] for fid in refs):fail('FACT_REFERENCE_MISSING')
         stamp=criterion_stamp(root,doc,c)
-        finding={'verdict':verdict,'reason':reason,'facts':refs,
-                 'criterion_digest':stamp,'at':now(),'independent':independent,'provenance':None}
-        doc['assessments'][criterion]=finding
-        if independent:
-            if not provenance:fail('REVIEW_PROVENANCE_REQUIRED')
-            with managed_review_asset(root,doc,provenance) as asset:
-                p=read_json(safe(root,asset['path']))
-                if (not isinstance(p,dict) or p.get('task')!=ident or p.get('criterion')!=criterion
-                        or p.get('criterion_digest')!=stamp or p.get('facts')!=refs
-                        or p.get('verdict')!=verdict or p.get('fresh_context') is not True
-                        or not all(text(p.get(k)) for k in ('host','context_id','reviewer','reason'))):fail('REVIEW_PROVENANCE_INVALID')
-                proof={'path':asset['path'],'sha256':asset['sha256']}
-                if 'correction' in p:
-                    correction=p['correction']
-                    original=correction.get('original') if isinstance(correction,dict) else None
-                    if (not isinstance(original,dict) or set(original)!={'path','sha256'}
-                            or not text(correction.get('authority')) or not text(correction.get('host_basis'))
-                            or not any(a['path']==original['path'] and a['sha256']==original['sha256']
-                                       for a in doc['attachments'].values()) or not artifact_ok(root,original)):
-                        fail('REVIEW_CORRECTION_ORIGINAL_REQUIRED')
-                    old=read_json(safe(root,original['path']))
-                    if (not isinstance(old,dict) or {k:v for k,v in p.items() if k not in ('context_id','correction')}!=
-                            {k:v for k,v in old.items() if k not in ('context_id','correction')} or 'correction' in old):
-                        fail('REVIEW_CORRECTION_CHANGED_VERDICT')
-                    proof.update(original=original,issuer='coordinator_correction')
-                finding['provenance']=proof
-                save(root,doc)
-        else:save(root,doc)
-        return {'criterion':criterion,'verdict':verdict}
+        finding={'verdict':verdict,'reason':reason,'facts':refs,'criterion_digest':stamp,'at':now(),
+                 'independent':independent,'provenance':None}
+        with ExitStack() as stack:
+            if independent:
+                if not provenance:fail('REVIEW_PROVENANCE_REQUIRED')
+                finding['provenance']=stack.enter_context(review_proof(root,doc,c,stamp,refs,verdict,provenance))
+            key=task_failures.review_capture(sys.modules[__name__],doc,c,finding) if verdict!='supported' else None
+            doc['assessments'][criterion]=finding;save(root,doc)
+        return {'criterion':criterion,'verdict':verdict,**({'finding':key} if key else {})}
 
 
 def provenance_ok(root,doc,proof):
@@ -1174,6 +1201,7 @@ def view(root,ident,offset=0,limit=20,blocker_offset=0):
         blockers.append('SCOPE_NOT_READY')
     blockers.extend('DEFERRAL_STALE:'+cid for cid,entries in doc.get('claim_deferrals',{}).items() if entries[-1]['action']=='defer' and cid not in deferred)
     blockers.extend('RUNTIME_FAILURE:'+fid for fid,f in sorted(task_failures.pending(doc).items()) if f['criterion'] not in deferred)
+    blockers.extend('REVIEW_FINDING:'+fid for fid,f in task_failures.review_pending(sys.modules[__name__],root,doc).items() if f['criterion'] not in deferred)
     if doc['plan']:
         for check in doc['plan']['checks']:
             if set(check['covers'])<=set(deferred):continue
@@ -1181,7 +1209,9 @@ def view(root,ident,offset=0,limit=20,blocker_offset=0):
             try:current=bool(result and execution_profile(root,doc,check,result) and artifact_ok(root,result['artifact']) and timely(check,result))
             except (ValueError,OSError):current=False
             if result:checked[result['id']]=bool(current and result['status']=='passed')
-            if not result or not checked[result['id']]:blockers.append('CHECK:'+check['id'])
+            try:adopted=task_adoption.selected_check_application(sys.modules[__name__],root,doc,check)
+            except (ValueError,OSError):adopted=[]
+            if (not result or not checked[result['id']]) and not adopted:blockers.append('CHECK:'+check['id'])
         for c in doc['plan']['criteria']:
             if c['id'] in deferred:
                 rows.append({'id':c['id'],'status':'deferred','unresolved_failure_count':len(task_failures.pending(doc,c['id']))});continue
@@ -1211,6 +1241,15 @@ def view(root,ident,offset=0,limit=20,blocker_offset=0):
                            'details':'detail --section corrections'} if open_correction(doc) else None),
             'boundary':'Local structure/identity checked; semantic coverage and host independence require real review.'}
 
+def check_delivery(root,doc,check):
+    if set(check['covers'])<=set(active_deferrals(root,doc)):return {'mode':'deferred'}
+    fact=doc['facts'].get(doc['executions'].get(check['id']))
+    if fact and fact['status']=='passed' and execution_profile(root,doc,check,fact) and artifact_ok(root,fact['artifact']) and timely(check,fact):
+        return {'mode':'exact_result','fact':fact['id'],'boundary':'Original execution; query does not execute or refresh it.'}
+    adopted=task_adoption.selected_check_application(sys.modules[__name__],root,doc,check)
+    return {'mode':'adopted','applications':adopted} if adopted else {'mode':'unavailable'}
+
+
 def _close(root,ident,limitations):
     if not isinstance(limitations,list) or not all(text(x) for x in limitations):fail('LIMITATIONS_INVALID')
     with locked(root,ident):
@@ -1227,6 +1266,10 @@ def _close(root,ident,limitations):
                         'criteria':len(doc['plan']['criteria']),
                         'supported_criteria':len(doc['plan']['criteria'])-len(active_deferrals(root,doc)),
                         'outcome':'scoped_delivery_with_deferrals' if active_deferrals(root,doc) else 'fully_supported',
+                        'review_findings':{key:{'criterion':item['criterion'],'original_verdict':item['assessment']['verdict'],
+                             'disposition':'deferred' if item['criterion'] in active_deferrals(root,doc) else item['dispositions'][-1]['action']}
+                             for key,item in doc['review_findings'].items()},
+                        'check_results':{check['id']:check_delivery(root,doc,check) for check in doc['plan']['checks']},
                         'deferrals':{cid:{**entry,'unresolved_failures':sorted(task_failures.pending(doc,cid))}
                                      for cid,entry in active_deferrals(root,doc).items()},
                         'limitations':limitations,'evidence_retention':'task-local; no permanent replay promised'}
@@ -1437,6 +1480,7 @@ def detail(root,ident,section,criterion=None,offset=0,limit=4000,handoff=None):
                   'runtime_failures':task_failures.pending(doc,criterion),
                   'failure_actions':{fid:actions for fid,actions in doc.get('failure_actions',{}).items() if fid in task_failures.failure_facts(doc,criterion)},
                   'claim_deferrals':doc.get('claim_deferrals',{}).get(criterion,[]),
+                  'review_findings':{key:item for key,item in doc.get('review_findings',{}).items() if item['criterion']==criterion},
                   'facts':{fid:f for fid,f in doc['facts'].items() if f.get('criterion')==criterion or (f['kind']=='command' and f['check'] in [x['id'] for x in doc['plan']['checks'] if criterion in x['covers']])}}
     elif section=='failure-handoff':
         if not doc.get('plan') or criterion not in {c['id'] for c in doc['plan']['criteria']}:fail('CRITERION_UNKNOWN')
@@ -1445,7 +1489,7 @@ def detail(root,ident,section,criterion=None,offset=0,limit=4000,handoff=None):
         value=doc.get('facts',{}).get(criterion)
         if value is None:fail('FACT_REFERENCE_MISSING')
     elif section=='receipt' and doc['state']=='retired':value={'current_state':'retired','delivery_certified':False,'prior_delivery_receipt':doc.get('receipt')}
-    elif section in ('request','plan','receipt','limitations','corrections','authorizations','attachments','retirement','walkthroughs'):value=doc.get(section)
+    elif section in ('request','plan','receipt','limitations','corrections','authorizations','attachments','retirement','walkthroughs','review_findings'):value=doc.get(section)
     else:fail('DETAIL_SECTION_INVALID')
     body=canonical(value).decode() if section in ('failure-handoff','retirement-handoff') else json.dumps(value,ensure_ascii=False,sort_keys=True)
     # UTF-8 bytes are bounded even for four-byte codepoints.
@@ -1470,6 +1514,7 @@ def review_input(root,ident,criterion):
             'runtime_failures':[{'id':fid,'observed_at':f['observed_at'],'details':'detail --section facts --criterion '+criterion}
                                 for fid,f in list(task_failures.pending(doc,criterion).items())[:10]],
             'runtime_failure_count':len(task_failures.pending(doc,criterion)),
+            'review_findings':list(task_failures.review_pending(sys.modules[__name__],root,doc,criterion)),
             'review':{'independent':review_required(doc['plan'],c),'reason_preview':doc['plan']['review']['reason'][:500],'reason_complete':len(doc['plan']['review']['reason'])<=500},'details':'detail --section criterion|facts --criterion '+criterion,
             'boundary':'Review actual scoped code/claims/assertions. Host supplies genuine provenance; this is not an independent review.'}
 
@@ -1506,7 +1551,7 @@ def code_query(root,query,offset=0,limit=20):
 
 def main():
     parser=Parser(description=__doc__)
-    parser.add_argument('action',choices=['begin','plan','run','observe','assess','status','close','correct','prune','cleanup','locate','list','policy','maintain','detail','review-input','code','attach','storage','failure','defer','reopen-claim','authorize','retire','adopt','walk-start','walk-seal'])
+    parser.add_argument('action',choices=['begin','plan','run','observe','assess','status','close','correct','prune','cleanup','locate','list','policy','maintain','detail','review-input','code','attach','storage','failure','defer','reopen-claim','authorize','retire','adopt','walk-start','walk-seal','review-dispose','check-adopt'])
     parser.add_argument('root');parser.add_argument('id',nargs='?')
     parser.add_argument('--json');parser.add_argument('--request');parser.add_argument('--check');parser.add_argument('--criterion')
     parser.add_argument('--kind');parser.add_argument('--observed-at');parser.add_argument('--actual')
@@ -1519,7 +1564,7 @@ def main():
     parser.add_argument('--forget',action='store_true');parser.add_argument('--handoff')
     parser.add_argument('--fact',action='append',default=[]);parser.add_argument('--producer')
     parser.add_argument('--affected',action='append',default=[]);parser.add_argument('--authority')
-    parser.add_argument('--failure');parser.add_argument('--disposition',choices=['resolve','clarify','reopen'])
+    parser.add_argument('--finding');parser.add_argument('--failure');parser.add_argument('--disposition',choices=['resolve','clarify','reopen','addressed','judgment_error'])
     parser.add_argument('--conditions-json');parser.add_argument('--decision-at')
     parser.add_argument('--exclude-from-delivery',action='store_true')
     parser.add_argument('--mode',choices=['once','task']);parser.add_argument('--expires-at')
@@ -1546,6 +1591,8 @@ def main():
     elif a.action=='observe':out=observe(root,a.id,a.criterion,a.kind,a.observed_at,a.actual,a.evidence,a.status,a.target,a.producer,read_json(Path(a.conditions_json)) if a.conditions_json else None)
     elif a.action=='failure':out=failure_action(root,a.id,a.failure,a.disposition,a.reason,a.fact,read_json(Path(a.conditions_json)) if a.conditions_json else None)
     elif a.action in ('defer','reopen-claim'):out=defer_claim(root,a.id,a.criterion,a.reason,a.authority,a.decision_at,a.handoff,a.action=='reopen-claim',a.exclude_from_delivery)
+    elif a.action=='review-dispose':out=task_failures.review_dispose(sys.modules[__name__],root,a.id,a.finding,a.disposition,a.reason,a.fact,a.provenance)
+    elif a.action=='check-adopt':out=task_adoption.check_adopt(sys.modules[__name__],root,a.id,a.check,a.original,a.fact,a.reason)
     elif a.action=='assess':out=assess(root,a.id,a.criterion,a.verdict,a.reason,a.independent,a.provenance,a.fact)
     elif a.action=='retire':
         receipt=retire(root,a.id,a.reason,a.authority,a.decision_at,a.handoff)

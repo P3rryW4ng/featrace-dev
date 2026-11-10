@@ -1,0 +1,85 @@
+{
+  "synthetic": true,
+  "physical_checks": 1,
+  "events": [
+    {
+      "action": "assess",
+      "exit_code": 0,
+      "output": {
+        "criterion": "C1",
+        "verdict": "partial",
+        "finding": "bbb698f415ef4cf29226cf977461279b"
+      }
+    },
+    {
+      "action": "review-dispose",
+      "exit_code": 0,
+      "output": {
+        "finding": "bbb698f415ef4cf29226cf977461279b",
+        "criterion": "C1",
+        "disposition": "addressed",
+        "action_id": "daf62b48b82a4c0790d8bbcd14cad788"
+      }
+    },
+    {
+      "action": "assess",
+      "exit_code": 0,
+      "output": {
+        "criterion": "C1",
+        "verdict": "supported"
+      }
+    },
+    {
+      "action": "assess",
+      "exit_code": 0,
+      "output": {
+        "criterion": "C1",
+        "verdict": "partial",
+        "finding": "a2eb9a14976944268ea6d90709bcf12c"
+      }
+    },
+    {
+      "action": "assess",
+      "exit_code": 2,
+      "output": {
+        "state": "unavailable",
+        "reason": "REVIEW_FINDING_UNRESOLVED"
+      }
+    },
+    {
+      "action": "status",
+      "exit_code": 2,
+      "output": {
+        "outside_scope_change_count": 1,
+        "id": "UI-1",
+        "state": "blocked",
+        "scope_readiness": {
+          "ready": true
+        },
+        "check_details": "detail --section check --check CHECK_ID",
+        "total": 1,
+        "items": [
+          {
+            "id": "C1",
+            "status": "needs_review",
+            "observation_applicability": "UNDECLARED"
+          }
+        ],
+        "next_offset": null,
+        "blocker_count": 2,
+        "blockers": [
+          "REVIEW_FINDING:a2eb9a14976944268ea6d90709bcf12c",
+          "CLAIM:C1"
+        ],
+        "next_blocker_offset": null,
+        "request_preview": "Change one local label; no business behavior changes.",
+        "request_complete": true,
+        "limitation_count": 0,
+        "eligible": false,
+        "deferred_count": 0,
+        "correction": null,
+        "boundary": "Local structure/identity checked; semantic coverage and host independence require real review."
+      }
+    }
+  ]
+}

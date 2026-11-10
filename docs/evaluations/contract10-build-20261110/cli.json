@@ -1,0 +1,131 @@
+{
+  "synthetic": true,
+  "independent_review": false,
+  "physical_checks": 2,
+  "tasks_closed": 2,
+  "events": [
+    {
+      "action": "assess",
+      "exit_code": 0,
+      "output": {
+        "criterion": "C1",
+        "verdict": "partial",
+        "finding": "0f20545a8fba43c4b109c2d15cce875c"
+      }
+    },
+    {
+      "action": "status",
+      "exit_code": 2,
+      "output": {
+        "outside_scope_change_count": 0,
+        "id": "UI-1",
+        "state": "blocked",
+        "scope_readiness": {
+          "ready": true
+        },
+        "check_details": "detail --section check --check CHECK_ID",
+        "total": 1,
+        "items": [
+          {
+            "id": "C1",
+            "status": "needs_review",
+            "observation_applicability": null
+          }
+        ],
+        "next_offset": null,
+        "blocker_count": 2,
+        "blockers": [
+          "REVIEW_FINDING:0f20545a8fba43c4b109c2d15cce875c",
+          "CLAIM:C1"
+        ],
+        "next_blocker_offset": null,
+        "request_preview": "Change one local label; no business behavior changes.",
+        "request_complete": true,
+        "limitation_count": 0,
+        "eligible": false,
+        "deferred_count": 0,
+        "correction": null,
+        "boundary": "Local structure/identity checked; semantic coverage and host independence require real review."
+      }
+    },
+    {
+      "action": "observe",
+      "exit_code": 0,
+      "output": {
+        "criterion": "C1",
+        "fact": "e159cd12ea584d21ad95c620bcefd158",
+        "kind": "static_analysis"
+      }
+    },
+    {
+      "action": "review-dispose",
+      "exit_code": 0,
+      "output": {
+        "finding": "0f20545a8fba43c4b109c2d15cce875c",
+        "criterion": "C1",
+        "disposition": "addressed",
+        "action_id": "d76af39a0d284a58a2117780eeb450f8"
+      }
+    },
+    {
+      "action": "assess",
+      "exit_code": 0,
+      "output": {
+        "criterion": "C1",
+        "verdict": "supported"
+      }
+    },
+    {
+      "action": "close",
+      "exit_code": 0,
+      "output": {
+        "id": "UI-1",
+        "state": "complete",
+        "completed_at": "2026-11-10T02:05:30.523861+00:00",
+        "limitation_count": 0,
+        "outcome": "fully_supported",
+        "deferred_count": 0,
+        "details": "detail --section receipt"
+      }
+    },
+    {
+      "action": "observe",
+      "exit_code": 0,
+      "output": {
+        "criterion": "C1",
+        "fact": "b4ba9b6a00c146a9b8795d11323fe20a",
+        "kind": "static_analysis"
+      }
+    },
+    {
+      "action": "check-adopt",
+      "exit_code": 0,
+      "output": {
+        "fact": "c2c1e39bbe3c4d8bb14d98e3b6489efb",
+        "original": "69a8f4854ce54f71809f4b4746c07280",
+        "execution": "adopted"
+      }
+    },
+    {
+      "action": "assess",
+      "exit_code": 0,
+      "output": {
+        "criterion": "C1",
+        "verdict": "supported"
+      }
+    },
+    {
+      "action": "close",
+      "exit_code": 0,
+      "output": {
+        "id": "UI-1",
+        "state": "complete",
+        "completed_at": "2026-11-10T02:05:31.487793+00:00",
+        "limitation_count": 0,
+        "outcome": "fully_supported",
+        "deferred_count": 0,
+        "details": "detail --section receipt"
+      }
+    }
+  ]
+}

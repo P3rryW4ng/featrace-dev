@@ -19,7 +19,7 @@ class ExecutionDiagnosticTests(unittest.TestCase):
         with patch.dict(os.environ,{'CI':'Synthetic-private-environment-value'}):
             plain=w.task_inputs.signature(f.root,['app.py'],[],[],[]);parts={};observed=w.task_inputs.signature(f.root,['app.py'],[],[],[],parts)
             self.assertEqual(plain,observed);f.execute();fact=f.execution()
-        self.assertEqual(set(parts),{'environment','selected_inputs'});self.assertEqual(set(fact['identity_components']),set(w.IDENTITY_COMPONENTS));self.assertNotIn('Synthetic-private-environment-value',json.dumps(fact))
+        self.assertEqual(set(parts),{'environment','selected_inputs','input_structure','external_content'});self.assertEqual(set(fact['identity_components']),set(w.IDENTITY_COMPONENTS));self.assertNotIn('Synthetic-private-environment-value',json.dumps(fact))
     def test_environment_change_is_explained_without_rerunning_or_writing(self):
         f=self.f;f.execute();before=w.task_path(f.root,f.ident).read_bytes()
         with patch.dict(os.environ,{'CI':'Synthetic-changed'}):out=self.diagnostic()

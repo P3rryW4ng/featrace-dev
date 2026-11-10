@@ -14,6 +14,8 @@ Run through `task_workflow.py run`, once, so actual start HEAD, content input di
 
 Group Gradle checks by actual dependency and rerun needs. API checks, tests, packaging and lint may warrant separate checks when their triggers differ; batching remains appropriate when they share inputs and execution needs. Preserve required project gates and the complete actual execution inputs. A missing direct business call does not remove a compiled module dependency. cache.mode=never means another run invokes the command even with identical inputs; narrowing inputs alone does not enable runner reuse. Choose reuse only when its toolchain/input/freshness requirements are established, and investigate before treating a whole bundled check as unnecessary.
 
+For contract10 checks explicitly planned as applicable_result, use the workflow check-adopt route only after inspecting all changed local inputs, generated/text-sensitive uses and covered assertions. Keep actual Gradle dependencies broad enough. A comment-only label is not automatic permission to reuse. Retain original JUnit producer/output; use observation adoption separately where required. Mandatory current builds/tests still run.
+
 ## Distinguish command execution from test execution
 
 The task runner records its command and output; cache.mode=never forces another process invocation, not re-execution of every Gradle task. Inspect the selected test task outcome and relevant JUnit/result artifacts. UP-TO-DATE, FROM-CACHE or NO-SOURCE does not establish a newly executed test, and an old XML file is not made new by a recent command timestamp. Conversely a task that reuses a still-applicable deterministic result is not automatically a failure.

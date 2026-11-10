@@ -1,0 +1,14 @@
+test_repeated_partial_after_disposition_is_a_new_blocker (test_contract10.Contract10Tests) ... FAIL
+
+======================================================================
+FAIL: test_repeated_partial_after_disposition_is_a_new_blocker (test_contract10.Contract10Tests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/mac/Entrepôt/featrace-dev/tests/test_contract10.py", line 282, in test_repeated_partial_after_disposition_is_a_new_blocker
+    self.assertNotEqual(first,second)
+AssertionError: 'fbb7ec426966422ab090af78a0dca15d' == 'fbb7ec426966422ab090af78a0dca15d'
+
+----------------------------------------------------------------------
+Ran 1 test in 0.388s
+
+FAILED (failures=1)

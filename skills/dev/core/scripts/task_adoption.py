@@ -71,3 +71,70 @@ def adopt(w,root,ident,criterion,original,revision,analyses,reason):
         if not available(w,root,doc,c,f):w.fail('ADOPTION_ANALYSIS_UNAVAILABLE')
         doc['facts'][f['id']]=f;w.save(root,doc)
         return {'fact':f['id'],'original':original,'changed_path_count':len(changed)}
+
+
+def check_basis(w,root,doc,check):
+    return w.digest({'check':check,'criteria':{c['id']:basis(w,root,doc,c)
+                    for c in doc['plan']['criteria'] if c['id'] in check['covers']}})
+
+
+def check_available(w,root,doc,check,f):
+    if (f.get('kind')!='applicable_command' or f.get('check')!=check['id'] or f.get('status')!='passed'
+            or check.get('acceptance',{}).get('mode')!='applicable_result'
+            or check['environment']['kind'] not in ('local','test') or check.get('operation')=='device'):return False
+    w.ready(root,doc,check=check)
+    old=doc['facts'].get(f.get('original'))
+    if (not old or old['kind']!='command' or old['status']!='passed'
+            or doc['executions'].get(check['id'])!=old['id']
+            or not w.timely(check,old) or not w.artifact_ok(root,old['artifact'])):return False
+    stamp=check_basis(w,root,doc,check)
+    if old.get('adoption_basis')!=stamp or f.get('basis')!=stamp:return False
+    components={};current=w.check_stamp(root,doc,check,components)
+    prior=old.get('identity_components',{})
+    if (set(prior)!=set(components) or any(prior[k]!=components[k] for k in components if k!='selected_inputs')
+            or current!=f.get('input_digest') or current==old['input_digest']):return False
+    criteria=[c for c in doc['plan']['criteria'] if c['id'] in check['covers']]
+    analyses=f.get('analyses',[])
+    if not analyses or len(analyses)>64 or len(set(analyses))!=len(analyses):return False
+    covered=set()
+    for c in criteria:
+        if (c.get('validity',{}).get('mode')=='current' or w.task_failures.pending(doc,c['id'])
+                or w.task_failures.review_pending(w,root,doc,c['id']) or c['id'] in w.active_deferrals(root,doc)):return False
+        if f.get('criterion_digests',{}).get(c['id'])!=w.criterion_stamp(root,doc,c):return False
+        for fid in analyses:
+            analysis=doc['facts'].get(fid,{})
+            if analysis.get('criterion')==c['id']:
+                if analysis.get('kind')!='static_analysis' or not w.fact_available(root,doc,c,analysis):return False
+                covered.add(c['id'])
+    return covered==set(check['covers']) and all(doc['facts'].get(fid,{}).get('criterion') in covered for fid in analyses)
+
+
+def check_adopt(w,root,ident,check_id,original,analyses,reason):
+    if not w.text(reason):w.fail('ADOPTION_ANALYSIS_REQUIRED')
+    with w.locked(root,ident):
+        doc=w.load(root,ident);w.mutable(doc)
+        check=next((x for x in (doc.get('plan') or {}).get('checks',[]) if x['id']==check_id),None)
+        if check is None:w.fail('CHECK_NOT_SELECTED')
+        w.ready(root,doc,check=check)
+        f={'id':uuid.uuid4().hex,'kind':'applicable_command','status':'passed','check':check_id,
+           'original':original,'analyses':analyses,'at':w.now(),'reason':reason,
+           'input_digest':w.check_stamp(root,doc,check),'basis':check_basis(w,root,doc,check),
+           'criterion_digests':{c['id']:w.criterion_stamp(root,doc,c) for c in doc['plan']['criteria'] if c['id'] in check['covers']},
+           'boundary':'Historical command applicability, not a current execution or new test result.'}
+        if not check_available(w,root,doc,check,f):w.fail('CHECK_ADOPTION_UNAVAILABLE')
+        comparable=lambda x:{k:v for k,v in x.items() if k not in ('id','at')}
+        prior=next((x for x in doc['facts'].values() if comparable(x)==comparable(f)),None)
+        if prior:return {'fact':prior['id'],'original':original,'execution':'adopted'}
+        doc['facts'][f['id']]=f;w.save(root,doc)
+        return {'fact':f['id'],'original':original,'execution':'adopted'}
+
+
+def selected_check_application(w,root,doc,check):
+    # Closure is based on each covered claim's explicit selection, never mere existence.
+    common=None
+    for cid in check['covers']:
+        ids=set(doc['assessments'].get(cid,{}).get('facts',[]))
+        valid={fid for fid in ids if doc['facts'].get(fid,{}).get('kind')=='applicable_command'
+               and check_available(w,root,doc,check,doc['facts'][fid])}
+        common=valid if common is None else common&valid
+    return sorted(common or [])

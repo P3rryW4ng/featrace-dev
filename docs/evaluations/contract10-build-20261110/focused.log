@@ -1,0 +1,39 @@
+test_adoption_analysis_must_cover_entire_check (test_contract10.Contract10Tests) ... ok
+test_adoption_does_not_grant_run_permission_or_fake_reuse (test_contract10.Contract10Tests) ... ok
+test_adoption_does_not_satisfy_current_command_proof (test_contract10.Contract10Tests) ... ok
+test_application_does_not_satisfy_command_only_proof_even_with_optin (test_contract10.Contract10Tests) ... ok
+test_cannot_remove_finding_claim (test_contract10.Contract10Tests) ... ok
+test_changed_again_stales_application (test_contract10.Contract10Tests) ... ok
+test_changed_command_refuses (test_contract10.Contract10Tests) ... ok
+test_check_adoption_closes_without_new_execution (test_contract10.Contract10Tests) ... ok
+test_correct_preserves_finding_and_cleanup_respects_handoff (test_contract10.Contract10Tests) ... ok
+test_corrupted_original_artifact_refuses (test_contract10.Contract10Tests) ... ok
+test_current_live_requirement_cannot_opt_in (test_contract10.Contract10Tests) ... ok
+test_current_mode_cannot_be_retroactively_weakened (test_contract10.Contract10Tests) ... ok
+test_defer_preserves_finding_handoff_and_reopen_blocks (test_contract10.Contract10Tests) ... ok
+test_dependency_membership_change_refuses (test_contract10.Contract10Tests) ... ok
+test_disposition_drift_reopens_and_prune_retains_basis (test_contract10.Contract10Tests) ... ok
+test_duplicate_independent_partial_reuses_managed_original (test_contract10.Contract10Tests) ... ok
+test_duplicate_partial_and_disposition_are_idempotent (test_contract10.Contract10Tests) ... ok
+test_environment_change_refuses (test_contract10.Contract10Tests) ... ok
+test_external_bytes_are_not_adoptable (test_contract10.Contract10Tests) ... ok
+test_failed_disposition_save_does_not_publish_resolution (test_contract10.Contract10Tests) ... ok
+test_failed_new_attempt_blocks_old_result (test_contract10.Contract10Tests) ... ok
+test_finding_capacity_refuses_without_overwrite (test_contract10.Contract10Tests) ... ok
+test_independent_disposition_requires_matching_real_shape (test_contract10.Contract10Tests) ... ok
+test_input_membership_or_executable_bit_change_refuses (test_contract10.Contract10Tests) ... ok
+test_judgment_error_keeps_facts_and_context (test_contract10.Contract10Tests) ... ok
+test_new_finding_is_not_removed_by_old_disposition (test_contract10.Contract10Tests) ... ok
+test_old_contract9_refuses_without_mutation (test_contract10.Contract10Tests) ... ok
+test_partial_blocks_then_addressed_retains_original (test_contract10.Contract10Tests) ... ok
+test_pending_review_or_runtime_failure_blocks_adoption (test_contract10.Contract10Tests) ... ok
+test_repeated_partial_after_disposition_is_a_new_blocker (test_contract10.Contract10Tests) ... ok
+test_retirement_counts_unresolved_findings (test_contract10.Contract10Tests) ... ok
+test_review_correction_does_not_hide_runtime_failure (test_contract10.Contract10Tests) ... ok
+test_runtime_failure_and_unknown_refuse_check_adoption (test_contract10.Contract10Tests) ... ok
+test_test_result_retains_original_producer_when_command_adopted (test_contract10.Contract10Tests) ... ok
+
+----------------------------------------------------------------------
+Ran 34 tests in 15.369s
+
+OK
