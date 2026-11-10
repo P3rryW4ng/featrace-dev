@@ -1,6 +1,6 @@
 # FeatraceDev 模块与运行原理
 
-核对日期：2026-11-10。当前源码为合同10候选；正式版及日常CC仍为0.33.3／合同9，包含18个运行文件。合同8使用固定0.32.0。发布和安装实况见[维护核验](../MAINTAINER.md)。
+核对日期：2026-11-10。0.34.0 使用合同10，包含18个运行文件。合同9使用固定0.33.3，合同8使用固定0.32.0。发布与安装记录见[维护核验](../MAINTAINER.md)。
 
 可以把它理解成：**Agent负责理解、开发和判断；当前任务内核负责约束执行、保存实际事实、检查证据关系。** 它不是九个Agent，也不是自动理解代码含义的测试平台。
 
@@ -14,8 +14,8 @@
 | ② 项目规则与执行批准 | 遵守真实项目约束，复用已有授权 | [task_policy](../skills/dev/core/scripts/task_policy.py)保存适用规则、来源/范围和保留策略；[task_authorization](../skills/dev/core/scripts/task_authorization.py)保存有限once/task批准，启动前占用，保留原事实中的批准出处 | 项目策略不能覆盖宿主限制、hooks或CI；“用了Skill”不代表任意操作都已授权 |
 | ③ 输入、环境与工具身份 | 判断旧检查还能否使用 | [task_inputs](../skills/dev/core/scripts/task_inputs.py)计算声明文件/目录/外部输入的字节和成员身份；内核绑定命令、目标、实际执行器、相关约束与执行协议。inherit为缺省，controlled仅传选定存在的键和固定PATH | PATH不等于整条工具链身份；SDK和子工具仍需声明，不是自动依赖图或操作系统沙箱 |
 | ④ 检查执行 | 真正运行缺失/变化的定向检查 | [task_execution](../skills/dev/core/scripts/task_execution.py)启动子进程、控制时间/输出、保留日志；内核先保存“结果未知”的尝试和批准占用，再启动，执行后核对输入漂移 | 命令成功不证明Gradle内部测试本次实际执行，也不等于业务验收通过 |
-| ⑤ 事实、资料与验收判断 | 让结论引用真正支持它的证据 | [task_assets](../skills/dev/core/scripts/task_assets.py)保存选定输入/证据副本与出处、字节、归属；[task_workflow](../skills/dev/core/scripts/task_workflow.py)保存命令、静态分析、运行观察，按标准显式选取事实并assess。合同10候选增加check-adopt，只有原计划允许且当前完整分析支持时显式采用历史命令；必要独审由真实新上下文提供结果 | 哈希不能证明语义正确；静态无影响证据不能冒充新UI实测，审查者也不能代替缺失的产品决定 |
-| ⑥ 失败处置与任务生命周期 | 防止失败被后来的通过或措辞洗掉 | [task_failures](../skills/dev/core/scripts/task_failures.py)关联原失败及显式resolve/clarify/reopen；内核另管整条承诺延期、complete、correct和retire。合同10候选同时保留partial/unknown发现，以review-dispose明确处置；旧运行失败仍需针对性事实解除 | 对照组通过不自动修复首轮失败；延期不是支持；retired不是交付成功，也不回滚代码 |
+| ⑤ 事实、资料与验收判断 | 让结论引用真正支持它的证据 | [task_assets](../skills/dev/core/scripts/task_assets.py)保存选定输入/证据副本与出处、字节、归属；[task_workflow](../skills/dev/core/scripts/task_workflow.py)保存命令、静态分析、运行观察，按标准显式选取事实并assess。合同10增加check-adopt，只有原计划允许且当前完整分析支持时显式采用历史命令；必要独审由真实新上下文提供结果 | 哈希不能证明语义正确；静态无影响证据不能冒充新UI实测，审查者也不能代替缺失的产品决定 |
+| ⑥ 失败处置与任务生命周期 | 防止失败被后来的通过或措辞洗掉 | [task_failures](../skills/dev/core/scripts/task_failures.py)关联原失败及显式resolve/clarify/reopen；内核另管整条承诺延期、complete、correct和retire。合同10同时保留partial/unknown发现，以review-dispose明确处置；旧运行失败仍需针对性事实解除 | 对照组通过不自动修复首轮失败；延期不是支持；retired不是交付成功，也不回滚代码 |
 | ⑦ 查询、接续与到期清理 | 控制读取量、恢复必要决策、清理临时数据 | 同一内核提供status/detail/review-input/list/code/storage和prune/cleanup/maintain。按需分页，有限差异诊断；记录校验、锁、预算、归属与交接保护；重复压缩不重复写任务 | 没有自动上下文压缩器、长期全局历史库、无限累计容量保证或个人定时守护进程 |
 | ⑧ Figma与Android适配 | 用项目真实设计/平台选检查 | [Figma指引](../skills/dev/core/references/figma-design.md)限定节点/状态与视觉比较；[Android profile](../skills/dev/profiles/android/PROFILE.md)限定真实变体、工具链、实际测试执行与包/设备身份；按当前任务需要读取 | 它们是指引，不是内置Figma连接器、自动视觉裁判或全机型测试引擎 |
 | ⑨ 隐私与发布安装 | 检查将要输出的内容，确保安装对应发布字节 | [output_privacy](../skills/dev/core/scripts/output_privacy.py)扫描明确文件或暂存新增行，候选须核实；维护仓库的[安装器](../scripts/install.py)核对固定引用/发布描述/字节，验证旧副本归属并备份更新 | no_matches不是全面隐私保证，截图仍需另外检查；固定本地引用不是远端签名认证 |
@@ -95,7 +95,7 @@ flowchart LR
 
 合同9把单文件大记录替换为有界活动索引和任务内不可变元数据对象，观察笔记与复核原件使用受管证据。0.33.1–0.33.3修正授权等待、走查说明和压缩恢复指引，没有改变合同9程序。程序完整回归404项是合同9开发时的结果，不是每次文档更新重新执行。
 
-F12提供合同9自然存储与更正反馈；F14报告自然压缩后恢复，同时存在先改代码后读状态/规则的偏差。合同10候选实现历史检查采用与未决评审发现，验证见维护索引；0.33.3真实遵从、长期可靠性及等质量净收益仍待证据。第二阶段已通过，第三阶段未通过。当前阶段结论统一见ROADMAP，历史合同6的343项验证不作为当前完整套件数量。
+F12提供合同9自然存储与更正反馈；F14报告自然压缩后恢复，同时存在先改代码后读状态/规则的偏差。合同10实现历史检查采用与未决评审发现，验证见维护索引；新版真实遵从、长期可靠性及等质量净收益仍待证据。第二阶段已通过，第三阶段未通过。当前阶段结论统一见ROADMAP，历史合同6的343项验证不作为当前完整套件数量。
 
 ## 7. 运行甘特图
 
@@ -107,6 +107,6 @@ F12提供合同9自然存储与更正反馈；F14报告自然压缩后恢复，�
 
 ## 采用、走查和存储内部职责
 
-[task_adoption](../skills/dev/core/scripts/task_adoption.py)管理显式当前采用，仍属⑤事实/验收分组；[task_walkthrough](../skills/dev/core/scripts/task_walkthrough.py)管理独立输出轮次、封存和清理，参与⑤⑥⑦。九个功能分组不变，不增加常驻Agent。原观察与当前application分开，运行身份仍独立；原件/失败/未知保护保留。当前源码新任务使用合同10；正式0.33.3仍使用合同9，旧1–9固定原工具无迁移。本机接入用Git本地排除，不改变共享规则；此排除可能跨同克隆worktree共享，不是访问控制。
+[task_adoption](../skills/dev/core/scripts/task_adoption.py)管理显式当前采用，仍属⑤事实/验收分组；[task_walkthrough](../skills/dev/core/scripts/task_walkthrough.py)管理独立输出轮次、封存和清理，参与⑤⑥⑦。九个功能分组不变，不增加常驻Agent。原观察与当前application分开，运行身份仍独立；原件/失败/未知保护保留。当前源码新任务使用合同10；固定0.33.3使用合同9，旧1–9固定原工具无迁移。本机接入用Git本地排除，不改变共享规则；此排除可能跨同克隆worktree共享，不是访问控制。
 
 [task_storage](../skills/dev/core/scripts/task_storage.py)仅负责有界编码、解码和原子写入。运行预算和证据判断仍由内核负责；独立评审凭据受管保存，清理复用事实与资产引用闭包。走查可用原轮次身份封存历史负面，正常通过仍匹配当前输入。

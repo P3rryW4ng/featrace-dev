@@ -1,25 +1,25 @@
 {
   "channel": "release",
-  "version": "0.33.3",
+  "version": "0.34.0",
   "files": {
-    "SKILL.md": "45b7a90dab74e1369e52107332a8f7ae4af0866aa2a9117a07f70221171de708",
+    "SKILL.md": "5ce41bcd27868b8add5f5c0e4c31dbdcae99fef9c92b4a7bb37b47db9b4bf1ab",
     "agents/openai.yaml": "237666967ab617f4452194694fc91dc1fcbb3b3beda59172c74572525117a009",
     "core/references/figma-design.md": "8828473c28557e33fbb07ab5416be34e3c13c5b6f35a9eff94f14f1f6e8e12ff",
     "core/references/output-privacy.md": "8c1d43834acfb41ee1d125bdc1ec37eb97cedca3d9afbff3b408658f81c8fab3",
     "core/references/project-compatibility.md": "3f77052683d008213b244572a24717fe57be4bb57da1c194bc60db70561bdd64",
-    "core/references/task-workflow.md": "7dea94029a01b4b7c5970f72b7aa889137c579646abc1ed8154bda99a2492e36",
+    "core/references/task-workflow.md": "6894c0c40fc07ccd439d174f16bcba15a282897d9c2e1c556e841e67ced1cc27",
     "core/scripts/output_privacy.py": "54be161d474b4bc55ae1a28207de80f4077f0093172114b7079a12ce672fee6e",
-    "core/scripts/task_adoption.py": "9a328811f09709540f7946ec5edd92f55ee1f77da14e2e34a5af2b69f0e39d23",
+    "core/scripts/task_adoption.py": "9f5cbb308013bca5e5a02e5389bbb4c7a6c541a364ee9efd6b19e935d479f750",
     "core/scripts/task_assets.py": "ed67314ae55fcd3ed1ad82916e0f7dc8a641928b3c52f84b2b6984c4195aed97",
     "core/scripts/task_authorization.py": "98ad364d9a24db6569d1a4a9e816646e5c2f72014713db0fe7c6534b7e0ae920",
     "core/scripts/task_execution.py": "e3138152c703a84e9303fe84543c3833b9134448b234ff913a06e3810b73f3a8",
-    "core/scripts/task_failures.py": "3f948382ce6453878f219346689f06f1617a32f908f7459a8f739dc3c04bef09",
-    "core/scripts/task_inputs.py": "39f997cfdb8e1a6ed59ec94a1e3befe715f8f7944c16aa3a623bb3419cd2453e",
+    "core/scripts/task_failures.py": "cddea7aaf7f15ff7eb4a9f18c3ebf62d4c19a2b10d38dfbd30d6137772cd7d64",
+    "core/scripts/task_inputs.py": "acf47fb1b67160764084ee2878ab6fe0294885d52dad8ea4573d503c90eaae8c",
     "core/scripts/task_policy.py": "1b6417c74d96dac96f6df2175f8104c07a3b0c7b10c12bfb0d55967f3a5fd9e8",
     "core/scripts/task_storage.py": "19dfceecba6fb534bb708639aba7e1924b6343e11767b361d4bfe9bed60c7cd7",
     "core/scripts/task_walkthrough.py": "8884f5a4af281696398d025c02b81bce3a018b80f2cd1ce0463f727aff7bc304",
-    "core/scripts/task_workflow.py": "a723ce65ce53a05982b8b1c47641b8b454c0cb51f8962be3056fab7351525190",
-    "profiles/android/PROFILE.md": "635814e05c9ed3b2ef594a29cf0d76c76b6fd8d0966ccc7abb9940d45893c984"
+    "core/scripts/task_workflow.py": "a2da091add9de6e5b774c76745e3b0fd6891946a0531f2e8f295ad3c7040bba0",
+    "profiles/android/PROFILE.md": "382daa42b22a1a92a29c2de77a0f6ca518d657f26e7c0538e2ae92ff9b6dc8ed"
   },
   "installer_sha256": "647869484aae3a2fa8963d4ac10831baf124dce2a75aeb1f7f4a02b1697b4cca"
 }

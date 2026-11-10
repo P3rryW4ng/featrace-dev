@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.34.0 — 2026-11-10
+
+- New tasks use contract 10. Explicitly adopt eligible prior check results after current applicability analysis.
+- Retain partial and unknown review findings until explicitly resolved.
+- Existing contract 9 tasks stay on pinned 0.33.3 without migration.
+
 ## 0.33.3 — 2026-11-09
 
 - Verify task state, rules and authorization before resuming after context compaction.
