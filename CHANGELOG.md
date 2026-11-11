@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Consolidate entry-point guidance and surface existing read-only check diagnostics before reruns. Contract 10 and runtime scripts are unchanged.
+
 ## 0.34.2 — 2026-11-10
 
 - Include necessary handoff changes in scope before collecting final evidence. Reconcile only affected inputs and judgments when discovered later.

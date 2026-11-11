@@ -1,6 +1,6 @@
 # 当前队列与问题追踪
 
-更新：2026-11-10。身份见[MAINTAINER](MAINTAINER.md)，方向见[PRODUCT](PRODUCT.md)。本页不保留历次已完成工作的接续指令；[清理前固定队列](https://github.com/P3rryW4ng/featrace-dev/blob/0fcf9a4a47268f2ded65a48e80dd5f15fcd5a3f0/ROADMAP.md)供历史查证。
+更新：2026-11-11。身份见[MAINTAINER](MAINTAINER.md)，方向见[PRODUCT](PRODUCT.md)。本页不保留历次已完成工作的接续指令；[清理前固定队列](https://github.com/P3rryW4ng/featrace-dev/blob/0fcf9a4a47268f2ded65a48e80dd5f15fcd5a3f0/ROADMAP.md)供历史查证。
 
 <a id="delivery-mainline"></a>
 
@@ -27,6 +27,7 @@
 | 1 | 核对最新源码、维护队列与已发布安装身份 | 不从历史候选段恢复过时任务；不迁移旧业务 |
 | 2 | 定向机制评审已完成；[最小合同10方案](docs/designs/scoped-check-applicability-review-findings.md)已批准并实施，已完成发布验证 | [验证结果](docs/evaluations/contract10-build-20261110/result.json)区分程序与合成CLI；不迁移旧任务，不宣称自然提效 |
 | 2a | 按[文档调整方案](MAINTAINER.md#文档调整方案2026-11-10确认)当前入口与运行指引已整理，遗留资料已复核引用及相同内容，0.34.2已发布安装 | 当前状态无冲突、导航可定位、未决事项有承接；清理前继续核对唯一依据和外部引用。按新版自然任务观察 |
+| 2b | 入口去重与现有诊断导航收敛已完成，未发布；内核及合同不变 | 修正架构入口状态漂移；验证见[收敛记录](docs/validation.md#guidance-consolidation-20261111)，不宣称自然效率收益 |
 | 3 | 自然任务实际加载0.34.2后观察连续推进及恢复顺序 | 只读采集已有执行；不为验证制造新需求、失败、压缩或整项复验 |
 | 4 | 产品答复F14标题口径后处理对应业务 | 当前没有答复，不把隐藏标题视为已批准；维护发布不能替代产品决定 |
 | 5 | 三项出口均有证据且无未解决阻塞后集中判定 | 维护侧只读评审，产品所有者确认；不因发布或测试数量宣布通过 |

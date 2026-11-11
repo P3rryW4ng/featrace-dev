@@ -4,7 +4,7 @@ Read this for authorized development. One bounded current task; no feature ledge
 
 ## Find the relevant operation
 
-Read Project and intent / Plan causal scope and proof for initial work; Checks and execution identity before execution; Preserve facts before outputs change before another run can overwrite evidence; Assess selected facts for judgment. Query, correct and retain covers recovery, correction and closure. Scoped execution authorization applies when a real ask rule needs a grant; Selected input snapshots and external sources applies when importing an input. Failure/defer and retire instructions apply only when those conditions occur. These are reference routes, not additional mandatory phases, records or permission requests.
+Read Project and intent / Plan causal scope and proof for initial work; Checks and execution identity before execution; Diagnose before rerunning when a check becomes unavailable; Preserve facts before outputs change before another run can overwrite evidence; Assess selected facts for judgment. Query, correct and retain covers recovery, correction and closure. Scoped execution authorization applies when a real ask rule needs a grant; Selected input snapshots and external sources applies when importing an input. Failure/defer and retire instructions apply only when those conditions occur. These are reference routes, not additional mandatory phases, records or permission requests.
 
 ## Project and intent
 
@@ -56,6 +56,17 @@ Environment needs `{kind:local|test|remote|device|production,target:"actual iden
 `run ROOT ID --check NAME` performs only necessary execution or returns the same applicable original attempt. Actual argv, input members/bytes, executable/toolchain/environment, selected constraints/policy and execution protocol determine identity. Execution implementation/collector/policy plus reachable workflow execution helpers bind the protocol. Query/presentation-only workflow changes do not invalidate executions; real relevant code/constant changes do. The producer's full workflow hash remains provenance. There is no per-release predecessor allowlist or caller-provided protocol label; unknown/changed implementation affects the computed protocol. This is local identity checking, not signed remote-origin attestation or proof a dynamic dependency set is complete.
 
 The log has bounded start/result metadata with original attempt/input/protocol/producer/time and command status. It excludes raw environment values/argv from the header; actual command output still needs privacy handling. Caught interruptions, identity drift, timeouts, output limits or unavailable results do not leave the earlier success as the latest result. A capacity reservation occurs before execution. Disk failures/SIGKILL are not guaranteed recoverable transactions.
+
+### Diagnose before rerunning
+
+When an old check cannot be reused, inspect `detail ROOT ID --section check --check K` as needed. It separates reuse reasons (identity/artifact/age/cache/scope) from current permission for a new execution. New facts retain only finite component hashes, never raw environment values; old facts without them say not_collected, not a reconstructed cause. Queries do not execute or consume grants. The explanation does not relax actual inputs, PATH, deny, freshness, failure or host controls.
+
+Read `reuse.reasons` and `changed_components` alongside `new_execution_permission`; when present, `delivery_result` distinguishes exact, adopted or unavailable support. An unavailable identity may stop diagnosis early; missing fields are not proof of applicability. Component hashes identify a category of change, not its causal effect on behavior.
+
+- If scope or an input is unresolved, inspect the relevant plan and actual diff first. Reconcile affected inputs without removing real dependencies or moving required handoff material merely to make an old digest match.
+- If original evidence is intact and only eligible local content changed, inspect “Optional historical check applicability”; adoption must already be allowed by the original plan. A comment-only edit is not automatically exempt from generators or text checks.
+- If a fresh check is required, run only the necessary affected check under actual permission. Missing evidence, expired live validity or a mandatory fresh gate cannot be repaired by a static applicability claim.
+- An approval problem governs new execution; it does not by itself negate an original lawful result. Reuse a real applicable decision before asking again. These queries neither execute checks nor grant permission.
 
 ## Optional historical check applicability
 
@@ -170,7 +181,7 @@ Readers validate ownership, role, bytes and budget. Missing/tampered snapshots r
 
 At most32 copies share16MiB/file and64MiB/task budgets. Explicit prune reclaims unused owned copies while retaining selected, negative, pending-walk, provenance and correction references. Detail attachments pages recover role/origin/time and IDs without loading all source content. Missing/changed sources affect only relevant claims/checks, not the parent requirement.
 
-When an old check cannot be reused, inspect `detail ROOT ID --section check --check K` as needed. It separates reuse reasons (identity/artifact/age/cache/scope) from current permission for a new execution. New facts retain only finite component hashes, never raw environment values; old facts without them say not_collected, not a reconstructed cause. Queries do not execute or consume grants. The explanation does not relax actual inputs, PATH, deny, freshness, failure or host controls.
+
 
 
 ### Controlled execution environment

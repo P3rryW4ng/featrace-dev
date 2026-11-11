@@ -1,6 +1,6 @@
 # 当前架构与必要设计理由
 
-状态同步：2026-11-10。正式采用A109任务架构及合同9（0.33.3），当前源码为获批合同10候选；下文合同8/9开发段保留当时状态，合同9已随0.33.0发布。以下日期条目保留当时取舍和保护目标，不是当前执行指令或队列；旧版本状态不能覆盖MAINTAINER。A1–A106的原记录在[固定旧版](https://github.com/P3rryW4ng/featrace-dev/blob/54c5260fd6688a0bca9c83f29bad240321a67b52/docs/decisions/architecture.md)，它们不是重建旧功能的指令。实现事实查当前代码，实际证据见[验证索引](../validation.md)。
+当前架构采用A109当前任务模型；正式版本及安装身份统一见[MAINTAINER](../../MAINTAINER.md)。下文合同开发段保留决策当时的背景，不表示当前候选或待发布状态。以下日期条目保留当时取舍和保护目标，不是当前执行指令或队列；旧版本状态不能覆盖MAINTAINER。A1–A106的原记录在[固定旧版](https://github.com/P3rryW4ng/featrace-dev/blob/54c5260fd6688a0bca9c83f29bad240321a67b52/docs/decisions/architecture.md)，它们不是重建旧功能的指令。实现事实查当前代码，实际证据见[验证索引](../validation.md)。
 
 ## A107：代码为主体，不永久保存每个需求的全部过程
 
