@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.34.3 — 2026-11-11
 
 - Consolidate entry-point guidance and surface existing read-only check diagnostics before reruns. Contract 10 and runtime scripts are unchanged.
 
