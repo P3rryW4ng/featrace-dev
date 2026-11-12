@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.34.4 — 2026-11-12
 
 - Explain how staging tracked deletions can change git_tree membership before final evidence collection.
 

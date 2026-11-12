@@ -8,10 +8,10 @@
 
 ## 安装
 
-本发布包 **0.34.3**。需要 Python 3.9+、Git 和对应 Agent；项目构建环境沿用项目要求。
+本发布包 **0.34.4**。需要 Python 3.9+、Git 和对应 Agent；项目构建环境沿用项目要求。
 
 ```bash
-git clone --branch release/0.34.3 --single-branch https://github.com/P3rryW4ng/featrace-dev.git
+git clone --branch release/0.34.4 --single-branch https://github.com/P3rryW4ng/featrace-dev.git
 cd featrace-dev
 python3 scripts/install.py --agent claude
 ```
@@ -28,7 +28,7 @@ Codex 将 `claude` 换成 `codex`；两端都安装用 `both`。安装后打开�
 
 ```text
 ❯ /dev
-FeatraceDev ON · 项目：store-web · 版本：0.34.3
+FeatraceDev ON · 项目：store-web · 版本：0.34.4
 
 ❯ 登录失败时页面显示空白。修复错误提示，并验证成功和失败两条路径。
 FeatraceDev ON · 项目：store-web
@@ -42,7 +42,7 @@ FeatraceDev ON · 项目：store-web
 
 ```text
 ❯ /dev
-FeatraceDev ON · 项目：store-web · 版本：0.34.3
+FeatraceDev ON · 项目：store-web · 版本：0.34.4
 
 ❯ 给订单列表加“仅显示未完成”筛选，默认展示全部。
 FeatraceDev ON · 项目：store-web
@@ -56,7 +56,7 @@ FeatraceDev ON · 项目：store-web
 
 ```text
 ❯ /dev
-FeatraceDev ON · 项目：store-web · 版本：0.34.3
+FeatraceDev ON · 项目：store-web · 版本：0.34.4
 
 ❯ 继续订单筛选任务。先查已有验证，只补缺失的检查。
 FeatraceDev ON · 项目：store-web
@@ -70,12 +70,12 @@ FeatraceDev ON · 项目：store-web
 
 ## 更新与文档
 
-更新前保留本地改动，获取并切换到固定发布引用 `release/0.34.3`，再运行 `python3 scripts/install.py --agent claude --update`。旧发布分支上直接 `git pull` 不会升级版本。安装器保留旧版备份，拒绝覆盖被修改的副本。
+更新前保留本地改动，获取并切换到固定发布引用 `release/0.34.4`，再运行 `python3 scripts/install.py --agent claude --update`。旧发布分支上直接 `git pull` 不会升级版本。安装器保留旧版备份，拒绝覆盖被修改的副本。
 
 - [使用与接续](docs/usage.md) · [模块与流程](docs/module-guide.md)
 - [版本记录](CHANGELOG.md) · [当前维护状态](MAINTAINER.md)
 - [验证与限制](docs/validation.md) · [产品方向](PRODUCT.md)
 
-0.34.3 使用合同 10。接续合同 9 的任务请使用固定版本 0.33.3。其他旧合同的接续说明见[使用指南](docs/usage.md)。
+0.34.4 使用合同 10。接续合同 9 的任务请使用固定版本 0.33.3。其他旧合同的接续说明见[使用指南](docs/usage.md)。
 
 **Feature · Trace · Delivery** · Created by [Perry Wang](https://github.com/P3rryW4ng). 尚未指定开源许可证。
