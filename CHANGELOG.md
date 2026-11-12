@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Explain how staging tracked deletions can change git_tree membership before final evidence collection.
+
 ## 0.34.3 — 2026-11-11
 
 - Consolidate entry-point guidance and surface existing read-only check diagnostics before reruns. Contract 10 and runtime scripts are unchanged.
